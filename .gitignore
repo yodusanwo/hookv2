@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# local scripts that may contain secrets
+get-token.js
+
 # vercel
 .vercel
 

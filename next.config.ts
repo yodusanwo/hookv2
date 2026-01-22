@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Keep config portable (no machine-specific paths).
 };
 
 export default nextConfig;
