@@ -100,7 +100,7 @@ export default async function Home() {
       .filter(Boolean) as Array<{ src: string; alt: string }>;
 
     return (
-      <main className="bg-slate-50">
+      <main className="bg-white">
         {/* Hero (matches PDF) */}
         <HeroCarousel
           headline={"Alaska’s Fresh Catch Awaits — Taste the Adventure"}
@@ -109,12 +109,16 @@ export default async function Home() {
           ctaHref={"#shop"}
           items={[
             { src: heroImg, alt: "Coastal Alaska landscape" },
-            ...carouselItems.slice(0, 4),
+            { src: "/1A4A6382.jpeg", alt: "Fresh catch on dock" },
+            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
+            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
+            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
+            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
           ]}
         />
 
         {/* About */}
-        <section id="about" className="py-14">
+        <section id="about" className="bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">
             <div className="text-center">
               <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
