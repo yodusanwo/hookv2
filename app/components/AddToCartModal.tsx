@@ -15,7 +15,7 @@ export function AddToCartModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="add-to-cart-modal-title"
@@ -24,11 +24,11 @@ export function AddToCartModal({
       <button
         type="button"
         onClick={onClose}
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 z-0 bg-black/50"
         aria-label="Close"
       />
 
-      <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+      <div className="relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
         {/* Close X */}
         <button
           type="button"
