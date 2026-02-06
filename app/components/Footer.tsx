@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="mt-16 bg-slate-900 text-slate-100">
+    <footer id="contact" className="mt-16 bg-slate-900 text-slate-100">
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
@@ -71,17 +71,27 @@ export function Footer() {
             <p className="mt-3 text-sm text-slate-300">
               Get updates on fresh drops, markets, and seasonal specials.
             </p>
-            <div className="mt-4 flex gap-2">
+            <form className="mt-4 flex flex-col gap-2 sm:flex-row">
               <input
-                className="h-11 w-full rounded-md bg-slate-800 px-3 text-sm outline-none ring-1 ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-400"
+                className="h-11 flex-1 rounded-md bg-slate-800 px-3 text-sm outline-none ring-1 ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-400"
                 placeholder="Email"
                 type="email"
                 name="email"
               />
-              <button className="h-11 rounded-md bg-emerald-500 px-4 text-sm font-semibold text-slate-900 hover:bg-emerald-400 transition-colors">
+              <input
+                className="h-11 w-24 rounded-md bg-slate-800 px-3 text-sm outline-none ring-1 ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-400 sm:w-20"
+                placeholder="Zip"
+                type="text"
+                name="zip"
+                maxLength={10}
+              />
+              <button
+                type="submit"
+                className="h-11 shrink-0 rounded-md bg-emerald-500 px-4 text-sm font-semibold text-slate-900 hover:bg-emerald-400 transition-colors"
+              >
                 Sign up
               </button>
-            </div>
+            </form>
           </div>
         </div>
 

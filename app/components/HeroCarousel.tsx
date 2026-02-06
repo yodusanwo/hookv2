@@ -33,7 +33,7 @@ export function HeroCarousel({
   const active = safeItems[idx]!;
 
   return (
-    <section className="relative w-full">
+    <section className="relative w-full min-h-[60vh]">
       {/* Full-bleed background image */}
       {active.src ? (
         <img

@@ -1,7 +1,9 @@
+import { client, HOMEPAGE_QUERY } from "@/lib/sanity";
 import { shopifyFetch } from "@/lib/shopify";
 import { Carousel } from "./components/Carousel";
-import Link from "next/link";
 import { HeroCarousel } from "./components/HeroCarousel";
+import { PageBuilder } from "@/components/sections/PageBuilder";
+import Link from "next/link";
 
 const PRODUCTS_QUERY = `
   query GetProducts($first: Int!) {
@@ -77,6 +79,32 @@ type ProductsResponse = {
 
 export default async function Home() {
   try {
+    const hasSanity =
+      !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
+      !!process.env.NEXT_PUBLIC_SANITY_DATASET;
+
+    let sanityPage: { sections?: unknown[] } | null = null;
+
+    if (hasSanity) {
+      try {
+        sanityPage = await client.fetch<{ sections?: unknown[] } | null>(
+          HOMEPAGE_QUERY,
+          {},
+          { next: { revalidate: 60 } }
+        );
+      } catch (e) {
+        console.warn("Sanity fetch failed, using fallback:", e);
+      }
+    }
+
+    if (sanityPage?.sections && Array.isArray(sanityPage.sections) && sanityPage.sections.length > 0) {
+      return (
+        <main className="bg-white">
+          <PageBuilder sections={sanityPage.sections as Parameters<typeof PageBuilder>[0]["sections"]} />
+        </main>
+      );
+    }
+
     const data = await shopifyFetch<ProductsResponse>({
       query: PRODUCTS_QUERY,
       variables: { first: 12 },
@@ -101,9 +129,8 @@ export default async function Home() {
 
     return (
       <main className="bg-white">
-        {/* Hero (matches PDF) */}
         <HeroCarousel
-          headline={"Alaska’s Fresh Catch Awaits — Taste the Adventure"}
+          headline={"Alaska's Fresh Catch Awaits — Taste the Adventure"}
           subline={"Wild-caught  •  Family-run  •  Sustainably sourced"}
           ctaLabel={"Get Fresh Fish"}
           ctaHref={"#shop"}
@@ -117,7 +144,6 @@ export default async function Home() {
           ]}
         />
 
-        {/* About */}
         <section id="about" className="bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">
             <div className="text-center">
@@ -137,14 +163,14 @@ export default async function Home() {
               </div>
               <div className="max-w-xl">
                 <p className="text-sm leading-6 text-slate-700">
-                  At Hook Point Fisheries, fishing isn’t just a job—it’s our
+                  At Hook Point Fisheries, fishing isn't just a job—it's our
                   way of life. Every summer we carefully fish the waters off
                   Kodiak Island, hand-harvesting wild Alaskan salmon and other
                   seafood for folks like you.
                 </p>
                 <p className="mt-4 text-sm leading-6 text-slate-700">
                   We believe the real food brings people together, and when you
-                  choose our salmon, you’re supporting sustainable harvest,
+                  choose our salmon, you're supporting sustainable harvest,
                   local families, and small boat fisheries.
                 </p>
                 <div className="mt-6">
@@ -160,7 +186,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Carousel */}
         <section className="border-y border-black/5 bg-slate-50 py-12">
           <div className="mx-auto max-w-6xl px-4">
             <h3 className="text-center text-lg font-semibold text-slate-900">
@@ -180,7 +205,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Shop grid */}
         <section id="shop" className="py-14">
           <div className="mx-auto max-w-6xl px-4">
             <div className="flex items-end justify-between gap-4">
@@ -189,7 +213,7 @@ export default async function Home() {
                   Shop seafood
                 </h2>
                 <p className="mt-1 text-sm text-slate-600">
-                  Curated wild catch from Alaska’s small-boat fleet.
+                  Curated wild catch from Alaska's small-boat fleet.
                 </p>
               </div>
               <a
@@ -252,7 +276,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Markets */}
         <section id="markets" className="border-y border-black/5 bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">
             <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
@@ -286,7 +309,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Newsletter */}
         <section id="learn" className="py-14 bg-slate-50">
           <div className="mx-auto max-w-3xl px-4 text-center">
             <div className="mx-auto h-12 w-12 rounded-full bg-emerald-700/90" />
@@ -309,7 +331,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Instagram */}
         <section className="py-14">
           <div className="mx-auto max-w-6xl px-4">
             <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
