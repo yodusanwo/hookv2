@@ -12,7 +12,27 @@ export default defineConfig({
   projectId,
   dataset,
   basePath: "/studio",
-  plugins: [structureTool(), visionTool()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title("Content")
+          .items([
+            S.listItem()
+              .title("Page")
+              .child(S.documentTypeList("page").title("Pages")),
+            S.listItem()
+              .title("Site Settings")
+              .id("siteSettings")
+              .child(
+                S.document()
+                  .schemaType("siteSettings")
+                  .documentId("siteSettings")
+              ),
+          ]),
+    }),
+    visionTool(),
+  ],
   schema: {
     types: schemaTypes,
   },

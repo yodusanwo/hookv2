@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { IconCart, IconSearch, IconUser } from "./Icons";
 
-const nav = [
+const FALLBACK_NAV = [
   { href: "#shop", label: "Shop" },
   { href: "#about", label: "Our Story" },
   { href: "#recipes", label: "Recipes" },
@@ -9,60 +9,72 @@ const nav = [
   { href: "#contact", label: "Contact Us" },
 ];
 
-export function Header() {
+const FALLBACK_LOGO = "/Hook_Point_Shirt_White_Letters_042acd76-dff8-4246-874a-1df73d011a24%201.png";
+const FALLBACK_BG = "#171730";
+
+export function Header({
+  logoUrl,
+  navLinks,
+  backgroundColor,
+}: {
+  logoUrl?: string | null;
+  navLinks?: Array<{ label?: string; href?: string }>;
+  backgroundColor?: string | null;
+}) {
+  const logoSrc = logoUrl ?? FALLBACK_LOGO;
+  const nav = navLinks && navLinks.length > 0 ? navLinks : FALLBACK_NAV;
+  const bgColor = backgroundColor ?? FALLBACK_BG;
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/95 backdrop-blur">
-      {/* Top bar per Figma */}
-      <div className="border-b border-black/5 bg-slate-900 text-white">
-        <div className="mx-auto flex h-9 max-w-6xl items-center justify-between px-6 text-xs">
-          <a href="tel:555-555-5555" className="hover:text-slate-200">
-            Need help? Call Us: 555-555-5555
-          </a>
-          <div className="flex items-center gap-3">
-            <button type="button" aria-label="Search" className="p-1 hover:text-slate-200">
-              <IconSearch className="h-4 w-4" />
-            </button>
-            <button type="button" aria-label="Account" className="p-1 hover:text-slate-200">
-              <IconUser className="h-4 w-4" />
-            </button>
-            <Link href="#" aria-label="Cart" className="p-1 hover:text-slate-200">
-              <IconCart className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </div>
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="flex h-16 items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="text-lg font-bold tracking-tight text-slate-900"
-          >
-            HOOK POINT
-          </Link>
+    <header
+      className="sticky top-0 z-50 w-full"
+      style={{
+        backgroundColor: bgColor,
+      }}
+    >
+      {/* Logo area: 1440px × 163px */}
+      <div
+        className="mx-auto flex h-[163px] w-full max-w-[1440px] items-center justify-between gap-4 px-6 text-white"
+        style={{ width: "min(1440px, 100%)" }}
+      >
+        <Link
+          href="/"
+          className="block shrink-0"
+          aria-label="Hook Point home"
+          style={{
+            width: "137.436px",
+            height: "134px",
+            aspectRatio: "40/39",
+            background: `url(${logoSrc}) #171730 50% / cover no-repeat`,
+          }}
+        />
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-700">
-            {nav.map((item) => (
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          {nav.map((item) => {
+            const href = item.href ?? "#";
+            const label = item.label ?? "Link";
+            return (
               <a
-                key={item.href}
-                href={item.href}
-                className="hover:text-slate-900 transition-colors"
+                key={`${href}-${label}`}
+                href={href}
+                className="hover:text-slate-200 transition-colors"
               >
-                {item.label}
+                {label}
               </a>
-            ))}
-          </nav>
+            );
+          })}
+        </nav>
 
-          <div className="flex items-center gap-2">
-            <button type="button" aria-label="Search" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-              <IconSearch className="h-5 w-5 text-slate-700" />
-            </button>
-            <button type="button" aria-label="Account" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-              <IconUser className="h-5 w-5 text-slate-700" />
-            </button>
-            <Link href="#" aria-label="Cart" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-              <IconCart className="h-5 w-5 text-slate-700" />
-            </Link>
-          </div>
+        <div className="flex items-center gap-2">
+          <button type="button" aria-label="Search" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <IconSearch className="h-5 w-5" />
+          </button>
+          <button type="button" aria-label="Account" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <IconUser className="h-5 w-5" />
+          </button>
+          <Link href="#" aria-label="Cart" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <IconCart className="h-5 w-5" />
+          </Link>
         </div>
       </div>
     </header>

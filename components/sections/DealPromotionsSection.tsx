@@ -62,8 +62,6 @@ export async function DealPromotionsSection({ block }: { block: DealPromotionsBl
     }
   }
 
-  if (products.length === 0) return null;
-
   // Layout: top row 3 cards (385×221), bottom row up to 4 cards (285×221).
   const topRow = products.slice(0, 3);
   const bottomRow = products.slice(3, 7);
@@ -97,6 +95,12 @@ export async function DealPromotionsSection({ block }: { block: DealPromotionsBl
         )}
 
         <div className="mt-10 space-y-6">
+          {products.length === 0 ? (
+            <p className="text-center text-sm text-slate-500">
+              No products selected. Add products in Sanity Studio to display them here.
+            </p>
+          ) : (
+            <>
           {/* Top row: 3 cards (385×221) */}
           {topRow.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -113,6 +117,8 @@ export async function DealPromotionsSection({ block }: { block: DealPromotionsBl
                 <DealProductCard key={edge.node.id} product={toCardProduct(edge)} size="bottom" />
               ))}
             </div>
+          )}
+            </>
           )}
         </div>
       </div>

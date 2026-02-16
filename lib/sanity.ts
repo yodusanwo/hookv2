@@ -15,6 +15,14 @@ export const client: SanityClient = projectId
     })
   : (null as unknown as SanityClient);
 
+/** GROQ query for site settings (singleton) */
+export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
+  headerLogo { asset-> },
+  headerBackgroundColor,
+  promoBanner,
+  navLinks[] { label, href }
+}`;
+
 /** GROQ query for homepage (page with slug "home") */
 export const HOMEPAGE_QUERY = `*[_type == "page" && slug.current == "home"][0] {
   _id,

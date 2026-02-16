@@ -126,6 +126,17 @@ const HOMEPAGE_DOCUMENT = {
       layout: "grid",
     },
     {
+      _type: "reviewsBlock",
+      _key: "reviews",
+      title: "Customer Reviews",
+      description: "What our customers are saying",
+      reviews: [
+        { _key: "r1", stars: 5, text: "Best salmon I've ever had! So fresh and flavorful.", name: "Sarah M.", date: "01/15/2025" },
+        { _key: "r2", stars: 5, text: "Fresh, delicious, and sustainably sourced. Highly recommend!", name: "Mike T.", date: "01/10/2025" },
+        { _key: "r3", stars: 4, text: "Great quality. Will order again.", name: "Lisa K.", date: "01/05/2025" },
+      ],
+    },
+    {
       _type: "docksideMarketsBlock",
       _key: "markets",
       title: "Find us at these Chicagoland Farmers Markets",
