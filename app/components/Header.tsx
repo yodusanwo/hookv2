@@ -32,9 +32,9 @@ export function Header({
         backgroundColor: bgColor,
       }}
     >
-      {/* Logo area: 1440px × 163px */}
+      {/* Logo area: 1440px × 107px */}
       <div
-        className="mx-auto flex h-[163px] w-full max-w-[1440px] items-center justify-between gap-4 px-6 text-white"
+        className="mx-auto flex h-[107px] w-full max-w-[1440px] items-center justify-between gap-4 px-6 text-white"
         style={{ width: "min(1440px, 100%)" }}
       >
         <Link
@@ -42,8 +42,8 @@ export function Header({
           className="block shrink-0 border-0 outline-none ring-0"
           aria-label="Hook Point home"
           style={{
-            width: "137.436px",
-            height: "134px",
+            width: "88.7px",
+            height: "86.5px",
             aspectRatio: "40/39",
             background: `url(${logoSrc}) #171730 50% / cover no-repeat`,
             border: "none",

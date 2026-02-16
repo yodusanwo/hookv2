@@ -39,7 +39,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
   });
 
   return (
-    <section className="border-y border-slate-200/80 bg-white py-14">
+    <section className="relative z-20 border-y border-slate-200/80 bg-white py-14">
       <div className="mx-auto max-w-6xl px-4">
         <h2 className="text-center text-2xl font-bold uppercase tracking-tight text-slate-900 sm:text-3xl">
           {title.endsWith(".") ? title : `${title}.`}
