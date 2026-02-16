@@ -33,55 +33,38 @@ export function HeroCarousel({
   const active = safeItems[idx]!;
 
   return (
-    <section className="relative w-full min-h-[60vh]">
-      {/* Full-bleed background image */}
-      {active.src ? (
+    <section className="relative w-full min-h-[60vh] overflow-visible">
+      {/* Full-bleed background - image removed for now */}
+      <div className="absolute left-0 right-0 bottom-0 h-full bg-slate-200" style={{ top: "50px" }} />
+
+      {/* Overlay for readability - matches background offset (hidden when no image) */}
+
+      {/* 7 1.png overlay - in front of hero image, aligned with top */}
+      <div
+        className="absolute left-1/2 z-10"
+        style={{ top: "-173px", width: "110%", transform: "translateX(calc(-50% - 50px))", aspectRatio: "644/171", minHeight: "380px" }}
+        aria-hidden
+      >
         <img
-          key={active.src}
-          src={active.src}
-          alt={active.alt}
-          className="absolute inset-0 h-full w-full object-cover"
+          src="/7 1.png"
+          alt=""
+          className="h-full w-full object-cover object-top"
         />
-      ) : (
-        <div className="absolute inset-0 bg-slate-200" />
-      )}
-
-      {/* Overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/55 to-white/10" />
-      <div className="absolute inset-0 ring-1 ring-black/5" />
-
-      <div className="relative mx-auto max-w-6xl px-6 py-16 md:py-20">
-        <div className="max-w-xl">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">
-            {headline}
-          </h1>
-          <p className="mt-3 text-sm text-slate-700">{subline}</p>
-          <a
-            href={ctaHref}
-            className="mt-7 inline-flex h-10 items-center justify-center rounded-lg bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm ring-1 ring-black/10 hover:bg-slate-50"
-          >
-            {ctaLabel}
-          </a>
-        </div>
-
-        {/* Dots */}
-        <div className="mt-10 flex items-center gap-2">
-          {safeItems.slice(0, 6).map((_, dotIdx) => {
-            const isActive = dotIdx === idx;
-            return (
-              <button
-                key={dotIdx}
-                type="button"
-                onClick={() => setIdx(dotIdx)}
-                aria-label={`Go to slide ${dotIdx + 1}`}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  isActive ? "bg-slate-700" : "bg-slate-400/60"
-                }`}
-              />
-            );
-          })}
-        </div>
       </div>
+
+      {/* wavy 1.png overlay - in front of 7 1.png */}
+      <div
+        className="absolute left-1/2 z-[15]"
+        style={{ top: "-183px", width: "110%", transform: "translateX(calc(-50% - 50px))", aspectRatio: "612/133", minHeight: "380px" }}
+        aria-hidden
+      >
+        <img
+          src="/wavy 1.png"
+          alt=""
+          className="h-full w-full object-cover object-top"
+        />
+      </div>
+
     </section>
   );
 }
