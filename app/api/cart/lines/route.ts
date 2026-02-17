@@ -3,7 +3,16 @@ import { shopifyFetch } from "@/lib/shopify";
 
 function isValidShopifyGid(value: string): boolean {
   if (!value || typeof value !== "string") return false;
-  return /^gid:\/\/shopify\/[\w-]+\/\d+/.test(value.trim());
+  const trimmed = value.trim();
+  return trimmed.length > 0 && /^gid:\/\/shopify\/[\w-]+\/.+/.test(trimmed);
+}
+
+function toShopifyGid(type: "Cart" | "ProductVariant", value: string): string {
+  const trimmed = value.trim();
+  if (/^gid:\/\/shopify\//.test(trimmed)) return trimmed;
+  const numeric = trimmed.replace(/\D/g, "");
+  if (numeric.length > 0) return `gid://shopify/${type}/${numeric}`;
+  return trimmed;
 }
 
 type CartLinesAddResponse = {
@@ -27,16 +36,32 @@ export async function POST(req: Request) {
     | { cartId?: string; merchandiseId?: string; quantity?: number }
     | null;
 
-  if (!body?.cartId || !body?.merchandiseId) {
+  const cartId =
+    typeof body?.cartId === "string"
+      ? body.cartId.trim()
+      : body?.cartId != null
+        ? String(body.cartId).trim()
+        : "";
+  const merchandiseId =
+    typeof body?.merchandiseId === "string"
+      ? body.merchandiseId.trim()
+      : body?.merchandiseId != null
+        ? String(body.merchandiseId).trim()
+        : "";
+
+  if (!cartId || !merchandiseId) {
     return NextResponse.json(
       { error: "cartId and merchandiseId are required." },
       { status: 400 }
     );
   }
 
-  const quantity = Math.min(50, Math.max(1, Math.floor(Number(body.quantity) || 1)));
+  const quantity = Math.min(50, Math.max(1, Math.floor(Number(body?.quantity) || 1)));
 
-  if (!isValidShopifyGid(body.cartId) || !isValidShopifyGid(body.merchandiseId)) {
+  const normalizedCartId = toShopifyGid("Cart", cartId);
+  const normalizedMerchandiseId = toShopifyGid("ProductVariant", merchandiseId);
+
+  if (!isValidShopifyGid(normalizedCartId) || !isValidShopifyGid(normalizedMerchandiseId)) {
     return NextResponse.json(
       { error: "Invalid cartId or merchandiseId format." },
       { status: 400 }
@@ -46,8 +71,8 @@ export async function POST(req: Request) {
   const data = await shopifyFetch<CartLinesAddResponse, any>({
     query: CART_LINES_ADD_MUTATION,
     variables: {
-      cartId: body.cartId,
-      lines: [{ merchandiseId: body.merchandiseId, quantity }],
+      cartId: normalizedCartId,
+      lines: [{ merchandiseId: normalizedMerchandiseId, quantity }],
     },
   });
 

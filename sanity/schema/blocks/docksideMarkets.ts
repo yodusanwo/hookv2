@@ -21,6 +21,7 @@ export const docksideMarketsBlock = defineType({
             { name: "logoWidth", type: "number", title: "Logo width (px)", description: "Optional. Default 115. Use for rectangular logos (e.g. 200)." },
             { name: "logoHeight", type: "number", title: "Logo height (px)", description: "Optional. Default 115. Use for rectangular logos (e.g. 75)." },
             { name: "logoAspectRatio", type: "string", title: "Logo aspect ratio", description: "Optional. e.g. \"8/3\" for wide logos. Default \"1/1\"." },
+            { name: "logoScalePercent", type: "number", title: "Logo size (%)", description: "Optional. Scale logo by percentage. 100 = default, 120 = 20% larger, 80 = 20% smaller." },
           ],
         },
       ],

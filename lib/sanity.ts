@@ -38,6 +38,6 @@ export const HOMEPAGE_QUERY = `*[_type == "page" && slug.current == "home"][0] {
     body,
     "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
     "filterCollections": filterCollections[] { label, collectionHandle },
-    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio }
+    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
   }
 }`;
