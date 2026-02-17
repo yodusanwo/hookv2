@@ -2,7 +2,14 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
-type MarketItem = { label?: string; logo?: { asset?: { _ref?: string } }; url?: string };
+type MarketItem = {
+  label?: string;
+  logo?: { asset?: { _ref?: string } };
+  url?: string;
+  logoWidth?: number;
+  logoHeight?: number;
+  logoAspectRatio?: string;
+};
 
 type DocksideMarketsBlock = {
   title?: string;
@@ -28,15 +35,18 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
           {items.length > 0
             ? items.map((item, idx) => {
                 const img = urlFor(item.logo);
+                const logoW = item.logoWidth ?? 115;
+                const logoH = item.logoHeight ?? 115;
+                const logoAspect = item.logoAspectRatio ?? "1/1";
                 const content = img ? (
                   <div
                     role="img"
                     aria-label={item.label ?? ""}
                     className="shrink-0 rounded-none"
                     style={{
-                      width: 115,
-                      height: 115,
-                      aspectRatio: "1/1",
+                      width: logoW,
+                      height: logoH,
+                      aspectRatio: logoAspect,
                       background: `url(${img.url()}) #FAFAFC 50% / cover no-repeat`,
                     }}
                   />
