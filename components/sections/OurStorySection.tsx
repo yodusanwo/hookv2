@@ -49,7 +49,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   const useFallbackBody = !block.body?.length || isLoremIpsum(block.body);
 
   return (
-    <section id="about" className="bg-white py-14">
+    <section id="about" className="pb-14 pt-0" style={{ backgroundColor: "#D4F2FF" }}>
       <div className="mx-auto max-w-6xl px-4">
         <h2
           className="text-center"
@@ -59,7 +59,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
             fontWeight: 300,
             lineHeight: "120%",
             letterSpacing: "-1.68px",
-            color: "var(--gray-content-background-text-icon-40, #498CCB)",
+            color: "#1E1E1E",
           }}
         >
           {title}
@@ -77,7 +77,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
               <div className="h-[300px] w-full md:h-[420px]" />
             )}
           </div>
-          <div className="max-w-xl rounded-xl px-6 pb-6 pt-0" style={{ backgroundColor: "#F8FCFF" }}>
+          <div className="max-w-xl rounded-xl px-6 pb-6 pt-0" style={{ backgroundColor: "#D4F2FF" }}>
             <h3
               className="mb-4 text-left font-bold"
               style={{

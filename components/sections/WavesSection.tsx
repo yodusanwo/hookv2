@@ -13,6 +13,7 @@ export function WavesSection() {
   return (
     <section
       className="relative z-0 -mt-[195px] min-h-[400px] overflow-visible pointer-events-none"
+      style={{ backgroundColor: "#D4F2FF" }}
       aria-hidden
     >
       {WAVES.map((wave) => (
