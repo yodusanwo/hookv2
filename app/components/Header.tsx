@@ -40,11 +40,9 @@ export function Header({
       >
         <Link
           href="/"
-          className="block shrink-0 border-0 outline-none ring-0"
+          className="block shrink-0 border-0 outline-none ring-0 w-[58px] h-[56px] sm:w-[72px] sm:h-[70px] md:w-[88.7px] md:h-[86.5px]"
           aria-label="Hook Point home"
           style={{
-            width: "88.7px",
-            height: "86.5px",
             aspectRatio: "40/39",
             background: `url(${logoSrc}) #171730 50% / cover no-repeat`,
             border: "none",
