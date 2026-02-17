@@ -166,8 +166,9 @@ export function AddToCart({
           id="qty"
           type="number"
           min={1}
+          max={50}
           value={qty}
-          onChange={(e) => setQty(Math.max(1, Number(e.target.value || 1)))}
+          onChange={(e) => setQty(Math.min(50, Math.max(1, Math.floor(Number(e.target.value) || 1))))}
           className="h-10 w-20 rounded-md border border-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-sky-700"
         />
       </div>

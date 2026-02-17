@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { safeHref } from "@/lib/urlValidation";
 import { ExploreProductCard, type ExploreProductCardProduct } from "@/app/components/ExploreProductCard";
 import { ExploreFilters } from "./ExploreFilters";
 
@@ -28,47 +29,53 @@ export function ExploreProductsGrid({
 
   const labels = React.useMemo(() => filters.map((f) => f.label ?? "Shop"), [filters]);
 
-  const fetchProducts = React.useCallback(async (collectionHandle: string | undefined) => {
+  React.useEffect(() => {
+    const current = filters[activeIndex];
+    const collectionHandle = current?.collectionHandle;
+    const controller = new AbortController();
+
     setLoading(true);
-    try {
-      const url = collectionHandle?.trim()
-        ? `/api/collections/${encodeURIComponent(collectionHandle.trim())}/products`
-        : "/api/products?first=9";
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch");
-      const json = (await res.json()) as { products?: Array<{
+    const url = collectionHandle?.trim()
+      ? `/api/collections/${encodeURIComponent(collectionHandle.trim())}/products`
+      : "/api/products?first=9";
+
+    fetch(url, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((json: { products?: Array<{
         id: string;
         title: string;
         handle: string;
         priceRange?: { minVariantPrice?: { amount?: string; currencyCode?: string } };
         images?: { edges?: Array<{ node?: { url?: string; altText?: string | null } }> };
-      }> };
-      const raw = json.products ?? [];
-      const mapped: ExploreProductCardProduct[] = raw.map((p) => {
-        const img = p.images?.edges?.[0]?.node;
-        const price = p.priceRange?.minVariantPrice;
-        return {
-          id: p.id,
-          handle: p.handle,
-          title: p.title,
-          imageUrl: img?.url ?? null,
-          price: price?.amount ?? "0",
-          currencyCode: price?.currencyCode ?? "USD",
-          rating: 5,
-        };
+      }> }) => {
+        const raw = json.products ?? [];
+        const mapped: ExploreProductCardProduct[] = raw.map((p) => {
+          const img = p.images?.edges?.[0]?.node;
+          const price = p.priceRange?.minVariantPrice;
+          return {
+            id: p.id,
+            handle: p.handle,
+            title: p.title,
+            imageUrl: img?.url ?? null,
+            price: price?.amount ?? "0",
+            currencyCode: price?.currencyCode ?? "USD",
+            rating: 5,
+          };
+        });
+        setProducts(mapped);
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") setProducts([]);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
       });
-      setProducts(mapped);
-    } catch {
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
-  React.useEffect(() => {
-    const current = filters[activeIndex];
-    fetchProducts(current?.collectionHandle);
-  }, [activeIndex, filters, fetchProducts]);
+    return () => controller.abort();
+  }, [activeIndex, filters]);
 
   const handleFilterChange = React.useCallback((index: number) => {
     setActiveIndex(index);
@@ -108,7 +115,7 @@ export function ExploreProductsGrid({
 
       <div className="mx-auto max-w-6xl px-4 mt-12 flex justify-center">
         <Link
-          href={cta?.href ?? "#shop"}
+          href={safeHref(cta?.href) || "#shop"}
           className="inline-flex h-12 items-center justify-center rounded-lg px-6 font-semibold text-white transition-colors hover:opacity-90"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",

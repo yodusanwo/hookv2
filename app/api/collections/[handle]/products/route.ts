@@ -38,14 +38,18 @@ export async function GET(
   { params }: { params: Promise<{ handle: string }> }
 ) {
   const { handle } = await params;
-  if (!handle?.trim()) {
-    return NextResponse.json({ error: "Collection handle is required." }, { status: 400 });
+  const trimmed = handle?.trim() ?? "";
+  if (!trimmed || !/^[a-zA-Z0-9-]+$/.test(trimmed)) {
+    return NextResponse.json(
+      { error: "Invalid collection handle. Use only letters, numbers, and hyphens." },
+      { status: 400 }
+    );
   }
 
   try {
     const data = await shopifyFetch<CollectionProductsResponse>({
       query: COLLECTION_PRODUCTS_QUERY,
-      variables: { handle: handle.trim(), first: 9 },
+      variables: { handle: trimmed, first: 9 },
     });
 
     const collection = data.collection;

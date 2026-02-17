@@ -1,4 +1,5 @@
 import { urlFor } from "@/lib/sanityImage";
+import { safeHref } from "@/lib/urlValidation";
 
 type MarketItem = { label?: string; logo?: { asset?: { _ref?: string } }; url?: string };
 
@@ -35,10 +36,11 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
                 ) : (
                   <span className="text-xs font-semibold text-slate-700">{item.label}</span>
                 );
-                return item.url ? (
+                const safeUrl = safeHref(item.url);
+                return safeUrl !== "#" ? (
                   <a
                     key={idx}
-                    href={item.url}
+                    href={safeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center rounded-xl border border-black/5 bg-slate-50 p-5 hover:bg-slate-100 transition-colors"

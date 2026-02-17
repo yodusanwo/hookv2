@@ -15,6 +15,10 @@ export function ExploreFilters({
 }) {
   const [active, setActive] = React.useState(activeIndex);
 
+  React.useEffect(() => {
+    setActive(activeIndex);
+  }, [activeIndex]);
+
   const handleClick = (index: number) => {
     setActive(index);
     onFilterChange?.(index);

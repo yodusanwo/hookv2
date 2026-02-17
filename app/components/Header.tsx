@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { IconCart, IconSearch, IconUser } from "./Icons";
+import { safeHref } from "@/lib/urlValidation";
 
 const FALLBACK_NAV = [
   { href: "#shop", label: "Shop" },
@@ -53,7 +54,7 @@ export function Header({
 
         <nav className="hidden md:flex items-center gap-16 text-xl font-medium text-white [font-family:var(--font-inter)]">
           {nav.map((item) => {
-            const href = item.href ?? "#";
+            const href = safeHref(item.href) || "#";
             const label = item.label ?? "Link";
             return (
               <a

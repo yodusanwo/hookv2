@@ -1,6 +1,7 @@
 import { HeroCarousel } from "@/app/components/HeroCarousel";
 import { PromoBanner } from "../PromoBanner";
 import { urlFor } from "@/lib/sanityImage";
+import { safeHref } from "@/lib/urlValidation";
 
 type HeroBlock = {
   headline?: string;
@@ -11,11 +12,16 @@ type HeroBlock = {
 
 function normalizeHeadline(raw: string | undefined): { line1: string; line2: string } {
   const fallback = { line1: "Alaska's Fresh Catch Awaits —", line2: "Taste the Adventure" };
-  if (!raw || !raw.includes("Alaska")) return fallback;
-  const normalized = raw
+  if (!raw || typeof raw !== "string") return fallback;
+  const trimmed = raw.trim();
+  if (!trimmed) return fallback;
+  // Only apply two-line split for known Alaska patterns with "—" or newlines
+  if (!trimmed.includes("Alaska")) {
+    return { line1: trimmed, line2: "" };
+  }
+  const normalized = trimmed
     .replace(/\s*\n\s*—\s*\n\s*/g, " — ")
-    .replace(/—\s+/, "— ")
-    .trim();
+    .replace(/—\s+/, "— ");
   const parts = normalized.split(/\s+—\s+/);
   if (parts.length >= 2) {
     return { line1: `${parts[0]?.trim() ?? ""} —`, line2: parts.slice(1).join(" ").trim() };
@@ -24,14 +30,14 @@ function normalizeHeadline(raw: string | undefined): { line1: string; line2: str
   if (byNewline.length >= 2) {
     return { line1: byNewline[0]!, line2: byNewline.slice(1).join(" ") };
   }
-  return fallback;
+  return { line1: trimmed, line2: "" };
 }
 
 export function HeroSection({ block, promoBanner }: { block: HeroBlock; promoBanner?: string | null }) {
   const headline = normalizeHeadline(block.headline);
   const subline = block.subline ?? "Wild-caught  •  Family-run  •  Sustainably sourced";
   const ctaLabel = block.cta?.label ?? "Get Fresh Fish";
-  const ctaHref = block.cta?.href ?? "#shop";
+  const ctaHref = (block.cta?.href ? safeHref(block.cta.href) : "") || "#shop";
 
   const items: Array<{ src: string; alt: string }> =
     block.images

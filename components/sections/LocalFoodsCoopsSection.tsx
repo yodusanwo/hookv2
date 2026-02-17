@@ -1,5 +1,6 @@
 import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
+import { safeHref } from "@/lib/urlValidation";
 
 type LogoButton = { label?: string; logo?: { asset?: { _ref?: string } }; url?: string };
 
@@ -56,10 +57,11 @@ export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock 
                 ) : (
                   <span className="text-sm font-semibold text-slate-700">{lb.label}</span>
                 );
-                return lb.url ? (
+                const safeUrl = safeHref(lb.url);
+                return safeUrl !== "#" ? (
                   <a
                     key={idx}
-                    href={lb.url}
+                    href={safeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-lg border border-black/5 bg-slate-50 px-4 py-3 hover:bg-slate-100 transition-colors"

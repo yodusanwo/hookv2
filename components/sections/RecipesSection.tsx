@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { urlFor } from "@/lib/sanityImage";
+import { safeHref } from "@/lib/urlValidation";
 
 type Recipe = { title?: string; image?: { asset?: { _ref?: string } }; url?: string };
 
@@ -30,7 +31,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {recipes.map((r, idx) => {
             const img = urlFor(r.image);
-            const href = r.url ?? "#";
+            const href = safeHref(r.url) || "#";
             return (
               <Link
                 key={idx}
@@ -57,7 +58,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
         {showMoreUrl && (
           <div className="mt-8 flex justify-center">
             <a
-              href={showMoreUrl}
+              href={safeHref(showMoreUrl)}
               className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
             >
               View All Recipes

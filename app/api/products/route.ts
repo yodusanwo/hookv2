@@ -31,7 +31,8 @@ const PRODUCTS_QUERY = `
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const first = Math.min(24, Math.max(1, parseInt(searchParams.get("first") ?? "9", 10)));
+  const parsed = parseInt(searchParams.get("first") ?? "9", 10);
+  const first = Number.isNaN(parsed) ? 9 : Math.min(24, Math.max(1, parsed));
 
   try {
     const data = await shopifyFetch<ProductsResponse>({

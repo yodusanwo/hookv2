@@ -1,5 +1,6 @@
 import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
+import { safeHref } from "@/lib/urlValidation";
 
 type OurStoryBlock = {
   title?: string;
@@ -34,7 +35,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   const img = urlFor(block.image);
   const subheading = block.subheading ?? "Why Wild Matters";
   const ctaLabel = block.cta?.label ?? "Learn More About Us";
-  const ctaHref = block.cta?.href ?? "#learn";
+  const ctaHref = block.cta?.href ? safeHref(block.cta.href) : "#learn";
 
   const useFallbackBody = !block.body?.length || isLoremIpsum(block.body);
 

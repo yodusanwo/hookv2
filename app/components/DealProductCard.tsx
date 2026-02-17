@@ -39,37 +39,52 @@ export function DealProductCard({
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
   const [adding, setAdding] = React.useState(false);
+  const abortRef = React.useRef<AbortController | null>(null);
 
   const width = size === "top" ? 385 : 285;
   const height = 221;
 
-  async function handleAddToCart(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!product.variantId || !product.availableForSale || adding) return;
+  const handleAddToCart = React.useCallback(
+    async (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!product.variantId || !product.availableForSale || adding) return;
 
-    setAdding(true);
-    try {
-      const cartId = await ensureCartId();
-      const res = await fetch("/api/cart/lines", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          cartId,
-          merchandiseId: product.variantId,
-          quantity: 1,
-        }),
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
-      setCheckoutUrl((json as { checkoutUrl?: string }).checkoutUrl ?? null);
-      setModalOpen(true);
-    } catch {
-      // Could show a toast; for now just ignore
-    } finally {
-      setAdding(false);
-    }
-  }
+      setAdding(true);
+      const controller = new AbortController();
+      abortRef.current = controller;
+      try {
+        const cartId = await ensureCartId();
+        const res = await fetch("/api/cart/lines", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            cartId,
+            merchandiseId: product.variantId,
+            quantity: 1,
+          }),
+          signal: controller.signal,
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
+        setCheckoutUrl((json as { checkoutUrl?: string }).checkoutUrl ?? null);
+        setModalOpen(true);
+      } catch (err) {
+        if (err instanceof Error && err.name !== "AbortError") {
+          // Could show a toast; for now just ignore
+        }
+      } finally {
+        if (!controller.signal.aborted) setAdding(false);
+      }
+    },
+    [product.variantId, product.availableForSale, adding]
+  );
+
+  React.useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
 
   return (
     <>

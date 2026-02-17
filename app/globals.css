@@ -3,13 +3,13 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --gray-content-background-text-icon-0: #F2F6EF;
+  --gray-content-background-text-icon-0: #f2f6ef;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter), Inter, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -28,5 +28,5 @@ body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Inter, sans-serif;
 }

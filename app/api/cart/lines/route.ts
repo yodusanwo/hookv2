@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { shopifyFetch } from "@/lib/shopify";
 
+function isValidShopifyGid(value: string): boolean {
+  if (!value || typeof value !== "string") return false;
+  return /^gid:\/\/shopify\/[\w-]+\/\d+/.test(value.trim());
+}
+
 type CartLinesAddResponse = {
   cartLinesAdd: {
     cart: { id: string; checkoutUrl: string } | null;
@@ -29,7 +34,14 @@ export async function POST(req: Request) {
     );
   }
 
-  const quantity = Number.isFinite(body.quantity) ? Number(body.quantity) : 1;
+  const quantity = Math.min(50, Math.max(1, Math.floor(Number(body.quantity) || 1)));
+
+  if (!isValidShopifyGid(body.cartId) || !isValidShopifyGid(body.merchandiseId)) {
+    return NextResponse.json(
+      { error: "Invalid cartId or merchandiseId format." },
+      { status: 400 }
+    );
+  }
 
   const data = await shopifyFetch<CartLinesAddResponse, any>({
     query: CART_LINES_ADD_MUTATION,

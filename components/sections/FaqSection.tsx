@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { safeHref } from "@/lib/urlValidation";
 
 type FaqItem = { question?: string; answer?: string };
 
@@ -57,7 +58,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
         {showMoreUrl && (
           <div className="mt-8 flex justify-center">
             <a
-              href={showMoreUrl}
+              href={safeHref(showMoreUrl)}
               className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
             >
               View All FAQs
