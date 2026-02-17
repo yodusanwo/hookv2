@@ -4,6 +4,9 @@
   --background: #ffffff;
   --foreground: #171717;
   --gray-content-background-text-icon-0: #f2f6ef;
+  --gray-content-background-text-icon-40: #498CCB;
+  --gray-content-background-text-icon-80: #1C5080;
+  --gray-content-background-text-icon-100: #213721;
 }
 
 @theme inline {
@@ -29,4 +32,16 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), Inter, sans-serif;
+}
+
+/* Our Story body typography – Body/XL/Light */
+.our-story-body,
+.our-story-body p,
+.our-story-body li {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 140%;
+  color: var(--gray-content-background-text-icon-80, #1c5080);
 }

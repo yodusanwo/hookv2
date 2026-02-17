@@ -3,7 +3,7 @@ import { defineType, defineField } from "sanity";
 export const exploreProductsBlock = defineType({
   name: "exploreProductsBlock",
   type: "object",
-  title: "Explore Our Products",
+  title: "Catch of the day",
   fields: [
     defineField({ name: "title", type: "string", title: "Title", initialValue: "Catch of the day" }),
     defineField({ name: "description", type: "text", title: "Description" }),
@@ -76,7 +76,7 @@ export const exploreProductsBlock = defineType({
   preview: {
     select: { title: "title" },
     prepare({ title }) {
-      return { title: "Explore Products", subtitle: title };
+      return { title: "Catch of the day", subtitle: title };
     },
   },
 });

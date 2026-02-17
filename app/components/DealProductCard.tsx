@@ -67,8 +67,10 @@ export function DealProductCard({
         });
         const json = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
-        setCheckoutUrl((json as { checkoutUrl?: string }).checkoutUrl ?? null);
-        setModalOpen(true);
+        if (!controller.signal.aborted) {
+          setCheckoutUrl((json as { checkoutUrl?: string }).checkoutUrl ?? null);
+          setModalOpen(true);
+        }
       } catch (err) {
         if (err instanceof Error && err.name !== "AbortError") {
           // Could show a toast; for now just ignore

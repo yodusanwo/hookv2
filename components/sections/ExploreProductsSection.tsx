@@ -41,27 +41,31 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
 
   return (
     <section
-      className="relative z-20 overflow-hidden py-16"
-      style={{ backgroundColor: "#F8FCFF" }}
+      className="relative z-20 overflow-visible py-16"
+      style={{ backgroundColor: "#171730" }}
     >
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto w-full max-w-[1052px] px-4">
         <h2
-          className="text-center font-semibold tracking-tight"
+          className="text-center"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "clamp(2rem, 5vw, 3.5rem)",
-            color: "#4F7F9D",
+            fontSize: "clamp(2rem, 8vw, 56px)",
+            fontWeight: 300,
+            lineHeight: "120%",
+            letterSpacing: "-1.68px",
+            color: "#FFF",
           }}
         >
           {title}
         </h2>
         <p
-          className="mx-auto mt-6 max-w-3xl text-center leading-relaxed"
+          className="mx-auto mt-6 text-center"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "16px",
-            fontWeight: 400,
-            color: "#4A4A4A",
+            fontSize: "20px",
+            fontWeight: 300,
+            lineHeight: "135%",
+            color: "#FFF",
           }}
         >
           {description}

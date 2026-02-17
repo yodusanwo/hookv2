@@ -64,8 +64,13 @@ export function HeroCarousel({
 
       <div className={CONTENT_BLOCK}>
         <h1
-          className={`${FONT_INTER} text-[clamp(22px,6vw,60px)] md:text-[clamp(40px,5vw,60px)] leading-[1.1] font-bold`}
+          className={FONT_INTER}
           style={{
+            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontSize: "clamp(2rem, 8vw, 56px)",
+            fontWeight: 300,
+            lineHeight: "120%",
+            letterSpacing: "-1.68px",
             color: "var(--gray-content-background-text-icon-0, #F2F6EF)",
             fontStyle: "normal",
           }}
@@ -103,7 +108,7 @@ export function HeroCarousel({
         </div>
         <div
           className="absolute left-1/2 z-[15]"
-          style={{ ...OVERLAY_BASE, top: "-95px", aspectRatio: "612/133", minHeight: "350px" }}
+          style={{ ...OVERLAY_BASE, top: "-90px", aspectRatio: "612/133", minHeight: "350px" }}
           aria-hidden
         >
           <img

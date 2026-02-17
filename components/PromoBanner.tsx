@@ -38,14 +38,14 @@ export function PromoBanner({ text }: { text: string }) {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex w-full max-w-md shrink-0 overflow-hidden rounded-lg bg-white shadow-sm md:max-w-[320px]">
+      <form onSubmit={handleSubmit} className="flex w-full min-w-[260px] max-w-[95vw] shrink-0 overflow-hidden rounded-lg bg-white shadow-sm md:max-w-[400px]">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Drop your email here. Let's catch up."
           disabled={status === "loading"}
-          className="min-w-0 flex-1 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none disabled:opacity-60"
+          className="min-w-0 flex-1 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none disabled:opacity-60"
           aria-label="Email address"
         />
         <button

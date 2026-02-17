@@ -65,7 +65,7 @@ export function ExploreProductsGrid({
             rating: 5,
           };
         });
-        setProducts(mapped);
+        if (!controller.signal.aborted) setProducts(mapped);
       })
       .catch((err) => {
         if (err.name !== "AbortError") setProducts([]);

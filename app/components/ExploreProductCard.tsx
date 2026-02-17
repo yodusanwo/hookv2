@@ -56,7 +56,8 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
   return (
     <Link
       href={`/products/${product.handle}`}
-      className="group flex flex-col items-center w-full rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+      className="group flex flex-col items-center w-full rounded-xl shadow-sm transition-shadow hover:shadow-md"
+      style={{ backgroundColor: "#171730" }}
       style={{ height: "528px" }}
     >
       <div
@@ -87,7 +88,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
       </div>
       <div className="p-4">
         <h3
-          className="font-normal text-[#333333]"
+          className="font-normal text-[#FFF]"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
             fontSize: "18px",
@@ -97,7 +98,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
         </h3>
         <div className="mt-2 flex items-center gap-2">
           <span
-            className="font-semibold text-[#333333]"
+            className="font-semibold text-[#FFF]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
               fontSize: "20px",
@@ -111,7 +112,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
             ))}
           </span>
           <span
-            className="text-[#333333]"
+            className="text-[#FFF]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
               fontSize: "14px",
