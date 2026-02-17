@@ -16,7 +16,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
   const items = block.items ?? [];
 
   return (
-    <section id="markets" className="border-y border-black/5 bg-white py-14">
+    <section id="markets" className="border-y border-black/5 bg-[#FAFAFC] py-14">
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}
@@ -29,10 +29,16 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
             ? items.map((item, idx) => {
                 const img = urlFor(item.logo);
                 const content = img ? (
-                  <img
-                    src={img.url()}
-                    alt={item.label ?? ""}
-                    className="h-12 w-auto object-contain"
+                  <div
+                    role="img"
+                    aria-label={item.label ?? ""}
+                    className="shrink-0 rounded-none"
+                    style={{
+                      width: 115,
+                      height: 115,
+                      aspectRatio: "1/1",
+                      background: `url(${img.url()}) #FAFAFC 50% / cover no-repeat`,
+                    }}
                   />
                 ) : (
                   <span className="text-xs font-semibold text-slate-700">{item.label}</span>
@@ -44,14 +50,14 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
                     href={safeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center rounded-xl border border-black/5 bg-slate-50 p-5 hover:bg-slate-100 transition-colors"
+                    className="flex items-center justify-center bg-[#FAFAFC] p-5 hover:opacity-80 transition-opacity"
                   >
                     {content}
                   </a>
                 ) : (
                   <div
                     key={idx}
-                    className="flex items-center justify-center rounded-xl border border-black/5 bg-slate-50 p-5"
+                    className="flex items-center justify-center bg-[#FAFAFC] p-5"
                   >
                     {content}
                   </div>
@@ -61,7 +67,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
                 (name) => (
                   <div
                     key={name}
-                    className="flex items-center justify-center rounded-xl border border-black/5 bg-slate-50 p-5 text-xs font-semibold text-slate-700"
+                    className="flex items-center justify-center bg-[#FAFAFC] p-5 text-xs font-semibold text-slate-700"
                   >
                     {name}
                   </div>
