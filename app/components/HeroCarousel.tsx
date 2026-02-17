@@ -8,7 +8,6 @@ type CarouselItem = { src: string; alt: string };
 const IMAGE_TOP = "100px";
 const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 w-full h-full";
 const IMAGE_LAYER_STYLE = { top: IMAGE_TOP } as const;
-const OVERLAY_BASE = { width: "105%", transform: "translateX(calc(-50% - 25px))" } as const;
 const CONTENT_BLOCK = "absolute z-20 flex flex-col left-4 right-4 sm:left-8 sm:right-8 md:left-12 lg:left-[245px] lg:max-w-[900px] top-[15vw] sm:top-[200px] md:top-[280px] lg:top-[438px]";
 const FONT_INTER = "[font-family:var(--font-inter),Inter,sans-serif]";
 
@@ -91,32 +90,6 @@ export function HeroCarousel({
         >
           {ctaLabel}
         </Link>
-      </div>
-
-      {/* Overlays anchored to top – do not move when section height changes */}
-      <div className="absolute top-0 left-0 right-0 h-0 overflow-visible pointer-events-none">
-        <div
-          className="absolute left-1/2 z-10"
-          style={{ ...OVERLAY_BASE, top: "-90px", aspectRatio: "644/171", minHeight: "360px" }}
-          aria-hidden
-        >
-          <img
-            src="/7 1.png"
-            alt=""
-            className="h-full w-full object-cover object-top"
-          />
-        </div>
-        <div
-          className="absolute left-1/2 z-[15]"
-          style={{ ...OVERLAY_BASE, top: "-90px", aspectRatio: "612/133", minHeight: "350px" }}
-          aria-hidden
-        >
-          <img
-            src="/wavy 1.png"
-            alt=""
-            className="h-full w-full object-cover object-top"
-          />
-        </div>
       </div>
     </section>
   );

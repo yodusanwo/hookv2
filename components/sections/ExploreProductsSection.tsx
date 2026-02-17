@@ -48,7 +48,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
   return (
     <section
       id="shop"
-      className="relative z-20 overflow-visible py-16 bg-[#171730]"
+      className="relative z-20 overflow-visible py-14 bg-[#171730]"
       style={{ backgroundColor: "#171730" }}
     >
       <div className="mx-auto w-full max-w-[1052px] px-4">

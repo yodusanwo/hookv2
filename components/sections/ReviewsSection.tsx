@@ -1,3 +1,5 @@
+import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
+
 type Review = { stars?: number; text?: string; name?: string; date?: string };
 
 type ReviewsBlock = {
@@ -6,10 +8,18 @@ type ReviewsBlock = {
   reviews?: Review[];
 };
 
-export function ReviewsSection({ block }: { block: ReviewsBlock }) {
+export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   const title = block.title ?? "Customer Reviews";
   const description = block.description ?? "";
-  const reviews = block.reviews ?? [];
+  const sanityReviews = block.reviews ?? [];
+
+  let reviews: Review[] = [];
+  try {
+    const klaviyoReviews = await getKlaviyoReviews();
+    reviews = klaviyoReviews.length > 0 ? klaviyoReviews : sanityReviews;
+  } catch {
+    reviews = sanityReviews;
+  }
 
   if (reviews.length === 0) return null;
 

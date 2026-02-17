@@ -1,7 +1,7 @@
 import { DealProductCard, type DealProductCardProduct } from "@/app/components/DealProductCard";
 import { shopifyFetch } from "@/lib/shopify";
 
-type ProductRef = { shopifyHandle?: string };
+type ProductRef = { shopifyHandle?: string; featuredImageIndex?: number };
 
 type DealPromotionsBlock = {
   title?: string;
@@ -26,15 +26,10 @@ type ProductsResponse = {
   };
 };
 
+type ProductNode = ProductsResponse["products"]["edges"][number]["node"];
+
 type ProductByHandleResponse = {
-  product: {
-    id: string;
-    title: string;
-    handle: string;
-    priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
-    images: { edges: Array<{ node: { url: string; altText: string | null } }> };
-    variants: { edges: Array<{ node: { id: string; availableForSale: boolean } }> };
-  } | null;
+  product: ProductNode | null;
 };
 
 export async function DealPromotionsSection({
@@ -49,10 +44,19 @@ export async function DealPromotionsSection({
   const title = block.title ?? "Deal & Promotions";
   const description = block.description ?? "";
   const maxProducts = Math.min(12, Math.max(1, block.maxProducts ?? 6));
-  const handles = (block.productRefs ?? [])
-    .map((r) => r.shopifyHandle)
-    .filter(Boolean) as string[];
-  const uniqueHandles = Array.from(new Set(handles)).slice(0, maxProducts);
+  const selections = (block.productRefs ?? [])
+    .map((r) => {
+      const handle = r.shopifyHandle?.trim();
+      if (!handle) return null;
+      const rawIndex = r.featuredImageIndex ?? 0;
+      const featuredImageIndex = Number.isFinite(rawIndex)
+        ? Math.max(0, Math.floor(rawIndex))
+        : 0;
+      return { handle, featuredImageIndex };
+    })
+    .filter((s): s is { handle: string; featuredImageIndex: number } => Boolean(s))
+    .slice(0, maxProducts);
+  const uniqueHandles = Array.from(new Set(selections.map((s) => s.handle)));
 
   let products: ProductsResponse["products"]["edges"] = [];
 
@@ -68,20 +72,37 @@ export async function DealPromotionsSection({
                   title
                   handle
                   priceRange { minVariantPrice { amount currencyCode } }
-                  images(first: 1) { edges { node { url altText } } }
+                  images(first: 12) { edges { node { url altText } } }
                   variants(first: 1) { edges { node { id availableForSale } } }
                 }
               }
             `,
             variables: { handle },
           });
-          return data.product;
+          return { handle, product: data.product };
         })
       );
 
-      products = results
-        .filter((p): p is NonNullable<typeof p> => Boolean(p))
-        .map((p) => ({ node: p }));
+      const byHandle = new Map(
+        results
+          .filter((r): r is { handle: string; product: ProductNode } => Boolean(r.product))
+          .map((r) => [r.handle, r.product] as const)
+      );
+
+      products = selections
+        .map(({ handle, featuredImageIndex }) => {
+          const product = byHandle.get(handle);
+          if (!product) return null;
+          const chosenImage =
+            product.images.edges[featuredImageIndex] ?? product.images.edges[0];
+          return {
+            node: {
+              ...product,
+              images: { edges: chosenImage ? [chosenImage] : [] },
+            },
+          };
+        })
+        .filter((p): p is ProductsResponse["products"]["edges"][number] => Boolean(p));
     } catch {
       // Don't fallback to random products—only show explicitly referenced products
     }
@@ -109,10 +130,18 @@ export async function DealPromotionsSection({
 
   const isLightBg = backgroundColor.toLowerCase() === "#ffffff" || backgroundColor.toLowerCase() === "white";
   return (
-    <section id={sectionId} className="relative z-10 -mt-[130px] pt-0 pb-14" style={{ backgroundColor, paddingTop: 0 }}>
+    <section id={sectionId} className="relative z-10 py-14" style={{ backgroundColor }}>
       <div className="mx-auto max-w-6xl px-4">
         <h2
-          className={`text-center text-2xl font-semibold uppercase tracking-tight sm:text-3xl ${isLightBg ? "text-slate-900" : "text-white"}`}
+          className="text-center"
+          style={{
+            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontSize: "clamp(2rem, 8vw, 56px)",
+            fontWeight: 300,
+            lineHeight: "120%",
+            letterSpacing: "-1.68px",
+            color: isLightBg ? "#1E1E1E" : "#F2F6EF",
+          }}
         >
           {title}
         </h2>
@@ -134,8 +163,8 @@ export async function DealPromotionsSection({
           {/* Top row: 3 cards (385×221) */}
           {topRow.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {topRow.map((edge) => (
-                <DealProductCard key={edge.node.id} product={toCardProduct(edge)} size="top" />
+              {topRow.map((edge, idx) => (
+                <DealProductCard key={`${edge.node.id}-top-${idx}`} product={toCardProduct(edge)} size="top" />
               ))}
             </div>
           )}
@@ -143,8 +172,8 @@ export async function DealPromotionsSection({
           {/* Bottom row: up to 4 cards (285×221) */}
           {bottomRow.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {bottomRow.map((edge) => (
-                <DealProductCard key={edge.node.id} product={toCardProduct(edge)} size="bottom" />
+              {bottomRow.map((edge, idx) => (
+                <DealProductCard key={`${edge.node.id}-bottom-${idx}`} product={toCardProduct(edge)} size="bottom" />
               ))}
             </div>
           )}

@@ -1,9 +1,7 @@
 import * as React from "react";
 import { HeroSection } from "./HeroSection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
-import { WavesSection } from "./WavesSection";
 import { OurStorySection } from "./OurStorySection";
-import { WaveDividerSection } from "./WaveDividerSection";
 import { DealPromotionsSection } from "./DealPromotionsSection";
 import { ReviewsSection } from "./ReviewsSection";
 import { RecipesSection } from "./RecipesSection";
@@ -42,17 +40,17 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
             );
           case "exploreProductsBlock":
             return (
-              <React.Fragment key={key}>
-                <ExploreProductsSection block={block as Parameters<typeof ExploreProductsSection>[0]["block"]} />
-                <WavesSection />
-              </React.Fragment>
+              <ExploreProductsSection
+                key={key}
+                block={block as Parameters<typeof ExploreProductsSection>[0]["block"]}
+              />
             );
           case "ourStoryBlock":
             return (
-              <React.Fragment key={key}>
-                <OurStorySection block={block as Parameters<typeof OurStorySection>[0]["block"]} />
-                <WaveDividerSection key={`${key}-wave-2`} />
-              </React.Fragment>
+              <OurStorySection
+                key={key}
+                block={block as Parameters<typeof OurStorySection>[0]["block"]}
+              />
             );
           case "dealPromotionsBlock":
             return (
