@@ -26,6 +26,17 @@ type ProductsResponse = {
   };
 };
 
+type ProductByHandleResponse = {
+  product: {
+    id: string;
+    title: string;
+    handle: string;
+    priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+    images: { edges: Array<{ node: { url: string; altText: string | null } }> };
+    variants: { edges: Array<{ node: { id: string; availableForSale: boolean } }> };
+  } | null;
+};
+
 export async function DealPromotionsSection({
   block,
   sectionId = "deals",
@@ -41,30 +52,36 @@ export async function DealPromotionsSection({
   const handles = (block.productRefs ?? [])
     .map((r) => r.shopifyHandle)
     .filter(Boolean) as string[];
+  const uniqueHandles = Array.from(new Set(handles)).slice(0, maxProducts);
 
   let products: ProductsResponse["products"]["edges"] = [];
 
-  if (handles.length > 0) {
+  if (uniqueHandles.length > 0) {
     try {
-      const query = handles.map((h) => `handle:${h}`).join(" OR ");
-      const data = await shopifyFetch<ProductsResponse>({
-        query: `
-          query GetProducts($query: String!, $first: Int!) {
-            products(first: $first, query: $query) {
-              edges {
-                node {
-                  id title handle
+      const results = await Promise.all(
+        uniqueHandles.map(async (handle) => {
+          const data = await shopifyFetch<ProductByHandleResponse>({
+            query: `
+              query GetProductByHandle($handle: String!) {
+                product(handle: $handle) {
+                  id
+                  title
+                  handle
                   priceRange { minVariantPrice { amount currencyCode } }
                   images(first: 1) { edges { node { url altText } } }
                   variants(first: 1) { edges { node { id availableForSale } } }
                 }
               }
-            }
-          }
-        `,
-        variables: { query, first: maxProducts },
-      });
-      products = data.products.edges.slice(0, maxProducts);
+            `,
+            variables: { handle },
+          });
+          return data.product;
+        })
+      );
+
+      products = results
+        .filter((p): p is NonNullable<typeof p> => Boolean(p))
+        .map((p) => ({ node: p }));
     } catch {
       // Don't fallback to random products—only show explicitly referenced products
     }
