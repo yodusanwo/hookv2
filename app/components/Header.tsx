@@ -11,7 +11,7 @@ const FALLBACK_NAV = [
 ];
 
 const FALLBACK_LOGO = "/Hook_Point_Shirt_White_Letters_042acd76-dff8-4246-874a-1df73d011a24%201.png";
-const FALLBACK_BG = "#171730";
+const FALLBACK_BG = "var(--brand-navy)";
 
 export function Header({
   logoUrl,
@@ -44,7 +44,7 @@ export function Header({
           aria-label="Hook Point home"
           style={{
             aspectRatio: "40/39",
-            background: `url(${logoSrc}) #171730 50% / cover no-repeat`,
+            background: `url(${logoSrc}) var(--brand-navy) 50% / cover no-repeat`,
             border: "none",
             boxShadow: "none",
           }}

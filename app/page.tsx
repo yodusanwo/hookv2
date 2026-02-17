@@ -1,10 +1,11 @@
-import { client, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PromoBanner } from "@/components/PromoBanner";
+import { PageBuilder } from "@/components/sections/PageBuilder";
+import { client, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { shopifyFetch } from "@/lib/shopify";
+import Link from "next/link";
 import { Carousel } from "./components/Carousel";
 import { HeroCarousel } from "./components/HeroCarousel";
-import { PageBuilder } from "@/components/sections/PageBuilder";
-import Link from "next/link";
 
 const PRODUCTS_QUERY = `
   query GetProducts($first: Int!) {
@@ -168,12 +169,7 @@ export default async function Home() {
 
         <section id="about" className="bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">
-            <div className="text-center">
-              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
-                We are Hook Point
-              </h2>
-            </div>
-
+            <SectionHeading title="We are Hook Point" variant="display" theme="light" />
             <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-center">
               <div className="overflow-hidden rounded-xl bg-slate-200">
                 <img
@@ -196,10 +192,7 @@ export default async function Home() {
                   local families, and small boat fisheries.
                 </p>
                 <div className="mt-6">
-                  <a
-                    href="#learn"
-                    className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-5 text-sm font-semibold text-white hover:bg-slate-800"
-                  >
+                  <a href="#learn" className="btn-primary">
                     Learn More About Us
                   </a>
                 </div>
@@ -210,32 +203,31 @@ export default async function Home() {
 
         <section className="border-y border-black/5 bg-slate-50 py-12">
           <div className="mx-auto max-w-6xl px-4">
-            <h3 className="text-center text-lg font-semibold text-slate-900">
-              Let us be your fishermen. The possibilities are endless…
-            </h3>
+            <SectionHeading
+              title="Let us be your fishermen. The possibilities are endless…"
+              variant="display"
+              theme="light"
+            />
             <div className="mt-6">
               <Carousel items={carouselItems.slice(0, 10)} ariaLabel="Featured seafood" />
             </div>
             <div className="mt-6 flex justify-center">
-              <a
-                href="#shop"
-                className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
-              >
+              <a href="#shop" className="btn-primary">
                 Shop Hook Point Fish
               </a>
             </div>
           </div>
         </section>
 
-        <section id="shop" className="py-14 bg-[#171730]" style={{ backgroundColor: "#171730" }}>
+        <section id="shop" className="py-14" style={{ backgroundColor: "var(--brand-navy)" }}>
           <div className="mx-auto max-w-6xl px-4">
             <div className="flex items-end justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-semibold tracking-tight text-white">
                   Shop seafood
                 </h2>
-                <p className="mt-1 text-sm text-slate-300">
-                  Curated wild catch from Alaska's small-boat fleet.
+                <p className="mt-2 text-sm text-slate-300">
+                  Curated wild catch from Alaska&apos;s small-boat fleet.
                 </p>
               </div>
               <a
@@ -300,9 +292,11 @@ export default async function Home() {
 
         <section id="markets" className="border-y border-black/5 bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">
-            <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-              Find us at these Chicagoland Farmers Markets
-            </h2>
+            <SectionHeading
+              title="Find us at these Chicagoland Farmers Markets"
+              variant="display"
+              theme="light"
+            />
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {[
                 "Lincoln Park",
@@ -321,10 +315,7 @@ export default async function Home() {
               ))}
             </div>
             <div className="mt-8 flex justify-center">
-              <a
-                href="#contact"
-                className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
-              >
+              <a href="#contact" className="btn-primary">
                 Pick Fresh Farmers Markets and Event Calendar
               </a>
             </div>
@@ -334,19 +325,21 @@ export default async function Home() {
         <section id="learn" className="py-14 bg-slate-50">
           <div className="mx-auto max-w-3xl px-4 text-center">
             <div className="mx-auto h-12 w-12 rounded-full bg-emerald-700/90" />
-            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900">
-              Get on board
-            </h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Subscribe to get updates on fresh drops and fishy stories.
-            </p>
+            <div className="mt-4">
+              <SectionHeading
+                title="Get on board"
+                description="Subscribe to get updates on fresh drops and fishy stories."
+                variant="display"
+                theme="light"
+              />
+            </div>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
               <input
                 type="email"
                 placeholder="Email"
                 className="h-12 w-full rounded-md border border-slate-200 bg-white px-4 text-sm outline-none focus:ring-2 focus:ring-sky-700 sm:w-[380px]"
               />
-              <button className="h-12 rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800">
+              <button type="button" className="btn-primary">
                 Sign up
               </button>
             </div>
@@ -355,9 +348,11 @@ export default async function Home() {
 
         <section className="py-14">
           <div className="mx-auto max-w-6xl px-4">
-            <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-              Follow Our Journey on Instagram
-            </h2>
+            <SectionHeading
+              title="Follow Our Journey on Instagram"
+              variant="display"
+              theme="light"
+            />
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {carouselItems.slice(0, 12).map((i, idx) => (
                 <div

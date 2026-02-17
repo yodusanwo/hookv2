@@ -2,7 +2,7 @@ const OVERLAY_BASE = { width: "105%", transform: "translateX(calc(-50% - 25px)) 
 
 export function WaveDividerSection({ whiteWave = false }: { whiteWave?: boolean }) {
   return (
-    <section className="relative z-0 -mt-[100px] min-h-[400px] w-full overflow-visible" style={{ backgroundColor: "#D4F2FF" }} aria-hidden>
+    <section className="relative z-0 -mt-[100px] min-h-[400px] w-full overflow-visible" style={{ backgroundColor: "var(--brand-light-blue-bg)" }} aria-hidden>
       <div
         className="absolute left-1/2 top-0 z-10"
         style={{ ...OVERLAY_BASE, aspectRatio: "644/171", minHeight: "360px", transform: "translateX(calc(-50% - 25px)) translateY(40px) scaleX(-1) scaleY(-1)" }}

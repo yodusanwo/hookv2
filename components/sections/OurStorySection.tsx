@@ -1,3 +1,4 @@
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
@@ -49,21 +50,13 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   const useFallbackBody = !block.body?.length || isLoremIpsum(block.body);
 
   return (
-    <section id="about" className="relative z-10 py-14" style={{ backgroundColor: "#D4F2FF" }}>
+    <section
+      id="about"
+      className="relative z-10 py-14"
+      style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+    >
       <div className="mx-auto max-w-6xl px-4">
-        <h2
-          className="text-center"
-          style={{
-            fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "clamp(2rem, 8vw, 56px)",
-            fontWeight: 300,
-            lineHeight: "120%",
-            letterSpacing: "-1.68px",
-            color: "#1E1E1E",
-          }}
-        >
-          {title}
-        </h2>
+        <SectionHeading title={title} variant="display" theme="light" />
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-start">
           <div className="overflow-hidden rounded-xl bg-slate-200">
             {img ? (
@@ -77,7 +70,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
               <div className="h-[300px] w-full md:h-[420px]" />
             )}
           </div>
-          <div className="max-w-xl rounded-xl px-6 pb-6 pt-0" style={{ backgroundColor: "#D4F2FF" }}>
+          <div className="max-w-xl rounded-xl px-6 pb-6 pt-0" style={{ backgroundColor: "var(--brand-light-blue-bg)" }}>
             <h3
               className="mb-4 text-left font-bold"
               style={{
@@ -101,7 +94,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
             <div className="mt-6">
               <a
                 href={ctaHref}
-                className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-5 text-sm font-semibold text-white hover:bg-slate-800"
+                className="btn-primary"
               >
                 {ctaLabel}
               </a>

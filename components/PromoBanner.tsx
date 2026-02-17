@@ -25,12 +25,10 @@ export function PromoBanner({ text }: { text: string }) {
     }, 500);
   };
 
-  const green = "#069400";
-
   return (
     <div
       className="relative z-30 flex w-full flex-col items-center justify-center gap-4 px-4 py-4 md:flex-row md:gap-6 md:px-12 md:py-5"
-      style={{ backgroundColor: green, fontFamily: "var(--font-inter), Inter, sans-serif" }}
+      style={{ backgroundColor: "var(--brand-green)", fontFamily: "var(--font-inter), Inter, sans-serif" }}
     >
       <div className="text-center text-white" style={{ fontSize: "clamp(18px, 3vw, 24px)", fontWeight: 300, lineHeight: 1.3 }}>
         {lines.map((line, i) => (
@@ -52,7 +50,7 @@ export function PromoBanner({ text }: { text: string }) {
           type="submit"
           disabled={status === "loading" || !email.trim()}
           className="flex h-full items-center justify-center px-4 text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-          style={{ backgroundColor: green }}
+          style={{ backgroundColor: "var(--brand-green)" }}
           aria-label="Subscribe"
         >
           <span className="text-xl">→</span>

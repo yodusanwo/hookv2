@@ -1,3 +1,4 @@
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
 
 type Review = { stars?: number; text?: string; name?: string; date?: string };
@@ -26,12 +27,12 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   return (
     <section className="py-14 bg-white">
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-2 text-center text-sm text-slate-600">{description}</p>
-        )}
+        <SectionHeading
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme="light"
+        />
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {reviews.map((r, idx) => (
             <div

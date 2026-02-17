@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
@@ -22,12 +23,12 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   return (
     <section id="recipes" className="py-14 bg-slate-50">
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-2 text-center text-sm text-slate-600">{description}</p>
-        )}
+        <SectionHeading
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme="light"
+        />
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {recipes.map((r, idx) => {
             const img = urlFor(r.image);
@@ -59,7 +60,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           <div className="mt-8 flex justify-center">
             <a
               href={safeHref(showMoreUrl)}
-              className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
+              className="btn-primary"
             >
               View All Recipes
             </a>

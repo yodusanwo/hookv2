@@ -1,3 +1,5 @@
+import { SectionHeading } from "@/components/ui/SectionHeading";
+
 type Event = { date?: string; time?: string; name?: string; location?: string };
 
 type UpcomingEventsBlock = {
@@ -18,12 +20,12 @@ export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock })
   return (
     <section id="events" className="py-14 bg-slate-50">
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-2 text-center text-sm text-slate-600">{description}</p>
-        )}
+        <SectionHeading
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme="light"
+        />
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {events.map((e, idx) => (
             <div
@@ -44,7 +46,7 @@ export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock })
           <div className="mt-8 flex justify-center">
             <a
               href={showAllUrl}
-              className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
+              className="btn-primary"
             >
               View All Events
             </a>

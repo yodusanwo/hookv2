@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { safeHref } from "@/lib/urlValidation";
 
 type FaqItem = { question?: string; answer?: string };
@@ -24,12 +25,12 @@ export function FaqSection({ block }: { block: FaqBlock }) {
   return (
     <section id="faq" className="py-14 bg-slate-50">
       <div className="mx-auto max-w-3xl px-4">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-2 text-center text-sm text-slate-600">{description}</p>
-        )}
+        <SectionHeading
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme="light"
+        />
         <div className="mt-8 space-y-2">
           {faqs.map((faq, idx) => {
             const isOpen = openIdx === idx;
@@ -59,7 +60,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
           <div className="mt-8 flex justify-center">
             <a
               href={safeHref(showMoreUrl)}
-              className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
+              className="btn-primary"
             >
               View All FAQs
             </a>

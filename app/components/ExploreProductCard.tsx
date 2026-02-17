@@ -57,7 +57,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
     <Link
       href={`/products/${product.handle}`}
       className="group flex flex-col items-center w-full rounded-xl shadow-sm transition-shadow hover:shadow-md"
-      style={{ backgroundColor: "#171730", height: "528px" }}
+      style={{ backgroundColor: "var(--brand-navy)", height: "528px" }}
     >
       <div
         className="relative flex-1 w-full min-h-0 overflow-hidden rounded-t-xl transition-transform duration-300 group-hover:scale-[1.03]"

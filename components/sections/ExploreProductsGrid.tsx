@@ -114,15 +114,7 @@ export function ExploreProductsGrid({
       </div>
 
       <div className="mx-auto max-w-6xl px-4 mt-12 flex justify-center">
-        <Link
-          href={safeHref(cta?.href) || "#shop"}
-          className="inline-flex h-12 items-center justify-center rounded-lg px-6 font-semibold text-white transition-colors hover:opacity-90"
-          style={{
-            fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "16px",
-            backgroundColor: "#1F5780",
-          }}
-        >
+        <Link href={safeHref(cta?.href) || "#shop"} className="btn-primary">
           {cta?.label ?? "SHOP FULL LINEUP →"}
         </Link>
       </div>

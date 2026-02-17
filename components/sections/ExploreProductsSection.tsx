@@ -1,3 +1,4 @@
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ExploreProductsGrid } from "./ExploreProductsGrid";
 
 type FilterCollection = { label?: string; collectionHandle?: string };
@@ -23,12 +24,6 @@ const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
-const CATCH_TYPOGRAPHY = {
-  fontFamily: "var(--font-inter), Inter, sans-serif",
-  fontWeight: 300,
-  color: "#FFF",
-} as const;
-
 export function ExploreProductsSection({ block }: { block: ExploreProductsBlock }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -48,31 +43,17 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
   return (
     <section
       id="shop"
-      className="relative z-20 overflow-visible py-14 bg-[#171730]"
-      style={{ backgroundColor: "#171730" }}
+      className="relative z-20 overflow-visible py-14"
+      style={{ backgroundColor: "var(--brand-navy)" }}
     >
       <div className="mx-auto w-full max-w-[1052px] px-4">
-        <h2
-          className="text-center"
-          style={{
-            ...CATCH_TYPOGRAPHY,
-            fontSize: "clamp(2rem, 8vw, 56px)",
-            lineHeight: "120%",
-            letterSpacing: "-1.68px",
-          }}
-        >
-          {title}
-        </h2>
-        <p
-          className="mx-auto mt-6 text-center"
-          style={{
-            ...CATCH_TYPOGRAPHY,
-            fontSize: "20px",
-            lineHeight: "135%",
-          }}
-        >
-          {description}
-        </p>
+        <SectionHeading
+          title={title}
+          description={description}
+          variant="display"
+          theme="dark"
+          descriptionAsLead
+        />
       </div>
 
       <ExploreProductsGrid filterCollections={filterCollections} cta={cta} />

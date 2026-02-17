@@ -87,7 +87,7 @@ export function HeroCarousel({
         <Link
           href={ctaHref}
           className="flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold transition-opacity hover:opacity-90 w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl"
-          style={{ lineHeight: "normal", backgroundColor: "#069400", fontFamily: "var(--font-inter), Inter, sans-serif" }}
+          style={{ lineHeight: "normal", backgroundColor: "var(--brand-green)", fontFamily: "var(--font-inter), Inter, sans-serif" }}
         >
           {ctaLabel}
         </Link>

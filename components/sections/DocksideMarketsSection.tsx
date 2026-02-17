@@ -1,3 +1,4 @@
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
@@ -17,12 +18,12 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
   return (
     <section id="markets" className="border-y border-black/5 bg-white py-14">
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-2 text-center text-sm text-slate-600">{description}</p>
-        )}
+        <SectionHeading
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme="light"
+        />
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {items.length > 0
             ? items.map((item, idx) => {
@@ -70,7 +71,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
         <div className="mt-8 flex justify-center">
           <a
             href="#contact"
-            className="inline-flex h-11 items-center justify-center rounded-md bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800"
+            className="btn-primary"
           >
             Pick Fresh Farmers Markets and Event Calendar
           </a>

@@ -1,3 +1,4 @@
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
@@ -6,6 +7,7 @@ type LogoButton = { label?: string; logo?: { asset?: { _ref?: string } }; url?: 
 
 type LocalFoodsCoopsBlock = {
   title?: string;
+  description?: string;
   body?: unknown[];
   image?: { asset?: { _ref?: string } };
   logoButtons?: LogoButton[];
@@ -13,15 +15,19 @@ type LocalFoodsCoopsBlock = {
 
 export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock }) {
   const title = block.title ?? "Local Foods Co-ops";
+  const description = block.description ?? "";
   const img = urlFor(block.image);
   const logoButtons = block.logoButtons ?? [];
 
   return (
     <section className="py-14 bg-white">
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-slate-900">
-          {title}
-        </h2>
+        <SectionHeading
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme="light"
+        />
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-center">
           <div className="overflow-hidden rounded-xl bg-slate-200">
             {img ? (

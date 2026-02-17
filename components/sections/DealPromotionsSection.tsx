@@ -1,4 +1,5 @@
 import { DealProductCard, type DealProductCardProduct } from "@/app/components/DealProductCard";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { shopifyFetch } from "@/lib/shopify";
 
 type ProductRef = { shopifyHandle?: string; featuredImageIndex?: number };
@@ -35,7 +36,7 @@ type ProductByHandleResponse = {
 export async function DealPromotionsSection({
   block,
   sectionId = "deals",
-  backgroundColor = "#171730",
+  backgroundColor = "var(--brand-navy)",
 }: {
   block: DealPromotionsBlock;
   sectionId?: string;
@@ -128,30 +129,17 @@ export async function DealPromotionsSection({
     };
   }
 
-  const isLightBg = backgroundColor.toLowerCase() === "#ffffff" || backgroundColor.toLowerCase() === "white";
+  const isLightBg =
+    backgroundColor.toLowerCase() === "#ffffff" || backgroundColor.toLowerCase() === "white";
   return (
     <section id={sectionId} className="relative z-10 py-14" style={{ backgroundColor }}>
       <div className="mx-auto max-w-6xl px-4">
-        <h2
-          className="text-center"
-          style={{
-            fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "clamp(2rem, 8vw, 56px)",
-            fontWeight: 300,
-            lineHeight: "120%",
-            letterSpacing: "-1.68px",
-            color: isLightBg ? "#1E1E1E" : "#F2F6EF",
-          }}
-        >
-          {title}
-        </h2>
-        {description && (
-          <p
-            className={`mt-3 text-center text-sm leading-relaxed max-w-2xl mx-auto ${isLightBg ? "text-slate-600" : "text-slate-300"}`}
-          >
-            {description}
-          </p>
-        )}
+        <SectionHeading
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme={isLightBg ? "light" : "dark"}
+        />
 
         <div className="mt-10 space-y-6">
           {products.length === 0 ? (
