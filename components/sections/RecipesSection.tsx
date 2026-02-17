@@ -21,7 +21,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   if (recipes.length === 0) return null;
 
   return (
-    <section id="recipes" className="py-14 bg-slate-50">
+    <section id="recipes" className="py-14 bg-[#F2F2F5]">
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}
@@ -29,7 +29,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           variant="display"
           theme="light"
         />
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 flex flex-wrap justify-center gap-[13px]">
           {recipes.map((r, idx) => {
             const img = urlFor(r.image);
             const href = safeHref(r.url) || "#";
@@ -37,19 +37,19 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
               <Link
                 key={idx}
                 href={href}
-                className="group overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="group flex w-[385px] flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm transition-shadow hover:shadow-md"
               >
                 {img && (
-                  <div className="aspect-[4/3] overflow-hidden bg-slate-100">
+                  <div className="aspect-[331/190] w-full shrink-0 overflow-hidden bg-slate-100">
                     <img
                       src={img.url()}
                       alt={r.title ?? "Recipe"}
-                      className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform"
+                      className="h-full w-full object-cover transition-transform group-hover:scale-[1.03]"
                       loading="lazy"
                     />
                   </div>
                 )}
-                <div className="p-4">
+                <div className="bg-[#F2F2F5] px-4 py-3">
                   <h3 className="font-semibold text-slate-900">{r.title ?? "Recipe"}</h3>
                 </div>
               </Link>
