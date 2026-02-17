@@ -21,7 +21,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   if (recipes.length === 0) return null;
 
   return (
-    <section id="recipes" className="py-14 bg-[#F2F2F5]">
+    <section id="recipes" className="py-14 bg-[#D4F2FF]">
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}
@@ -50,7 +50,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                       />
                     </div>
                   )}
-                  <div className="bg-[#F2F2F5] px-4 py-3">
+                  <div className="bg-[#D4F2FF] px-4 py-3">
                     <h3 className="font-semibold text-slate-900">{r.title ?? "Recipe"}</h3>
                   </div>
                 </Link>
@@ -59,10 +59,18 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           </div>
           <Link
             href={safeHref(showMoreUrl) || "#"}
-            className="mt-6 self-start inline-flex items-center gap-1.5 text-sky-600 hover:text-sky-700 font-medium"
+            className="mt-10 self-start inline-flex items-center gap-1.5 hover:opacity-90"
+            style={{
+              color: "#498CCB",
+              fontFamily: "Inter, var(--font-inter), sans-serif",
+              fontSize: "16px",
+              fontStyle: "normal",
+              fontWeight: 500,
+              lineHeight: "normal",
+            }}
           >
             Show more recipes
-            <span aria-hidden>→</span>
+            <img src="/Vector.svg" alt="" aria-hidden width={28.333} height={12.307} className="shrink-0" />
           </Link>
         </div>
       </div>
