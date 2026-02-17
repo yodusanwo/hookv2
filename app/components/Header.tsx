@@ -51,7 +51,7 @@ export function Header({
           }}
         />
 
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+        <nav className="hidden md:flex items-center gap-16 text-xl font-medium text-white [font-family:var(--font-inter)]">
           {nav.map((item) => {
             const href = item.href ?? "#";
             const label = item.label ?? "Link";

@@ -1,8 +1,16 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 
 type CarouselItem = { src: string; alt: string };
+
+const IMAGE_TOP = "100px";
+const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 w-full h-full";
+const IMAGE_LAYER_STYLE = { top: IMAGE_TOP } as const;
+const OVERLAY_BASE = { width: "105%", transform: "translateX(calc(-50% - 25px))" } as const;
+const CONTENT_BLOCK = { top: "438px", left: "245px", width: "740px", maxWidth: "calc(100% - 245px)" } as const;
+const FONT_INTER = "[font-family:var(--font-inter),Inter,sans-serif]";
 
 export function HeroCarousel({
   headline,
@@ -33,26 +41,52 @@ export function HeroCarousel({
   const active = safeItems[idx]!;
 
   return (
-    <section className="relative -mt-[100px] w-full min-h-[90vh] overflow-visible">
+    <section className="relative -mt-[100px] w-full min-h-screen overflow-visible">
       {/* Full-bleed background image */}
       {active.src ? (
         <img
           key={active.src}
           src={active.src}
           alt={active.alt}
-          className="absolute left-0 right-0 bottom-0 h-full w-full object-cover"
-          style={{ top: "115px" }}
+          className={`${IMAGE_LAYER} object-cover`}
+          style={IMAGE_LAYER_STYLE}
         />
       ) : (
-        <div className="absolute left-0 right-0 bottom-0 h-full bg-slate-200" style={{ top: "115px" }} />
+        <div className={`${IMAGE_LAYER} bg-slate-200`} style={IMAGE_LAYER_STYLE} />
       )}
-      <div className="absolute left-0 right-0 bottom-0 ring-1 ring-black/5" style={{ top: "115px" }} />
+      <div className={`${IMAGE_LAYER} ring-1 ring-black/5`} style={IMAGE_LAYER_STYLE} />
+      <div
+        className={`${IMAGE_LAYER} z-10 bg-gradient-to-b from-blue-800/85 via-blue-700/55 to-blue-800/10 pointer-events-none`}
+        style={IMAGE_LAYER_STYLE}
+      />
+
+      <div className="absolute z-20 flex flex-col px-6" style={CONTENT_BLOCK}>
+        <h1
+          className={`text-white ${FONT_INTER}`}
+          style={{ fontSize: "48px", fontWeight: 600, lineHeight: "130%" }}
+        >
+          {headline}
+        </h1>
+        <p
+          className={`text-white ${FONT_INTER} mt-[25px]`}
+          style={{ width: "740px", fontSize: "24px", fontWeight: 500, lineHeight: "normal" }}
+        >
+          {subline}
+        </p>
+        <Link
+          href={ctaHref}
+          className={`flex items-center justify-center mt-[25px] rounded-2xl text-white ${FONT_INTER} font-semibold transition-opacity hover:opacity-90`}
+          style={{ width: "250px", height: "70px", fontSize: "24px", lineHeight: "normal", backgroundColor: "#069400" }}
+        >
+          {ctaLabel}
+        </Link>
+      </div>
 
       {/* Overlays anchored to top – do not move when section height changes */}
       <div className="absolute top-0 left-0 right-0 h-0 overflow-visible pointer-events-none">
         <div
           className="absolute left-1/2 z-10"
-          style={{ top: "-90px", width: "105%", transform: "translateX(calc(-50% - 25px))", aspectRatio: "644/171", minHeight: "360px" }}
+          style={{ ...OVERLAY_BASE, top: "-90px", aspectRatio: "644/171", minHeight: "360px" }}
           aria-hidden
         >
           <img
@@ -63,7 +97,7 @@ export function HeroCarousel({
         </div>
         <div
           className="absolute left-1/2 z-[15]"
-          style={{ top: "-95px", width: "105%", transform: "translateX(calc(-50% - 25px))", aspectRatio: "612/133", minHeight: "350px" }}
+          style={{ ...OVERLAY_BASE, top: "-95px", aspectRatio: "612/133", minHeight: "350px" }}
           aria-hidden
         >
           <img

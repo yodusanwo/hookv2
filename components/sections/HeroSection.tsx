@@ -11,7 +11,7 @@ type HeroBlock = {
 export function HeroSection({ block }: { block: HeroBlock }) {
   const headline = block.headline ?? "Alaska's Fresh Catch Awaits — Taste the Adventure";
   const subline = block.subline ?? "Wild-caught  •  Family-run  •  Sustainably sourced";
-  const ctaLabel = block.cta?.label ?? "Shop Now";
+  const ctaLabel = block.cta?.label ?? "Get Fresh Fish";
   const ctaHref = block.cta?.href ?? "#shop";
 
   const items: Array<{ src: string; alt: string }> =
@@ -23,13 +23,12 @@ export function HeroSection({ block }: { block: HeroBlock }) {
       })
       .filter((x): x is { src: string; alt: string } => Boolean(x)) ?? [];
 
-  const fallbackItems =
-    items.length > 0
-      ? items
-      : [
-          { src: "/1A4A6382.jpeg", alt: "Fresh catch on dock" },
-          { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
-        ];
+  const defaultImages = [
+    { src: "/1A4A6382.jpeg", alt: "Fresh catch on dock" },
+    { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
+  ];
+  const fallbackItems = items.length > 0 ? items : defaultImages;
+  const carouselItems = fallbackItems.length >= 2 ? fallbackItems : [...fallbackItems, ...defaultImages].slice(0, 2);
 
   return (
     <HeroCarousel
@@ -37,7 +36,7 @@ export function HeroSection({ block }: { block: HeroBlock }) {
       subline={subline}
       ctaLabel={ctaLabel}
       ctaHref={ctaHref}
-      items={fallbackItems}
+      items={carouselItems}
     />
   );
 }
