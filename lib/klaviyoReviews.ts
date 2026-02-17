@@ -31,7 +31,7 @@ type KlaviyoReviewsResponse = {
 };
 
 const KLAVIYO_REVIEWS_URL = "https://a.klaviyo.com/api/reviews";
-const REVISION = "2024-07-15";
+const REVISION = "2026-01-15";
 const PAGE_SIZE = 3;
 
 function formatDisplayDate(isoDate: string | null | undefined): string {
@@ -67,7 +67,7 @@ async function fetchKlaviyoReviewsUncached(): Promise<MappedReview[]> {
   if (!apiKey) return [];
 
   const params = new URLSearchParams({
-    "filter": "and(equals(status.value,'published'),equals(rating,5))",
+    "filter": "and(equals(status,'published'),equals(rating,5))",
     "fields[review]": "rating,author,content,title,created,review_type,status",
     "page[size]": String(PAGE_SIZE),
     "sort": "-created",
