@@ -36,6 +36,7 @@ export const HOMEPAGE_QUERY = `*[_type == "page" && slug.current == "home"][0] {
     images[] { asset-> },
     image { asset-> },
     body,
-    "productRefs": productRefs[] { shopifyHandle }
+    "productRefs": productRefs[] { shopifyHandle },
+    "filterCollections": filterCollections[] { label, collectionHandle }
   }
 }`;

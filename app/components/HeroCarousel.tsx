@@ -9,18 +9,20 @@ const IMAGE_TOP = "100px";
 const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 w-full h-full";
 const IMAGE_LAYER_STYLE = { top: IMAGE_TOP } as const;
 const OVERLAY_BASE = { width: "105%", transform: "translateX(calc(-50% - 25px))" } as const;
-const CONTENT_BLOCK = { top: "438px", left: "245px", width: "740px", maxWidth: "calc(100% - 245px)" } as const;
+const CONTENT_BLOCK = "absolute z-20 flex flex-col left-4 right-4 sm:left-8 sm:right-8 md:left-12 lg:left-[245px] lg:max-w-[900px] top-[15vw] sm:top-[200px] md:top-[280px] lg:top-[438px]";
 const FONT_INTER = "[font-family:var(--font-inter),Inter,sans-serif]";
 
 export function HeroCarousel({
-  headline,
+  headlineLine1,
+  headlineLine2,
   subline,
   ctaLabel,
   ctaHref,
   items,
   intervalMs = 5000,
 }: {
-  headline: string;
+  headlineLine1: string;
+  headlineLine2: string;
   subline: string;
   ctaLabel: string;
   ctaHref: string;
@@ -60,23 +62,27 @@ export function HeroCarousel({
         style={IMAGE_LAYER_STYLE}
       />
 
-      <div className="absolute z-20 flex flex-col px-6" style={CONTENT_BLOCK}>
+      <div className={CONTENT_BLOCK}>
         <h1
-          className={`text-white ${FONT_INTER}`}
-          style={{ fontSize: "48px", fontWeight: 600, lineHeight: "130%" }}
+          className={`${FONT_INTER} text-[clamp(22px,6vw,60px)] md:text-[clamp(40px,5vw,60px)] leading-[1.1] font-bold`}
+          style={{
+            color: "var(--gray-content-background-text-icon-0, #F2F6EF)",
+            fontStyle: "normal",
+          }}
         >
-          {headline}
+          <span className="block whitespace-nowrap">{headlineLine1}</span>
+          <span className="block whitespace-nowrap">{headlineLine2}</span>
         </h1>
         <p
-          className={`text-white ${FONT_INTER} mt-[25px]`}
-          style={{ width: "740px", fontSize: "24px", fontWeight: 500, lineHeight: "normal" }}
+          className={`text-white ${FONT_INTER} mt-4 sm:mt-6 max-w-[740px] text-[clamp(11px,3vw,30px)] md:text-[clamp(20px,2.5vw,30px)]`}
+          style={{ fontWeight: 500, lineHeight: "normal" }}
         >
           {subline}
         </p>
         <Link
           href={ctaHref}
-          className={`flex items-center justify-center mt-[25px] rounded-2xl text-white ${FONT_INTER} font-semibold transition-opacity hover:opacity-90`}
-          style={{ width: "250px", height: "70px", fontSize: "24px", lineHeight: "normal", backgroundColor: "#069400" }}
+          className={`flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white ${FONT_INTER} font-semibold transition-opacity hover:opacity-90 w-[200px] sm:w-[250px] h-12 sm:h-[70px] text-lg sm:text-2xl`}
+          style={{ lineHeight: "normal", backgroundColor: "#069400" }}
         >
           {ctaLabel}
         </Link>

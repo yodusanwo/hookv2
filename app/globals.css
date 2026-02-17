@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --gray-content-background-text-icon-0: #F2F6EF;
 }
 
 @theme inline {
@@ -17,6 +18,11 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
 
 body {

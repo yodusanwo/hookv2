@@ -80,7 +80,7 @@ const HOMEPAGE_DOCUMENT = {
     {
       _type: "heroBlock",
       _key: "hero",
-      headline: "Alaska's Fresh Catch Awaits — Taste the Adventure",
+      headline: "Alaska's Fresh Catch Awaits —\nTaste the Adventure",
       subline: "Wild-caught • Family-run • Sustainably sourced",
       cta: { _type: "cta", label: "Shop Now", href: "#shop" },
       images: [], // Upload in Studio
@@ -88,16 +88,16 @@ const HOMEPAGE_DOCUMENT = {
     {
       _type: "exploreProductsBlock",
       _key: "explore",
-      title: "Explore Our Products",
+      title: "Catch of the day",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      categories: [
-        { _key: "cat1", label: "Seafood", collectionHandle: "seafood" },
-        { _key: "cat2", label: "Smoked & Specialty", collectionHandle: "smoked-specialty" },
-        { _key: "cat3", label: "Pet Treats", collectionHandle: "pet-treats" },
-        { _key: "cat4", label: "Merch", collectionHandle: "merch" },
-        { _key: "cat5", label: "Gift Card", collectionHandle: "gift-card" },
+        "Wild Alaskan seafood boxes, fillets, and specialty cuts ranging from sockeye and sablefish to halibut, cod, scallops, and even salmon heads are offered as premium, wild-caught options. All wild. All the time.",
+      filterCollections: [
+        { label: "Seafood", collectionHandle: "seafood" },
+        { label: "Subscription Box", collectionHandle: "subscription-box" },
+        { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
       ],
+      productRefs: [], // Add Shopify product handles in Studio to feature specific products
+      cta: { label: "SHOP FULL LINEUP →", href: "#shop" },
     },
     {
       _type: "ourStoryBlock",
