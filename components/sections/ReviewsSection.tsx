@@ -42,7 +42,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
               {r.stars != null && (
                 <div className="flex justify-center gap-0.5 text-[#FFC107]" aria-hidden>
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i}>{i < Math.min(5, r.stars) ? "★" : "☆"}</span>
+                    <span key={i}>{i < Math.min(5, r.stars ?? 0) ? "★" : "☆"}</span>
                   ))}
                 </div>
               )}
