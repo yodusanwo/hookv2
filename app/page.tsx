@@ -286,7 +286,7 @@ export default async function Home() {
                           )}
                         </div>
                         <div className="mt-2 text-sm text-slate-700">
-                          ${product.priceRange.minVariantPrice.amount}{" "}
+                          ${Math.round(parseFloat(product.priceRange.minVariantPrice.amount)).toString()}{" "}
                           {product.priceRange.minVariantPrice.currencyCode}
                         </div>
                       </div>

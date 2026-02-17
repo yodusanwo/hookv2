@@ -125,7 +125,7 @@ export function DealProductCard({
         <div className="p-4 sm:p-5">
           <h3 className="font-semibold text-slate-900">{product.title}</h3>
           <p className="mt-2 text-sm text-slate-700">
-            ${product.price} {product.currencyCode}
+            ${Math.round(parseFloat(product.price)).toString()} {product.currencyCode}
           </p>
           {product.availableForSale ? (
             <span className="mt-2 inline-block rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">

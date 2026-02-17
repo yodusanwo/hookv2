@@ -23,6 +23,12 @@ const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
+const CATCH_TYPOGRAPHY = {
+  fontFamily: "var(--font-inter), Inter, sans-serif",
+  fontWeight: 300,
+  color: "#FFF",
+} as const;
+
 export function ExploreProductsSection({ block }: { block: ExploreProductsBlock }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -48,12 +54,10 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
         <h2
           className="text-center"
           style={{
-            fontFamily: "var(--font-inter), Inter, sans-serif",
+            ...CATCH_TYPOGRAPHY,
             fontSize: "clamp(2rem, 8vw, 56px)",
-            fontWeight: 300,
             lineHeight: "120%",
             letterSpacing: "-1.68px",
-            color: "#FFF",
           }}
         >
           {title}
@@ -61,11 +65,9 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
         <p
           className="mx-auto mt-6 text-center"
           style={{
-            fontFamily: "var(--font-inter), Inter, sans-serif",
+            ...CATCH_TYPOGRAPHY,
             fontSize: "20px",
-            fontWeight: 300,
             lineHeight: "135%",
-            color: "#FFF",
           }}
         >
           {description}

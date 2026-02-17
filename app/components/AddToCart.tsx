@@ -11,13 +11,13 @@ type Variant = {
 };
 
 function formatMoney(amount: string, currency: string) {
-  const n = Number(amount);
+  const n = Math.round(Number(amount));
   if (!Number.isFinite(n)) return `${amount} ${currency}`;
   try {
     return new Intl.NumberFormat(undefined, {
       style: "currency",
       currency,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 0,
     }).format(n);
   } catch {
     return `${amount} ${currency}`;

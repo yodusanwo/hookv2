@@ -1,6 +1,7 @@
 import * as React from "react";
 import { HeroSection } from "./HeroSection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
+import { WavesSection } from "./WavesSection";
 import { OurStorySection } from "./OurStorySection";
 import { DealPromotionsSection } from "./DealPromotionsSection";
 import { ReviewsSection } from "./ReviewsSection";
@@ -39,7 +40,12 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
               />
             );
           case "exploreProductsBlock":
-            return <ExploreProductsSection key={key} block={block as Parameters<typeof ExploreProductsSection>[0]["block"]} />;
+            return (
+              <React.Fragment key={key}>
+                <ExploreProductsSection block={block as Parameters<typeof ExploreProductsSection>[0]["block"]} />
+                <WavesSection />
+              </React.Fragment>
+            );
           case "ourStoryBlock":
             return <OurStorySection key={key} block={block as Parameters<typeof OurStorySection>[0]["block"]} />;
           case "dealPromotionsBlock":
