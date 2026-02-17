@@ -8,7 +8,6 @@ type CarouselItem = { src: string; alt: string };
 const IMAGE_TOP = "100px";
 const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 w-full h-full";
 const IMAGE_LAYER_STYLE = { top: IMAGE_TOP } as const;
-const CONTENT_BLOCK = "absolute z-20 flex flex-col left-4 right-4 sm:left-8 sm:right-8 md:left-12 lg:left-[245px] lg:max-w-[900px] top-[15vw] sm:top-[200px] md:top-[280px] lg:top-[438px]";
 const FONT_INTER = "[font-family:var(--font-inter),Inter,sans-serif]";
 
 export function HeroCarousel({
@@ -61,32 +60,34 @@ export function HeroCarousel({
         style={IMAGE_LAYER_STYLE}
       />
 
-      <div className={CONTENT_BLOCK}>
+      <div
+        className="absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[900px] text-center md:text-left items-center md:items-start"
+      >
         <h1
-          className={FONT_INTER}
+          className={`${FONT_INTER} max-w-full`}
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "clamp(2rem, 8vw, 56px)",
+            fontSize: "clamp(1.5rem, 6vw, 56px)",
             fontWeight: 300,
             lineHeight: "120%",
-            letterSpacing: "-1.68px",
+            letterSpacing: "-0.02em",
             color: "var(--gray-content-background-text-icon-0, #F2F6EF)",
             fontStyle: "normal",
           }}
         >
-          <span className="block whitespace-nowrap">{headlineLine1}</span>
-          <span className="block whitespace-nowrap">{headlineLine2}</span>
+          <span className="block sm:whitespace-nowrap">{headlineLine1}</span>
+          <span className="block sm:whitespace-nowrap">{headlineLine2}</span>
         </h1>
         <p
-          className={`text-white ${FONT_INTER} mt-4 sm:mt-6 max-w-[740px] text-[clamp(11px,3vw,30px)] md:text-[clamp(20px,2.5vw,30px)]`}
-          style={{ fontWeight: 500, lineHeight: "normal" }}
+          className={`text-white ${FONT_INTER} mt-3 sm:mt-6 max-w-[740px] text-[clamp(0.8125rem,2.5vw,1.875rem)] leading-snug`}
+          style={{ fontWeight: 500 }}
         >
           {subline}
         </p>
         <Link
           href={ctaHref}
-          className={`flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white ${FONT_INTER} font-semibold transition-opacity hover:opacity-90 w-[200px] sm:w-[250px] h-12 sm:h-[70px] text-lg sm:text-2xl`}
-          style={{ lineHeight: "normal", backgroundColor: "#069400" }}
+          className="flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold transition-opacity hover:opacity-90 w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl"
+          style={{ lineHeight: "normal", backgroundColor: "#069400", fontFamily: "var(--font-inter), Inter, sans-serif" }}
         >
           {ctaLabel}
         </Link>
