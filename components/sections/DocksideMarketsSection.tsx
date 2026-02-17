@@ -133,14 +133,6 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
             />
           </button>
         </div>
-        <div className="mt-8 flex justify-center">
-          <a
-            href="#contact"
-            className="btn-primary"
-          >
-            Pick Fresh Farmers Markets and Event Calendar
-          </a>
-        </div>
       </div>
     </section>
   );
