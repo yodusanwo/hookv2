@@ -1,4 +1,5 @@
 import { HeroCarousel } from "@/app/components/HeroCarousel";
+import { PromoBanner } from "../PromoBanner";
 import { urlFor } from "@/lib/sanityImage";
 
 type HeroBlock = {
@@ -8,7 +9,7 @@ type HeroBlock = {
   images?: Array<{ asset?: { _ref?: string } }>;
 };
 
-export function HeroSection({ block }: { block: HeroBlock }) {
+export function HeroSection({ block, promoBanner }: { block: HeroBlock; promoBanner?: string | null }) {
   const headline = block.headline ?? "Alaska's Fresh Catch Awaits — Taste the Adventure";
   const subline = block.subline ?? "Wild-caught  •  Family-run  •  Sustainably sourced";
   const ctaLabel = block.cta?.label ?? "Get Fresh Fish";
@@ -31,12 +32,15 @@ export function HeroSection({ block }: { block: HeroBlock }) {
   const carouselItems = fallbackItems.length >= 2 ? fallbackItems : [...fallbackItems, ...defaultImages].slice(0, 2);
 
   return (
-    <HeroCarousel
-      headline={headline}
-      subline={subline}
-      ctaLabel={ctaLabel}
-      ctaHref={ctaHref}
-      items={carouselItems}
-    />
+    <>
+      <HeroCarousel
+        headline={headline}
+        subline={subline}
+        ctaLabel={ctaLabel}
+        ctaHref={ctaHref}
+        items={carouselItems}
+      />
+      {promoBanner && <PromoBanner text={promoBanner} />}
+    </>
   );
 }

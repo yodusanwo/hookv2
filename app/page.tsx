@@ -1,4 +1,5 @@
-import { client, HOMEPAGE_QUERY } from "@/lib/sanity";
+import { client, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity";
+import { PromoBanner } from "@/components/PromoBanner";
 import { shopifyFetch } from "@/lib/shopify";
 import { Carousel } from "./components/Carousel";
 import { HeroCarousel } from "./components/HeroCarousel";
@@ -84,14 +85,16 @@ export default async function Home() {
       !!process.env.NEXT_PUBLIC_SANITY_DATASET;
 
     let sanityPage: { sections?: unknown[] } | null = null;
+    let promoBanner: string | null = null;
 
     if (hasSanity) {
       try {
-        sanityPage = await client.fetch<{ sections?: unknown[] } | null>(
-          HOMEPAGE_QUERY,
-          {},
-          { next: { revalidate: 60 } }
-        );
+        [sanityPage, promoBanner] = await Promise.all([
+          client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
+          client
+            .fetch<{ promoBanner?: string } | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } })
+            .then((s) => s?.promoBanner ?? null),
+        ]);
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
@@ -100,7 +103,10 @@ export default async function Home() {
     if (sanityPage?.sections && Array.isArray(sanityPage.sections) && sanityPage.sections.length > 0) {
       return (
         <main className="bg-white">
-          <PageBuilder sections={sanityPage.sections as Parameters<typeof PageBuilder>[0]["sections"]} />
+          <PageBuilder
+            sections={sanityPage.sections as Parameters<typeof PageBuilder>[0]["sections"]}
+            promoBanner={promoBanner}
+          />
         </main>
       );
     }
@@ -111,6 +117,20 @@ export default async function Home() {
     });
 
     const products = data.products.edges;
+
+    let fallbackPromoBanner: string | null = null;
+    if (hasSanity) {
+      try {
+        const settings = await client.fetch<{ promoBanner?: string } | null>(
+          SITE_SETTINGS_QUERY,
+          {},
+          { next: { revalidate: 60 } }
+        );
+        fallbackPromoBanner = settings?.promoBanner ?? null;
+      } catch {
+        // ignore
+      }
+    }
     const heroImg =
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
     const aboutImg =
@@ -143,6 +163,7 @@ export default async function Home() {
             { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
           ]}
         />
+        {fallbackPromoBanner && <PromoBanner text={fallbackPromoBanner} />}
 
         <section id="about" className="bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">

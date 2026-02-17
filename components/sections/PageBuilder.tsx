@@ -1,3 +1,4 @@
+import * as React from "react";
 import { HeroSection } from "./HeroSection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
 import { OurStorySection } from "./OurStorySection";
@@ -21,7 +22,7 @@ type PageSection =
   | { _type: "localFoodsCoopsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "faqBlock"; _key?: string; [key: string]: unknown };
 
-export function PageBuilder({ sections }: { sections?: PageSection[] }) {
+export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[]; promoBanner?: string | null }) {
   const items = sections ?? [];
 
   return (
@@ -30,7 +31,13 @@ export function PageBuilder({ sections }: { sections?: PageSection[] }) {
         const key = block._key ?? `section-${idx}`;
         switch (block._type) {
           case "heroBlock":
-            return <HeroSection key={key} block={block as Parameters<typeof HeroSection>[0]["block"]} />;
+            return (
+              <HeroSection
+                key={key}
+                block={block as Parameters<typeof HeroSection>[0]["block"]}
+                promoBanner={promoBanner}
+              />
+            );
           case "exploreProductsBlock":
             return <ExploreProductsSection key={key} block={block as Parameters<typeof ExploreProductsSection>[0]["block"]} />;
           case "ourStoryBlock":
