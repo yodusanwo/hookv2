@@ -227,14 +227,14 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="shop" className="py-14">
+        <section id="shop" className="py-14 bg-[#171730]" style={{ backgroundColor: "#171730" }}>
           <div className="mx-auto max-w-6xl px-4">
             <div className="flex items-end justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">
                   Shop seafood
                 </h2>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-slate-300">
                   Curated wild catch from Alaska's small-boat fleet.
                 </p>
               </div>
@@ -248,7 +248,7 @@ export default async function Home() {
 
             {products.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-lg text-slate-700">No products found.</p>
+                <p className="text-lg text-slate-300">No products found.</p>
               </div>
             ) : (
               <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

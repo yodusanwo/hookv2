@@ -26,7 +26,15 @@ type ProductsResponse = {
   };
 };
 
-export async function DealPromotionsSection({ block }: { block: DealPromotionsBlock }) {
+export async function DealPromotionsSection({
+  block,
+  sectionId = "deals",
+  backgroundColor = "#171730",
+}: {
+  block: DealPromotionsBlock;
+  sectionId?: string;
+  backgroundColor?: string;
+}) {
   const title = block.title ?? "Deal & Promotions";
   const description = block.description ?? "";
   const maxProducts = Math.min(12, Math.max(1, block.maxProducts ?? 6));
@@ -82,21 +90,26 @@ export async function DealPromotionsSection({ block }: { block: DealPromotionsBl
     };
   }
 
+  const isLightBg = backgroundColor.toLowerCase() === "#ffffff" || backgroundColor.toLowerCase() === "white";
   return (
-    <section id="shop" className="py-14 bg-slate-50">
+    <section id={sectionId} className="relative z-10 -mt-[130px] pt-0 pb-14" style={{ backgroundColor, paddingTop: 0 }}>
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-2xl font-semibold uppercase tracking-tight text-slate-900 sm:text-3xl">
+        <h2
+          className={`text-center text-2xl font-semibold uppercase tracking-tight sm:text-3xl ${isLightBg ? "text-slate-900" : "text-white"}`}
+        >
           {title}
         </h2>
         {description && (
-          <p className="mt-3 text-center text-sm leading-relaxed text-slate-600 max-w-2xl mx-auto">
+          <p
+            className={`mt-3 text-center text-sm leading-relaxed max-w-2xl mx-auto ${isLightBg ? "text-slate-600" : "text-slate-300"}`}
+          >
             {description}
           </p>
         )}
 
         <div className="mt-10 space-y-6">
           {products.length === 0 ? (
-            <p className="text-center text-sm text-slate-500">
+            <p className={`text-center text-sm ${isLightBg ? "text-slate-500" : "text-slate-400"}`}>
               No products selected. Add products in Sanity Studio to display them here.
             </p>
           ) : (

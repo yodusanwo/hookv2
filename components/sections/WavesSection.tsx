@@ -5,8 +5,8 @@ const WAVE_BASE = {
 } as const;
 
 const WAVES = [
-  { src: "/7 1.png", top: "5px", aspectRatio: "644/171", minHeight: "360px" },
-  { src: "/wavy 1.png", top: "5px", aspectRatio: "612/133", minHeight: "350px" },
+  { src: "/7 1.png", top: "5px", aspectRatio: "644/171", minHeight: "360px", zIndex: 1 },
+  { src: "/wavy 1.png", top: "5px", aspectRatio: "612/133", minHeight: "350px", zIndex: 2 },
 ] as const;
 
 export function WavesSection() {
@@ -25,6 +25,7 @@ export function WavesSection() {
             top: wave.top,
             aspectRatio: wave.aspectRatio,
             minHeight: wave.minHeight,
+            zIndex: wave.zIndex,
           }}
         >
           <img

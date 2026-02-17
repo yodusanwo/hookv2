@@ -3,6 +3,7 @@ import { HeroSection } from "./HeroSection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
 import { WavesSection } from "./WavesSection";
 import { OurStorySection } from "./OurStorySection";
+import { WaveDividerSection } from "./WaveDividerSection";
 import { DealPromotionsSection } from "./DealPromotionsSection";
 import { ReviewsSection } from "./ReviewsSection";
 import { RecipesSection } from "./RecipesSection";
@@ -47,9 +48,20 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
               </React.Fragment>
             );
           case "ourStoryBlock":
-            return <OurStorySection key={key} block={block as Parameters<typeof OurStorySection>[0]["block"]} />;
+            return (
+              <React.Fragment key={key}>
+                <OurStorySection block={block as Parameters<typeof OurStorySection>[0]["block"]} />
+                <WaveDividerSection key={`${key}-wave-2`} />
+              </React.Fragment>
+            );
           case "dealPromotionsBlock":
-            return <DealPromotionsSection key={key} block={block as Parameters<typeof DealPromotionsSection>[0]["block"]} />;
+            return (
+              <React.Fragment key={key}>
+                <DealPromotionsSection key={`${key}-deals-1`} sectionId="deals" block={block as Parameters<typeof DealPromotionsSection>[0]["block"]} />
+                <WaveDividerSection key={`${key}-wave`} whiteWave />
+                <DealPromotionsSection key={`${key}-deals-2`} sectionId="deals-2" backgroundColor="#ffffff" block={block as Parameters<typeof DealPromotionsSection>[0]["block"]} />
+              </React.Fragment>
+            );
           case "reviewsBlock":
             return <ReviewsSection key={key} block={block as Parameters<typeof ReviewsSection>[0]["block"]} />;
           case "recipesBlock":

@@ -49,7 +49,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   const useFallbackBody = !block.body?.length || isLoremIpsum(block.body);
 
   return (
-    <section id="about" className="pb-14 pt-0" style={{ backgroundColor: "#D4F2FF" }}>
+    <section id="about" className="relative z-10 pb-14 pt-0" style={{ backgroundColor: "#D4F2FF" }}>
       <div className="mx-auto max-w-6xl px-4">
         <h2
           className="text-center"
