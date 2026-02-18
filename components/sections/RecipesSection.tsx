@@ -21,13 +21,14 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   if (recipes.length === 0) return null;
 
   return (
+    <>
     <section
       id="recipes"
-      className="flex min-h-[723px] flex-col justify-start bg-[#D4F2FF] pt-14 pb-0"
-      style={{ minHeight: 723 }}
+      className="relative z-0 flex min-h-[723px] min-w-[1440px] flex-col justify-start bg-[#D4F2FF] pb-0 border-4 border-black"
+      style={{ minHeight: 723, minWidth: 1440 }}
     >
       <div
-        className="mx-auto w-full px-4"
+        className="mx-auto w-full px-4 pt-[56px]"
         style={{ maxWidth: 1440 }}
       >
         <SectionHeading
@@ -81,21 +82,22 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           </Link>
         </div>
       </div>
-
-      <div className="relative z-10 w-full -mt-px overflow-visible leading-[0]" aria-hidden>
-        <img
-          src="/VectorWavyBlueRecipes.svg"
-          alt=""
-          aria-hidden
-          className="relative -z-[1] block w-full h-auto min-h-0 align-bottom"
-        />
-        <img
-          src="/VectorWavyNavyRecipes.svg"
-          alt=""
-          aria-hidden
-          className="relative z-10 block w-full h-auto min-h-0 align-bottom -mt-[350px] sm:-mt-[402px] md:-mt-[458px] lg:-mt-[550px]"
-        />
-      </div>
     </section>
+
+    <section className="relative z-20 w-full -mt-[360px] overflow-hidden leading-[0] border-2 border-pink-500 origin-bottom scale-y-75 -mb-[120px] sm:-mb-[140px] md:-mb-[160px] lg:-mb-[200px]" aria-hidden>
+      <img
+        src="/VectorWavyBlueRecipes.svg"
+        alt=""
+        aria-hidden
+        className="relative -z-[1] block w-full h-auto min-h-0 align-bottom"
+      />
+      <img
+        src="/VectorWavyNavyRecipes.svg"
+        alt=""
+        aria-hidden
+        className="relative z-10 block w-full h-auto min-h-0 align-bottom -mt-[350px] sm:-mt-[402px] md:-mt-[458px] lg:-mt-[550px]"
+      />
+    </section>
+    </>
   );
 }
