@@ -66,6 +66,8 @@ export default async function RootLayout({
           navLinks={navLinks}
           backgroundColor={headerBackgroundColor}
         />
+        {/* Spacer so content starts below fixed header (matches header min-height) */}
+        <div className="h-[80px] sm:h-[107px] shrink-0" aria-hidden />
         <div className="relative z-30 -mt-px origin-top scale-y-60">
           <WaveDivider
             navySrc="/VectorWavyNavy.svg"

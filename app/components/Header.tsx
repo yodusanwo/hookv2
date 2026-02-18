@@ -41,7 +41,7 @@ export function Header({
 
   return (
     <header
-      className="sticky top-0 z-50 w-full"
+      className="fixed left-0 right-0 top-0 z-50 w-full"
       style={{
         backgroundColor: bgColor,
       }}
