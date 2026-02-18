@@ -108,7 +108,7 @@ export default async function ProductPage({
               <img
                 src={images[0]?.url}
                 alt={images[0]?.altText ?? product.title}
-                className="h-[380px] w-full object-cover md:h-[520px]"
+                className="h-[380px] w-full max-w-full object-cover md:h-[520px]"
               />
             </div>
             {images.length > 1 ? (
@@ -121,7 +121,7 @@ export default async function ProductPage({
                     <img
                       src={img.url}
                       alt={img.altText ?? product.title}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full max-w-full object-cover"
                       loading="lazy"
                     />
                   </div>

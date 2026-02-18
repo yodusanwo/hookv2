@@ -43,7 +43,7 @@ export function ExploreProductsCarousel({
                   <img
                     src={cat.imageUrl}
                     alt={cat.label ?? ""}
-                    className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform"
+                    className="h-full w-full max-w-full object-cover group-hover:scale-[1.02] transition-transform"
                     loading="lazy"
                   />
                 ) : (

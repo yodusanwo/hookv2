@@ -40,14 +40,14 @@ export function HeroCarousel({
   const active = safeItems[idx]!;
 
   return (
-    <section className="relative -mt-[100px] w-full min-h-screen overflow-visible">
+    <section className="relative -mt-[100px] w-full min-w-0 min-h-screen max-w-full overflow-visible">
       {/* Full-bleed background image */}
       {active.src ? (
         <img
           key={active.src}
           src={active.src}
           alt={active.alt}
-          className={`${IMAGE_LAYER} object-cover`}
+          className={`${IMAGE_LAYER} max-w-full min-w-0 object-cover`}
           style={IMAGE_LAYER_STYLE}
         />
       ) : (

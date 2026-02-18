@@ -175,7 +175,7 @@ export default async function Home() {
                 <img
                   src={aboutImg}
                   alt="Fishing crew"
-                  className="h-[300px] w-full object-cover md:h-[420px]"
+                  className="h-[300px] w-full max-w-full object-cover md:h-[420px]"
                   loading="lazy"
                 />
               </div>
@@ -257,7 +257,7 @@ export default async function Home() {
                           <img
                             src={img.url}
                             alt={img.altText ?? product.title}
-                            className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform"
+                            className="h-full w-full max-w-full object-cover group-hover:scale-[1.03] transition-transform"
                             loading="lazy"
                           />
                         ) : null}
@@ -362,7 +362,7 @@ export default async function Home() {
                   <img
                     src={i.src}
                     alt={i.alt}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full max-w-full object-cover"
                     loading="lazy"
                   />
                 </div>

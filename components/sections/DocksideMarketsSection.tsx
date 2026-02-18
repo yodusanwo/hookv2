@@ -123,7 +123,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
               src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
               alt=""
               aria-hidden
-              className="h-5 w-5 rotate-180"
+              className="h-5 w-5 max-w-full rotate-180"
             />
           </button>
           <button
@@ -136,7 +136,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
               src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
               alt=""
               aria-hidden
-              className="h-5 w-5"
+              className="h-5 w-5 max-w-full"
             />
           </button>
         </div>

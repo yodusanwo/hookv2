@@ -25,20 +25,20 @@ export function WaveDivider({
 }: WaveDividerProps) {
   return (
     <div
-      className={`relative z-10 w-full overflow-visible leading-[0] ${wrapperClassName}`.trim()}
+      className={`relative z-10 w-full min-w-0 max-w-full overflow-visible leading-[0] ${wrapperClassName}`.trim()}
       aria-hidden
     >
       <img
         src={navySrc}
         alt=""
         aria-hidden
-        className={`${WAVE_IMG_BASE} z-10 ${navyClassName}`.trim()}
+        className={`${WAVE_IMG_BASE} z-10 max-w-full ${navyClassName}`.trim()}
       />
       <img
         src={blueSrc}
         alt=""
         aria-hidden
-        className={`${WAVE_IMG_BASE} z-0 ${blueClassName}`.trim()}
+        className={`${WAVE_IMG_BASE} z-0 max-w-full ${blueClassName}`.trim()}
       />
     </div>
   );

@@ -68,7 +68,7 @@ export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock 
               <img
                 src={logoImg.url()}
                 alt={item.label ?? ""}
-                className="h-12 w-auto max-h-14 object-contain"
+                className="h-12 w-auto max-w-full max-h-14 object-contain"
               />
             ) : (
               <>

@@ -102,7 +102,7 @@ export function DealProductCard({
             <img
               src={product.imageUrl}
               alt={product.title}
-              className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform"
+              className="h-full w-full max-w-full object-cover group-hover:scale-[1.03] transition-transform"
               loading="lazy"
             />
           )}

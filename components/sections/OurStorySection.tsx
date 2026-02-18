@@ -67,7 +67,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
               <img
                 src={img.url()}
                 alt={title}
-                className="h-[300px] w-full object-cover md:h-[420px]"
+                className="h-[300px] w-full max-w-full object-cover md:h-[420px]"
                 loading="lazy"
               />
             ) : (

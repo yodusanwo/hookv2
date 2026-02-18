@@ -52,7 +52,7 @@ export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock })
                   <img
                     src={img.url()}
                     alt=""
-                    className="h-full w-full object-cover"
+                    className="h-full w-full max-w-full object-cover"
                     loading="lazy"
                   />
                 </div>
@@ -96,7 +96,7 @@ export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock })
             }}
           >
             Show all events
-            <img src="/Vector.svg" alt="" aria-hidden width={28.333} height={12.307} className="shrink-0" />
+            <img src="/Vector.svg" alt="" aria-hidden width={28.333} height={12.307} className="shrink-0 max-w-full h-auto" />
           </Link>
         )}
       </div>

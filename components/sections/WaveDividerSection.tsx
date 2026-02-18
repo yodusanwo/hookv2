@@ -7,7 +7,7 @@ export function WaveDividerSection({ whiteWave = false }: { whiteWave?: boolean 
         className="absolute left-1/2 top-0 z-10"
         style={{ ...OVERLAY_BASE, aspectRatio: "644/171", minHeight: "360px", transform: "translateX(calc(-50% - 25px)) translateY(40px) scaleX(-1) scaleY(-1)" }}
       >
-        <img src="/7 1.png" alt="" className="h-full w-full object-cover object-top" />
+        <img src="/7 1.png" alt="" className="h-full w-full max-w-full object-cover object-top" />
       </div>
       <div
         className="absolute left-1/2 top-0 z-[15]"
@@ -16,7 +16,7 @@ export function WaveDividerSection({ whiteWave = false }: { whiteWave?: boolean 
         <img
           src="/wavy 1.png"
           alt=""
-          className="h-full w-full object-cover object-top"
+          className="h-full w-full max-w-full object-cover object-top"
           style={whiteWave ? { filter: "brightness(0) invert(1)" } : undefined}
         />
       </div>
