@@ -9,12 +9,21 @@ const FALLBACK_NAV = [
   { href: "#shop", label: "Shop" },
   { href: "#about", label: "Our Story" },
   { href: "#recipes", label: "Recipes" },
-  { href: "#faq", label: "FAQ" },
+  { href: "#calendar", label: "Calendar" },
   { href: "#contact", label: "Contact Us" },
 ];
 
 const FALLBACK_LOGO = "/Hook_Point_Shirt_White_Letters_042acd76-dff8-4246-874a-1df73d011a24%201.png";
 const FALLBACK_BG = "var(--brand-navy)";
+
+/** Replace FAQ with Calendar so desktop and mobile always show the same menu. */
+function normalizeNav(items: Array<{ label?: string; href?: string }>) {
+  return items.map((item) =>
+    item.href === "#faq" || item.label?.toLowerCase() === "faq"
+      ? { href: "#calendar", label: "Calendar" }
+      : item
+  );
+}
 
 export function Header({
   logoUrl,
@@ -26,7 +35,7 @@ export function Header({
   backgroundColor?: string | null;
 }) {
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
-  const nav = navLinks && navLinks.length > 0 ? navLinks : FALLBACK_NAV;
+  const nav = normalizeNav(navLinks && navLinks.length > 0 ? navLinks : FALLBACK_NAV);
   const bgColor = backgroundColor ?? FALLBACK_BG;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

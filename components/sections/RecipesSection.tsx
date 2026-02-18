@@ -20,14 +20,14 @@ const SHOW_MORE_LINK_STYLE = {
 function RecipesWaveSection() {
   return (
     <section
-      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 -mt-[60px] -mb-[35px] min-[768px]:-mt-[170px] min-[768px]:-mb-[90px] min-[1280px]:-mt-[360px] min-[1280px]:-mb-[200px]"
+      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 -mt-[60px] -mb-[35px] min-[768px]:-mt-[170px] min-[768px]:-mb-[90px] min-[1024px]:-mt-[260px] min-[1024px]:-mb-[140px] min-[1366px]:-mt-[360px] min-[1366px]:-mb-[200px]"
       aria-hidden
     >
       <WaveDivider
         navySrc="/VectorWavyNavyRecipes.svg"
         blueSrc="/VectorWavyBlueRecipes.svg"
         wrapperClassName=""
-        blueClassName="-mt-[90px] min-[768px]:-mt-[260px] min-[1280px]:-mt-[550px]"
+        blueClassName="-mt-[90px] min-[768px]:-mt-[260px] min-[1024px]:-mt-[420px] min-[1366px]:-mt-[550px]"
       />
     </section>
   );
