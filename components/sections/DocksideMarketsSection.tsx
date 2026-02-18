@@ -37,8 +37,8 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
   return (
     <section
       id="markets"
-      className="flex min-h-[500px] flex-col justify-end border-4 border-green-500 bg-[#FAFAFC] pt-20 pb-14"
-      style={{ minHeight: 500 }}
+      className="flex min-h-[650px] flex-col justify-end border-4 border-green-500 bg-[#FAFAFC] pt-20 pb-14"
+      style={{ minHeight: 650 }}
     >
       <div
         className="mx-auto flex w-full min-h-0 flex-1 flex-col justify-end px-12"
