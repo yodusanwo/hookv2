@@ -66,11 +66,13 @@ export default async function RootLayout({
           navLinks={navLinks}
           backgroundColor={headerBackgroundColor}
         />
-        <WaveDivider
-          navySrc="/VectorWavyNavy.svg"
-          blueSrc="/VectorWavyBlue.svg"
-          wrapperClassName="z-20 -mt-px"
-        />
+        <div className="relative z-30 -mt-px origin-top scale-y-60">
+          <WaveDivider
+            navySrc="/VectorWavyNavy.svg"
+            blueSrc="/VectorWavyBlue.svg"
+            wrapperClassName="border-2 border-red-500"
+          />
+        </div>
         <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">
           {children}
         </div>
