@@ -23,7 +23,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   return (
     <section
       id="recipes"
-      className="flex min-h-[723px] flex-col justify-start bg-[#D4F2FF] pt-14 pb-20"
+      className="flex min-h-[723px] flex-col justify-start bg-[#D4F2FF] pt-14 pb-0"
       style={{ minHeight: 723 }}
     >
       <div
@@ -80,6 +80,21 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             <img src="/Vector.svg" alt="" aria-hidden width={28.333} height={12.307} className="shrink-0" />
           </Link>
         </div>
+      </div>
+
+      <div className="relative z-10 w-full -mt-px overflow-visible leading-[0]" aria-hidden>
+        <img
+          src="/VectorWavyBlueRecipes.svg"
+          alt=""
+          aria-hidden
+          className="relative -z-[1] block w-full h-auto min-h-0 align-bottom"
+        />
+        <img
+          src="/VectorWavyNavyRecipes.svg"
+          alt=""
+          aria-hidden
+          className="relative z-10 block w-full h-auto min-h-0 align-bottom -mt-[350px] sm:-mt-[402px] md:-mt-[458px] lg:-mt-[550px]"
+        />
       </div>
     </section>
   );
