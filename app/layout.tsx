@@ -65,7 +65,23 @@ export default async function RootLayout({
           navLinks={navLinks}
           backgroundColor={headerBackgroundColor}
         />
-        {children}
+        <div className="relative z-20 w-full -mt-px overflow-visible leading-[0]">
+          <img
+            src="/VectorWavyNavy.svg"
+            alt=""
+            aria-hidden
+            className="relative z-10 block w-full h-auto min-h-0 align-bottom"
+          />
+          <img
+            src="/VectorWavyBlue.svg"
+            alt=""
+            aria-hidden
+            className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px]"
+          />
+        </div>
+        <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">
+          {children}
+        </div>
         <Footer />
       </body>
     </html>

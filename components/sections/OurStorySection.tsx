@@ -52,10 +52,13 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   return (
     <section
       id="about"
-      className="relative z-10 py-14"
-      style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+      className="relative z-10 flex min-h-[922px] flex-col justify-center py-14"
+      style={{ backgroundColor: "var(--brand-light-blue-bg)", minHeight: 922 }}
     >
-      <div className="mx-auto max-w-6xl px-4">
+      <div
+        className="mx-auto w-full px-4"
+        style={{ maxWidth: 1440 }}
+      >
         <SectionHeading title={title} variant="display" theme="light" />
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-start">
           <div className="overflow-hidden rounded-xl bg-slate-200">

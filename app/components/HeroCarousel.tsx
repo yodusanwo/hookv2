@@ -5,9 +5,8 @@ import Link from "next/link";
 
 type CarouselItem = { src: string; alt: string };
 
-const IMAGE_TOP = "100px";
-const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 w-full h-full";
-const IMAGE_LAYER_STYLE = { top: IMAGE_TOP } as const;
+const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 top-0 w-full h-full";
+const IMAGE_LAYER_STYLE = { top: 0 } as const;
 const FONT_INTER = "[font-family:var(--font-inter),Inter,sans-serif]";
 
 export function HeroCarousel({
@@ -61,7 +60,7 @@ export function HeroCarousel({
       />
 
       <div
-        className="absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[900px] text-center md:text-left items-center md:items-start"
+        className="absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[900px] text-left items-start"
       >
         <h1
           className={`${FONT_INTER} max-w-full`}
@@ -86,7 +85,7 @@ export function HeroCarousel({
         </p>
         <Link
           href={ctaHref}
-          className="flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold transition-opacity hover:opacity-90 w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl"
+          className="inline-flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold transition-opacity hover:opacity-90 w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl"
           style={{ lineHeight: "normal", backgroundColor: "var(--brand-green)", fontFamily: "var(--font-inter), Inter, sans-serif" }}
         >
           {ctaLabel}

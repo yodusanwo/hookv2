@@ -7,6 +7,10 @@ type SectionHeadingProps = {
   theme?: "light" | "dark";
   /** When true (display variant only), description uses larger lead style */
   descriptionAsLead?: boolean;
+  /** Override headline color (e.g. #111827) */
+  titleColor?: string;
+  /** Override body/description color (e.g. #1E1E1E) */
+  descriptionColor?: string;
 };
 
 export function SectionHeading({
@@ -15,8 +19,12 @@ export function SectionHeading({
   variant,
   theme = "light",
   descriptionAsLead = false,
+  titleColor,
+  descriptionColor,
 }: SectionHeadingProps) {
   const isDark = theme === "dark";
+  const resolvedTitleColor = titleColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
+  const resolvedDescColor = descriptionColor ?? (isDark ? "var(--section-heading-dark)" : undefined);
 
   if (variant === "display") {
     return (
@@ -29,7 +37,7 @@ export function SectionHeading({
             fontWeight: "var(--section-heading-display-weight)",
             lineHeight: "var(--section-heading-display-line-height)",
             letterSpacing: "var(--section-heading-display-spacing)",
-            color: isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)",
+            color: resolvedTitleColor,
           }}
         >
           {title}
@@ -40,12 +48,12 @@ export function SectionHeading({
               descriptionAsLead
                 ? "mt-4 text-base leading-[135%] md:text-[20px]"
                 : "mt-3 text-sm leading-relaxed"
-            } ${isDark ? "text-slate-300" : "text-slate-600"}`}
+            } ${!descriptionColor && isDark ? "text-slate-300" : !descriptionColor ? "text-slate-600" : ""}`}
             style={
-              descriptionAsLead
+              descriptionColor || descriptionAsLead
                 ? {
                     fontFamily: "var(--font-inter), Inter, sans-serif",
-                    color: isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)",
+                    color: descriptionColor ?? resolvedDescColor,
                   }
                 : undefined
             }
@@ -57,17 +65,13 @@ export function SectionHeading({
     );
   }
 
-  const titleClass = isDark
-    ? "text-center text-2xl font-semibold tracking-tight text-white"
-    : "text-center text-2xl font-semibold tracking-tight text-slate-900";
-  const descClass = isDark
-    ? "mt-2 text-center text-sm text-slate-300"
-    : "mt-2 text-center text-sm text-slate-600";
+  const titleClass = `text-center text-2xl font-semibold tracking-tight ${titleColor ? "" : isDark ? "text-white" : "text-slate-900"}`;
+  const descClass = `mt-2 text-center text-sm ${descriptionColor ? "" : isDark ? "text-slate-300" : "text-slate-600"}`;
 
   return (
     <div>
-      <h2 className={titleClass}>{title}</h2>
-      {description && <p className={descClass}>{description}</p>}
+      <h2 className={titleClass} style={titleColor ? { color: titleColor } : undefined}>{title}</h2>
+      {description && <p className={descClass} style={descriptionColor ? { color: descriptionColor } : undefined}>{description}</p>}
     </div>
   );
 }

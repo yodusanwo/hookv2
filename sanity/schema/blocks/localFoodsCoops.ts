@@ -5,7 +5,8 @@ export const localFoodsCoopsBlock = defineType({
   type: "object",
   title: "Local Foods Co-ops",
   fields: [
-    defineField({ name: "title", type: "string", title: "Title" }),
+    defineField({ name: "title", type: "string", title: "Title", initialValue: "LOCAL FOODS CO-OPS" }),
+    defineField({ name: "description", type: "text", title: "Description" }),
     defineField({
       name: "body",
       type: "array",
@@ -21,9 +22,10 @@ export const localFoodsCoopsBlock = defineType({
         {
           type: "object",
           fields: [
-            { name: "label", type: "string", title: "Label" },
-            { name: "logo", type: "image", title: "Logo" },
+            { name: "label", type: "string", title: "Label", description: "e.g. Locavana (shown with map pin when no logo)" },
+            { name: "logo", type: "image", title: "Logo", description: "Optional; if set, logo is shown instead of map pin + label" },
             { name: "url", type: "url", title: "Link URL" },
+            { name: "bordered", type: "boolean", title: "Show border", initialValue: false, description: "Optional light border around this item" },
           ],
         },
       ],

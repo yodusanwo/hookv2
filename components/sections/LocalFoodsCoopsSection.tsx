@@ -1,90 +1,101 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
-type LogoButton = { label?: string; logo?: { asset?: { _ref?: string } }; url?: string };
+function MapPinIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
+      <path
+        fillRule="evenodd"
+        d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+type CoopItem = {
+  label?: string;
+  logo?: { asset?: { _ref?: string } };
+  url?: string;
+  bordered?: boolean;
+};
 
 type LocalFoodsCoopsBlock = {
   title?: string;
   description?: string;
   body?: unknown[];
   image?: { asset?: { _ref?: string } };
-  logoButtons?: LogoButton[];
+  logoButtons?: CoopItem[];
 };
 
 export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock }) {
-  const title = block.title ?? "Local Foods Co-ops";
+  const title = block.title ?? "LOCAL FOODS CO-OPS";
   const description = block.description ?? "";
-  const img = urlFor(block.image);
-  const logoButtons = block.logoButtons ?? [];
+  const items = block.logoButtons ?? [];
 
   return (
-    <section className="py-14 bg-white">
-      <div className="mx-auto max-w-6xl px-4">
+    <section
+      className="flex min-h-[374px] flex-col justify-center py-14"
+      style={{ backgroundColor: "#D4F2FF", minHeight: 374 }}
+    >
+      <div
+        className="mx-auto w-full px-4 text-center"
+        style={{ maxWidth: 1440 }}
+      >
         <SectionHeading
           title={title}
           description={description || undefined}
           variant="display"
           theme="light"
+          titleColor="#111827"
+          descriptionColor="#1E1E1E"
         />
-        <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-center">
-          <div className="overflow-hidden rounded-xl bg-slate-200">
-            {img ? (
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-8">
+          {items.map((item, idx) => {
+            const logoImg = urlFor(item.logo);
+            const safeUrl = safeHref(item.url);
+            const showBorder = item.bordered ?? false;
+            const wrapperClass = `flex items-center justify-center gap-2 bg-transparent px-3 py-2 ${showBorder ? "rounded border border-slate-300/80" : ""}`;
+
+            const content = logoImg ? (
               <img
-                src={img.url()}
-                alt={title}
-                className="h-[300px] w-full object-cover md:h-[420px]"
-                loading="lazy"
+                src={logoImg.url()}
+                alt={item.label ?? ""}
+                className="h-12 w-auto max-h-14 object-contain"
               />
             ) : (
-              <div className="h-[300px] w-full md:h-[420px]" />
-            )}
-          </div>
-          <div>
-            {block.body && block.body.length > 0 ? (
-              <div className="prose prose-slate max-w-none text-sm text-slate-700">
-                <PortableText value={block.body as import("@portabletext/types").PortableTextBlock[]} />
+              <>
+                <MapPinIcon className="h-6 w-6 shrink-0 text-emerald-600" />
+                <span className="text-sm font-semibold" style={{ color: "#1E1E1E" }}>{item.label ?? "Co-op"}</span>
+              </>
+            );
+
+            if (safeUrl && safeUrl !== "#") {
+              return (
+                <a
+                  key={idx}
+                  href={safeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${wrapperClass} hover:opacity-90 transition-opacity`}
+                >
+                  {content}
+                </a>
+              );
+            }
+            return (
+              <div key={idx} className={wrapperClass}>
+                {content}
               </div>
-            ) : (
-              <p className="text-sm leading-6 text-slate-700">
-                Find Hook Point products at these local food co-ops and markets.
-              </p>
-            )}
-            <div className="mt-8 flex flex-wrap gap-4">
-              {logoButtons.map((lb, idx) => {
-                const logoImg = urlFor(lb.logo);
-                const content = logoImg ? (
-                  <img
-                    src={logoImg.url()}
-                    alt={lb.label ?? ""}
-                    className="h-12 w-auto object-contain"
-                  />
-                ) : (
-                  <span className="text-sm font-semibold text-slate-700">{lb.label}</span>
-                );
-                const safeUrl = safeHref(lb.url);
-                return safeUrl !== "#" ? (
-                  <a
-                    key={idx}
-                    href={safeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-lg border border-black/5 bg-slate-50 px-4 py-3 hover:bg-slate-100 transition-colors"
-                  >
-                    {content}
-                  </a>
-                ) : (
-                  <div
-                    key={idx}
-                    className="rounded-lg border border-black/5 bg-slate-50 px-4 py-3"
-                  >
-                    {content}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </section>
