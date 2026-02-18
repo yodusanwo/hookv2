@@ -40,14 +40,14 @@ export function HeroCarousel({
   const active = safeItems[idx]!;
 
   return (
-    <section className="relative -mt-[100px] w-full min-w-0 min-h-screen max-w-full overflow-visible">
+    <section className="relative -mt-[100px] w-full min-w-0 min-h-[80vh] max-w-full overflow-visible">
       {/* Full-bleed background image */}
       {active.src ? (
         <img
           key={active.src}
           src={active.src}
           alt={active.alt}
-          className={`${IMAGE_LAYER} max-w-full min-w-0 object-cover`}
+          className={`${IMAGE_LAYER} max-w-full min-w-0 object-cover object-[50%_24%]`}
           style={IMAGE_LAYER_STYLE}
         />
       ) : (
@@ -55,7 +55,7 @@ export function HeroCarousel({
       )}
       <div className={`${IMAGE_LAYER} ring-1 ring-black/5`} style={IMAGE_LAYER_STYLE} />
       <div
-        className={`${IMAGE_LAYER} z-10 bg-gradient-to-b from-blue-800/85 via-blue-700/55 to-blue-800/10 pointer-events-none`}
+        className={`${IMAGE_LAYER} z-10 bg-gradient-to-b from-black/50 via-black/25 to-black/5 pointer-events-none`}
         style={IMAGE_LAYER_STYLE}
       />
 
