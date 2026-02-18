@@ -43,7 +43,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
   return (
     <section
       id="shop"
-      className="relative z-20 overflow-visible py-14"
+      className="relative z-20 overflow-visible pt-14 pb-0"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >
       <div className="mx-auto w-full max-w-[1052px] px-4">
@@ -57,6 +57,22 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
       </div>
 
       <ExploreProductsGrid filterCollections={filterCollections} cta={cta} />
+
+      {/* Waves at bottom of section (flipped horizontally) */}
+      <div className="relative z-10 w-full overflow-visible leading-[0] -mt-px [transform:scaleX(-1)] bg-[#D4F2FF]">
+        <img
+          src="/VectorWavyNavy.svg"
+          alt=""
+          aria-hidden
+          className="relative z-10 block w-full h-auto min-h-0 align-bottom border-2 border-red-500"
+        />
+        <img
+          src="/VectorWavyBlue.svg"
+          alt=""
+          aria-hidden
+          className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px] border-2 border-green-500"
+        />
+      </div>
     </section>
   );
 }
