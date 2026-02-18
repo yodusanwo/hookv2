@@ -94,11 +94,11 @@ export function ExploreProductsGrid({
 
   return (
     <>
-      <div className="relative mx-auto mt-10 w-full max-w-[1363px] pl-12 pr-12 md:pl-16 md:pr-16">
+      <div className="relative mx-auto mt-10 w-full max-w-[1363px] px-12 md:px-16">
         <button
           type="button"
           onClick={() => scrollByDir(-1)}
-          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity"
+          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity md:left-4"
           style={{ backgroundColor: "var(--brand-navy)" }}
           aria-label="Previous products"
         >
@@ -107,7 +107,7 @@ export function ExploreProductsGrid({
         <button
           type="button"
           onClick={() => scrollByDir(1)}
-          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity"
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity md:right-4"
           style={{ backgroundColor: "var(--brand-navy)" }}
           aria-label="Next products"
         >
@@ -116,7 +116,7 @@ export function ExploreProductsGrid({
 
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-4 overflow-x-auto scroll-smooth px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {loading ? (
             <div
