@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
 
@@ -65,20 +66,11 @@ export default async function RootLayout({
           navLinks={navLinks}
           backgroundColor={headerBackgroundColor}
         />
-        <div className="relative z-20 w-full -mt-px overflow-visible leading-[0]">
-          <img
-            src="/VectorWavyNavy.svg"
-            alt=""
-            aria-hidden
-            className="relative z-10 block w-full h-auto min-h-0 align-bottom"
-          />
-          <img
-            src="/VectorWavyBlue.svg"
-            alt=""
-            aria-hidden
-            className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px]"
-          />
-        </div>
+        <WaveDivider
+          navySrc="/VectorWavyNavy.svg"
+          blueSrc="/VectorWavyBlue.svg"
+          wrapperClassName="z-20 -mt-px"
+        />
         <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">
           {children}
         </div>

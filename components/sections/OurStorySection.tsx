@@ -1,4 +1,5 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
@@ -106,21 +107,13 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
         </div>
       </div>
 
-      {/* Waves at bottom of section */}
-      <div className="relative z-10 w-full overflow-visible leading-[0] border-2 border-green-500">
-        <img
-          src="/VectorWavyNavyOurStory.svg"
-          alt=""
-          aria-hidden
-          className="relative z-10 block w-full h-auto min-h-0 align-bottom mt-12"
-        />
-        <img
-          src="/VectorWavyBlueOurStory.svg"
-          alt=""
-          aria-hidden
-          className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-32 sm:-mt-36 md:-mt-48 lg:-mt-[204px]"
-        />
-      </div>
+      <WaveDivider
+        navySrc="/VectorWavyNavyOurStory.svg"
+        blueSrc="/VectorWavyBlueOurStory.svg"
+        wrapperClassName=""
+        navyClassName="mt-12"
+        blueClassName="-mt-32 sm:-mt-36 md:-mt-48 lg:-mt-[204px]"
+      />
     </section>
   );
 }

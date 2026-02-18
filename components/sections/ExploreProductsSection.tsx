@@ -1,4 +1,5 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { ExploreProductsGrid } from "./ExploreProductsGrid";
 
 type FilterCollection = { label?: string; collectionHandle?: string };
@@ -58,21 +59,11 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
 
       <ExploreProductsGrid filterCollections={filterCollections} cta={cta} />
 
-      {/* Waves at bottom of section (flipped horizontally) */}
-      <div className="relative z-10 w-full overflow-visible leading-[0] -mt-px [transform:scaleX(-1)] bg-[#D4F2FF]">
-        <img
-          src="/VectorWavyNavy.svg"
-          alt=""
-          aria-hidden
-          className="relative z-10 block w-full h-auto min-h-0 align-bottom"
-        />
-        <img
-          src="/VectorWavyBlue.svg"
-          alt=""
-          aria-hidden
-          className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px]"
-        />
-      </div>
+      <WaveDivider
+        navySrc="/VectorWavyNavy.svg"
+        blueSrc="/VectorWavyBlue.svg"
+        wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
+      />
     </section>
   );
 }
