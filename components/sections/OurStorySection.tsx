@@ -52,8 +52,8 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   return (
     <section
       id="about"
-      className="relative z-10 flex min-h-[922px] flex-col justify-center py-14"
-      style={{ backgroundColor: "var(--brand-light-blue-bg)", minHeight: 922 }}
+      className="relative z-10 flex min-h-[770px] flex-col justify-center pt-0 pb-0 border-2 border-amber-500"
+      style={{ backgroundColor: "var(--brand-light-blue-bg)", minHeight: 770 }}
     >
       <div
         className="mx-auto w-full px-4"
@@ -104,6 +104,22 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Waves at bottom of section */}
+      <div className="relative z-10 w-full overflow-visible leading-[0] border-2 border-green-500">
+        <img
+          src="/VectorWavyNavyOurStory.svg"
+          alt=""
+          aria-hidden
+          className="relative z-10 block w-full h-auto min-h-0 align-bottom mt-12"
+        />
+        <img
+          src="/VectorWavyBlueOurStory.svg"
+          alt=""
+          aria-hidden
+          className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-32 sm:-mt-36 md:-mt-48 lg:-mt-[204px]"
+        />
       </div>
     </section>
   );
