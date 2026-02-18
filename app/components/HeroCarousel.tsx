@@ -40,14 +40,14 @@ export function HeroCarousel({
   const active = safeItems[idx]!;
 
   return (
-    <section className="relative -mt-[100px] w-full min-w-0 min-h-[80vh] max-w-full overflow-visible">
+    <section className="relative -mt-[100px] w-full min-w-0 min-h-screen max-w-full overflow-visible">
       {/* Full-bleed background image */}
       {active.src ? (
         <img
           key={active.src}
           src={active.src}
           alt={active.alt}
-          className={`${IMAGE_LAYER} max-w-full min-w-0 object-cover object-[50%_24%]`}
+          className={`${IMAGE_LAYER} max-w-full min-w-0 object-cover`}
           style={IMAGE_LAYER_STYLE}
         />
       ) : (
@@ -85,8 +85,8 @@ export function HeroCarousel({
         </p>
         <Link
           href={ctaHref}
-          className="inline-flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold transition-opacity hover:opacity-90 w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl"
-          style={{ lineHeight: "normal", backgroundColor: "var(--brand-green)", fontFamily: "var(--font-inter), Inter, sans-serif" }}
+          className="inline-flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl border border-transparent transition-all duration-300 ease-out bg-[var(--brand-green)] hover:bg-white/20 hover:border-white/40 hover:backdrop-blur-sm"
+          style={{ lineHeight: "normal", fontFamily: "var(--font-inter), Inter, sans-serif" }}
         >
           {ctaLabel}
         </Link>
