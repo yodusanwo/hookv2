@@ -64,13 +64,13 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
           src="/VectorWavyNavy.svg"
           alt=""
           aria-hidden
-          className="relative z-10 block w-full h-auto min-h-0 align-bottom border-2 border-red-500"
+          className="relative z-10 block w-full h-auto min-h-0 align-bottom"
         />
         <img
           src="/VectorWavyBlue.svg"
           alt=""
           aria-hidden
-          className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px] border-2 border-green-500"
+          className="relative z-0 block w-full h-auto min-h-0 align-bottom -mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px]"
         />
       </div>
     </section>
