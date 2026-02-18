@@ -4,9 +4,24 @@ import * as React from "react";
 import Link from "next/link";
 import { safeHref } from "@/lib/urlValidation";
 import { ExploreProductCard, type ExploreProductCardProduct } from "@/app/components/ExploreProductCard";
-import { ExploreFilters } from "./ExploreFilters";
 
 type FilterItem = { label?: string; collectionHandle?: string };
+
+function ChevronLeft({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+    </svg>
+  );
+}
+
+function ChevronRight({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  );
+}
 
 export function ExploreProductsGrid({
   filterCollections,
@@ -17,26 +32,19 @@ export function ExploreProductsGrid({
 }) {
   const [products, setProducts] = React.useState<ExploreProductCardProduct[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  const filters = React.useMemo(
-    () =>
-      filterCollections.length > 0
-        ? filterCollections
-        : [{ label: "All Products", collectionHandle: "" }],
+  // Use first collection or all products (no category filters in this section)
+  const collectionHandle = React.useMemo(
+    () => filterCollections[0]?.collectionHandle?.trim() ?? "",
     [filterCollections]
   );
 
-  const labels = React.useMemo(() => filters.map((f) => f.label ?? "Shop"), [filters]);
-
   React.useEffect(() => {
-    const current = filters[activeIndex];
-    const collectionHandle = current?.collectionHandle;
     const controller = new AbortController();
-
     setLoading(true);
-    const url = collectionHandle?.trim()
-      ? `/api/collections/${encodeURIComponent(collectionHandle.trim())}/products`
+    const url = collectionHandle
+      ? `/api/collections/${encodeURIComponent(collectionHandle)}/products`
       : "/api/products?first=9";
 
     fetch(url, { signal: controller.signal })
@@ -75,42 +83,63 @@ export function ExploreProductsGrid({
       });
 
     return () => controller.abort();
-  }, [activeIndex, filters]);
+  }, [collectionHandle]);
 
-  const handleFilterChange = React.useCallback((index: number) => {
-    setActiveIndex(index);
+  const scrollByDir = React.useCallback((dir: -1 | 1) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const step = Math.min(400, el.clientWidth * 0.8);
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
   }, []);
 
   return (
     <>
-      <div className="mt-10">
-        <ExploreFilters
-          labels={labels}
-          activeIndex={activeIndex}
-          onFilterChange={handleFilterChange}
-        />
-      </div>
+      <div className="relative mx-auto mt-10 w-full max-w-[1363px] pl-12 pr-12 md:pl-16 md:pr-16">
+        <button
+          type="button"
+          onClick={() => scrollByDir(-1)}
+          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: "var(--brand-navy)" }}
+          aria-label="Previous products"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollByDir(1)}
+          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: "var(--brand-navy)" }}
+          aria-label="Next products"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
 
-      <div className="mt-10 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pl-[25px] pr-[25px]">
-        {loading ? (
-          <div
-            className="col-span-full flex items-center justify-center py-24"
-            style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#4A4A4A" }}
-          >
-            Loading products…
-          </div>
-        ) : products.length > 0 ? (
-          products.slice(0, 3).map((product) => (
-            <ExploreProductCard key={product.id} product={product} />
-          ))
-        ) : (
-          <p
-            className="col-span-full text-center py-12"
-            style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "16px", color: "#4A4A4A" }}
-          >
-            No products in this collection. Add products in Shopify and assign them to the collection.
-          </p>
-        )}
+        <div
+          ref={scrollRef}
+          className="flex gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {loading ? (
+            <div
+              className="flex items-center justify-center py-24 min-w-full"
+              style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#F2F6EF" }}
+            >
+              Loading products…
+            </div>
+          ) : products.length > 0 ? (
+            products.slice(0, 9).map((product) => (
+              <div key={product.id} className="shrink-0 w-[387px]">
+                <ExploreProductCard product={product} />
+              </div>
+            ))
+          ) : (
+            <p
+              className="min-w-full text-center py-12 text-white"
+              style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "16px" }}
+            >
+              No products in this collection. Add products in Shopify and assign them to the collection.
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="mx-auto max-w-6xl px-4 mt-12 flex justify-center">

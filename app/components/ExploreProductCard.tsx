@@ -60,7 +60,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
       style={{ backgroundColor: "var(--brand-navy)", height: "528px" }}
     >
       <div
-        className="relative flex-1 w-full min-h-0 overflow-hidden rounded-t-xl transition-transform duration-300 group-hover:scale-[1.03]"
+        className="relative flex-1 w-full min-h-0 overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
         style={
           product.imageUrl
             ? {

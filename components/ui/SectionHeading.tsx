@@ -28,7 +28,7 @@ export function SectionHeading({
 
   if (variant === "display") {
     return (
-      <div className="mx-auto max-w-4xl">
+      <div className={`mx-auto ${descriptionAsLead ? "max-w-[1100px]" : "max-w-4xl"}`}>
         <h2
           className="text-center"
           style={{
@@ -44,7 +44,7 @@ export function SectionHeading({
         </h2>
         {description && (
           <p
-            className={`mx-auto text-center max-w-2xl ${
+            className={`mx-auto text-center ${descriptionAsLead ? "max-w-[1100px]" : "max-w-2xl"} ${
               descriptionAsLead
                 ? "mt-4 text-base leading-[135%] md:text-[20px]"
                 : "mt-3 text-sm leading-relaxed"

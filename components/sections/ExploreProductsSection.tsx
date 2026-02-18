@@ -47,7 +47,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
       className="relative z-20 overflow-visible pt-14 pb-0 border-2 border-amber-500"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >
-      <div className="mx-auto w-full max-w-[1052px] px-4">
+      <div className="mx-auto w-full max-w-[1100px] px-4">
         <SectionHeading
           title={title}
           description={description}
