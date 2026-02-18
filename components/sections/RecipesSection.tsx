@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
@@ -16,20 +17,17 @@ const SHOW_MORE_LINK_STYLE = {
   lineHeight: "normal",
 };
 
-const WAVE_IMG = "relative block w-full h-auto min-h-0 align-bottom";
-
 function RecipesWaveSection() {
   return (
     <section
-      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] border-2 border-pink-500 origin-bottom scale-y-75 -mt-[200px] sm:-mt-[280px] md:-mt-[320px] lg:-mt-[360px] -mb-[80px] sm:-mb-[120px] md:-mb-[140px] lg:-mb-[200px]"
+      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 -mt-[60px] -mb-[35px] min-[768px]:-mt-[170px] min-[768px]:-mb-[90px] min-[1280px]:-mt-[360px] min-[1280px]:-mb-[200px]"
       aria-hidden
     >
-      <img src="/VectorWavyBlueRecipes.svg" alt="" aria-hidden className={`${WAVE_IMG} -z-[1] max-w-full`} />
-      <img
-        src="/VectorWavyNavyRecipes.svg"
-        alt=""
-        aria-hidden
-        className={`${WAVE_IMG} z-10 max-w-full -mt-[200px] sm:-mt-[280px] md:-mt-[350px] lg:-mt-[402px] xl:-mt-[550px]`}
+      <WaveDivider
+        navySrc="/VectorWavyNavyRecipes.svg"
+        blueSrc="/VectorWavyBlueRecipes.svg"
+        wrapperClassName=""
+        blueClassName="-mt-[90px] min-[768px]:-mt-[260px] min-[1280px]:-mt-[550px]"
       />
     </section>
   );
@@ -56,7 +54,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
     <>
       <section
         id="recipes"
-        className="relative z-0 flex min-w-0 flex-col justify-start pb-0 border-4 border-black xl:min-w-[1440px]"
+        className="relative z-0 flex min-w-0 flex-col justify-start pb-10 border-4 border-black xl:min-w-[1440px]"
         style={{
           minHeight: RECIPES_MIN_HEIGHT,
           backgroundColor: RECIPES_BG,
