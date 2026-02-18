@@ -21,8 +21,15 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   if (recipes.length === 0) return null;
 
   return (
-    <section id="recipes" className="py-14 bg-[#D4F2FF]">
-      <div className="mx-auto max-w-6xl px-4">
+    <section
+      id="recipes"
+      className="flex min-h-[723px] flex-col justify-start bg-[#D4F2FF] pt-14 pb-20"
+      style={{ minHeight: 723 }}
+    >
+      <div
+        className="mx-auto w-full px-4"
+        style={{ maxWidth: 1440 }}
+      >
         <SectionHeading
           title={title}
           description={description || undefined}

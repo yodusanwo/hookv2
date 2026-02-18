@@ -5,8 +5,16 @@ export const upcomingEventsBlock = defineType({
   type: "object",
   title: "Upcoming Events",
   fields: [
-    defineField({ name: "title", type: "string", title: "Title" }),
+    defineField({ name: "title", type: "string", title: "Title", initialValue: "UPCOMING EVENTS" }),
     defineField({ name: "description", type: "text", title: "Description" }),
+    defineField({
+      name: "images",
+      type: "array",
+      title: "Promotional Images",
+      description: "Two images displayed side-by-side above the event list (e.g. market/event photos).",
+      validation: (Rule) => Rule.max(2),
+      of: [{ type: "image", options: { hotspot: true } }],
+    }),
     defineField({
       name: "events",
       type: "array",
@@ -15,18 +23,25 @@ export const upcomingEventsBlock = defineType({
         {
           type: "object",
           fields: [
-            { name: "date", type: "string", title: "Date" },
-            { name: "time", type: "string", title: "Time" },
-            { name: "name", type: "string", title: "Event Name" },
-            { name: "location", type: "string", title: "Location" },
+            { name: "date", type: "string", title: "Date", description: "e.g. January 03, 2026" },
+            { name: "time", type: "string", title: "Time", description: "e.g. 08:00 AM - 12:30 PM" },
+            { name: "eventType", type: "string", title: "Event Type / Location", description: "e.g. Evanston Farmers Markets" },
+            { name: "address", type: "string", title: "Address", description: "Full address, e.g. Immanuel Lutheran Church, 616 Lake St, Evanston, IL 60201, USA" },
           ],
+          preview: {
+            select: { eventType: "eventType", date: "date" },
+            prepare({ eventType, date }) {
+              return { title: eventType || "Event", subtitle: date };
+            },
+          },
         },
       ],
     }),
     defineField({
       name: "showAllUrl",
       type: "url",
-      title: "Show All Link",
+      title: "Show All Events Link",
+      description: "URL for the 'Show all events' CTA.",
     }),
   ],
   preview: {

@@ -35,8 +35,15 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
   }
 
   return (
-    <section id="markets" className="border-y border-black/5 bg-[#FAFAFC] py-14">
-      <div className="mx-auto max-w-6xl px-12 xl:max-w-[1600px] xl:px-14">
+    <section
+      id="markets"
+      className="flex min-h-[677px] flex-col justify-end border-y border-black/5 bg-[#FAFAFC] pt-20 pb-14"
+      style={{ minHeight: 677 }}
+    >
+      <div
+        className="mx-auto flex w-full min-h-0 flex-1 flex-col justify-end px-12"
+        style={{ maxWidth: 1440 }}
+      >
         <SectionHeading
           title={title}
           description={description || undefined}
