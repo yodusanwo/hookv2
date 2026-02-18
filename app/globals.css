@@ -81,52 +81,8 @@ body {
 /* Navy wave – full bleed on mobile */
 
 /* Our Story blue wave overlap – media queries cascade top-to-bottom */
-.navy-wave {
-  width: 100%;
-  margin-left: 0;
-}
 
 .blue-wave-overlap {
-  margin-top: -50px;
-}
+  margin-top: -205px;
 
-@media (min-width: 375px) {
-  .blue-wave-overlap {
-    margin-top: -56px;
-  }
-}
-@media (min-width: 768px) {
-  .blue-wave-overlap {
-    margin-top: -140px;
-  }
-}
-@media (min-width: 1024px) {
-  .blue-wave-overlap {
-    margin-top: -185px;
-  }
-}
-@media (min-width: 1100px) {
-  .blue-wave-overlap {
-    margin-top: -190px;
-  }
-}
-@media (min-width: 1211px) {
-  .blue-wave-overlap {
-    margin-top: -195px;
-  }
-}
-@media (min-width: 1339px) {
-  .blue-wave-overlap {
-    margin-top: -200px;
-  }
-}
-@media (min-width: 1473px) {
-  .blue-wave-overlap {
-    margin-top: -210px;
-  }
-}
-@media (min-width: 1566px) {
-  .blue-wave-overlap {
-    margin-top: -235px;
-  }
 }
