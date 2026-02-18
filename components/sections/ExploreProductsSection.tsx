@@ -63,6 +63,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
         navySrc="/VectorWavyNavy.svg"
         blueSrc="/VectorWavyBlue.svg"
         wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
+        blueClassName="-mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px] min-[547px]:max-[639px]:-mt-[34px]"
       />
     </section>
   );
