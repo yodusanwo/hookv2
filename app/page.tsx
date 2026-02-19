@@ -181,14 +181,14 @@ export default async function Home() {
               </div>
               <div className="max-w-xl">
                 <p className="text-sm leading-6 text-slate-700">
-                  At Hook Point Fisheries, fishing isn't just a job—it's our
+                  At Hook Point Fisheries, fishing isn&apos;t just a job—it&apos;s our
                   way of life. Every summer we carefully fish the waters off
                   Kodiak Island, hand-harvesting wild Alaskan salmon and other
                   seafood for folks like you.
                 </p>
                 <p className="mt-4 text-sm leading-6 text-slate-700">
                   We believe the real food brings people together, and when you
-                  choose our salmon, you're supporting sustainable harvest,
+                  choose our salmon, you&apos;re supporting sustainable harvest,
                   local families, and small boat fisheries.
                 </p>
                 <div className="mt-6">

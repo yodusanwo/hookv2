@@ -68,7 +68,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const data = await shopifyFetch<CartLinesAddResponse, any>({
+  const data = await shopifyFetch<CartLinesAddResponse, Record<string, unknown>>({
     query: CART_LINES_ADD_MUTATION,
     variables: {
       cartId: normalizedCartId,

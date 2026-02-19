@@ -83,7 +83,7 @@ export async function shopifyFetch<TData, TVariables = Record<string, unknown>>(
   if (json.errors?.length) {
     throw new Error(
       `Shopify GraphQL errors: ${json.errors
-        .map((e: any) => e.message)
+        .map((e: { message?: string }) => e.message ?? "")
         .join("; ")}`
     );
   }
