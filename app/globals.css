@@ -83,6 +83,24 @@ body {
 /* Our Story blue wave overlap – media queries cascade top-to-bottom */
 
 .blue-wave-overlap {
-  margin-top: -205px;
+  margin-top: -200px;
+}
 
+@media (min-width: 640px)  { .blue-wave-overlap { margin-top: -200px; } }
+@media (min-width: 768px)  { .blue-wave-overlap { margin-top: -200px; } }
+@media (min-width: 1024px) { .blue-wave-overlap { margin-top: -200px; } }
+@media (min-width: 1566px) { .blue-wave-overlap { margin-top: -235px; } }
+
+.navy-wave {
+  width: 100%;
+  margin-top: 0;
+}
+
+.blue-wave-overlap {
+  margin-top: -210px;
+}
+
+:root {
+  --wave-recipes-translate: 90%;
+  --wave-recipes-section-padding: calc(8vw + 32px);
 }

@@ -1,6 +1,9 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
 
+// Must match WAVE_ASPECT_RATIO in RecipesSection.tsx
+const WAVE_ASPECT_RATIO = 0.125;
+
 type Review = { stars?: number; text?: string; name?: string; date?: string };
 
 type ReviewsBlock = {
@@ -25,7 +28,14 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   if (reviews.length === 0) return null;
 
   return (
-    <section className="py-14 bg-[#F2F2F5]">
+    <section
+      className="bg-[#F2F2F5] pb-14"
+      style={{
+        // Pushes content below the recipes wave which bleeds down by WAVE_ASPECT_RATIO * 100vw.
+        // The extra 56px gives comfortable breathing room between the wave bottom and the heading.
+        paddingTop: `calc(${WAVE_ASPECT_RATIO * 100}vw + 56px)`,
+      }}
+    >
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}
@@ -40,9 +50,14 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
               className="flex h-[273px] w-[355px] flex-col rounded-xl border border-black/5 bg-[#FFF] p-6 text-center"
             >
               {r.stars != null && (
-                <div className="flex justify-center gap-0.5 text-[#FFC107]" aria-hidden>
+                <div
+                  className="flex justify-center gap-0.5 text-[#FFC107]"
+                  aria-hidden
+                >
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i}>{i < Math.min(5, r.stars ?? 0) ? "★" : "☆"}</span>
+                    <span key={i}>
+                      {i < Math.min(5, r.stars ?? 0) ? "★" : "☆"}
+                    </span>
                   ))}
                 </div>
               )}
@@ -50,9 +65,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
                 {r.text}
               </p>
               <p className="mt-4 text-sm font-semibold text-[#333]">{r.name}</p>
-              {r.date && (
-                <p className="mt-1 text-xs text-[#666]">{r.date}</p>
-              )}
+              {r.date && <p className="mt-1 text-xs text-[#666]">{r.date}</p>}
             </div>
           ))}
         </div>

@@ -63,7 +63,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
         navySrc="/VectorWavyNavy.svg"
         blueSrc="/VectorWavyBlue.svg"
         wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF] border-2 border-green-500"
-        blueClassName="-mt-8 sm:-mt-12 md:-mt-20 lg:-mt-[100px] min-[527px]:max-[543px]:-mt-[34px] min-[544px]:max-[546px]:-mt-[33px] min-[547px]:max-[639px]:-mt-[34px] min-[554px]:max-[639px]:-mt-[34.5px] min-[565px]:max-[639px]:-mt-[53.5px]"
+        blueClassName="hidden"
       />
     </section>
   );

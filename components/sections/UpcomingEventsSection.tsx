@@ -3,6 +3,9 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
+// Must match WAVE_ASPECT_RATIO in RecipesSection.tsx
+const WAVE_ASPECT_RATIO = 0.125;
+
 type Event = {
   date?: string;
   time?: string;
@@ -22,7 +25,11 @@ type UpcomingEventsBlock = {
   showAllUrl?: string;
 };
 
-export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock }) {
+export function UpcomingEventsSection({
+  block,
+}: {
+  block: UpcomingEventsBlock;
+}) {
   const title = block.title ?? "UPCOMING EVENTS";
   const description = block.description ?? "";
   const images = block.images ?? [];
@@ -30,7 +37,15 @@ export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock })
   const showAllUrl = block.showAllUrl;
 
   return (
-    <section id="events" className="bg-slate-100 py-14">
+    <section
+      id="events"
+      className="bg-slate-100 pb-14"
+      style={{
+        // Matches WAVE_HALF from RecipesSection — the other 80px of the wave
+        // that hangs into this section. Extra 24px gives breathing room.
+        paddingTop: "104px",
+      }}
+    >
       <div className="mx-auto max-w-4xl px-4">
         <SectionHeading
           title={title}
@@ -68,20 +83,31 @@ export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock })
                 <div
                   key={idx}
                   className={idx < events.length - 1 ? "border-b" : ""}
-                  style={idx < events.length - 1 ? { borderBottomWidth: "1px", borderBottomColor: "#D1D5DB" } : undefined}
+                  style={
+                    idx < events.length - 1
+                      ? {
+                          borderBottomWidth: "1px",
+                          borderBottomColor: "#D1D5DB",
+                        }
+                      : undefined
+                  }
                 >
                   <div className="grid grid-cols-1 gap-x-6 gap-y-1 px-4 py-4 text-slate-800 sm:grid-cols-4 sm:py-3">
                     <div className="font-medium">{e.date ?? "—"}</div>
                     <div>{e.time ?? "—"}</div>
                     <div>{e.eventType ?? e.name ?? "—"}</div>
-                    <div className="text-slate-600">{e.address ?? e.location ?? "—"}</div>
+                    <div className="text-slate-600">
+                      {e.address ?? e.location ?? "—"}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         ) : (
-          <p className="mt-10 text-center text-slate-600">No upcoming events at the moment. Check back soon.</p>
+          <p className="mt-10 text-center text-slate-600">
+            No upcoming events at the moment. Check back soon.
+          </p>
         )}
 
         {showAllUrl && (
@@ -96,7 +122,14 @@ export function UpcomingEventsSection({ block }: { block: UpcomingEventsBlock })
             }}
           >
             Show all events
-            <img src="/Vector.svg" alt="" aria-hidden width={28.333} height={12.307} className="shrink-0 max-w-full h-auto" />
+            <img
+              src="/Vector.svg"
+              alt=""
+              aria-hidden
+              width={28.333}
+              height={12.307}
+              className="shrink-0 max-w-full h-auto"
+            />
           </Link>
         )}
       </div>

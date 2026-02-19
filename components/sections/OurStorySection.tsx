@@ -56,12 +56,12 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   return (
     <section
       id="about"
-      className="relative z-10 flex min-h-[950px] flex-col justify-center overflow-x-hidden overflow-y-visible pt-0 pb-0 border-2 border-amber-500"
+      className="relative z-10 flex min-h-[950px] flex-col justify-center overflow-visible pt-0 pb-0 border-2 border-amber-500"
       style={{ backgroundColor: "var(--brand-light-blue-bg)", minHeight: 950 }}
     >
       <div className="mx-auto w-full px-4" style={{ maxWidth: 1440 }}>
         <SectionHeading title={title} variant="display" theme="light" />
-        <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-start">
+        <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-stretch">
           <div className="overflow-hidden rounded-xl bg-slate-200">
             {img ? (
               <img
@@ -111,15 +111,15 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
         </div>
       </div>
 
-      <div className="mt-auto w-full shrink-0 overflow-x-hidden overflow-y-visible pb-[0px]">
-        <WaveDivider
-          navySrc="/VectorWavyNavyOurStory.svg"
-          blueSrc="/VectorWavyBlueOurStory.svg"
-          wrapperClassName="border-2 border-purple-500"
-          navyWrapperClassName="navy-wave"
-          navyClassName="mt-0"
-          blueClassName="blue-wave-overlap"
-        />
+      <div className="mt-auto w-full shrink-0">
+        <div className="mt-auto w-full shrink-0">
+          <WaveDivider
+            navySrc="/VectorWavyNavyOurStory.svg"
+            blueSrc="/VectorWavyBlueOurStory.svg"
+            navyClassName=""
+            blueClassName="hidden"
+          />
+        </div>
       </div>
     </section>
   );

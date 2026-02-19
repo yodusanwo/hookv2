@@ -28,12 +28,17 @@ function RecipesWaveSection() {
         blueSrc="/VectorWavyBlueRecipes.svg"
         wrapperClassName="border-2 border-amber-500"
         blueClassName="-mt-[90px] min-[768px]:-mt-[260px] min-[1024px]:-mt-[420px] min-[1366px]:-mt-[550px]"
+        blueClassName="hidden"
       />
     </section>
   );
 }
 
-type Recipe = { title?: string; image?: { asset?: { _ref?: string } }; url?: string };
+type Recipe = {
+  title?: string;
+  image?: { asset?: { _ref?: string } };
+  url?: string;
+};
 
 type RecipesBlock = {
   title?: string;
@@ -60,7 +65,13 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           backgroundColor: RECIPES_BG,
         }}
       >
-        <div className="mx-auto w-full max-w-full px-4" style={{ maxWidth: RECIPES_MIN_WIDTH, paddingTop: RECIPES_TOP_PADDING_PX }}>
+        <div
+          className="mx-auto w-full max-w-full px-4"
+          style={{
+            maxWidth: RECIPES_MIN_WIDTH,
+            paddingTop: RECIPES_TOP_PADDING_PX,
+          }}
+        >
           <SectionHeading
             title={title}
             description={description || undefined}
@@ -88,8 +99,13 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                         />
                       </div>
                     )}
-                    <div className="px-4 py-3" style={{ backgroundColor: RECIPES_BG }}>
-                      <h3 className="font-semibold text-slate-900">{r.title ?? "Recipe"}</h3>
+                    <div
+                      className="px-4 py-3"
+                      style={{ backgroundColor: RECIPES_BG }}
+                    >
+                      <h3 className="font-semibold text-slate-900">
+                        {r.title ?? "Recipe"}
+                      </h3>
                     </div>
                   </Link>
                 );
@@ -101,7 +117,14 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
               style={SHOW_MORE_LINK_STYLE}
             >
               Show more recipes
-              <img src="/Vector.svg" alt="" aria-hidden width={28.333} height={12.307} className="shrink-0 max-w-full h-auto" />
+              <img
+                src="/Vector.svg"
+                alt=""
+                aria-hidden
+                width={28.333}
+                height={12.307}
+                className="shrink-0 max-w-full h-auto"
+              />
             </Link>
           </div>
         </div>
