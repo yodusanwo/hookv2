@@ -104,3 +104,15 @@ body {
   --wave-recipes-translate: 90%;
   --wave-recipes-section-padding: calc(8vw + 32px);
 }
+
+/* Recipes wave – margins cascade top-to-bottom */
+.recipes-wave-margins {
+  margin-top: -50px;
+  margin-bottom: -45px;
+}
+@media (min-width: 1474px) {
+  .recipes-wave-margins {
+    margin-top: -350px;
+    margin-bottom: -200px;
+  }
+}

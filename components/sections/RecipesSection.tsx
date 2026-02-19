@@ -20,7 +20,7 @@ const SHOW_MORE_LINK_STYLE = {
 function RecipesWaveSection() {
   return (
     <section
-      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 -mt-[50px] -mb-[45px] min-[768px]:-mt-[160px] min-[768px]:-mb-[100px] min-[1024px]:-mt-[250px] min-[1024px]:-mb-[150px] min-[1366px]:-mt-[350px] min-[1366px]:-mb-[210px]"
+      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 recipes-wave-margins"
       aria-hidden
     >
       <WaveDivider
@@ -59,7 +59,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
     <>
       <section
         id="recipes"
-        className="relative z-0 flex min-w-0 flex-col justify-start pb-10 border-4 border-black xl:min-w-[1440px]"
+        className="relative z-0 flex min-w-0 flex-col justify-start pb-10 border-4 border-black"
         style={{
           minHeight: RECIPES_MIN_HEIGHT,
           backgroundColor: RECIPES_BG,
@@ -79,7 +79,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             theme="light"
           />
           <div className="mt-8 flex flex-col">
-            <div className="grid grid-cols-1 gap-[13px] sm:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-wrap justify-center gap-[13px]">
               {recipes.map((r, idx) => {
                 const img = urlFor(r.image);
                 const href = safeHref(r.url) || "#";
@@ -87,7 +87,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                   <Link
                     key={idx}
                     href={href}
-                    className="group flex min-w-0 w-full flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm transition-shadow hover:shadow-md"
+                    className="group flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm transition-shadow hover:shadow-md"
                   >
                     {img && (
                       <div className="aspect-[331/190] min-w-0 w-full shrink-0 overflow-hidden bg-slate-100">
