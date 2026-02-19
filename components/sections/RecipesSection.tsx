@@ -20,7 +20,7 @@ const SHOW_MORE_LINK_STYLE = {
 function RecipesWaveSection() {
   return (
     <section
-      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 -mt-[60px] -mb-[35px] min-[768px]:-mt-[170px] min-[768px]:-mb-[90px] min-[1024px]:-mt-[260px] min-[1024px]:-mb-[140px] min-[1366px]:-mt-[360px] min-[1366px]:-mb-[200px]"
+      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 -mt-[50px] -mb-[45px] min-[768px]:-mt-[160px] min-[768px]:-mb-[100px] min-[1024px]:-mt-[250px] min-[1024px]:-mb-[150px] min-[1366px]:-mt-[350px] min-[1366px]:-mb-[210px]"
       aria-hidden
     >
       <WaveDivider
