@@ -27,7 +27,6 @@ function RecipesWaveSection() {
         navySrc="/VectorWavyNavyRecipes.svg"
         blueSrc="/VectorWavyBlueRecipes.svg"
         wrapperClassName="border-2 border-amber-500"
-        blueClassName="-mt-[90px] min-[768px]:-mt-[260px] min-[1024px]:-mt-[420px] min-[1366px]:-mt-[550px]"
         blueClassName="hidden"
       />
     </section>
