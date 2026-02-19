@@ -72,7 +72,8 @@ export default async function RootLayout({
           <WaveDivider
             navySrc="/VectorWavyNavy.svg"
             blueSrc="/VectorWavyBlue.svg"
-            wrapperClassName="border-2 border-red-500"
+            wrapperClassName=""
+            navyOutline="bottom"
           />
         </div>
         <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">

@@ -44,7 +44,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
   return (
     <section
       id="shop"
-      className="relative z-20 overflow-visible pt-14 pb-0 border-2 border-amber-500"
+      className="relative z-20 overflow-visible pt-14 pb-0"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >
       <div className="mx-auto w-full max-w-[1100px] px-4">
@@ -62,8 +62,9 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
       <WaveDivider
         navySrc="/VectorWavyNavy.svg"
         blueSrc="/VectorWavyBlue.svg"
-        wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF] border-2 border-green-500"
+        wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
         blueClassName="hidden"
+        navyOutline="bottom"
       />
     </section>
   );

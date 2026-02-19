@@ -8,6 +8,7 @@ type WaveDividerProps = {
   wrapperClassName?: string;
   navyClassName?: string;
   blueClassName?: string;
+  navyOutline?: "top" | "bottom" | "both";
 };
 
 export function WaveDivider({
@@ -16,7 +17,16 @@ export function WaveDivider({
   wrapperClassName = "",
   navyClassName = "",
   blueClassName = DEFAULT_BLUE_OVERLAP,
+  navyOutline,
 }: WaveDividerProps) {
+  const navyOutlineClass =
+    navyOutline === "top"
+      ? "navy-wave-outline-top"
+      : navyOutline === "bottom"
+        ? "navy-wave-outline-bottom"
+        : navyOutline === "both"
+          ? "navy-wave-outline-both"
+          : "";
   return (
     <div
       className={`relative z-10 w-full leading-[0] ${wrapperClassName}`.trim()}
@@ -27,7 +37,7 @@ export function WaveDivider({
         src={navySrc}
         alt=""
         aria-hidden
-        className={`${WAVE_IMG_BASE} relative z-10 ${navyClassName}`.trim()}
+        className={`${WAVE_IMG_BASE} relative z-10 ${navyOutlineClass} ${navyClassName}`.trim()}
       />
       {/* Blue wave wrapped in overflow-hidden to clip right edge bleed only */}
       <div className="overflow-hidden w-full">

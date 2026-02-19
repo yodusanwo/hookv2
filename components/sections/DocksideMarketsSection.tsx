@@ -37,7 +37,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
   return (
     <section
       id="markets"
-      className="flex min-h-[420px] flex-col justify-start border-4 border-green-500 bg-[#FAFAFC] pt-10 pb-10 md:min-h-[650px] md:justify-end md:pt-20 md:pb-14"
+      className="flex min-h-[420px] flex-col justify-start bg-[#FAFAFC] pt-10 pb-10 md:min-h-[650px] md:justify-end md:pt-20 md:pb-14"
     >
       <div
         className="mx-auto flex w-full min-h-0 flex-1 flex-col justify-start px-4 md:justify-end md:px-12"

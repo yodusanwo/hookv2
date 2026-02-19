@@ -26,8 +26,9 @@ function RecipesWaveSection() {
       <WaveDivider
         navySrc="/VectorWavyNavyRecipes.svg"
         blueSrc="/VectorWavyBlueRecipes.svg"
-        wrapperClassName="border-2 border-amber-500"
+        wrapperClassName=""
         blueClassName="hidden"
+        navyOutline="both"
       />
     </section>
   );
@@ -58,7 +59,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
     <>
       <section
         id="recipes"
-        className="relative z-0 flex min-w-0 flex-col justify-start pb-10 border-4 border-black"
+        className="relative z-0 flex min-w-0 flex-col justify-start pb-10"
         style={{
           minHeight: RECIPES_MIN_HEIGHT,
           backgroundColor: RECIPES_BG,

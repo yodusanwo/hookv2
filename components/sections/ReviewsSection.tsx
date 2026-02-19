@@ -1,9 +1,6 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
 
-// Must match WAVE_ASPECT_RATIO in RecipesSection.tsx
-const WAVE_ASPECT_RATIO = 0.125;
-
 type Review = { stars?: number; text?: string; name?: string; date?: string };
 
 type ReviewsBlock = {
@@ -28,14 +25,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   if (reviews.length === 0) return null;
 
   return (
-    <section
-      className="bg-[#F2F2F5] pb-14"
-      style={{
-        // Pushes content below the recipes wave which bleeds down by WAVE_ASPECT_RATIO * 100vw.
-        // The extra 56px gives comfortable breathing room between the wave bottom and the heading.
-        paddingTop: `calc(${WAVE_ASPECT_RATIO * 100}vw + 56px)`,
-      }}
-    >
+    <section className="flex min-h-0 flex-col justify-center bg-[#F2F2F5] py-14">
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}
@@ -47,7 +37,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
           {reviews.map((r, idx) => (
             <div
               key={idx}
-              className="flex h-[273px] w-[355px] flex-col rounded-xl border border-black/5 bg-[#FFF] p-6 text-center"
+              className="flex h-[273px] w-[355px] flex-col justify-center rounded-xl border border-black/5 bg-[#FFF] p-6 text-center"
             >
               {r.stars != null && (
                 <div
@@ -61,7 +51,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
                   ))}
                 </div>
               )}
-              <p className="mt-4 flex-1 min-h-0 overflow-y-auto text-base leading-relaxed text-[#333]">
+              <p className="mt-4 min-h-0 overflow-y-auto text-base leading-relaxed text-[#333]">
                 {r.text}
               </p>
               <p className="mt-4 text-sm font-semibold text-[#333]">{r.name}</p>
