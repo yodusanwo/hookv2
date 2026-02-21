@@ -11,7 +11,7 @@ type HeroBlock = {
 };
 
 function normalizeHeadline(raw: string | undefined): { line1: string; line2: string } {
-  const fallback = { line1: "Alaska's Fresh Catch Awaits —", line2: "Taste the Adventure" };
+  const fallback = { line1: "Alaska's Fresh Catch Awaits\u00A0—", line2: "Taste the Adventure" };
   if (!raw || typeof raw !== "string") return fallback;
   const trimmed = raw.trim();
   if (!trimmed) return fallback;
@@ -24,7 +24,7 @@ function normalizeHeadline(raw: string | undefined): { line1: string; line2: str
     .replace(/—\s+/, "— ");
   const parts = normalized.split(/\s+—\s+/);
   if (parts.length >= 2) {
-    return { line1: `${parts[0]?.trim() ?? ""} —`, line2: parts.slice(1).join(" ").trim() };
+    return { line1: `${parts[0]?.trim() ?? ""}\u00A0—`, line2: parts.slice(1).join(" ").trim() };
   }
   const byNewline = normalized.split("\n").map((s) => s.trim()).filter(Boolean);
   if (byNewline.length >= 2) {

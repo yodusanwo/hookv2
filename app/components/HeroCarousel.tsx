@@ -60,7 +60,7 @@ export function HeroCarousel({
       />
 
       <div
-        className="absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[789px] text-left items-start"
+        className="absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[920px] text-left items-start px-6 py-5 sm:px-8 sm:py-6 rounded-xl bg-gradient-to-br from-black/30 via-black/15 to-transparent backdrop-blur-[2px]"
       >
         <h1
           className={`${FONT_INTER} max-w-full`}
@@ -78,7 +78,7 @@ export function HeroCarousel({
           <span className="block">{headlineLine2}</span>
         </h1>
         <p
-          className={`text-white ${FONT_INTER} mt-3 sm:mt-6 max-w-[789px] text-[clamp(0.8125rem,2.5vw,1.875rem)] leading-snug`}
+          className={`text-white ${FONT_INTER} mt-3 sm:mt-6 max-w-[920px] text-[clamp(0.8125rem,2.5vw,1.875rem)] leading-snug`}
           style={{ fontWeight: 500 }}
         >
           {subline}

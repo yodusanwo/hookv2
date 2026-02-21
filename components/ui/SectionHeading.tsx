@@ -13,6 +13,10 @@ type SectionHeadingProps = {
   titleColor?: string;
   /** Override body/description color (e.g. #1E1E1E) */
   descriptionColor?: string;
+  /** Override letter-spacing for the title (e.g. responsive: tracking-[0.04em] md:tracking-[0.05em] lg:tracking-[0.06em]) */
+  titleLetterSpacingClass?: string;
+  /** Override font family for the title (e.g. var(--font-zamenhof)) */
+  titleFontFamily?: string;
 };
 
 export function SectionHeading({
@@ -24,6 +28,8 @@ export function SectionHeading({
   wideTitleOnDesktop = false,
   titleColor,
   descriptionColor,
+  titleLetterSpacingClass,
+  titleFontFamily,
 }: SectionHeadingProps) {
   const isDark = theme === "dark";
   const resolvedTitleColor = titleColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
@@ -39,13 +45,12 @@ export function SectionHeading({
     return (
       <div className={`mx-auto ${containerMaxW}`}>
         <h2
-          className="text-center"
+          className={`text-center uppercase tracking-[0.04em] md:tracking-[0.05em] lg:tracking-[0.06em] ${titleLetterSpacingClass ?? ""}`.trim()}
           style={{
-            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontFamily: titleFontFamily ?? "var(--font-inter), Inter, sans-serif",
             fontSize: "var(--section-heading-display-size)",
             fontWeight: "var(--section-heading-display-weight)",
             lineHeight: "var(--section-heading-display-line-height)",
-            letterSpacing: "var(--section-heading-display-spacing)",
             color: resolvedTitleColor,
           }}
         >

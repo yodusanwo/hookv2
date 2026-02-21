@@ -54,6 +54,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
           variant="display"
           theme="dark"
           descriptionAsLead
+          titleFontFamily="var(--font-zamenhof)"
         />
       </div>
 
