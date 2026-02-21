@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { WaveDivider } from "@/components/ui/WaveDivider";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
@@ -38,23 +37,11 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
   return (
     <section
       id="markets"
-      className="mx-auto flex flex-col justify-start bg-[#FAFAFC] pt-0 pb-10"
-      style={{ width: "100%", maxWidth: 1440, minHeight: 612 }}
+      className="relative z-0 mx-auto flex flex-col justify-start bg-[#FAFAFC] pt-0 pb-10"
+      style={{ width: "100%", maxWidth: 1440, minHeight: 662 }}
     >
-      <div className="[transform:scaleX(1.10)_rotate(-5deg)]">
-        <WaveDivider
-          navySrc="/VectorWavyNavyOurStory.svg"
-          wrapperClassName="-mb-px [background-color:transparent]"
-          navyOutline="top"
-        />
-        <WaveDivider
-          navySrc="/VectorWavyNavy.svg"
-          wrapperClassName="-my-px [background-color:transparent]"
-          navyOutline="bottom"
-        />
-      </div>
       <div
-        className="mx-auto flex w-full flex-col justify-center px-4 pt-10"
+        className="mx-auto mt-auto flex w-full flex-col justify-end px-4 pt-10"
         style={{ maxWidth: 1440 }}
       >
         <SectionHeading

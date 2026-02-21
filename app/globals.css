@@ -136,3 +136,10 @@ body {
       drop-shadow(0 1px 0 #5A8AC6) drop-shadow(0 10px 0 #5A8AC6);
   }
 }
+
+/* Featured local stores section */
+.featured-local-stores-section {
+  min-height: 280px;
+  padding-top: 100px;
+  padding-bottom: 60px;
+}

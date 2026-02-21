@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 const RECIPES_TOP_PADDING_PX = 56;
-const RECIPES_BG = "#D4F2FF";
+const RECIPES_BG = "#FEF3C7";
 const SHOW_MORE_LINK_STYLE = {
   color: "#498CCB",
   fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -38,8 +39,8 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   return (
     <section
       id="recipes"
-      className="relative z-0 mx-auto flex min-w-0 flex-col justify-start pb-16"
-      style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 453 }}
+      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start border border-red-500 pb-0"
+      style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 433 }}
     >
       <div
           className="mx-auto w-full max-w-full px-4"
@@ -102,6 +103,18 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             />
           </Link>
         </div>
+      </div>
+      <div className="relative top-[100px] -mt-8 w-full shrink-0 border border-blue-500 [transform:scaleX(1.10)_rotate(-5deg)]">
+        <WaveDivider
+          navySrc="/VectorWavyNavyOurStory.svg"
+          wrapperClassName="-mb-px [background-color:transparent]"
+          navyOutline="top"
+        />
+        <WaveDivider
+          navySrc="/VectorWavyNavy.svg"
+          wrapperClassName="-my-px bg-[#FAFAFC]"
+          navyOutline="bottom"
+        />
       </div>
     </section>
   );
