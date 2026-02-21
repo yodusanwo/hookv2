@@ -112,8 +112,8 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
         </div>
       </div>
 
-      <div className="mt-auto w-full shrink-0">
-        <div className="mt-auto w-screen max-w-none shrink-0" style={{ marginLeft: "calc(-50vw + 50%)" }}>
+      <div className="mt-auto w-full shrink-0 overflow-visible">
+        <div className="wave-full-bleed mt-auto shrink-0">
           <WaveDivider
             navySrc="/VectorWavyNavyOurStory.svg"
             navyOutline="top"

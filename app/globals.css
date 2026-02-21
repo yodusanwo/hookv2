@@ -78,6 +78,12 @@ body {
   color: var(--gray-content-background-text-icon-80, #1c5080);
 }
 
+/* Full-bleed waves: scale slightly to fill edge gaps without causing overflow/scroll */
+.wave-full-bleed {
+  transform: scaleX(1.05);
+  transform-origin: center;
+}
+
 /* Navy wave – full bleed on mobile */
 
 /* Our Story blue wave overlap – media queries cascade top-to-bottom */

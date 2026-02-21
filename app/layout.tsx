@@ -68,7 +68,7 @@ export default async function RootLayout({
         />
         {/* Spacer so content starts below fixed header (matches header min-height) */}
         <div className="h-[80px] sm:h-[107px] shrink-0" aria-hidden />
-        <div className="relative z-30 -mt-px w-screen max-w-none origin-top scale-y-60" style={{ marginLeft: "calc(-50vw + 50%)" }}>
+        <div className="relative z-30 -mt-px origin-top" style={{ transform: "scale(1.05, 0.6)" }}>
           <WaveDivider
             navySrc="/VectorWavyNavy.svg"
             navyOutline="bottom"
