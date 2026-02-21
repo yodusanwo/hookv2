@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Zamenhof Inverse";
+  src: url("/fonts/zamenhof_inverse.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -20,6 +28,7 @@
   --section-heading-display-weight: 300;
   --section-heading-display-spacing: -1.68px;
   --section-heading-display-line-height: 120%;
+  --font-zamenhof-inline: "Zamenhof Inverse", var(--font-inter), Inter, sans-serif;
 }
 
 @theme inline {
@@ -64,6 +73,11 @@ body {
 }
 .btn-primary:hover {
   background-color: rgb(30 41 59);
+}
+
+/* Our Story section heading – Zamenhof Inverse font */
+#about .mx-auto h2:first-child {
+  font-family: "Zamenhof Inverse", var(--font-inter), Inter, sans-serif !important;
 }
 
 /* Our Story body typography – Body/XL/Light */

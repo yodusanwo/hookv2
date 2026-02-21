@@ -3,11 +3,12 @@ import localFont from "next/font/local";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
-const zamenhofPlain = localFont({
+const zamenhofOutline = localFont({
   src: "../public/fonts/zamenhof_outline.otf",
   variable: "--font-zamenhof",
   display: "swap",
 });
+
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { WaveDivider } from "@/components/ui/WaveDivider";
@@ -66,7 +67,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${zamenhofPlain.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${zamenhofOutline.variable} antialiased`}
       >
         <Header
           logoUrl={headerLogoUrl}

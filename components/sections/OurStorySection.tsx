@@ -60,7 +60,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
       style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
     >
       <div className="mx-auto w-full px-4 pb-12 pt-10" style={{ maxWidth: 1440 }}>
-        <SectionHeading title={title} variant="display" theme="light" />
+        <SectionHeading title={title} variant="display" theme="light" titleFontFamily="var(--font-zamenhof-inline)" />
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-stretch">
           <div className="overflow-hidden rounded-xl bg-slate-200">
             {img ? (
