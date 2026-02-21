@@ -122,3 +122,17 @@ body {
   filter: drop-shadow(0 -1px 0 #5A8AC6) drop-shadow(0 -20px 0 #5A8AC6)
     drop-shadow(0 1px 0 #5A8AC6) drop-shadow(0 20px 0 #5A8AC6);
 }
+
+/* Reduce outline spread on small screens so drop-shadow tracks scaled wave */
+@media (max-width: 480px) {
+  .navy-wave-outline-bottom {
+    filter: drop-shadow(0 1px 0 #5A8AC6) drop-shadow(0 10px 0 #5A8AC6);
+  }
+  .navy-wave-outline-top {
+    filter: drop-shadow(0 -1px 0 #5A8AC6) drop-shadow(0 -10px 0 #5A8AC6);
+  }
+  .navy-wave-outline-both {
+    filter: drop-shadow(0 -1px 0 #5A8AC6) drop-shadow(0 -10px 0 #5A8AC6)
+      drop-shadow(0 1px 0 #5A8AC6) drop-shadow(0 10px 0 #5A8AC6);
+  }
+}

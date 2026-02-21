@@ -94,7 +94,7 @@ export function ExploreProductsGrid({
 
   return (
     <>
-      <div className="relative mx-auto mt-10 w-full max-w-[1363px] px-12 md:px-16">
+      <div className="relative mx-auto mt-10 w-full max-w-[1363px]">
         <button
           type="button"
           onClick={() => scrollByDir(-1)}
@@ -116,7 +116,7 @@ export function ExploreProductsGrid({
 
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {loading ? (
             <div
