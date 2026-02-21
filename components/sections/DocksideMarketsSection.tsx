@@ -41,19 +41,15 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
       className="mx-auto flex flex-col justify-start bg-[#FAFAFC] pt-0 pb-10"
       style={{ width: "100%", maxWidth: 1440, minHeight: 677 }}
     >
-      <div className="[transform:scaleX(1.15)_translateX(15px)_rotate(-5deg)]">
+      <div className="[transform:scaleX(1.05)_rotate(-5deg)]">
         <WaveDivider
-          navySrc="/VectorWavyNavy.svg"
-          blueSrc="/VectorWavyBlue.svg"
-          wrapperClassName="-mb-px [transform:scaleX(-1)_scaleY(-1)] [background-color:transparent]"
-          blueClassName="hidden"
-          navyOutline="bottom"
+          navySrc="/VectorWavyNavyOurStory.svg"
+          wrapperClassName="-mb-px [background-color:transparent]"
+          navyOutline="top"
         />
         <WaveDivider
           navySrc="/VectorWavyNavy.svg"
-          blueSrc="/VectorWavyBlue.svg"
           wrapperClassName="-my-px [background-color:transparent]"
-          blueClassName="hidden"
           navyOutline="bottom"
         />
       </div>

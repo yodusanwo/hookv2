@@ -116,9 +116,6 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
         <div className="mt-auto w-full shrink-0">
           <WaveDivider
             navySrc="/VectorWavyNavyOurStory.svg"
-            blueSrc="/VectorWavyBlueOurStory.svg"
-            navyClassName=""
-            blueClassName="hidden"
             navyOutline="top"
           />
         </div>

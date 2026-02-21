@@ -61,9 +61,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
 
       <WaveDivider
         navySrc="/VectorWavyNavy.svg"
-        blueSrc="/VectorWavyBlue.svg"
         wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
-        blueClassName="hidden"
         navyOutline="bottom"
       />
     </section>
