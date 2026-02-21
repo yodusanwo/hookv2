@@ -39,8 +39,8 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   return (
     <section
       id="recipes"
-      className="relative z-0 flex min-w-0 flex-col justify-start pb-16"
-      style={{ backgroundColor: RECIPES_BG }}
+      className="relative z-0 mx-auto flex min-w-0 flex-col justify-start pb-16"
+      style={{ backgroundColor: RECIPES_BG, width: "100%", maxWidth: 1440, minHeight: 723 }}
     >
       <div
           className="mx-auto w-full max-w-full px-4"
@@ -90,7 +90,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           </div>
           <Link
               href={safeHref(showMoreUrl) || "#"}
-              className="mt-10 mb-10 self-start inline-flex items-center gap-1.5 hover:opacity-90"
+              className="mt-10 mb-10 ml-[131px] self-start inline-flex items-center gap-1.5 hover:opacity-90"
               style={SHOW_MORE_LINK_STYLE}
           >
             Show more recipes
