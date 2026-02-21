@@ -12,7 +12,7 @@ export function PromoBanner({ text }: { text: string }) {
       <div className="text-center text-white md:flex md:items-center md:gap-3" style={{ fontSize: "clamp(18px, 3vw, 24px)", fontWeight: 300, lineHeight: 1.3 }}>
         <span>{headline}</span>
         <img
-          src="/arrow_right_alt_24dp_111827_FILL0_wght400_GRAD0_opsz24%201.svg"
+          src="/Icon%20arrow%20right.svg"
           alt=""
           aria-hidden
           width={20.667}

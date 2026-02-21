@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { WaveDivider } from "@/components/ui/WaveDivider";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
-const RECIPES_MIN_HEIGHT = 723;
 const RECIPES_MIN_WIDTH = 1440;
 const RECIPES_TOP_PADDING_PX = 56;
 const RECIPES_BG = "#D4F2FF";
@@ -16,23 +14,6 @@ const SHOW_MORE_LINK_STYLE = {
   fontWeight: 500,
   lineHeight: "normal",
 };
-
-function RecipesWaveSection() {
-  return (
-    <section
-      className="relative z-20 w-full min-w-0 max-w-full overflow-hidden leading-[0] origin-bottom scale-y-75 recipes-wave-margins"
-      aria-hidden
-    >
-      <WaveDivider
-        navySrc="/VectorWavyNavyRecipes.svg"
-        blueSrc="/VectorWavyBlueRecipes.svg"
-        wrapperClassName=""
-        blueClassName="hidden"
-        navyOutline="both"
-      />
-    </section>
-  );
-}
 
 type Recipe = {
   title?: string;
@@ -56,30 +37,26 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   if (recipes.length === 0) return null;
 
   return (
-    <>
-      <section
-        id="recipes"
-        className="relative z-0 flex min-w-0 flex-col justify-start pb-10"
+    <section
+      id="recipes"
+      className="relative z-0 flex min-w-0 flex-col justify-start pb-16"
+      style={{ backgroundColor: RECIPES_BG }}
+    >
+      <div
+          className="mx-auto w-full max-w-full px-4"
         style={{
-          minHeight: RECIPES_MIN_HEIGHT,
-          backgroundColor: RECIPES_BG,
+          maxWidth: RECIPES_MIN_WIDTH,
+          paddingTop: RECIPES_TOP_PADDING_PX,
         }}
       >
-        <div
-          className="mx-auto w-full max-w-full px-4"
-          style={{
-            maxWidth: RECIPES_MIN_WIDTH,
-            paddingTop: RECIPES_TOP_PADDING_PX,
-          }}
-        >
-          <SectionHeading
+        <SectionHeading
             title={title}
             description={description || undefined}
             variant="display"
             theme="light"
-          />
-          <div className="mt-8 flex flex-col">
-            <div className="flex flex-wrap justify-center gap-[13px]">
+        />
+        <div className="mt-8 flex flex-col">
+          <div className="flex flex-wrap justify-center gap-[13px]">
               {recipes.map((r, idx) => {
                 const img = urlFor(r.image);
                 const href = safeHref(r.url) || "#";
@@ -109,14 +86,14 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                     </div>
                   </Link>
                 );
-              })}
-            </div>
-            <Link
+            })}
+          </div>
+          <Link
               href={safeHref(showMoreUrl) || "#"}
-              className="mt-10 self-start inline-flex items-center gap-1.5 hover:opacity-90"
+              className="mt-10 mb-10 self-start inline-flex items-center gap-1.5 hover:opacity-90"
               style={SHOW_MORE_LINK_STYLE}
-            >
-              Show more recipes
+          >
+            Show more recipes
               <img
                 src="/Vector.svg"
                 alt=""
@@ -124,12 +101,10 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                 width={28.333}
                 height={12.307}
                 className="shrink-0 max-w-full h-auto"
-              />
-            </Link>
-          </div>
+            />
+          </Link>
         </div>
-      </section>
-      <RecipesWaveSection />
-    </>
+      </div>
+    </section>
   );
 }

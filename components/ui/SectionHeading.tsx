@@ -7,6 +7,8 @@ type SectionHeadingProps = {
   theme?: "light" | "dark";
   /** When true (display variant only), description uses larger lead style */
   descriptionAsLead?: boolean;
+  /** When true (display variant only), uses wider max-width on desktop so headlines stay on one line */
+  wideTitleOnDesktop?: boolean;
   /** Override headline color (e.g. #111827) */
   titleColor?: string;
   /** Override body/description color (e.g. #1E1E1E) */
@@ -19,6 +21,7 @@ export function SectionHeading({
   variant,
   theme = "light",
   descriptionAsLead = false,
+  wideTitleOnDesktop = false,
   titleColor,
   descriptionColor,
 }: SectionHeadingProps) {
@@ -27,8 +30,14 @@ export function SectionHeading({
   const resolvedDescColor = descriptionColor ?? (isDark ? "var(--section-heading-dark)" : undefined);
 
   if (variant === "display") {
+    const containerMaxW =
+      descriptionAsLead
+        ? "max-w-[1100px]"
+        : wideTitleOnDesktop
+          ? "max-w-4xl lg:max-w-6xl xl:max-w-7xl"
+          : "max-w-4xl";
     return (
-      <div className={`mx-auto ${descriptionAsLead ? "max-w-[1100px]" : "max-w-4xl"}`}>
+      <div className={`mx-auto ${containerMaxW}`}>
         <h2
           className="text-center"
           style={{

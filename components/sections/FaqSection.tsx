@@ -24,14 +24,15 @@ export function FaqSection({ block }: { block: FaqBlock }) {
 
   return (
     <section id="faq" className="py-14 bg-slate-50">
-      <div className="mx-auto max-w-3xl px-4">
+      <div className="mx-auto w-full px-4">
         <SectionHeading
           title={title}
           description={description || undefined}
           variant="display"
           theme="light"
+          wideTitleOnDesktop
         />
-        <div className="mt-8 space-y-2">
+        <div className="mx-auto mt-8 max-w-3xl space-y-2">
           {faqs.map((faq, idx) => {
             const isOpen = openIdx === idx;
             return (
@@ -57,7 +58,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
           })}
         </div>
         {showMoreUrl && (
-          <div className="mt-8 flex justify-center">
+          <div className="mx-auto mt-8 flex max-w-3xl justify-center">
             <a
               href={safeHref(showMoreUrl)}
               className="btn-primary"
