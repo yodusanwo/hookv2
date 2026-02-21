@@ -3,7 +3,6 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
-const RECIPES_MIN_WIDTH = 1440;
 const RECIPES_TOP_PADDING_PX = 56;
 const RECIPES_BG = "#D4F2FF";
 const SHOW_MORE_LINK_STYLE = {
@@ -40,12 +39,11 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
     <section
       id="recipes"
       className="relative z-0 mx-auto flex min-w-0 flex-col justify-start pb-16"
-      style={{ backgroundColor: RECIPES_BG, width: "100%", maxWidth: 1440, minHeight: 723 }}
+      style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 723 }}
     >
       <div
-          className="mx-auto w-full max-w-full px-4"
+          className="mx-auto w-full max-w-full px-0"
         style={{
-          maxWidth: RECIPES_MIN_WIDTH,
           paddingTop: RECIPES_TOP_PADDING_PX,
         }}
       >

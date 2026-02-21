@@ -41,7 +41,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
       className="mx-auto flex flex-col justify-start bg-[#FAFAFC] pt-0 pb-10"
       style={{ width: "100%", maxWidth: 1440, minHeight: 677 }}
     >
-      <div className="[transform:rotate(-5deg)]">
+      <div className="[transform:scaleX(1.15)_translateX(15px)_rotate(-5deg)]">
         <WaveDivider
           navySrc="/VectorWavyNavy.svg"
           blueSrc="/VectorWavyBlue.svg"
@@ -58,7 +58,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
         />
       </div>
       <div
-        className="mx-auto flex w-full flex-col justify-start px-4 pt-10 md:px-12"
+        className="mx-auto flex w-full flex-col justify-start px-0 pt-10"
         style={{ maxWidth: 1440 }}
       >
         <SectionHeading
@@ -71,7 +71,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
         <div className="relative mt-8">
           <div
             ref={scrollRef}
-            className="mx-14 flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth [-webkit-overflow-scrolling:touch] md:mx-16"
+            className="flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth [-webkit-overflow-scrolling:touch]"
           >
           {items.length > 0
             ? items.map((item, idx) => {
