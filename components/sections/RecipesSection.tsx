@@ -39,7 +39,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   return (
     <section
       id="recipes"
-      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start border border-red-500 pb-0"
+      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start pb-0"
       style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 433 }}
     >
       <div
@@ -104,15 +104,18 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           </Link>
         </div>
       </div>
-      <div className="relative top-[100px] -mt-8 w-full shrink-0 border border-blue-500 [transform:scaleX(1.10)_rotate(-5deg)]">
+      <div
+        className="relative top-[100px] -mt-8 w-full shrink-0"
+        style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
+      >
         <WaveDivider
           navySrc="/VectorWavyNavyOurStory.svg"
-          wrapperClassName="-mb-px [background-color:transparent]"
+          wrapperClassName="mt-3 -mb-px [background-color:transparent]"
           navyOutline="top"
         />
         <WaveDivider
           navySrc="/VectorWavyNavy.svg"
-          wrapperClassName="-my-px bg-[#FAFAFC]"
+          wrapperClassName="-mt-px [background-color:transparent]"
           navyOutline="bottom"
         />
       </div>
