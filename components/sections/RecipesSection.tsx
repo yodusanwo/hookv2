@@ -42,7 +42,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
       style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 453 }}
     >
       <div
-          className="mx-auto w-full max-w-full px-0"
+          className="mx-auto w-full max-w-full px-4"
         style={{
           paddingTop: RECIPES_TOP_PADDING_PX,
         }}
