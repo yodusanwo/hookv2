@@ -39,7 +39,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
     <section
       id="recipes"
       className="relative z-0 mx-auto flex min-w-0 flex-col justify-start pb-16"
-      style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 723 }}
+      style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 453 }}
     >
       <div
           className="mx-auto w-full max-w-full px-0"
