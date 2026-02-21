@@ -38,11 +38,10 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
     <section
       id="markets"
       className="relative z-0 -mt-1 mx-auto flex flex-col justify-start bg-[#FAFAFC] pt-0 pb-10"
-      style={{ width: "100%", maxWidth: 1440, minHeight: 662 }}
+      style={{ width: "100%", minHeight: 662 }}
     >
       <div
-        className="mx-auto mt-auto flex w-full flex-col justify-end px-4 pt-10"
-        style={{ maxWidth: 1440 }}
+        className="mx-auto mt-auto flex w-full flex-col justify-end mx-4 pt-10"
       >
         <SectionHeading
           title={title}
@@ -52,6 +51,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
           wideTitleOnDesktop
         />
         <div className="relative mt-8">
+          <div className="mx-auto w-full max-w-[1363px]">
           <div
             ref={scrollRef}
             className="flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-14 pr-14 [-webkit-overflow-scrolling:touch]"
@@ -114,10 +114,11 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
                 )
               )}
           </div>
+          </div>
           <button
             type="button"
             onClick={() => scrollByDir(-1)}
-            className="absolute left-0 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 -translate-x-1 items-center justify-center rounded-full bg-transparent hover:opacity-80 md:inline-flex"
+            className="absolute left-4 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-transparent hover:opacity-80 md:inline-flex"
             aria-label="Previous"
           >
             <img
@@ -130,7 +131,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
           <button
             type="button"
             onClick={() => scrollByDir(1)}
-            className="absolute right-0 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 translate-x-1 items-center justify-center rounded-full bg-transparent hover:opacity-80 md:inline-flex"
+            className="absolute right-4 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-transparent hover:opacity-80 md:inline-flex"
             aria-label="Next"
           >
             <img

@@ -68,7 +68,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
                 src={img.url()}
                 alt={title}
                 className="h-[300px] w-full max-w-full object-cover md:h-[420px]"
-                style={{ objectPosition: "center calc(50% + 70px)" }}
+                style={{ objectPosition: "center top" }}
                 loading="lazy"
               />
             ) : (

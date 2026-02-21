@@ -7,22 +7,6 @@ import { ExploreProductCard, type ExploreProductCardProduct } from "@/app/compon
 
 type FilterItem = { label?: string; collectionHandle?: string };
 
-function ChevronLeft({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-    </svg>
-  );
-}
-
-function ChevronRight({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-    </svg>
-  );
-}
-
 export function ExploreProductsGrid({
   filterCollections,
   cta,
@@ -32,7 +16,6 @@ export function ExploreProductsGrid({
 }) {
   const [products, setProducts] = React.useState<ExploreProductCardProduct[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   // Use first collection or all products (no category filters in this section)
   const collectionHandle = React.useMemo(
@@ -85,38 +68,12 @@ export function ExploreProductsGrid({
     return () => controller.abort();
   }, [collectionHandle]);
 
-  const scrollByDir = React.useCallback((dir: -1 | 1) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const step = Math.min(400, el.clientWidth * 0.8);
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
-  }, []);
-
   return (
     <>
-      <div className="relative mx-auto mt-10 w-full max-w-[1363px]">
-        <button
-          type="button"
-          onClick={() => scrollByDir(-1)}
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity md:left-4"
-          style={{ backgroundColor: "var(--brand-navy)" }}
-          aria-label="Previous products"
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollByDir(1)}
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full text-white hover:opacity-90 transition-opacity md:right-4"
-          style={{ backgroundColor: "var(--brand-navy)" }}
-          aria-label="Next products"
-        >
-          <ChevronRight className="h-6 w-6" />
-        </button>
-
+      <div className="mt-10 mx-4">
+        <div className="relative mx-auto w-full max-w-[1363px]">
         <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-4 overflow-x-auto scroll-smooth justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {loading ? (
             <div
@@ -139,6 +96,7 @@ export function ExploreProductsGrid({
               No products in this collection. Add products in Shopify and assign them to the collection.
             </p>
           )}
+        </div>
         </div>
       </div>
 
