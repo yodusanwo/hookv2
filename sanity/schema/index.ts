@@ -14,6 +14,7 @@ import { docksideMarketsBlock } from "./blocks/docksideMarkets";
 import { upcomingEventsBlock } from "./blocks/upcomingEvents";
 import { localFoodsCoopsBlock } from "./blocks/localFoodsCoops";
 import { faqBlock } from "./blocks/faq";
+import { whyWildMattersBlock } from "./blocks/whyWildMatters";
 
 import { page } from "./documents/page";
 import { siteSettings } from "./documents/siteSettings";
@@ -34,6 +35,7 @@ export const schemaTypes = [
   upcomingEventsBlock,
   localFoodsCoopsBlock,
   faqBlock,
+  whyWildMattersBlock,
   page,
   siteSettings,
 ];

@@ -10,6 +10,7 @@ import { DocksideMarketsSection } from "./DocksideMarketsSection";
 import { UpcomingEventsSection } from "./UpcomingEventsSection";
 import { LocalFoodsCoopsSection } from "./LocalFoodsCoopsSection";
 import { FaqSection } from "./FaqSection";
+import { WhyWildMattersSection } from "./WhyWildMattersSection";
 
 type PageSection =
   | { _type: "heroBlock"; _key?: string; [key: string]: unknown }
@@ -22,7 +23,8 @@ type PageSection =
   | { _type: "docksideMarketsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "upcomingEventsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "localFoodsCoopsBlock"; _key?: string; [key: string]: unknown }
-  | { _type: "faqBlock"; _key?: string; [key: string]: unknown };
+  | { _type: "faqBlock"; _key?: string; [key: string]: unknown }
+  | { _type: "whyWildMattersBlock"; _key?: string; [key: string]: unknown };
 
 export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[]; promoBanner?: string | null }) {
   const items = sections ?? [];
@@ -81,6 +83,13 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
             return <LocalFoodsCoopsSection key={key} block={block as Parameters<typeof LocalFoodsCoopsSection>[0]["block"]} />;
           case "faqBlock":
             return <FaqSection key={key} block={block as Parameters<typeof FaqSection>[0]["block"]} />;
+          case "whyWildMattersBlock":
+            return (
+              <WhyWildMattersSection
+                key={key}
+                block={block as Parameters<typeof WhyWildMattersSection>[0]["block"]}
+              />
+            );
           default:
             return null;
         }

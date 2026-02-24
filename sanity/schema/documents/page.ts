@@ -28,6 +28,7 @@ export const page = defineType({
         { type: "upcomingEventsBlock" },
         { type: "localFoodsCoopsBlock" },
         { type: "faqBlock" },
+        { type: "whyWildMattersBlock" },
       ],
     }),
   ],
