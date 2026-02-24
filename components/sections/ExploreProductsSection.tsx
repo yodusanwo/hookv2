@@ -6,8 +6,6 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 import { ExploreProductsCategoryCarousel } from "./ExploreProductsCategoryCarousel";
 import { urlFor } from "@/lib/sanityImage";
-import { safeHref } from "@/lib/urlValidation";
-import Link from "next/link";
 
 type FilterCollection = { label?: string; collectionHandle?: string; image?: { _ref?: string; asset?: { _ref?: string } } };
 type Category = { label?: string; collectionHandle?: string };
@@ -18,14 +16,11 @@ type ExploreProductsBlock = {
   filterCollections?: FilterCollection[];
   filterLabels?: string[];
   categories?: Category[];
-  cta?: { label?: string; href?: string };
 };
 
 const DEFAULT_TITLE = "EXPLORE OUR PRODUCTS";
 const DEFAULT_DESCRIPTION =
   "Wild Alaskan seafood boxes, fillets, and specialty cuts ranging from sockeye and sablefish to halibut, cod, scallops, and even salmon heads are offered as premium, wild-caught options. All wild. All the time.";
-const DEFAULT_CTA = { label: "SHOP FULL LINEUP →", href: "#shop" };
-
 const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
   { label: "Seafood", collectionHandle: "seafood" },
   { label: "Subscription Box", collectionHandle: "subscription-box" },
@@ -35,7 +30,6 @@ const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
 export function ExploreProductsSection({ block }: { block: ExploreProductsBlock }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
-  const cta = block.cta ?? DEFAULT_CTA;
 
   // Build category list: filterCollections (with optional image) or legacy categories
   const filterCollections =
@@ -53,11 +47,17 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
     const href = f.collectionHandle?.trim()
       ? `/collections/${f.collectionHandle.trim()}`
       : "#shop";
-    const img = urlFor(f.image);
+    let imageUrl: string | null = null;
+    try {
+      const img = urlFor(f.image);
+      imageUrl = img ? img.url() : null;
+    } catch {
+      imageUrl = null;
+    }
     return {
       label: f.label ?? "Shop",
       href,
-      imageUrl: img ? img.url() : null,
+      imageUrl,
     };
   });
 
@@ -79,14 +79,6 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
       </div>
 
       <ExploreProductsCategoryCarousel categories={categories} />
-
-      {cta?.label && (
-        <div className="mx-auto max-w-6xl px-4 mt-12 flex justify-center">
-          <Link href={safeHref(cta.href) || "#shop"} className="btn-primary">
-            {cta.label}
-          </Link>
-        </div>
-      )}
 
       <div className="w-full shrink-0 overflow-visible">
         <div className="wave-full-bleed shrink-0">

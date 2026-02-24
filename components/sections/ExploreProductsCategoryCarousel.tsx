@@ -52,7 +52,7 @@ export function ExploreProductsCategoryCarousel({
                   aspectRatio: "4 / 3",
                 }}
               >
-                {cat.imageUrl ? (
+                {cat.imageUrl && typeof cat.imageUrl === "string" ? (
                   <img
                     src={cat.imageUrl}
                     alt={cat.label ?? ""}
