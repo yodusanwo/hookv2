@@ -1,5 +1,6 @@
 import * as React from "react";
 import { HeroSection } from "./HeroSection";
+import { CatchOfTheDaySection } from "./CatchOfTheDaySection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
 import { OurStorySection } from "./OurStorySection";
 import { DealPromotionsSection } from "./DealPromotionsSection";
@@ -12,6 +13,7 @@ import { FaqSection } from "./FaqSection";
 
 type PageSection =
   | { _type: "heroBlock"; _key?: string; [key: string]: unknown }
+  | { _type: "catchOfTheDayBlock"; _key?: string; [key: string]: unknown }
   | { _type: "exploreProductsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "ourStoryBlock"; _key?: string; [key: string]: unknown }
   | { _type: "dealPromotionsBlock"; _key?: string; [key: string]: unknown }
@@ -36,6 +38,13 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
                 key={key}
                 block={block as Parameters<typeof HeroSection>[0]["block"]}
                 promoBanner={promoBanner}
+              />
+            );
+          case "catchOfTheDayBlock":
+            return (
+              <CatchOfTheDaySection
+                key={key}
+                block={block as Parameters<typeof CatchOfTheDaySection>[0]["block"]}
               />
             );
           case "exploreProductsBlock":

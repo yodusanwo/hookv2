@@ -4,6 +4,7 @@ import { collectionReference } from "./objects/collectionReference";
 import { cta } from "./objects/cta";
 
 import { heroBlock } from "./blocks/hero";
+import { catchOfTheDayBlock } from "./blocks/catchOfTheDay";
 import { exploreProductsBlock } from "./blocks/exploreProducts";
 import { ourStoryBlock } from "./blocks/ourStory";
 import { dealPromotionsBlock } from "./blocks/dealPromotions";
@@ -23,6 +24,7 @@ export const schemaTypes = [
   collectionReference,
   cta,
   heroBlock,
+  catchOfTheDayBlock,
   exploreProductsBlock,
   ourStoryBlock,
   dealPromotionsBlock,

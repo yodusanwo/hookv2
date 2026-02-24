@@ -18,6 +18,7 @@ export const page = defineType({
       title: "Sections",
       of: [
         { type: "heroBlock" },
+        { type: "catchOfTheDayBlock" },
         { type: "exploreProductsBlock" },
         { type: "ourStoryBlock" },
         { type: "dealPromotionsBlock" },

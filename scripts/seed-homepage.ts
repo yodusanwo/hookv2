@@ -100,6 +100,19 @@ const HOMEPAGE_DOCUMENT = {
       cta: { label: "SHOP FULL LINEUP →", href: "#shop" },
     },
     {
+      _type: "catchOfTheDayBlock",
+      _key: "catchOfTheDay",
+      title: "CATCH OF THE DAY",
+      description:
+        "Wild Alaskan seafood boxes, fillets, and specialty cuts ranging from sockeye and sablefish to halibut, cod, scallops, and even salmon heads are offered as premium, wild-caught options. All wild. All the time.",
+      filterCollections: [
+        { label: "Seafood", collectionHandle: "seafood" },
+        { label: "Subscription Box", collectionHandle: "subscription-box" },
+        { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
+      ],
+      cta: { label: "SHOP FULL LINEUP →", href: "#shop" },
+    },
+    {
       _type: "ourStoryBlock",
       _key: "ourStory",
       title: "We are Hook Point",
