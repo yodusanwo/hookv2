@@ -1,5 +1,6 @@
 "use client";
 
+/** Card for the first "Catch of the day" (Explore Products) section only. Sizing is independent of Product Carousel. */
 import Link from "next/link";
 
 export type ExploreProductCardProduct = {
@@ -57,17 +58,22 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
     <Link
       href={`/products/${product.handle}`}
       className="group flex flex-col items-center w-full rounded-xl shadow-sm transition-shadow hover:shadow-md"
-      style={{ backgroundColor: "var(--brand-navy)", height: "528px" }}
+      style={{ backgroundColor: "var(--brand-navy)" }}
     >
       <div
-        className="relative flex-1 w-full min-h-0 overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
-        style={
-          product.imageUrl
+        className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
+        style={{
+          width: "331px",
+          height: "226px",
+          maxWidth: "100%",
+          aspectRatio: "145 / 99",
+          borderRadius: "10px",
+          ...(product.imageUrl
             ? {
-                background: `url(${product.imageUrl}) lightgray 0px 0.013px / 100% 99.996% no-repeat`,
+                background: `url(${product.imageUrl}) lightgray 0.681px -55.209px / 99.891% 146.507% no-repeat`,
               }
-            : { backgroundColor: "#EEF1F6" }
-        }
+            : { backgroundColor: "lightgray" }),
+        }}
         role={product.imageUrl ? "img" : undefined}
         aria-label={product.imageUrl ? product.title : undefined}
       >

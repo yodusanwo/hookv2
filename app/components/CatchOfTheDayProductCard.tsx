@@ -1,5 +1,6 @@
 "use client";
 
+/** Card for the Product Carousel section only. Sizing is independent of the first "Catch of the day" section. */
 import Link from "next/link";
 import * as React from "react";
 import { AddToCartModal } from "./AddToCartModal";

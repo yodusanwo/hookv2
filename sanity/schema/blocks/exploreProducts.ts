@@ -3,31 +3,32 @@ import { defineType, defineField } from "sanity";
 export const exploreProductsBlock = defineType({
   name: "exploreProductsBlock",
   type: "object",
-  title: "Catch of the day",
+  title: "Explore Products (Catch of the day)",
   fields: [
-    defineField({ name: "title", type: "string", title: "Title", initialValue: "Catch of the day" }),
+    defineField({ name: "title", type: "string", title: "Title", initialValue: "EXPLORE OUR PRODUCTS" }),
     defineField({ name: "description", type: "text", title: "Description" }),
     defineField({
       name: "filterCollections",
       type: "array",
-      title: "Filter Tabs",
-      description: "Each tab maps to a Shopify collection. Products are fetched from the selected collection.",
+      title: "Category Cards",
+      description: "Each item shows as a category card (image + label). Link goes to collection.",
       of: [
         {
           type: "object",
           fields: [
-            { name: "label", type: "string", title: "Label", description: "Button text (e.g. Seafood)" },
+            { name: "label", type: "string", title: "Label", description: "e.g. Seafood, Smoked & Speciality" },
             {
               name: "collectionHandle",
               type: "string",
               title: "Collection Handle",
-              description: "Shopify collection handle (from collection URL). E.g. seafood, subscription-box",
+              description: "Shopify collection handle. Used for link URL.",
             },
+            { name: "image", type: "image", title: "Image", description: "Category card image" },
           ],
           preview: {
             select: { label: "label" },
             prepare({ label }) {
-              return { title: label ?? "Filter" };
+              return { title: label ?? "Category" };
             },
           },
         },
@@ -76,7 +77,7 @@ export const exploreProductsBlock = defineType({
   preview: {
     select: { title: "title" },
     prepare({ title }) {
-      return { title: "Catch of the day", subtitle: title };
+      return { title: "Explore Products (Catch of the day)", subtitle: title };
     },
   },
 });

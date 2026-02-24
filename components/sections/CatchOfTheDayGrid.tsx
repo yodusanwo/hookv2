@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * Grid for the Product Carousel section only.
+ * Card sizes and layout here do not affect the first "Catch of the day" (Explore Products) section.
+ */
 import * as React from "react";
 import Link from "next/link";
 import { safeHref } from "@/lib/urlValidation";
@@ -125,8 +129,8 @@ export function CatchOfTheDayGrid({
       )}
 
       {/* Product carousel - 3 centered columns */}
-      <div className="relative mt-10 mx-4">
-        <div className="mx-auto w-full max-w-[1200px] px-4">
+      <div className="relative mt-10">
+        <div className="mx-auto w-full max-w-[1200px]">
           {loading ? (
             <div
               className="flex min-h-[400px] items-center justify-center py-24"
@@ -151,9 +155,9 @@ export function CatchOfTheDayGrid({
               </button>
 
               {/* 3 centered columns - card dimensions match Recipe cards (min 280px, max 387px) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[13px] w-full max-w-[1200px] mx-auto place-items-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center" style={{ gap: "6px" }}>
                 {currentPageProducts.map((product) => (
-                  <div key={product.id} className="w-full min-w-[280px] max-w-[387px]">
+                  <div key={product.id} className="w-[387px] max-w-full">
                     <CatchOfTheDayProductCard product={product} />
                   </div>
                 ))}

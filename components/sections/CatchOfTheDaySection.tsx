@@ -1,3 +1,7 @@
+/**
+ * Product Carousel section (separate from the first "Catch of the day" section).
+ * Sizing and layout here are independent; changing this does not affect ExploreProductsSection.
+ */
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CatchOfTheDayGrid } from "./CatchOfTheDayGrid";
 

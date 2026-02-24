@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * Grid for the first "Catch of the day" section only.
+ * Card sizes and layout here do not affect the Product Carousel section.
+ */
 import * as React from "react";
 import Link from "next/link";
 import { safeHref } from "@/lib/urlValidation";
@@ -70,33 +74,31 @@ export function ExploreProductsGrid({
 
   return (
     <>
-      <div className="mt-10 mx-4">
+      <div className="mt-10">
         <div className="relative mx-auto w-full max-w-[1363px]">
-        <div
-          className="flex gap-4 overflow-x-auto scroll-smooth justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
           {loading ? (
             <div
-              className="flex items-center justify-center py-24 min-w-full"
+              className="flex items-center justify-center py-24"
               style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#F2F6EF" }}
             >
               Loading products…
             </div>
           ) : products.length > 0 ? (
-            products.slice(0, 9).map((product) => (
-              <div key={product.id} className="shrink-0 w-[387px]">
-                <ExploreProductCard product={product} />
-              </div>
-            ))
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center items-start" style={{ gap: "6px" }}>
+              {products.slice(0, 3).map((product) => (
+                <div key={product.id} className="w-[331px] max-w-full">
+                  <ExploreProductCard product={product} />
+                </div>
+              ))}
+            </div>
           ) : (
             <p
-              className="min-w-full text-center py-12 text-white"
+              className="text-center py-12 text-white"
               style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "16px" }}
             >
               No products in this collection. Add products in Shopify and assign them to the collection.
             </p>
           )}
-        </div>
         </div>
       </div>
 
