@@ -66,7 +66,7 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
           descriptionAsLead={false}
         />
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
+        <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start lg:gap-12">
           {/* Left: image */}
           <div className="overflow-hidden rounded-xl">
             {imageUrl ? (
@@ -96,24 +96,37 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
                 iconUrl = null;
               }
               return (
-                <div key={idx} className="flex gap-4">
-                  <div className="shrink-0">
+                <div
+                  key={idx}
+                  className="flex w-full items-center gap-6 rounded-lg border border-slate-300 p-4"
+                >
+                  <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center">
                     {iconUrl ? (
                       <img
                         src={iconUrl}
                         alt=""
                         aria-hidden
-                        className="h-12 w-12 object-contain"
+                        className="h-full w-full object-contain object-left"
                       />
                     ) : (
                       <div
-                        className="h-12 w-12 rounded bg-slate-200"
+                        className="h-[72px] w-[72px] rounded bg-slate-200"
                         aria-hidden
                       />
                     )}
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-slate-900">
+                  <div className="min-w-0 flex-1">
+                    <h3
+                      className="font-medium"
+                      style={{
+                        color: "#1E1E1E",
+                        fontFamily: "Inter, var(--font-inter), sans-serif",
+                        fontSize: "20px",
+                        fontStyle: "normal",
+                        fontWeight: 500,
+                        lineHeight: "135%",
+                      }}
+                    >
                       {point.title || "Point"}
                     </h3>
                     <p className="mt-1 text-sm leading-relaxed text-slate-700">
