@@ -1,4 +1,5 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
@@ -42,7 +43,7 @@ export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock 
 
   return (
     <section
-      className="flex min-h-[374px] flex-col justify-center py-14"
+      className="relative z-20 flex min-h-[374px] flex-col justify-center py-14"
       style={{ backgroundColor: "#D4F2FF", minHeight: 374 }}
     >
       <div
@@ -97,6 +98,21 @@ export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock 
             );
           })}
         </div>
+      </div>
+      <div
+        className="relative top-[100px] -mt-8 w-full shrink-0"
+        style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
+      >
+        <WaveDivider
+          navySrc="/VectorWavyNavyOurStory.svg"
+          wrapperClassName="mt-3 -mb-px [background-color:transparent]"
+          navyOutline="top"
+        />
+        <WaveDivider
+          navySrc="/VectorWavyNavy.svg"
+          wrapperClassName="-mt-px [background-color:transparent]"
+          navyOutline="bottom"
+        />
       </div>
     </section>
   );

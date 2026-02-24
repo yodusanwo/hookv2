@@ -54,7 +54,7 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
 
   return (
     <section
-      className="relative z-10 overflow-visible py-14"
+      className="relative z-10 overflow-visible pt-24 pb-14"
       style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
     >
       <div className="mx-auto w-full max-w-6xl px-4">
