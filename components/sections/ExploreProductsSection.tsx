@@ -58,6 +58,7 @@ export function ExploreProductsSection({ block }: { block: ExploreProductsBlock 
       label: f.label ?? "Shop",
       href,
       imageUrl,
+      collectionHandle: (f.collectionHandle ?? "").trim().toLowerCase(),
     };
   });
 

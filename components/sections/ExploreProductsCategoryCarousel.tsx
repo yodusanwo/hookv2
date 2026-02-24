@@ -11,6 +11,7 @@ export type ExploreCategoryItem = {
   label?: string;
   href: string;
   imageUrl: string | null;
+  collectionHandle?: string;
 };
 
 const CARD_WIDTH = 331;
@@ -65,6 +66,14 @@ export function ExploreProductsCategoryCarousel({
                       <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
                     </svg>
                   </div>
+                )}
+                {(cat.collectionHandle === "pet-treats" || cat.label?.toLowerCase().includes("pet")) && (
+                  <img
+                    src="/pet%201.png"
+                    alt=""
+                    aria-hidden
+                    className="pointer-events-none absolute bottom-3 right-3 h-12 w-12 object-contain opacity-90 sm:h-14 sm:w-14"
+                  />
                 )}
               </div>
               <div className="py-3 text-center">
