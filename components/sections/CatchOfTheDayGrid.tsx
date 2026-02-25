@@ -115,12 +115,21 @@ export function CatchOfTheDayGrid({
               key={idx}
               type="button"
               onClick={() => setActiveIndex(idx)}
-              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
-                idx === activeIndex
-                  ? "bg-slate-600 text-white"
-                  : "border border-white/60 bg-transparent text-white hover:border-white hover:bg-white/10"
-              }`}
-              style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
+              className="inline-flex items-center justify-center transition-colors capitalize"
+              style={{
+                fontFamily: "var(--font-inter), Inter, sans-serif",
+                fontSize: 18,
+                fontStyle: "normal",
+                fontWeight: 600,
+                lineHeight: "150%",
+                textTransform: "capitalize",
+                width: 134,
+                height: 44,
+                borderRadius: 30,
+                border: "1px solid #FFF",
+                background: "rgba(255, 255, 255, 0.33)",
+                color: "#FFF",
+              }}
             >
               {col.label ?? "Shop"}
             </button>
