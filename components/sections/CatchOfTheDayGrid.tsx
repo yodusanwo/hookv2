@@ -126,7 +126,7 @@ export function CatchOfTheDayGrid({
                 height: 44,
                 borderRadius: 30,
                 border: "1px solid #FFF",
-                background: "rgba(255, 255, 255, 0.33)",
+                background: idx === activeIndex ? "rgba(255, 255, 255, 0.33)" : "transparent",
                 color: "#FFF",
               }}
             >
@@ -156,10 +156,17 @@ export function CatchOfTheDayGrid({
                 type="button"
                 onClick={() => goToPage(-1)}
                 disabled={!canGoPrev}
-                className="absolute left-0 top-1/2 z-10 -translate-y-1/2 hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/10 text-white hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none md:flex"
+                className="absolute left-[-70px] top-1/2 z-10 -translate-y-1/2 hidden shrink-0 items-center justify-center bg-transparent disabled:opacity-30 disabled:pointer-events-none md:flex hover:opacity-90"
+                style={{ width: 38.4, height: 38.4 }}
                 aria-label="Previous"
               >
-                <span className="text-xl leading-none">‹</span>
+                <img
+                  src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
+                  alt=""
+                  aria-hidden
+                  className="max-w-full rotate-180"
+                  style={{ width: 38.4, height: 38.4, filter: "brightness(0) invert(1)" }}
+                />
               </button>
 
               {/* 3 centered columns - card dimensions match Recipe cards (min 280px, max 387px) */}
@@ -176,10 +183,17 @@ export function CatchOfTheDayGrid({
                 type="button"
                 onClick={() => goToPage(1)}
                 disabled={!canGoNext}
-                className="absolute right-0 top-1/2 z-10 -translate-y-1/2 hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/10 text-white hover:bg-white/20 disabled:opacity-30 disabled:pointer-events-none md:flex"
+                className="absolute right-[-70px] top-1/2 z-10 -translate-y-1/2 hidden shrink-0 items-center justify-center bg-transparent disabled:opacity-30 disabled:pointer-events-none md:flex hover:opacity-90"
+                style={{ width: 38.4, height: 38.4 }}
                 aria-label="Next"
               >
-                <span className="text-xl leading-none">›</span>
+                <img
+                  src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
+                  alt=""
+                  aria-hidden
+                  className="max-w-full"
+                  style={{ width: 38.4, height: 38.4, filter: "brightness(0) invert(1)" }}
+                />
               </button>
             </div>
           ) : (
