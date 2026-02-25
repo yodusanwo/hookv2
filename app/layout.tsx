@@ -15,6 +15,12 @@ const zamenhofInverse = localFont({
   display: "swap",
 });
 
+const zamenhofInline = localFont({
+  src: "../public/fonts/zamenhof_inline.otf",
+  variable: "--font-zamenhof-inline",
+  display: "swap",
+});
+
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
@@ -71,7 +77,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${zamenhofOutline.variable} ${zamenhofInverse.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${zamenhofOutline.variable} ${zamenhofInverse.variable} ${zamenhofInline.variable} antialiased`}
       >
         <SiteLayout
           headerLogoUrl={headerLogoUrl}

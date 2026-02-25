@@ -14,11 +14,11 @@ type OurStoryBlock = {
 
 const BODY_STYLE = {
   fontFamily: "var(--font-inter), Inter, sans-serif",
-  fontSize: "20px",
+  fontSize: "16px",
   fontStyle: "normal",
-  fontWeight: 300,
-  lineHeight: "140%",
-  color: "var(--gray-content-background-text-icon-80, #1C5080)",
+  fontWeight: 400,
+  lineHeight: "150%",
+  color: "#1E1E1E",
 } as const;
 
 const HOOK_POINT_BODY = (
@@ -110,7 +110,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
             <div className="mt-6">
               <a
                 href={ctaHref}
-                className="inline-block hover:opacity-90 transition-opacity normal-case"
+                className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
                 style={{
                   color: "#498CCB",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -122,6 +122,12 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
                 }}
               >
                 {ctaLabel}
+                <img
+                  src="/Vector.svg"
+                  alt=""
+                  aria-hidden
+                  className="shrink-0 max-w-full h-auto w-[28px]"
+                />
               </a>
             </div>
           </div>

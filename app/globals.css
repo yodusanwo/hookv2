@@ -28,7 +28,6 @@
   --section-heading-display-weight: 300;
   --section-heading-display-spacing: -1.68px;
   --section-heading-display-line-height: 120%;
-  --font-zamenhof-inline: "Zamenhof Inverse", var(--font-inter), Inter, sans-serif;
 }
 
 @theme inline {
@@ -75,23 +74,25 @@ body {
   background-color: rgb(30 41 59);
 }
 
-/* Section headings – Zamenhof Inverse (Our Story, Explore Products, Catch of the Day) */
-#about h2,
-#shop h2,
-#catch-of-the-day h2 {
+/* Section headings – Zamenhof Inverse (Our Story); Zamenhof Inline (Explore Products, Catch of the Day) */
+#about h2 {
   font-family: var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif !important;
 }
+#shop h2,
+#catch-of-the-day h2 {
+  font-family: var(--font-zamenhof-inline), var(--font-inter), Inter, sans-serif !important;
+}
 
-/* Our Story body typography – Body/XL/Light */
+/* Our Story body typography */
 .our-story-body,
 .our-story-body p,
 .our-story-body li {
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
-  font-weight: 300;
-  line-height: 140%;
-  color: var(--gray-content-background-text-icon-80, #1c5080);
+  font-weight: 400;
+  line-height: 150%;
+  color: #1e1e1e;
 }
 
 /* Full-bleed waves: scale slightly to fill edge gaps without causing overflow/scroll */
