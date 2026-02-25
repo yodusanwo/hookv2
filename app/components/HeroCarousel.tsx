@@ -78,8 +78,15 @@ export function HeroCarousel({
           <span className="block">{headlineLine2}</span>
         </h1>
         <p
-          className={`text-white ${FONT_INTER} mt-3 sm:mt-6 max-w-[920px] text-[clamp(0.8125rem,2.5vw,1.875rem)] leading-snug`}
-          style={{ fontWeight: 500 }}
+          className={`${FONT_INTER} mt-3 sm:mt-6 max-w-[920px]`}
+          style={{
+            color: "#FFF",
+            fontFamily: "Inter, var(--font-inter), sans-serif",
+            fontSize: "24px",
+            fontStyle: "normal",
+            fontWeight: 500,
+            lineHeight: "normal",
+          }}
         >
           {subline}
         </p>

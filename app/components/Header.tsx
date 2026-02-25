@@ -53,7 +53,7 @@ export function Header({
       >
         <Link
           href="/"
-          className="block shrink-0 border-0 outline-none ring-0 w-[58px] h-[56px] sm:w-[72px] sm:h-[70px] md:w-[88.7px] md:h-[86.5px]"
+          className="block shrink-0 border-0 outline-none ring-0 w-[64px] h-[62px] sm:w-[79px] sm:h-[77px] md:w-[97.6px] md:h-[95px]"
           aria-label="Hook Point home"
           style={{
             aspectRatio: "40/39",

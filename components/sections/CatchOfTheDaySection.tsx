@@ -48,7 +48,7 @@ export function CatchOfTheDaySection({ block }: { block: CatchOfTheDayBlock }) {
           variant="display"
           theme="dark"
           descriptionAsLead
-          titleFontFamily="var(--font-zamenhof)"
+          titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
         />
       </div>
 

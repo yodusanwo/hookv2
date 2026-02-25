@@ -75,9 +75,11 @@ body {
   background-color: rgb(30 41 59);
 }
 
-/* Our Story section heading – Zamenhof Inverse font */
-#about .mx-auto h2:first-child {
-  font-family: "Zamenhof Inverse", var(--font-inter), Inter, sans-serif !important;
+/* Section headings – Zamenhof Inverse (Our Story, Explore Products, Catch of the Day) */
+#about h2,
+#shop h2,
+#catch-of-the-day h2 {
+  font-family: var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif !important;
 }
 
 /* Our Story body typography – Body/XL/Light */

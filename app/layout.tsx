@@ -9,9 +9,13 @@ const zamenhofOutline = localFont({
   display: "swap",
 });
 
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
-import { WaveDivider } from "@/components/ui/WaveDivider";
+const zamenhofInverse = localFont({
+  src: "../public/fonts/zamenhof_inverse.otf",
+  variable: "--font-zamenhof-inverse",
+  display: "swap",
+});
+
+import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
 
@@ -67,25 +71,15 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${zamenhofOutline.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${zamenhofOutline.variable} ${zamenhofInverse.variable} antialiased`}
       >
-        <Header
-          logoUrl={headerLogoUrl}
+        <SiteLayout
+          headerLogoUrl={headerLogoUrl}
           navLinks={navLinks}
-          backgroundColor={headerBackgroundColor}
-        />
-        {/* Spacer so content starts below fixed header (matches header min-height) */}
-        <div className="h-[80px] sm:h-[107px] shrink-0" aria-hidden />
-        <div className="relative z-30 -mt-px origin-top" style={{ transform: "scale(1.05, 0.6)" }}>
-          <WaveDivider
-            navySrc="/VectorWavyNavy.svg"
-            navyOutline="bottom"
-          />
-        </div>
-        <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">
+          headerBackgroundColor={headerBackgroundColor}
+        >
           {children}
-        </div>
-        <Footer />
+        </SiteLayout>
       </body>
     </html>
   );

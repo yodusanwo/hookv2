@@ -48,7 +48,11 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
   const title = block.title ?? "We are Hook Point";
   const subheading = block.subheading ?? "Who We Are";
   const img = urlFor(block.image);
-  const ctaLabel = block.cta?.label ?? "Learn More About Us";
+  const rawCtaLabel = block.cta?.label ?? "Meet your fishermen";
+  const ctaLabel =
+    rawCtaLabel.length > 0
+      ? rawCtaLabel.charAt(0).toUpperCase() + rawCtaLabel.slice(1).toLowerCase()
+      : "Meet your fishermen";
   const ctaHref = block.cta?.href ? safeHref(block.cta.href) : "#learn";
 
   const useFallbackBody = !block.body?.length || isLoremIpsum(block.body);
@@ -60,7 +64,7 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
       style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
     >
       <div className="mx-auto w-full px-4 pb-12 pt-10" style={{ maxWidth: 1440 }}>
-        <SectionHeading title={title} variant="display" theme="light" titleFontFamily="var(--font-zamenhof-inline)" />
+        <SectionHeading title={title} variant="display" theme="light" titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif" />
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-stretch">
           <div className="overflow-hidden rounded-xl bg-slate-200">
             {img ? (
@@ -104,7 +108,19 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
               HOOK_POINT_BODY
             )}
             <div className="mt-6">
-              <a href={ctaHref} className="btn-primary">
+              <a
+                href={ctaHref}
+                className="inline-block hover:opacity-90 transition-opacity normal-case"
+                style={{
+                  color: "#498CCB",
+                  fontFamily: "Inter, var(--font-inter), sans-serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: 500,
+                  lineHeight: "normal",
+                  textTransform: "none",
+                }}
+              >
                 {ctaLabel}
               </a>
             </div>
