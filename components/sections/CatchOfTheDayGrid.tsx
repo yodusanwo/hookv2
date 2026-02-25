@@ -115,7 +115,7 @@ export function CatchOfTheDayGrid({
               key={idx}
               type="button"
               onClick={() => setActiveIndex(idx)}
-              className="inline-flex items-center justify-center transition-colors capitalize"
+              className="inline-flex items-center justify-center transition-colors capitalize whitespace-nowrap px-6"
               style={{
                 fontFamily: "var(--font-inter), Inter, sans-serif",
                 fontSize: 18,
@@ -123,7 +123,6 @@ export function CatchOfTheDayGrid({
                 fontWeight: 600,
                 lineHeight: "150%",
                 textTransform: "capitalize",
-                width: 134,
                 height: 44,
                 borderRadius: 30,
                 border: "1px solid #FFF",
