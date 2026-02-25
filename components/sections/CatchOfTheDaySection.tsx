@@ -4,13 +4,12 @@
  */
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CatchOfTheDayGrid } from "./CatchOfTheDayGrid";
-
-type FilterCollection = { label?: string; collectionHandle?: string };
+import type { FilterItem } from "@/lib/types";
 
 type CatchOfTheDayBlock = {
   title?: string;
   description?: string;
-  filterCollections?: FilterCollection[];
+  filterCollections?: FilterItem[];
   cta?: { label?: string; href?: string };
 };
 
@@ -19,7 +18,7 @@ const DEFAULT_DESCRIPTION =
   "Wild Alaskan seafood boxes, fillets, and specialty cuts ranging from sockeye and sablefish to halibut, cod, scallops, and even salmon heads are offered as premium, wild-caught options. All wild. All the time.";
 const DEFAULT_CTA = { label: "SHOP FULL LINEUP →", href: "#shop" };
 
-const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
+const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
   { label: "Seafood", collectionHandle: "seafood" },
   { label: "Subscription Box", collectionHandle: "subscription-box" },
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },

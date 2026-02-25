@@ -6,8 +6,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 import { ExploreProductsCategoryCarousel } from "./ExploreProductsCategoryCarousel";
 import { urlFor } from "@/lib/sanityImage";
+import type { FilterItem } from "@/lib/types";
 
-type FilterCollection = { label?: string; collectionHandle?: string; image?: { _ref?: string; asset?: { _ref?: string } } };
+/** Explore Products filter item with optional Sanity image reference. */
+type FilterCollection = FilterItem & { image?: { _ref?: string; asset?: { _ref?: string } } };
 type Category = { label?: string; collectionHandle?: string };
 
 type ExploreProductsBlock = {

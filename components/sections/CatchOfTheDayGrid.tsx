@@ -11,22 +11,29 @@ import {
   CatchOfTheDayProductCard,
   type CatchOfTheDayProductCardProduct,
 } from "@/app/components/CatchOfTheDayProductCard";
+import { CarouselArrow } from "@/components/ui/CarouselArrow";
+import type { ApiProductForCarousel, FilterItem } from "@/lib/types";
 
-type FilterItem = { label?: string; collectionHandle?: string };
+const ITEMS_PER_PAGE = 3;
+const MAX_PRODUCTS = 9;
 
-type ApiProduct = {
-  id: string;
-  title: string;
-  handle: string;
-  images?: { edges?: Array<{ node?: { url?: string; altText?: string | null } }> };
-  price?: string;
-  currencyCode?: string;
-  priceRange?: { minVariantPrice?: { amount?: string; currencyCode?: string } };
-  variantId?: string | null;
-  compareAtPrice?: string | null;
-  availableForSale?: boolean;
-  sizeOrDescription?: string | null;
-};
+function mapApiProductToCard(p: ApiProductForCarousel): CatchOfTheDayProductCardProduct {
+  const img = p.images?.edges?.[0]?.node;
+  const price = p.price ?? p.priceRange?.minVariantPrice?.amount ?? "0";
+  const currencyCode = p.currencyCode ?? p.priceRange?.minVariantPrice?.currencyCode ?? "USD";
+  return {
+    id: p.id,
+    handle: p.handle,
+    title: p.title,
+    imageUrl: img?.url ?? null,
+    price,
+    currencyCode,
+    compareAtPrice: p.compareAtPrice ?? null,
+    variantId: p.variantId ?? null,
+    availableForSale: p.availableForSale ?? false,
+    sizeOrDescription: p.sizeOrDescription ?? null,
+  };
+}
 
 export function CatchOfTheDayGrid({
   filterCollections,
@@ -39,54 +46,55 @@ export function CatchOfTheDayGrid({
   const [pageIndex, setPageIndex] = React.useState(0);
   const [products, setProducts] = React.useState<CatchOfTheDayProductCardProduct[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const cacheRef = React.useRef<Map<string, CatchOfTheDayProductCardProduct[]>>(new Map());
 
-  const collections = React.useMemo(
-    () =>
-      (filterCollections ?? []).filter((f) => f.label || f.collectionHandle),
-    [filterCollections]
-  );
+  const collections = filterCollections ?? [];
 
   const currentCollection = collections[activeIndex];
   const collectionHandle = currentCollection?.collectionHandle?.trim() ?? "";
 
   React.useEffect(() => {
+    setActiveIndex((prev) => Math.min(prev, Math.max(0, collections.length - 1)));
+  }, [collections.length]);
+
+  React.useEffect(() => {
+    const cached = cacheRef.current.get(collectionHandle);
+    if (cached !== undefined) {
+      setProducts(cached);
+      setPageIndex(0);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     const controller = new AbortController();
     setLoading(true);
+    setError(null);
     const url = collectionHandle
       ? `/api/collections/${encodeURIComponent(collectionHandle)}/products`
-      : "/api/products?first=9";
+      : `/api/products?first=${MAX_PRODUCTS}`;
 
     fetch(url, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
       })
-      .then((json: { products?: ApiProduct[] }) => {
+      .then((json: { products?: ApiProductForCarousel[] }) => {
         const raw = json.products ?? [];
-        const mapped: CatchOfTheDayProductCardProduct[] = raw.map((p) => {
-          const img = p.images?.edges?.[0]?.node;
-          const price = p.price ?? p.priceRange?.minVariantPrice?.amount ?? "0";
-          const currencyCode = p.currencyCode ?? p.priceRange?.minVariantPrice?.currencyCode ?? "USD";
-          return {
-            id: p.id,
-            handle: p.handle,
-            title: p.title,
-            imageUrl: img?.url ?? null,
-            price,
-            currencyCode,
-            compareAtPrice: p.compareAtPrice ?? null,
-            variantId: p.variantId ?? null,
-            availableForSale: p.availableForSale ?? false,
-            sizeOrDescription: p.sizeOrDescription ?? null,
-          };
-        });
+        const mapped = raw.map(mapApiProductToCard);
         if (!controller.signal.aborted) {
+          cacheRef.current.set(collectionHandle, mapped);
           setProducts(mapped);
           setPageIndex(0);
+          setError(null);
         }
       })
       .catch((err) => {
-        if (err.name !== "AbortError") setProducts([]);
+        if (err.name !== "AbortError") {
+          setProducts([]);
+          setError("Couldn't load products. Try again.");
+        }
       })
       .finally(() => {
         if (!controller.signal.aborted) setLoading(false);
@@ -95,14 +103,18 @@ export function CatchOfTheDayGrid({
     return () => controller.abort();
   }, [collectionHandle]);
 
-  const visibleProducts = products.slice(0, 9);
-  const pageCount = Math.max(1, Math.ceil(visibleProducts.length / 3));
-  const currentPageProducts = visibleProducts.slice(pageIndex * 3, pageIndex * 3 + 3);
+  const pageCount = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));
+  const currentPageProducts = products.slice(
+    pageIndex * ITEMS_PER_PAGE,
+    pageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+  );
   const canGoPrev = pageIndex > 0;
   const canGoNext = pageIndex < pageCount - 1;
 
   const goToPage = (dir: -1 | 1) => {
-    setPageIndex((prev) => Math.max(0, Math.min(pageCount - 1, prev + dir)));
+    setPageIndex((prev) =>
+      Math.max(0, Math.min(pageCount - 1, prev + dir))
+    );
   };
 
   return (
@@ -112,23 +124,10 @@ export function CatchOfTheDayGrid({
         <div className="mt-8 flex flex-wrap justify-center gap-3 px-4">
           {collections.map((col, idx) => (
             <button
-              key={idx}
+              key={col.collectionHandle ?? col.label ?? `filter-${idx}`}
               type="button"
               onClick={() => setActiveIndex(idx)}
-              className="inline-flex items-center justify-center transition-colors capitalize whitespace-nowrap px-6"
-              style={{
-                fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: 18,
-                fontStyle: "normal",
-                fontWeight: 600,
-                lineHeight: "150%",
-                textTransform: "capitalize",
-                height: 44,
-                borderRadius: 30,
-                border: "1px solid #FFF",
-                background: idx === activeIndex ? "rgba(255, 255, 255, 0.33)" : "transparent",
-                color: "#FFF",
-              }}
+              className={`product-carousel-filter inline-flex items-center justify-center transition-colors whitespace-nowrap px-6 ${idx === activeIndex ? "product-carousel-filter--active" : ""}`}
             >
               {col.label ?? "Shop"}
             </button>
@@ -149,26 +148,25 @@ export function CatchOfTheDayGrid({
             >
               Loading products…
             </div>
+          ) : error ? (
+            <div
+              className="flex min-h-[400px] items-center justify-center py-24 px-4 text-center"
+              style={{
+                fontFamily: "var(--font-inter), Inter, sans-serif",
+                color: "#F2F6EF",
+                fontSize: "16px",
+              }}
+            >
+              {error}
+            </div>
           ) : products.length > 0 ? (
             <div className="relative flex items-center justify-center gap-6">
-              {/* Prev arrow */}
-              <button
-                type="button"
-                onClick={() => goToPage(-1)}
+              <CarouselArrow
+                direction="prev"
                 disabled={!canGoPrev}
-                className="absolute left-[-70px] top-1/2 z-10 -translate-y-1/2 hidden shrink-0 items-center justify-center bg-transparent disabled:opacity-30 disabled:pointer-events-none md:flex hover:opacity-90"
-                style={{ width: 38.4, height: 38.4 }}
-                aria-label="Previous"
-              >
-                <img
-                  src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
-                  alt=""
-                  aria-hidden
-                  className="max-w-full rotate-180"
-                  style={{ width: 38.4, height: 38.4, filter: "brightness(0) invert(1)" }}
-                />
-              </button>
-
+                onClick={() => goToPage(-1)}
+                ariaLabel="Previous"
+              />
               {/* 3 centered columns - card dimensions match Recipe cards (min 280px, max 387px) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center" style={{ gap: "6px" }}>
                 {currentPageProducts.map((product) => (
@@ -177,24 +175,12 @@ export function CatchOfTheDayGrid({
                   </div>
                 ))}
               </div>
-
-              {/* Next arrow */}
-              <button
-                type="button"
-                onClick={() => goToPage(1)}
+              <CarouselArrow
+                direction="next"
                 disabled={!canGoNext}
-                className="absolute right-[-70px] top-1/2 z-10 -translate-y-1/2 hidden shrink-0 items-center justify-center bg-transparent disabled:opacity-30 disabled:pointer-events-none md:flex hover:opacity-90"
-                style={{ width: 38.4, height: 38.4 }}
-                aria-label="Next"
-              >
-                <img
-                  src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
-                  alt=""
-                  aria-hidden
-                  className="max-w-full"
-                  style={{ width: 38.4, height: 38.4, filter: "brightness(0) invert(1)" }}
-                />
-              </button>
+                onClick={() => goToPage(1)}
+                ariaLabel="Next"
+              />
             </div>
           ) : (
             <p

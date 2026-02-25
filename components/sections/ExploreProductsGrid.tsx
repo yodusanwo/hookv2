@@ -8,8 +8,7 @@ import * as React from "react";
 import Link from "next/link";
 import { safeHref } from "@/lib/urlValidation";
 import { ExploreProductCard, type ExploreProductCardProduct } from "@/app/components/ExploreProductCard";
-
-type FilterItem = { label?: string; collectionHandle?: string };
+import type { FilterItem } from "@/lib/types";
 
 export function ExploreProductsGrid({
   filterCollections,
