@@ -3,9 +3,11 @@
 /**
  * Category carousel for Explore Products (Catch of the day) section.
  * Shows image + label per category with left/right arrows. Dark theme (white text, white arrows).
+ * Uses the same CarouselArrow as the Product Carousel section.
  */
 import Link from "next/link";
 import * as React from "react";
+import { CarouselArrow } from "@/components/ui/CarouselArrow";
 
 export type ExploreCategoryItem = {
   label?: string;
@@ -23,6 +25,29 @@ export function ExploreProductsCategoryCarousel({
   categories: ExploreCategoryItem[];
 }) {
   const ref = React.useRef<HTMLDivElement>(null);
+  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+  const [canScrollNext, setCanScrollNext] = React.useState(true);
+
+  const updateScrollState = React.useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanScrollPrev(scrollLeft > 1);
+    setCanScrollNext(scrollLeft < scrollWidth - clientWidth - 1);
+  }, []);
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    updateScrollState();
+    el.addEventListener("scroll", updateScrollState);
+    const ro = new ResizeObserver(updateScrollState);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", updateScrollState);
+      ro.disconnect();
+    };
+  }, [categories.length, updateScrollState]);
 
   const scroll = (dir: -1 | 1) => {
     const el = ref.current;
@@ -86,22 +111,18 @@ export function ExploreProductsCategoryCarousel({
         ))}
       </div>
 
-      <button
-        type="button"
+      <CarouselArrow
+        direction="prev"
+        disabled={!canScrollPrev}
         onClick={() => scroll(-1)}
-        className="absolute left-0 top-1/2 z-10 -translate-y-1/2 hidden h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-white/10 text-white hover:bg-white/20 md:flex"
-        aria-label="Scroll left"
-      >
-        <span className="text-xl leading-none">‹</span>
-      </button>
-      <button
-        type="button"
+        ariaLabel="Scroll left"
+      />
+      <CarouselArrow
+        direction="next"
+        disabled={!canScrollNext}
         onClick={() => scroll(1)}
-        className="absolute right-0 top-1/2 z-10 -translate-y-1/2 hidden h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-white/10 text-white hover:bg-white/20 md:flex"
-        aria-label="Scroll right"
-      >
-        <span className="text-xl leading-none">›</span>
-      </button>
+        ariaLabel="Scroll right"
+      />
     </div>
   );
 }

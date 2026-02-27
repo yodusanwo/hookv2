@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { HeaderWave } from "./HeaderWave";
 import { Footer } from "./Footer";
-import { BottomNav } from "./BottomNav";
 
 type SiteLayoutProps = {
   children: React.ReactNode;
@@ -37,7 +36,6 @@ export function SiteLayout({
         navLinks={navLinks}
         backgroundColor={headerBackgroundColor}
       />
-      <BottomNav navLinks={navLinks} />
       <div className="h-[80px] sm:h-[107px] shrink-0" aria-hidden />
       <HeaderWave />
       <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">

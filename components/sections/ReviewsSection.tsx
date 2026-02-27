@@ -25,7 +25,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   if (reviews.length === 0) return null;
 
   return (
-    <section className="flex min-h-0 flex-col justify-center bg-[#F2F2F5] py-14">
+    <section className="flex min-h-0 flex-col justify-center section-bg-light py-14">
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}

@@ -39,8 +39,10 @@
 
   /* Brand colors */
   --brand-navy: #171730;
+  --footer-bg: #121228;
   --brand-green: #069400;
   --brand-light-blue-bg: #d4f2ff;
+  --section-bg-light: #F2F2F5;
   --section-heading-light: #1e1e1e;
   --section-heading-dark: #f2f6ef;
 
@@ -49,6 +51,10 @@
   --section-heading-display-weight: 300;
   --section-heading-display-spacing: -1.68px;
   --section-heading-display-line-height: 120%;
+
+  /* Recipes wave */
+  --wave-recipes-translate: 90%;
+  --wave-recipes-section-padding: calc(8vw + 32px);
 }
 
 @theme inline {
@@ -145,29 +151,19 @@ body {
 /* Our Story blue wave overlap – media queries cascade top-to-bottom */
 
 .blue-wave-overlap {
-  margin-top: -200px;
+  margin-top: -210px;
 }
 
-@media (min-width: 640px)  { .blue-wave-overlap { margin-top: -200px; } }
-@media (min-width: 768px)  { .blue-wave-overlap { margin-top: -200px; } }
-@media (min-width: 1024px) { .blue-wave-overlap { margin-top: -200px; } }
-@media (min-width: 1566px) { .blue-wave-overlap { margin-top: -235px; } }
+@media (min-width: 1566px) {
+  .blue-wave-overlap {
+    margin-top: -235px;
+  }
+}
 
 .navy-wave {
   width: 100%;
   margin-top: 0;
 }
-
-.blue-wave-overlap {
-  margin-top: -210px;
-}
-
-:root {
-  --wave-recipes-translate: 90%;
-  --wave-recipes-section-padding: calc(8vw + 32px);
-}
-
-/* Recipes wave – mobile-first, smooth progression */
 
 
 
@@ -197,6 +193,11 @@ body {
     filter: drop-shadow(0 -1px 0 #5A8AC6) drop-shadow(0 -10px 0 #5A8AC6)
       drop-shadow(0 1px 0 #5A8AC6) drop-shadow(0 10px 0 #5A8AC6);
   }
+}
+
+/* Section background – FAQ, footer wave, reviews */
+.section-bg-light {
+  background-color: var(--section-bg-light);
 }
 
 /* Featured local stores section */

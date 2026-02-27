@@ -23,7 +23,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
   if (faqs.length === 0) return null;
 
   return (
-    <section id="faq" className="py-14 bg-slate-50">
+    <section id="faq" className="py-14 section-bg-light">
       <div className="mx-auto w-full px-4">
         <SectionHeading
           title={title}
