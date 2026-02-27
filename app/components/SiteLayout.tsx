@@ -41,7 +41,7 @@ export function SiteLayout({
       <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">
         {children}
       </div>
-      <Footer />
+      <Footer logoUrl={headerLogoUrl} />
     </>
   );
 }

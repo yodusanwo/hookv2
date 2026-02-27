@@ -1,6 +1,9 @@
 import Link from "next/link";
 
-export function Footer() {
+const FALLBACK_LOGO = "/Hook_Point_Shirt_White_Letters_042acd76-dff8-4246-874a-1df73d011a24%201.png";
+
+export function Footer({ logoUrl }: { logoUrl?: string | null }) {
+  const logoSrc = logoUrl ?? FALLBACK_LOGO;
   return (
     <footer id="contact" className="relative overflow-visible text-slate-100" style={{ backgroundColor: "var(--footer-bg)" }}>
       {/* Wave above footer content — pt for drop-shadow clearance on mobile */}
@@ -15,20 +18,29 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-12 pb-20 md:pb-12" style={{ backgroundColor: "var(--footer-bg)" }}>
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-emerald-500/90" />
-              <div className="leading-tight">
-                <div className="text-base font-semibold tracking-wide">
-                  Hook Point
-                </div>
-                <div className="text-xs text-slate-300">
-                  Wild Alaskan • Small scale • Family run
-                </div>
-              </div>
-            </div>
-            <p className="mt-4 text-sm text-slate-300 max-w-sm">
-              From Kodiak Island to your kitchen—responsibly harvested seafood
-              delivered with care.
+            <Link
+              href="/"
+              className="block border-0 outline-none ring-0"
+              aria-label="Hook Point home"
+              style={{
+                width: "180.495px",
+                height: "175.983px",
+                aspectRatio: "40/39",
+                background: `url(${logoSrc}) var(--footer-bg) 50% / cover no-repeat`,
+              }}
+            />
+            <p
+              className="mt-4"
+              style={{
+                color: "#FFF",
+                fontFamily: "Inter",
+                fontSize: "13px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "normal",
+              }}
+            >
+              © 2026 All Rights Reserved
             </p>
           </div>
 
