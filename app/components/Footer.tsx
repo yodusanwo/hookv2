@@ -2,8 +2,17 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer id="contact" className="mt-16 bg-slate-900 text-slate-100">
-      <div className="mx-auto max-w-6xl px-4 py-12">
+    <footer id="contact" className="relative overflow-visible bg-slate-900 text-slate-100">
+      {/* Wave above footer content — pt for drop-shadow clearance on mobile */}
+      <div className="w-full pt-6 sm:pt-8" style={{ backgroundColor: "#F2F2F5" }} aria-hidden>
+        <img
+          src="/wavefooter.png"
+          alt=""
+          className="w-full h-auto block align-bottom navy-wave-outline-top"
+        />
+      </div>
+      {/* Main footer content */}
+      <div className="mx-auto max-w-6xl px-4 py-12 pb-20 md:pb-12">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
             <div className="flex items-center gap-3">
