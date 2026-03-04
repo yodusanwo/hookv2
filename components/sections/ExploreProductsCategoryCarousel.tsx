@@ -69,9 +69,9 @@ export function ExploreProductsCategoryCarousel({
             href={cat.href}
             className="group shrink-0 snap-start flex flex-col items-center"
           >
-            <div className="overflow-hidden rounded-lg bg-white/10 border border-white/20 w-[331px] max-w-full shadow-sm transition-all hover:border-white/40 hover:bg-white/15 shrink-0">
+            <div className="overflow-hidden rounded-lg w-[331px] max-w-full transition-all shrink-0" style={{ backgroundColor: "var(--brand-navy)" }}>
               <div
-                className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] rounded-[10px]"
+                className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] rounded-[10px] bg-white/10 group-hover:bg-white/15"
                 style={{
                   width: "331px",
                   maxWidth: "100%",

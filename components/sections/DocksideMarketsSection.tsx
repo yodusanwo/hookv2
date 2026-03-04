@@ -37,12 +37,14 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
   return (
     <section
       id="markets"
-      className="relative z-0 -mt-1 mx-auto flex flex-col justify-start bg-[#FAFAFC] pt-0 pb-10"
-      style={{ width: "100%", minHeight: 662 }}
+      className="relative z-0 -mt-1 mx-auto flex flex-col justify-start bg-[#FAFAFC]"
+      style={{
+        width: "100%",
+        minHeight: 662,
+        paddingTop: "clamp(9rem, 18vw, 13.5rem)",
+      }}
     >
-      <div
-        className="mx-auto mt-auto flex w-full flex-col justify-end mx-4 pt-10"
-      >
+      <div className="mx-auto flex w-full flex-col mx-4">
         <SectionHeading
           title={title}
           description={description || undefined}
@@ -50,7 +52,7 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
           theme="light"
           wideTitleOnDesktop
         />
-        <div className="relative mt-8">
+        <div className="relative mt-8 pb-14 sm:pb-16 md:pb-[4.5rem]">
           <div className="mx-auto w-full max-w-[1363px]">
           <div
             ref={scrollRef}
