@@ -55,7 +55,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             theme="light"
         />
         <div
-          className="mt-8 grid gap-x-[13px] gap-y-[13px]"
+          className="mt-16 grid gap-x-[13px] gap-y-[13px]"
           style={{
             gridTemplateColumns: "repeat(auto-fill, minmax(280px, 387px))",
             justifyContent: "center",
@@ -68,7 +68,8 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                   <Link
                     key={idx}
                     href={href}
-                    className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl bg-white transition-shadow hover:shadow-md"
+                    className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md"
+                    style={{ backgroundColor: RECIPES_BG }}
                   >
                     <div
                       className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
