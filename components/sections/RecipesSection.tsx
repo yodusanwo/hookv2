@@ -5,7 +5,7 @@ import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 const RECIPES_TOP_PADDING_PX = 56;
-const RECIPES_BG = "#FEF3C7";
+const RECIPES_BG = "#D4F2FF";
 const SHOW_MORE_LINK_STYLE = {
   color: "#498CCB",
   fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -54,8 +54,13 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             variant="display"
             theme="light"
         />
-        <div className="mt-8 flex flex-col">
-          <div className="flex flex-wrap justify-center gap-[13px]">
+        <div
+          className="mt-8 grid gap-x-[13px] gap-y-[13px]"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 387px))",
+            justifyContent: "center",
+          }}
+        >
               {recipes.map((r, idx) => {
                 const img = urlFor(r.image);
                 const href = safeHref(r.url) || "#";
@@ -63,18 +68,19 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                   <Link
                     key={idx}
                     href={href}
-                    className="group flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm transition-shadow hover:shadow-md"
+                    className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl bg-white transition-shadow hover:shadow-md"
                   >
-                    {img && (
-                      <div className="aspect-[331/190] min-w-0 w-full shrink-0 overflow-hidden bg-slate-100">
-                        <img
-                          src={img.url()}
-                          alt={r.title ?? "Recipe"}
-                          className="h-full w-full max-w-full min-w-0 object-cover transition-transform group-hover:scale-[1.03]"
-                          loading="lazy"
-                        />
-                      </div>
-                    )}
+                    <div
+                      className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+                      style={{
+                        height: 320,
+                        alignSelf: "stretch",
+                        borderRadius: 10,
+                        background: img ? `url(${img.url()}) lightgray 50% / cover no-repeat` : "lightgray",
+                      }}
+                      role={img ? undefined : "img"}
+                      aria-label={img ? undefined : (r.title ?? "Recipe")}
+                    />
                     <div
                       className="px-4 py-3"
                       style={{ backgroundColor: RECIPES_BG }}
@@ -86,20 +92,19 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                   </Link>
                 );
             })}
-          </div>
           <Link
-              href={safeHref(showMoreUrl) || "#"}
-              className="mt-10 mb-10 ml-[131px] self-start inline-flex items-center gap-1.5 hover:opacity-90"
-              style={SHOW_MORE_LINK_STYLE}
+            href={safeHref(showMoreUrl) || "#"}
+            className="mt-10 mb-10 pl-4 col-start-1 inline-flex items-center gap-1.5 hover:opacity-90 w-fit"
+            style={SHOW_MORE_LINK_STYLE}
           >
             Show more recipes
-              <img
-                src="/Vector.svg"
-                alt=""
-                aria-hidden
-                width={28.333}
-                height={12.307}
-                className="shrink-0 max-w-full h-auto"
+            <img
+              src="/Vector.svg"
+              alt=""
+              aria-hidden
+              width={28.333}
+              height={12.307}
+              className="shrink-0 max-w-full h-auto"
             />
           </Link>
         </div>
