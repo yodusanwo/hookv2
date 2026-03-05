@@ -33,7 +33,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   const isDark = theme === "dark";
   const resolvedTitleColor = titleColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
-  const resolvedDescColor = descriptionColor ?? (isDark ? "var(--section-heading-dark)" : undefined);
+  const resolvedDescColor = descriptionColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
 
   if (variant === "display") {
     const containerMaxW =
@@ -58,19 +58,8 @@ export function SectionHeading({
         </h2>
         {description && (
           <p
-            className={`mx-auto text-center ${descriptionAsLead ? "max-w-[1100px]" : "max-w-2xl"} ${
-              descriptionAsLead
-                ? "mt-4 text-base leading-[135%] md:text-[20px]"
-                : "mt-3 text-sm leading-relaxed"
-            } ${!descriptionColor && isDark ? "text-slate-300" : !descriptionColor ? "text-slate-600" : ""}`}
-            style={
-              descriptionColor || descriptionAsLead
-                ? {
-                    fontFamily: "var(--font-inter), Inter, sans-serif",
-                    color: descriptionColor ?? resolvedDescColor,
-                  }
-                : undefined
-            }
+            className="section-description"
+            style={{ color: resolvedDescColor }}
           >
             {description}
           </p>
@@ -80,12 +69,19 @@ export function SectionHeading({
   }
 
   const titleClass = `text-center text-2xl font-semibold tracking-tight ${titleColor ? "" : isDark ? "text-white" : "text-slate-900"}`;
-  const descClass = `mt-2 text-center text-sm ${descriptionColor ? "" : isDark ? "text-slate-300" : "text-slate-600"}`;
-
   return (
     <div>
       <h2 className={titleClass} style={titleColor ? { color: titleColor } : undefined}>{title}</h2>
-      {description && <p className={descClass} style={descriptionColor ? { color: descriptionColor } : undefined}>{description}</p>}
+      {description && (
+        <p
+          className="section-description"
+          style={{
+            color: descriptionColor ?? (isDark ? "var(--section-heading-dark)" : "#1E1E1E"),
+          }}
+        >
+          {description}
+        </p>
+      )}
     </div>
   );
 }

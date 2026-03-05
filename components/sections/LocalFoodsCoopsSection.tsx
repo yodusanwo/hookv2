@@ -36,7 +36,11 @@ type LocalFoodsCoopsBlock = {
   logoButtons?: CoopItem[];
 };
 
-export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock }) {
+export function LocalFoodsCoopsSection({
+  block,
+}: {
+  block: LocalFoodsCoopsBlock;
+}) {
   const title = block.title ?? "LOCAL FOODS CO-OPS";
   const description = block.description ?? "";
   const items = block.logoButtons ?? [];
@@ -74,7 +78,12 @@ export function LocalFoodsCoopsSection({ block }: { block: LocalFoodsCoopsBlock 
             ) : (
               <>
                 <MapPinIcon className="h-6 w-6 shrink-0 text-emerald-600" />
-                <span className="text-sm font-semibold" style={{ color: "#1E1E1E" }}>{item.label ?? "Co-op"}</span>
+                <span
+                  className="text-sm font-semibold"
+                  style={{ color: "#1E1E1E" }}
+                >
+                  {item.label ?? "Co-op"}
+                </span>
               </>
             );
 

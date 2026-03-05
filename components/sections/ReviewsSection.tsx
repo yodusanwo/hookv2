@@ -49,7 +49,12 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
                     <span
                       key={i}
                       className="flex items-center justify-center"
-                      style={{ width: 24, height: 24, fontSize: 24, lineHeight: 1 }}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        fontSize: 24,
+                        lineHeight: 1,
+                      }}
                     >
                       {i < Math.min(5, r.stars ?? 0) ? "★" : "☆"}
                     </span>
@@ -71,13 +76,13 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
                 {r.text}
               </p>
               <p
-                className="mt-4"
+                className="mt-4 text-sm font-semibold"
                 style={{
                   color: "#1E1E1E",
                   fontFamily: "var(--font-inter), Inter, sans-serif",
-                  fontSize: 16,
+                  fontSize: 14,
                   fontStyle: "normal",
-                  fontWeight: 400,
+                  fontWeight: 600,
                   lineHeight: "normal",
                 }}
               >

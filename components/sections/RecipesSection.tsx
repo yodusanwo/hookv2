@@ -43,16 +43,16 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
       style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 433 }}
     >
       <div
-          className="mx-auto w-full max-w-full px-4"
+        className="mx-auto w-full max-w-full px-4"
         style={{
           paddingTop: RECIPES_TOP_PADDING_PX,
         }}
       >
         <SectionHeading
-            title={title}
-            description={description || undefined}
-            variant="display"
-            theme="light"
+          title={title}
+          description={description || undefined}
+          variant="display"
+          theme="light"
         />
         <div
           className="mt-16 grid gap-x-[13px] gap-y-[13px]"
@@ -61,38 +61,40 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             justifyContent: "center",
           }}
         >
-              {recipes.map((r, idx) => {
-                const img = urlFor(r.image);
-                const href = safeHref(r.url) || "#";
-                return (
-                  <Link
-                    key={idx}
-                    href={href}
-                    className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md"
-                    style={{ backgroundColor: RECIPES_BG }}
-                  >
-                    <div
-                      className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
-                      style={{
-                        height: 320,
-                        alignSelf: "stretch",
-                        borderRadius: 10,
-                        background: img ? `url(${img.url()}) lightgray 50% / cover no-repeat` : "lightgray",
-                      }}
-                      role={img ? undefined : "img"}
-                      aria-label={img ? undefined : (r.title ?? "Recipe")}
-                    />
-                    <div
-                      className="px-4 py-3"
-                      style={{ backgroundColor: RECIPES_BG }}
-                    >
-                      <h3 className="font-semibold text-slate-900">
-                        {r.title ?? "Recipe"}
-                      </h3>
-                    </div>
-                  </Link>
-                );
-            })}
+          {recipes.map((r, idx) => {
+            const img = urlFor(r.image);
+            const href = safeHref(r.url) || "#";
+            return (
+              <Link
+                key={idx}
+                href={href}
+                className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md"
+                style={{ backgroundColor: RECIPES_BG }}
+              >
+                <div
+                  className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+                  style={{
+                    height: 320,
+                    alignSelf: "stretch",
+                    borderRadius: 10,
+                    background: img
+                      ? `url(${img.url()}) lightgray 50% / cover no-repeat`
+                      : "lightgray",
+                  }}
+                  role={img ? undefined : "img"}
+                  aria-label={img ? undefined : (r.title ?? "Recipe")}
+                />
+                <div
+                  className="px-4 py-3"
+                  style={{ backgroundColor: RECIPES_BG }}
+                >
+                  <h3 className="font-semibold text-slate-900">
+                    {r.title ?? "Recipe"}
+                  </h3>
+                </div>
+              </Link>
+            );
+          })}
           <Link
             href={safeHref(showMoreUrl) || "#"}
             className="mt-10 mb-10 pl-4 col-start-1 inline-flex items-center gap-1.5 hover:opacity-90 w-fit"

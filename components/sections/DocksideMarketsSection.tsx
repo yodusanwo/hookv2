@@ -21,7 +21,11 @@ type DocksideMarketsBlock = {
   items?: MarketItem[];
 };
 
-export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock }) {
+export function DocksideMarketsSection({
+  block,
+}: {
+  block: DocksideMarketsBlock;
+}) {
   const title = block.title ?? "Find us at these Chicagoland Farmers Markets";
   const description = block.description ?? "";
   const items = block.items ?? [];
@@ -54,68 +58,80 @@ export function DocksideMarketsSection({ block }: { block: DocksideMarketsBlock 
         />
         <div className="relative mt-8 pb-14 sm:pb-16 md:pb-[4.5rem]">
           <div className="mx-auto w-full max-w-[1363px]">
-          <div
-            ref={scrollRef}
-            className="flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-14 pr-14 [-webkit-overflow-scrolling:touch]"
-          >
-          {items.length > 0
-            ? items.map((item, idx) => {
-                const img = urlFor(item.logo);
-                const logoW = item.logoWidth ?? 115;
-                const logoH = item.logoHeight ?? 115;
-                const logoAspect = item.logoAspectRatio ?? "1/1";
-                const hasCustomSize = item.logoWidth != null || item.logoHeight != null;
-                const maxLogoW = 700;
-                const maxLogoH = hasCustomSize ? 200 : 75;
-                const scale = Math.max(25, Math.min(200, item.logoScalePercent ?? 100)) / 100;
-                const w = Math.min(logoW * scale, maxLogoW);
-                const h = Math.min(logoH * scale, maxLogoH);
-                const content = img ? (
-                  <div
-                    role="img"
-                    aria-label={item.label ?? ""}
-                    className="max-w-full shrink-0 rounded-none"
-                    style={{
-                      width: w,
-                      height: h,
-                      maxWidth: "100%",
-                      aspectRatio: logoAspect,
-                      background: `url(${img.url()}) #FAFAFC 50% / contain no-repeat`,
-                    }}
-                  />
-                ) : (
-                  <span className="text-xs font-semibold text-slate-700">{item.label}</span>
-                );
-                const safeUrl = safeHref(item.url);
-                const cellClass =
-                  "flex shrink-0 items-center justify-center bg-[#FAFAFC] p-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px]";
-                return safeUrl !== "#" ? (
-                  <a
-                    key={idx}
-                    href={safeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`${cellClass} hover:opacity-80 transition-opacity`}
-                  >
-                    {content}
-                  </a>
-                ) : (
-                  <div key={idx} className={cellClass}>
-                    {content}
-                  </div>
-                );
-              })
-            : ["Lincoln Park", "Uptown", "Lakeview", "South Loop", "Logan Square", "Wicker Park"].map(
-                (name) => (
-                  <div
-                    key={name}
-                    className="flex shrink-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px] items-center justify-center bg-[#FAFAFC] p-0 text-xs font-semibold text-slate-700"
-                  >
-                    {name}
-                  </div>
-                )
-              )}
-          </div>
+            <div
+              ref={scrollRef}
+              className="flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-14 pr-14 [-webkit-overflow-scrolling:touch]"
+            >
+              {items.length > 0
+                ? items.map((item, idx) => {
+                    const img = urlFor(item.logo);
+                    const logoW = item.logoWidth ?? 115;
+                    const logoH = item.logoHeight ?? 115;
+                    const logoAspect = item.logoAspectRatio ?? "1/1";
+                    const hasCustomSize =
+                      item.logoWidth != null || item.logoHeight != null;
+                    const maxLogoW = 700;
+                    const maxLogoH = hasCustomSize ? 200 : 75;
+                    const scale =
+                      Math.max(
+                        25,
+                        Math.min(200, item.logoScalePercent ?? 100),
+                      ) / 100;
+                    const w = Math.min(logoW * scale, maxLogoW);
+                    const h = Math.min(logoH * scale, maxLogoH);
+                    const content = img ? (
+                      <div
+                        role="img"
+                        aria-label={item.label ?? ""}
+                        className="max-w-full shrink-0 rounded-none"
+                        style={{
+                          width: w,
+                          height: h,
+                          maxWidth: "100%",
+                          aspectRatio: logoAspect,
+                          background: `url(${img.url()}) #FAFAFC 50% / contain no-repeat`,
+                        }}
+                      />
+                    ) : (
+                      <span className="text-xs font-semibold text-slate-700">
+                        {item.label}
+                      </span>
+                    );
+                    const safeUrl = safeHref(item.url);
+                    const cellClass =
+                      "flex shrink-0 items-center justify-center bg-[#FAFAFC] p-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px]";
+                    return safeUrl !== "#" ? (
+                      <a
+                        key={idx}
+                        href={safeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${cellClass} hover:opacity-80 transition-opacity`}
+                      >
+                        {content}
+                      </a>
+                    ) : (
+                      <div key={idx} className={cellClass}>
+                        {content}
+                      </div>
+                    );
+                  })
+                : [
+                    "Lincoln Park",
+                    "Uptown",
+                    "Lakeview",
+                    "South Loop",
+                    "Logan Square",
+                    "Wicker Park",
+                  ].map((name) => (
+                    <div
+                      key={name}
+                      className="flex shrink-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px] items-center justify-center bg-[#FAFAFC] p-0 text-xs font-semibold text-slate-700"
+                    >
+                      {name}
+                    </div>
+                  ))}
+            </div>
           </div>
           <button
             type="button"

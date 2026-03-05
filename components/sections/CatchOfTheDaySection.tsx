@@ -25,7 +25,11 @@ const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
-export async function CatchOfTheDaySection({ block }: { block: CatchOfTheDayBlock }) {
+export async function CatchOfTheDaySection({
+  block,
+}: {
+  block: CatchOfTheDayBlock;
+}) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
 
