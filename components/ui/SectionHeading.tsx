@@ -58,7 +58,7 @@ export function SectionHeading({
         </h2>
         {description && (
           <p
-            className="section-description"
+            className={`section-description ${descriptionAsLead ? "section-description--lead" : ""}`.trim()}
             style={{ color: resolvedDescColor }}
           >
             {description}

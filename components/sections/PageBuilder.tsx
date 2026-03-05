@@ -50,13 +50,20 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
                 fallback={
                   <section
                     id="catch-of-the-day"
-                    className="relative z-20 overflow-visible py-14 min-h-[420px]"
+                    className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
                     style={{ backgroundColor: "var(--brand-navy)" }}
                   >
-                    <div className="mx-auto w-full max-w-[1200px] px-4 flex items-center justify-center" style={{ minHeight: 320 }}>
+                    <div className="mx-auto w-full max-w-[1100px] px-4">
+                      <div className="animate-pulse flex flex-col items-center gap-3">
+                        <div className="h-8 w-48 max-w-full rounded bg-white/10" />
+                        <div className="h-4 w-full max-w-[min(789px,100%)] rounded bg-white/10" />
+                        <div className="h-4 w-full max-w-[min(789px,100%)] rounded bg-white/10" />
+                      </div>
+                    </div>
+                    <div className="relative mt-4 sm:mt-6 lg:mt-8 flex items-center justify-center">
                       <div className="animate-pulse flex gap-6">
                         {[1, 2, 3].map((i) => (
-                          <div key={i} className="w-[280px] h-[280px] rounded-xl bg-white/10" />
+                          <div key={i} className="w-[280px] h-[280px] max-w-full rounded-xl bg-white/10" style={{ minHeight: 280 }} />
                         ))}
                       </div>
                     </div>

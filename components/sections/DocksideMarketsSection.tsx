@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { CarouselArrow } from "@/components/ui/CarouselArrow";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
@@ -57,11 +58,12 @@ export function DocksideMarketsSection({
           wideTitleOnDesktop
         />
         <div className="relative mt-8 pb-14 sm:pb-16 md:pb-[4.5rem]">
-          <div className="mx-auto w-full max-w-[1363px]">
-            <div
-              ref={scrollRef}
-              className="flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-14 pr-14 [-webkit-overflow-scrolling:touch]"
-            >
+          <div className="relative flex items-center justify-center">
+            <div className="mx-auto w-full max-w-[1363px]">
+              <div
+                ref={scrollRef}
+                className="scrollbar-hide flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-14 pr-14 [-webkit-overflow-scrolling:touch]"
+              >
               {items.length > 0
                 ? items.map((item, idx) => {
                     const img = urlFor(item.logo);
@@ -131,34 +133,27 @@ export function DocksideMarketsSection({
                       {name}
                     </div>
                   ))}
+              </div>
             </div>
+            <CarouselArrow
+              direction="prev"
+              onClick={() => scrollByDir(-1)}
+              disabled={false}
+              ariaLabel="Previous"
+              theme="light"
+              inset
+              insetNoBackground
+            />
+            <CarouselArrow
+              direction="next"
+              onClick={() => scrollByDir(1)}
+              disabled={false}
+              ariaLabel="Next"
+              theme="light"
+              inset
+              insetNoBackground
+            />
           </div>
-          <button
-            type="button"
-            onClick={() => scrollByDir(-1)}
-            className="absolute left-4 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-transparent hover:opacity-80 md:inline-flex"
-            aria-label="Previous"
-          >
-            <img
-              src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
-              alt=""
-              aria-hidden
-              className="h-5 w-5 max-w-full rotate-180"
-            />
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollByDir(1)}
-            className="absolute right-4 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-transparent hover:opacity-80 md:inline-flex"
-            aria-label="Next"
-          >
-            <img
-              src="/arrow_forward_ios_50dp_111827_FILL0_wght400_GRAD0_opsz48%204.svg"
-              alt=""
-              aria-hidden
-              className="h-5 w-5 max-w-full"
-            />
-          </button>
         </div>
       </div>
     </section>

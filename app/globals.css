@@ -198,7 +198,24 @@ body {
   background-color: var(--section-bg-light);
 }
 
-/* Section description/subcopy – same width and typography for all sections below hero. Color is set per-section. */
+/* Hide scrollbar while keeping scroll behavior (e.g. Dockside Markets carousel). Stays hidden even when scrolling. */
+.scrollbar-hide {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+.scrollbar-hide::-webkit-scrollbar-track,
+.scrollbar-hide::-webkit-scrollbar-thumb {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Section description/subcopy – non-lead (FAQ, Dockside, Recipes, etc.): text-sm, leading-relaxed. Color set per-section. */
 .section-description {
   width: 100%;
   max-width: min(789px, calc(100vw - 2rem));
@@ -207,10 +224,22 @@ body {
   margin-top: 1rem;
   text-align: center;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%;
+  line-height: 1.625;
+}
+
+/* Lead variant: wider max-width, larger responsive font, tighter line-height (Explore Products, Catch of the Day). */
+.section-description--lead {
+  max-width: min(1100px, calc(100vw - 2rem));
+  font-size: 16px;
+  line-height: 135%;
+}
+@media (min-width: 768px) {
+  .section-description--lead {
+    font-size: 20px;
+  }
 }
 
 /* Featured local stores section */
