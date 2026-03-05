@@ -63,7 +63,9 @@ export async function GET(req: Request) {
       const node = e.node;
       const variant = node.variants?.edges?.[0]?.node;
       const price = variant?.price ?? node.priceRange?.minVariantPrice;
-      const compareAtPrice = variant?.compareAtPrice?.amount ? variant.compareAtPrice : null;
+      const compareAtPrice = variant?.compareAtPrice?.amount
+        ? variant.compareAtPrice
+        : null;
       const sizeOrDescription =
         variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
       return {
@@ -85,8 +87,10 @@ export async function GET(req: Request) {
   } catch (err) {
     console.error("Failed to fetch products:", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Failed to fetch products." },
-      { status: 500 }
+      {
+        error: err instanceof Error ? err.message : "Failed to fetch products.",
+      },
+      { status: 500 },
     );
   }
 }

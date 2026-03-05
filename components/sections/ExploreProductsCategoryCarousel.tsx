@@ -67,11 +67,11 @@ export function ExploreProductsCategoryCarousel({
           <Link
             key={idx}
             href={cat.href}
-            className="group shrink-0 snap-start flex flex-col items-center"
+            className="group shrink-0 snap-start flex flex-col items-center outline-none focus:outline-none"
           >
-            <div className="overflow-hidden rounded-lg w-[331px] max-w-full transition-all shrink-0" style={{ backgroundColor: "var(--brand-navy)" }}>
+            <div className="overflow-hidden rounded-lg w-[331px] max-w-full transition-all shrink-0 hover:shadow-md border-0 border-none shadow-none ring-0 bg-transparent">
               <div
-                className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] rounded-[10px] bg-white/10 group-hover:bg-white/15"
+                className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] rounded-[10px] group-hover:bg-white/15 border-0 border-none ring-0"
                 style={{
                   width: "331px",
                   maxWidth: "100%",

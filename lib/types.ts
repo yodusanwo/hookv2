@@ -12,7 +12,9 @@ export type ApiProductForCarousel = {
   id: string;
   title: string;
   handle: string;
-  images?: { edges?: Array<{ node?: { url?: string; altText?: string | null } }> };
+  images?: {
+    edges?: Array<{ node?: { url?: string; altText?: string | null } }>;
+  };
   price?: string;
   currencyCode?: string;
   priceRange?: { minVariantPrice?: { amount?: string; currencyCode?: string } };

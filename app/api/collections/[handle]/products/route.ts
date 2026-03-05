@@ -55,14 +55,17 @@ const COLLECTION_PRODUCTS_QUERY = `
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ handle: string }> }
+  { params }: { params: Promise<{ handle: string }> },
 ) {
   const { handle } = await params;
   const trimmed = handle?.trim() ?? "";
   if (!trimmed || !/^[a-zA-Z0-9-]+$/.test(trimmed)) {
     return NextResponse.json(
-      { error: "Invalid collection handle. Use only letters, numbers, and hyphens." },
-      { status: 400 }
+      {
+        error:
+          "Invalid collection handle. Use only letters, numbers, and hyphens.",
+      },
+      { status: 400 },
     );
   }
 
@@ -79,7 +82,9 @@ export async function GET(
       const node = e.node;
       const variant = node.variants?.edges?.[0]?.node;
       const price = variant?.price ?? node.priceRange?.minVariantPrice;
-      const compareAtPrice = variant?.compareAtPrice?.amount ? variant.compareAtPrice : null;
+      const compareAtPrice = variant?.compareAtPrice?.amount
+        ? variant.compareAtPrice
+        : null;
       const sizeOrDescription =
         variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
       return {
@@ -101,8 +106,10 @@ export async function GET(
   } catch (err) {
     console.error("Failed to fetch collection products:", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Failed to fetch products." },
-      { status: 500 }
+      {
+        error: err instanceof Error ? err.message : "Failed to fetch products.",
+      },
+      { status: 500 },
     );
   }
 }

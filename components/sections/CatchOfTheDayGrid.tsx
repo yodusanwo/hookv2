@@ -17,10 +17,13 @@ import type { ApiProductForCarousel, FilterItem } from "@/lib/types";
 const ITEMS_PER_PAGE = 3;
 const MAX_PRODUCTS = 9;
 
-function mapApiProductToCard(p: ApiProductForCarousel): CatchOfTheDayProductCardProduct {
+function mapApiProductToCard(
+  p: ApiProductForCarousel,
+): CatchOfTheDayProductCardProduct {
   const img = p.images?.edges?.[0]?.node;
   const price = p.price ?? p.priceRange?.minVariantPrice?.amount ?? "0";
-  const currencyCode = p.currencyCode ?? p.priceRange?.minVariantPrice?.currencyCode ?? "USD";
+  const currencyCode =
+    p.currencyCode ?? p.priceRange?.minVariantPrice?.currencyCode ?? "USD";
   return {
     id: p.id,
     handle: p.handle,
@@ -44,10 +47,14 @@ export function CatchOfTheDayGrid({
 }) {
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [pageIndex, setPageIndex] = React.useState(0);
-  const [products, setProducts] = React.useState<CatchOfTheDayProductCardProduct[]>([]);
+  const [products, setProducts] = React.useState<
+    CatchOfTheDayProductCardProduct[]
+  >([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const cacheRef = React.useRef<Map<string, CatchOfTheDayProductCardProduct[]>>(new Map());
+  const cacheRef = React.useRef<Map<string, CatchOfTheDayProductCardProduct[]>>(
+    new Map(),
+  );
 
   const collections = filterCollections ?? [];
 
@@ -55,7 +62,9 @@ export function CatchOfTheDayGrid({
   const collectionHandle = currentCollection?.collectionHandle?.trim() ?? "";
 
   React.useEffect(() => {
-    setActiveIndex((prev) => Math.min(prev, Math.max(0, collections.length - 1)));
+    setActiveIndex((prev) =>
+      Math.min(prev, Math.max(0, collections.length - 1)),
+    );
   }, [collections.length]);
 
   React.useEffect(() => {
@@ -106,15 +115,13 @@ export function CatchOfTheDayGrid({
   const pageCount = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));
   const currentPageProducts = products.slice(
     pageIndex * ITEMS_PER_PAGE,
-    pageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+    pageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
   );
   const canGoPrev = pageIndex > 0;
   const canGoNext = pageIndex < pageCount - 1;
 
   const goToPage = (dir: -1 | 1) => {
-    setPageIndex((prev) =>
-      Math.max(0, Math.min(pageCount - 1, prev + dir))
-    );
+    setPageIndex((prev) => Math.max(0, Math.min(pageCount - 1, prev + dir)));
   };
 
   return (
@@ -168,7 +175,10 @@ export function CatchOfTheDayGrid({
                 ariaLabel="Previous"
               />
               {/* 3 centered columns - card dimensions match Recipe cards (min 280px, max 387px) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center" style={{ gap: "6px" }}>
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+                style={{ gap: "6px" }}
+              >
                 {currentPageProducts.map((product) => (
                   <div key={product.id} className="w-[387px] max-w-full">
                     <CatchOfTheDayProductCard product={product} />
@@ -190,8 +200,8 @@ export function CatchOfTheDayGrid({
                 fontSize: "16px",
               }}
             >
-              No products in this collection. Add products in Shopify and
-              assign them to the collection.
+              No products in this collection. Add products in Shopify and assign
+              them to the collection.
             </p>
           )}
         </div>

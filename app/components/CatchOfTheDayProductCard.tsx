@@ -88,24 +88,37 @@ export function CatchOfTheDayProductCard({
 
   const productHref = `/products/${product.handle}`;
 
+  // Title: optional cleanup of trailing parentheses so "Name (8 oz)" shows as "Name"
+  const titleSizeMatch = product.title.match(/\s*\(([^)]+)\)\s*$/);
+  const displayTitle = titleSizeMatch ? product.title.slice(0, titleSizeMatch.index).trim() : product.title;
+  // Weight beneath title: from Shopify Storefront API (variant weight); never show Shopify's "Default Title" placeholder
+  const fallbackSubtitle =
+    product.sizeOrDescription?.trim() && product.sizeOrDescription !== "Default Title"
+      ? product.sizeOrDescription
+      : null;
+  const subtitle = product.productWeight ?? fallbackSubtitle;
+
   return (
     <>
-      <div className="group relative flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm transition-shadow hover:shadow-md">
-        {/* Image area: same dimensions and styling as RecipesSection (aspect-[331/190]) */}
-        <div className="relative aspect-[331/190] min-w-0 w-full shrink-0 overflow-hidden bg-slate-100">
+      <div className="group relative flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md">
+        {/* Image area: border-radius 10px, background position/size per spec */}
+        <div
+          className="relative aspect-[331/190] min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+          style={{
+            borderRadius: 10,
+            background: product.imageUrl
+              ? `url(${product.imageUrl}) lightgray 0px -82px / 100% 174.208% no-repeat`
+              : "lightgray no-repeat",
+          }}
+          role={product.imageUrl ? "img" : undefined}
+          aria-label={product.imageUrl ? product.title : undefined}
+        >
           <Link
             href={productHref}
             className="absolute inset-0 z-0"
             aria-label={`View ${product.title}`}
           />
-          {product.imageUrl ? (
-            <img
-              src={product.imageUrl}
-              alt={product.title}
-              className="h-full w-full max-w-full min-w-0 object-cover transition-transform group-hover:scale-[1.03]"
-              loading="lazy"
-            />
-          ) : (
+          {!product.imageUrl && (
             <div className="flex h-full w-full items-center justify-center text-slate-300">
               <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
@@ -139,33 +152,39 @@ export function CatchOfTheDayProductCard({
             {adding ? (
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
             ) : (
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+              <img
+                src="/add_shopping_cart_100dp_111827_FILL0_wght400_GRAD0_opsz48%201.svg"
+                alt=""
+                aria-hidden
+                className="h-5 w-5 w-full object-contain"
+              />
             )}
           </button>
         </div>
 
-        <div className="flex flex-1 flex-col px-4 py-3">
+        <div
+          className="flex flex-1 flex-col px-4 py-3"
+          style={{ backgroundColor: "var(--brand-navy)" }}
+        >
           <h3
-            className="font-semibold text-slate-900"
+            className="font-semibold text-white"
             style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "18px" }}
           >
-            <Link href={productHref} className="hover:underline">
-              {product.title}
+            <Link href={productHref} className="hover:underline text-white">
+              {displayTitle}
             </Link>
           </h3>
-          {product.sizeOrDescription && (
+          {subtitle && (
             <p
-              className="mt-1 text-sm text-slate-600"
+              className="mt-1 text-sm text-slate-300"
               style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
             >
-              {product.sizeOrDescription}
+              {subtitle}
             </p>
           )}
           <Link
             href={productHref}
-            className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900 hover:underline"
+            className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-slate-300 hover:text-white hover:underline"
           >
             <span className="text-lg leading-none">+</span>
             Show more
