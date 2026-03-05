@@ -41,21 +41,63 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
             >
               {r.stars != null && (
                 <div
-                  className="flex justify-center gap-0.5 text-[#FFC107]"
+                  className="flex justify-center items-center gap-0.5"
+                  style={{ color: "#FFA100" }}
                   aria-hidden
                 >
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i}>
+                    <span
+                      key={i}
+                      className="flex items-center justify-center"
+                      style={{ width: 24, height: 24, fontSize: 24, lineHeight: 1 }}
+                    >
                       {i < Math.min(5, r.stars ?? 0) ? "★" : "☆"}
                     </span>
                   ))}
                 </div>
               )}
-              <p className="mt-4 min-h-0 overflow-y-auto text-base leading-relaxed text-[#333]">
+              <p
+                className="mt-4 min-h-0 overflow-y-auto mx-auto"
+                style={{
+                  width: 220,
+                  color: "#1E1E1E",
+                  fontFamily: "var(--font-inter), Inter, sans-serif",
+                  fontSize: 16,
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  lineHeight: "normal",
+                }}
+              >
                 {r.text}
               </p>
-              <p className="mt-4 text-sm font-semibold text-[#333]">{r.name}</p>
-              {r.date && <p className="mt-1 text-xs text-[#666]">{r.date}</p>}
+              <p
+                className="mt-4"
+                style={{
+                  color: "#1E1E1E",
+                  fontFamily: "var(--font-inter), Inter, sans-serif",
+                  fontSize: 16,
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  lineHeight: "normal",
+                }}
+              >
+                {r.name}
+              </p>
+              {r.date && (
+                <p
+                  className="mt-1"
+                  style={{
+                    color: "#1E1E1E",
+                    fontFamily: "var(--font-inter), Inter, sans-serif",
+                    fontSize: 12,
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "normal",
+                  }}
+                >
+                  {r.date}
+                </p>
+              )}
             </div>
           ))}
         </div>

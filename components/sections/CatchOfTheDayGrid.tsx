@@ -5,8 +5,6 @@
  * Card sizes and layout here do not affect the first "Catch of the day" (Explore Products) section.
  */
 import * as React from "react";
-import Link from "next/link";
-import { safeHref } from "@/lib/urlValidation";
 import {
   CatchOfTheDayProductCard,
   type CatchOfTheDayProductCardProduct,
@@ -40,23 +38,33 @@ function mapApiProductToCard(
 
 export function CatchOfTheDayGrid({
   filterCollections,
-  cta,
+  initialProducts = [],
 }: {
   filterCollections: FilterItem[];
-  cta?: { label?: string; href?: string };
+  /** Pre-fetched products for the first collection (avoids "Loading products…" on hard refresh). */
+  initialProducts?: ApiProductForCarousel[];
 }) {
+  const collections = filterCollections ?? [];
+  const firstHandle = collections[0]?.collectionHandle?.trim() ?? "";
+  const initialMapped = React.useMemo(
+    () => (initialProducts.length > 0 ? initialProducts.map(mapApiProductToCard) : []),
+    [initialProducts],
+  );
+
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [pageIndex, setPageIndex] = React.useState(0);
   const [products, setProducts] = React.useState<
     CatchOfTheDayProductCardProduct[]
-  >([]);
-  const [loading, setLoading] = React.useState(true);
+  >(initialMapped);
+  const [loading, setLoading] = React.useState(initialMapped.length === 0);
   const [error, setError] = React.useState<string | null>(null);
   const cacheRef = React.useRef<Map<string, CatchOfTheDayProductCardProduct[]>>(
     new Map(),
   );
 
-  const collections = filterCollections ?? [];
+  if (firstHandle && initialMapped.length > 0 && !cacheRef.current.has(firstHandle)) {
+    cacheRef.current.set(firstHandle, initialMapped);
+  }
 
   const currentCollection = collections[activeIndex];
   const collectionHandle = currentCollection?.collectionHandle?.trim() ?? "";
@@ -78,6 +86,8 @@ export function CatchOfTheDayGrid({
     }
 
     const controller = new AbortController();
+    setProducts([]);
+    setPageIndex(0);
     setLoading(true);
     setError(null);
     const url = collectionHandle
@@ -128,7 +138,7 @@ export function CatchOfTheDayGrid({
     <>
       {/* Filter buttons */}
       {collections.length > 0 && (
-        <div className="mt-8 flex flex-wrap justify-center gap-3 px-4">
+        <div className="mt-4 sm:mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 px-4">
           {collections.map((col, idx) => (
             <button
               key={col.collectionHandle ?? col.label ?? `filter-${idx}`}
@@ -143,17 +153,36 @@ export function CatchOfTheDayGrid({
       )}
 
       {/* Product carousel - 3 centered columns */}
-      <div className="relative mt-10">
+      <div className="relative mt-4 sm:mt-6 lg:mt-8">
         <div className="mx-auto w-full max-w-[1200px]">
-          {loading ? (
-            <div
-              className="flex min-h-[400px] items-center justify-center py-24"
-              style={{
-                fontFamily: "var(--font-inter), Inter, sans-serif",
-                color: "#F2F6EF",
-              }}
-            >
-              Loading products…
+          {loading && products.length === 0 ? (
+            <div className="relative flex items-center justify-center gap-6">
+              <CarouselArrow direction="prev" disabled ariaLabel="Previous" />
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+                style={{ gap: "6px" }}
+              >
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="w-[387px] max-w-full flex flex-col rounded-xl overflow-hidden animate-pulse"
+                    style={{ minHeight: 320 }}
+                  >
+                    <div
+                      className="aspect-[331/190] w-full rounded-[10px] bg-white/10"
+                      style={{ borderRadius: 10 }}
+                    />
+                    <div
+                      className="flex flex-1 flex-col px-4 py-3 gap-2"
+                      style={{ backgroundColor: "var(--brand-navy)" }}
+                    >
+                      <div className="h-5 w-3/4 rounded bg-white/10" />
+                      <div className="h-4 w-1/2 rounded bg-white/10" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <CarouselArrow direction="next" disabled ariaLabel="Next" />
             </div>
           ) : error ? (
             <div
@@ -206,15 +235,6 @@ export function CatchOfTheDayGrid({
           )}
         </div>
       </div>
-
-      {/* CTA */}
-      {cta && (
-        <div className="mx-auto mt-12 flex max-w-6xl justify-center px-4">
-          <Link href={safeHref(cta?.href) || "#shop"} className="btn-primary">
-            {cta?.label ?? "SHOP FULL LINEUP →"}
-          </Link>
-        </div>
-      )}
     </>
   );
 }

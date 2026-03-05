@@ -1,9 +1,11 @@
 /**
  * Product Carousel section (separate from the first "Catch of the day" section).
  * Sizing and layout here are independent; changing this does not affect ExploreProductsSection.
+ * Pre-fetches the first collection's products on the server so the section doesn't show "Loading products…" on hard refresh.
  */
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CatchOfTheDayGrid } from "./CatchOfTheDayGrid";
+import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsForCarousel";
 import type { FilterItem } from "@/lib/types";
 
 type CatchOfTheDayBlock = {
@@ -16,7 +18,6 @@ type CatchOfTheDayBlock = {
 const DEFAULT_TITLE = "CATCH OF THE DAY";
 const DEFAULT_DESCRIPTION =
   "Wild Alaskan seafood boxes, fillets, and specialty cuts ranging from sockeye and sablefish to halibut, cod, scallops, and even salmon heads are offered as premium, wild-caught options. All wild. All the time.";
-const DEFAULT_CTA = { label: "SHOP FULL LINEUP →", href: "#shop" };
 
 const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
   { label: "Seafood", collectionHandle: "seafood" },
@@ -24,20 +25,24 @@ const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
-export function CatchOfTheDaySection({ block }: { block: CatchOfTheDayBlock }) {
+export async function CatchOfTheDaySection({ block }: { block: CatchOfTheDayBlock }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
-  const cta = block.cta ?? DEFAULT_CTA;
 
   const filterCollections =
     block.filterCollections && block.filterCollections.length > 0
       ? block.filterCollections.filter((f) => f.label || f.collectionHandle)
       : DEFAULT_FILTER_COLLECTIONS;
 
+  const firstHandle = filterCollections[0]?.collectionHandle?.trim() ?? "";
+  const initialProducts = firstHandle
+    ? await getCollectionProductsForCarousel(firstHandle)
+    : [];
+
   return (
     <section
       id="catch-of-the-day"
-      className="relative z-20 overflow-visible py-14"
+      className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >
       <div className="mx-auto w-full max-w-[1100px] px-4">
@@ -51,7 +56,10 @@ export function CatchOfTheDaySection({ block }: { block: CatchOfTheDayBlock }) {
         />
       </div>
 
-      <CatchOfTheDayGrid filterCollections={filterCollections} cta={cta} />
+      <CatchOfTheDayGrid
+        filterCollections={filterCollections}
+        initialProducts={initialProducts}
+      />
     </section>
   );
 }

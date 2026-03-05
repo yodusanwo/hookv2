@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Suspense } from "react";
 import { HeroSection } from "./HeroSection";
 import { CatchOfTheDaySection } from "./CatchOfTheDaySection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
@@ -44,10 +45,28 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
             );
           case "catchOfTheDayBlock":
             return (
-              <CatchOfTheDaySection
+              <Suspense
                 key={key}
-                block={block as Parameters<typeof CatchOfTheDaySection>[0]["block"]}
-              />
+                fallback={
+                  <section
+                    id="catch-of-the-day"
+                    className="relative z-20 overflow-visible py-14 min-h-[420px]"
+                    style={{ backgroundColor: "var(--brand-navy)" }}
+                  >
+                    <div className="mx-auto w-full max-w-[1200px] px-4 flex items-center justify-center" style={{ minHeight: 320 }}>
+                      <div className="animate-pulse flex gap-6">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="w-[280px] h-[280px] rounded-xl bg-white/10" />
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+                }
+              >
+                <CatchOfTheDaySection
+                  block={block as Parameters<typeof CatchOfTheDaySection>[0]["block"]}
+                />
+              </Suspense>
             );
           case "exploreProductsBlock":
             return (
