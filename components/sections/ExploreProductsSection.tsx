@@ -9,7 +9,9 @@ import { urlFor } from "@/lib/sanityImage";
 import type { FilterItem } from "@/lib/types";
 
 /** Explore Products filter item with optional Sanity image reference. */
-type FilterCollection = FilterItem & { image?: { _ref?: string; asset?: { _ref?: string } } };
+type FilterCollection = FilterItem & {
+  image?: { _ref?: string; asset?: { _ref?: string } };
+};
 type Category = { label?: string; collectionHandle?: string };
 
 type ExploreProductsBlock = {
@@ -29,7 +31,11 @@ const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
-export function ExploreProductsSection({ block }: { block: ExploreProductsBlock }) {
+export function ExploreProductsSection({
+  block,
+}: {
+  block: ExploreProductsBlock;
+}) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
 
