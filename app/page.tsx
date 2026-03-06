@@ -1,6 +1,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PromoBanner } from "@/components/PromoBanner";
 import { PageBuilder } from "@/components/sections/PageBuilder";
+import { getEventsFromSheet } from "@/lib/googleSheets";
 import { client, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { shopifyFetch } from "@/lib/shopify";
 import Link from "next/link";
@@ -102,10 +103,18 @@ export default async function Home() {
     }
 
     if (sanityPage?.sections && Array.isArray(sanityPage.sections) && sanityPage.sections.length > 0) {
+      const sheetEvents = await getEventsFromSheet();
+      const sectionsWithEvents = sanityPage.sections.map((section: unknown) => {
+        const s = section as { _type?: string; [key: string]: unknown };
+        if (s._type === "upcomingEventsBlock") {
+          return { ...s, events: sheetEvents };
+        }
+        return section;
+      });
       return (
         <main className="bg-white">
           <PageBuilder
-            sections={sanityPage.sections as Parameters<typeof PageBuilder>[0]["sections"]}
+            sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
             promoBanner={promoBanner}
           />
         </main>

@@ -33,7 +33,7 @@ export function UpcomingEventsSection({
   const title = block.title ?? "UPCOMING EVENTS";
   const description = block.description ?? "";
   const images = block.images ?? [];
-  const events = block.events ?? [];
+  const events = (block.events ?? []).slice(0, 3);
   const showAllUrl = block.showAllUrl;
 
   return (
@@ -46,7 +46,7 @@ export function UpcomingEventsSection({
         paddingTop: "104px",
       }}
     >
-      <div className="mx-auto max-w-4xl px-4">
+      <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}
           description={description || undefined}
@@ -77,7 +77,7 @@ export function UpcomingEventsSection({
         )}
 
         {events.length > 0 ? (
-          <div className="mt-10 max-w-[962px] mx-auto">
+          <div className="mt-10 w-full max-w-[1200px] mx-auto">
             <div className="overflow-hidden bg-slate-100">
               {events.map((e, idx) => (
                 <div
@@ -92,12 +92,46 @@ export function UpcomingEventsSection({
                       : undefined
                   }
                 >
-                  <div className="grid grid-cols-1 gap-x-6 gap-y-1 px-4 py-4 text-slate-800 sm:grid-cols-4 sm:py-3">
-                    <div className="font-medium">{e.date ?? "—"}</div>
+                  <div
+                    className="grid grid-cols-1 gap-x-6 gap-y-1 px-4 py-4 sm:grid-cols-4 sm:py-3 sm:items-center sm:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,2.5fr)]"
+                    style={{
+                      color: "#1E1E1E",
+                      fontFamily: "var(--font-inter), Inter, sans-serif",
+                      fontSize: "16px",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "normal",
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <img
+                        src="/CalendarIcon.svg"
+                        alt=""
+                        aria-hidden
+                        width={16.897}
+                        height={19.733}
+                        style={{ flexShrink: 0 }}
+                      />
+                      <span>{e.date ?? "—"}</span>
+                    </div>
                     <div>{e.time ?? "—"}</div>
                     <div>{e.eventType ?? e.name ?? "—"}</div>
-                    <div className="text-slate-600">
-                      {e.address ?? e.location ?? "—"}
+                    <div>
+                      {(() => {
+                        const raw = (e.address ?? e.location ?? "").trim() || "—";
+                        if (raw === "—") return raw;
+                        const firstComma = raw.indexOf(",");
+                        if (firstComma === -1) return raw;
+                        const line1 = raw.slice(0, firstComma).trim();
+                        const line2 = raw.slice(firstComma + 1).trim();
+                        return (
+                          <>
+                            {line1}
+                            <br />
+                            {line2}
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
