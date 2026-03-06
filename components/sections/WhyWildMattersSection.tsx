@@ -57,7 +57,7 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
       className="relative z-10 overflow-visible pt-24 pb-14"
       style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
     >
-      <div className="mx-auto w-full max-w-6xl px-4">
+      <div className="mx-auto w-full max-w-7xl px-4">
         <SectionHeading
           title={title}
           description={description}
@@ -66,7 +66,7 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
           descriptionAsLead={false}
         />
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start lg:gap-12">
+        <div className="mt-12 grid gap-10 lg:grid-cols-[1.58fr_2fr] lg:items-start lg:gap-12">
           {/* Left: image */}
           <div className="overflow-hidden rounded-xl">
             {imageUrl ? (
@@ -74,13 +74,13 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
                 src={imageUrl}
                 alt=""
                 className="h-auto w-full object-cover"
-                style={{ aspectRatio: "4/3", maxHeight: 420 }}
+                style={{ aspectRatio: "4/3", maxHeight: 739 }}
                 loading="lazy"
               />
             ) : (
               <div
                 className="bg-slate-300"
-                style={{ aspectRatio: "4/3", maxHeight: 420 }}
+                style={{ aspectRatio: "4/3", maxHeight: 739 }}
               />
             )}
           </div>

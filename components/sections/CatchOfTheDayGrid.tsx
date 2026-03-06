@@ -157,7 +157,7 @@ export function CatchOfTheDayGrid({
         <div className="mx-auto w-full max-w-[1200px]">
           {loading && products.length === 0 ? (
             <div className="relative flex items-center justify-center gap-6">
-              <CarouselArrow direction="prev" disabled ariaLabel="Previous" />
+              <CarouselArrow direction="prev" disabled onClick={() => {}} ariaLabel="Previous" />
               <div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
                 style={{ gap: "6px" }}
@@ -182,7 +182,7 @@ export function CatchOfTheDayGrid({
                   </div>
                 ))}
               </div>
-              <CarouselArrow direction="next" disabled ariaLabel="Next" />
+              <CarouselArrow direction="next" disabled onClick={() => {}} ariaLabel="Next" />
             </div>
           ) : error ? (
             <div
