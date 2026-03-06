@@ -51,10 +51,13 @@ export function AddToCart({
   productTitle,
   options,
   variants,
+  variant = "default",
 }: {
   productTitle: string;
   options: Array<{ name: string; values: string[] }>;
   variants: Variant[];
+  /** "productPage" = inline quantity stepper, price beside it, green Add to cart button, no card wrapper */
+  variant?: "default" | "productPage";
 }) {
   const initialSelected = React.useMemo(() => {
     const first = variants.find((v) => v.availableForSale) ?? variants[0];
@@ -76,6 +79,14 @@ export function AddToCart({
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [error, setError] = React.useState<string | null>(null);
+
+  if (!selectedVariant) {
+    return (
+      <div className="rounded-xl border border-black/5 bg-white p-5 shadow-sm text-center text-sm text-slate-600">
+        No variants available for this product.
+      </div>
+    );
+  }
 
   async function onAdd() {
     setStatus("loading");
@@ -101,16 +112,113 @@ export function AddToCart({
     }
   }
 
+  const priceDisplay = formatMoney(
+    selectedVariant.price.amount,
+    selectedVariant.price.currencyCode
+  );
+
+  if (variant === "productPage") {
+    return (
+      <div className="space-y-6">
+        {options.length > 0 ? (
+          <div className="space-y-3">
+            {options.map((opt) => (
+              <div key={opt.name}>
+                <div className="text-xs font-semibold tracking-wide text-slate-600">
+                  {opt.name}
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {opt.values.map((val) => {
+                    const isSelected = selected[opt.name] === val;
+                    return (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() =>
+                          setSelected((s) => ({ ...s, [opt.name]: val }))
+                        }
+                        className={`h-9 rounded-full px-3 text-sm ring-1 transition-colors ${
+                          isSelected
+                            ? "bg-[var(--brand-navy)] text-white ring-[var(--brand-navy)]"
+                            : "bg-white text-slate-800 ring-slate-200 hover:bg-slate-50"
+                        }`}
+                        aria-pressed={isSelected}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center rounded-md border border-slate-200 bg-white">
+            <button
+              type="button"
+              onClick={() => setQty((n) => Math.max(1, n - 1))}
+              className="flex h-10 w-10 items-center justify-center text-slate-600 hover:bg-slate-50"
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+            <input
+              id="qty"
+              type="number"
+              min={1}
+              max={50}
+              value={qty}
+              onChange={(e) =>
+                setQty(
+                  Math.min(50, Math.max(1, Math.floor(Number(e.target.value) || 1)))
+                )
+              }
+              className="h-10 w-14 border-0 bg-transparent text-center text-sm outline-none [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <button
+              type="button"
+              onClick={() => setQty((n) => Math.min(50, n + 1))}
+              className="flex h-10 w-10 items-center justify-center text-slate-600 hover:bg-slate-50"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
+          <span className="text-lg font-semibold text-[var(--brand-navy)]">
+            {priceDisplay}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={onAdd}
+          disabled={!selectedVariant.availableForSale || status === "loading"}
+          className="inline-flex h-12 w-full min-w-[200px] items-center justify-center rounded-md px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          style={{ backgroundColor: "var(--brand-green)" }}
+        >
+          {status === "loading"
+            ? "Adding…"
+            : status === "success"
+              ? "Added!"
+              : "Add to cart"}
+        </button>
+
+        {status === "error" && error ? (
+          <p className="text-sm text-red-700">{error}</p>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-xl border border-black/5 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-sm font-semibold text-slate-900">Price</div>
           <div className="mt-1 text-lg font-semibold text-sky-900">
-            {formatMoney(
-              selectedVariant.price.amount,
-              selectedVariant.price.currencyCode
-            )}
+            {priceDisplay}
           </div>
         </div>
         <div

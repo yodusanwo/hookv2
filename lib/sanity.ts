@@ -41,3 +41,22 @@ export const HOMEPAGE_QUERY = `*[_type == "page" && slug.current == "home"][0] {
     "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
   }
 }`;
+
+/** GROQ query for a collection page (collectionPage document whose collectionHandle matches) */
+export const COLLECTION_PAGE_QUERY = `*[_type == "collectionPage" && collectionHandle == $handle][0] {
+  _id,
+  title,
+  collectionHandle,
+  sections[] {
+    _type,
+    _key,
+    ...,
+    cta { label, href },
+    images[] { asset-> },
+    image { asset-> },
+    body,
+    "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
+    "filterCollections": filterCollections[] { label, collectionHandle, image },
+    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
+  }
+}`;

@@ -1,5 +1,8 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
+import { ProductImageGallery } from "./ProductImageGallery";
+import { getKlaviyoReviewsForProduct, getKlaviyoReviews } from "@/lib/klaviyoReviews";
+import Link from "next/link";
 
 type ProductByHandleResponse = {
   productByHandle: {
@@ -49,6 +52,29 @@ const PRODUCT_BY_HANDLE_QUERY = `
   }
 `;
 
+const OTHER_PRODUCTS_QUERY = `
+  query GetProducts($first: Int!) {
+    products(first: $first) {
+      edges {
+        node {
+          id
+          title
+          handle
+          priceRange {
+            minVariantPrice { amount currencyCode }
+          }
+          images(first: 1) {
+            edges { node { url altText } }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const LIGHT_BG = "var(--brand-light-blue-bg)";
+const NAVY = "var(--brand-navy)";
+
 export default async function ProductPage({
   params,
 }: {
@@ -57,12 +83,53 @@ export default async function ProductPage({
   const { handle } = await params;
 
   let data: ProductByHandleResponse;
+  let otherProducts: Array<{
+    id: string;
+    title: string;
+    handle: string;
+    price: string;
+    currencyCode: string;
+    image: { url: string; altText: string | null } | null;
+  }> = [];
+
   try {
-    data = await shopifyFetch<ProductByHandleResponse, { handle: string }>({
-      query: PRODUCT_BY_HANDLE_QUERY,
-      variables: { handle },
-      cache: "no-store",
-    });
+    const [productData, otherData] = await Promise.all([
+      shopifyFetch<ProductByHandleResponse, { handle: string }>({
+        query: PRODUCT_BY_HANDLE_QUERY,
+        variables: { handle },
+        cache: "no-store",
+      }),
+      shopifyFetch<{
+        products: {
+          edges: Array<{
+            node: {
+              id: string;
+              title: string;
+              handle: string;
+              priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+              images: { edges: Array<{ node: { url: string; altText: string | null } }> };
+            };
+          }>;
+        };
+      }>({
+        query: OTHER_PRODUCTS_QUERY,
+        variables: { first: 8 },
+        cache: "no-store",
+      }).catch(() => ({ products: { edges: [] } })),
+    ]);
+    data = productData;
+    const currentId = data.productByHandle?.id ?? null;
+    otherProducts = (otherData.products?.edges ?? [])
+      .filter((e) => currentId == null || e.node.id !== currentId)
+      .slice(0, 4)
+      .map((e) => ({
+        id: e.node.id,
+        title: e.node.title,
+        handle: e.node.handle,
+        price: e.node.priceRange.minVariantPrice.amount,
+        currencyCode: e.node.priceRange.minVariantPrice.currencyCode,
+        image: e.node.images.edges[0]?.node ?? null,
+      }));
   } catch (err) {
     console.error("Failed to fetch product:", err);
     return (
@@ -85,82 +152,291 @@ export default async function ProductPage({
           Product not found
         </h1>
         <p className="mt-2 text-sm text-slate-600">
-          We couldn’t find a product with handle <code>{handle}</code>.
+          We couldn&apos;t find a product with handle <code>{handle}</code>.
         </p>
       </main>
     );
   }
 
-  const images = [
+  const imagesRaw = [
     product.featuredImage ? product.featuredImage : null,
     ...product.images.edges.map((e) => e.node),
   ].filter(Boolean) as Array<{ url: string; altText: string | null }>;
-
+  const seenUrls = new Set<string>();
+  const images = imagesRaw.filter((img) => {
+    if (seenUrls.has(img.url)) return false;
+    seenUrls.add(img.url);
+    return true;
+  });
   const variants = product.variants.edges.map((e) => e.node);
+  const subtitle = variants[0]?.title ?? product.title;
+
+  const [productReviews, globalReviews] = await Promise.all([
+    getKlaviyoReviewsForProduct(product.id),
+    getKlaviyoReviews(),
+  ]);
+  const productSet = new Set(
+    productReviews.map((r) => `${r.name}|${r.date}|${r.text}`)
+  );
+  const fallbacks = globalReviews.filter(
+    (r) => !productSet.has(`${r.name}|${r.date}|${r.text}`)
+  );
+  const needFallbacks = Math.max(0, 3 - productReviews.length);
+  const reviewsToShow =
+    productReviews.length >= 3
+      ? productReviews
+      : [...productReviews, ...fallbacks.slice(0, needFallbacks)];
 
   return (
     <main className="bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="grid gap-10 lg:grid-cols-2">
-          {/* Images */}
-          <div>
-            <div className="overflow-hidden rounded-xl bg-slate-100">
-              <img
-                src={images[0]?.url}
-                alt={images[0]?.altText ?? product.title}
-                className="h-[380px] w-full max-w-full object-cover md:h-[520px]"
-              />
-            </div>
-            {images.length > 1 ? (
-              <div className="mt-3 grid grid-cols-4 gap-3">
-                {images.slice(1, 5).map((img) => (
-                  <div
-                    key={img.url}
-                    className="aspect-square overflow-hidden rounded-lg bg-slate-100"
-                  >
-                    <img
-                      src={img.url}
-                      alt={img.altText ?? product.title}
-                      className="h-full w-full max-w-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
+      {/* Main product section — light blue; pt clears the header wave */}
+      <section
+        className="px-4 pt-[140px] pb-10 sm:pt-[170px] md:py-14 lg:pt-[230px]"
+        style={{ backgroundColor: LIGHT_BG }}
+      >
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
+            <ProductImageGallery images={images} productTitle={product.title} />
+
+            <div>
+              <h1
+                style={{
+                  color: "var(--Text-Color, #1E1E1E)",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "40px",
+                  fontStyle: "normal",
+                  fontWeight: 500,
+                  lineHeight: "normal",
+                }}
+              >
+                {product.title}
+              </h1>
+              <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
+
+              <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
+                <span className="flex gap-0.5" aria-hidden>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <span key={i} className="text-amber-400">
+                      ★
+                    </span>
+                  ))}
+                </span>
+                <span>Reviews</span>
               </div>
-            ) : null}
-          </div>
 
-          {/* Info */}
-          <div className="max-w-xl">
-            <div className="text-xs font-semibold tracking-wide text-slate-500">
-              Product
-            </div>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
-              {product.title}
-            </h1>
-
-            <div className="mt-5">
-              <AddToCart
-                productTitle={product.title}
-                options={product.options}
-                variants={variants}
-              />
-            </div>
-
-            {product.description ? (
-              <div className="mt-8">
-                <h2 className="text-sm font-semibold text-slate-900">
-                  Description
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-slate-700">
+              {product.description && (
+                <p className="mt-4 max-w-xl text-sm leading-6 text-slate-700 line-clamp-3">
                   {product.description}
                 </p>
+              )}
+
+              <div className="mt-4 flex items-center gap-2 text-sm text-slate-700">
+                <svg
+                  className="h-5 w-5 shrink-0 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                  />
+                </svg>
+                Free shipping for orders over $50
               </div>
-            ) : null}
+
+              <div className="mt-6">
+                <AddToCart
+                  productTitle={product.title}
+                  options={product.options}
+                  variants={variants}
+                  variant="productPage"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Product Description + What You Get — light blue, then wave */}
+      <section
+        className="px-4 py-12 md:py-16"
+        style={{ backgroundColor: LIGHT_BG }}
+      >
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-10 md:grid-cols-2">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-900">
+                Product Description
+              </h2>
+              {product.description ? (
+                <div className="mt-3 text-sm leading-6 text-slate-700 whitespace-pre-line">
+                  {product.description}
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-slate-600">
+                  Wild-caught, sustainably sourced. Perfect for grilling, pan-searing, or baking.
+                </p>
+              )}
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-slate-900">
+                What You Get
+              </h2>
+              <ul className="mt-3 list-inside list-disc space-y-2 text-sm text-slate-700">
+                <li>100% wild Alaskan seafood</li>
+                <li>Individually vacuum-sealed</li>
+                <li>All-natural (preservative free)</li>
+                <li>Ideal for pan-searing, grilling, or oven cooking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews — light gray; product-specific from Klaviyo, fallback to last 3 global */}
+      <section
+        className="px-4 py-12 md:py-16"
+        style={{ backgroundColor: "var(--section-bg-light)" }}
+      >
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-xl font-semibold uppercase tracking-wide text-slate-900">
+            Reviews
+          </h2>
+          <p className="mt-2 text-sm text-slate-600">
+            What our customers are saying about this product.
+          </p>
+          {reviewsToShow.length > 0 ? (
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {reviewsToShow.map((r, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl bg-white p-5 shadow-sm text-left"
+                >
+                  <div className="flex justify-center gap-0.5 text-amber-400" aria-hidden>
+                    {[1, 2, 3, 4, 5].map((j) => (
+                      <span key={j}>{j <= r.stars ? "★" : "☆"}</span>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-sm text-slate-700">{r.text}</p>
+                  <p className="mt-2 text-xs text-slate-500">
+                    {r.name}{r.date ? ` — ${r.date}` : ""}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-8 text-sm text-slate-500">
+              No reviews yet for this product. Be the first to leave a review after your purchase.
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* You Might Also Like — light blue, product carousel */}
+      <section
+        className="px-4 py-12 md:py-16"
+        style={{ backgroundColor: LIGHT_BG }}
+      >
+        <div className="mx-auto max-w-6xl">
+          <h2 className="text-center text-xl font-semibold uppercase tracking-wide text-slate-900">
+            You Might Also Like
+          </h2>
+          <p className="mt-2 text-center text-sm text-slate-600">
+            Explore more wild-caught options from our fleet.
+          </p>
+          {otherProducts.length > 0 ? (
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {otherProducts.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/products/${p.handle}`}
+                  className="group rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-t-xl bg-slate-100">
+                    {p.image?.url ? (
+                      <img
+                        src={p.image.url}
+                        alt={p.image.altText ?? p.title}
+                        className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform"
+                      />
+                    ) : null}
+                    <span
+                      className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-1 text-sm font-semibold text-slate-900"
+                    >
+                      ${Math.round(parseFloat(p.price))}
+                    </span>
+                    <span
+                      className="absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full text-white"
+                      style={{ backgroundColor: "var(--brand-green)" }}
+                      aria-hidden
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-slate-900">{p.title}</h3>
+                    <span className="mt-1 inline-block text-sm text-sky-700 hover:underline">
+                      Quick View
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-6 text-center text-sm text-slate-600">
+              Check out more products in our shop.
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* Wild Flavor Starts Here — recipes promo, light blue */}
+      <section
+        className="px-4 py-12 md:py-16"
+        style={{ backgroundColor: LIGHT_BG }}
+      >
+        <div className="mx-auto max-w-6xl">
+          <h2 className="text-center text-xl font-semibold uppercase tracking-wide text-slate-900">
+            Wild Flavor Starts Here
+          </h2>
+          <p className="mt-2 text-center text-sm text-slate-600 max-w-2xl mx-auto">
+            Get inspired with simple, delicious ways to prepare your catch.
+          </p>
+          <div className="mt-8 grid gap-6 sm:grid-cols-3">
+            {[
+              { title: "Simply Grilled Salmon", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80" },
+              { title: "Simply Baked Salmon", img: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80" },
+              { title: "Roasted Salmon", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80" },
+            ].map((r, i) => (
+              <div key={i} className="overflow-hidden rounded-xl bg-white shadow-sm">
+                <div className="aspect-square overflow-hidden bg-slate-100">
+                  <img
+                    src={r.img}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <p className="p-3 text-center text-sm font-medium text-slate-900">
+                  {r.title}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-center">
+            <Link
+              href="/#recipes"
+              className="text-sm font-semibold text-sky-700 hover:underline"
+            >
+              Show more delicious recipes →
+            </Link>
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
-

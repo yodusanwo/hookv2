@@ -23,6 +23,9 @@ export default defineConfig({
               .title("Page")
               .child(S.documentTypeList("page").title("Pages")),
             S.listItem()
+              .title("Collection Page")
+              .child(S.documentTypeList("collectionPage").title("Collection Pages")),
+            S.listItem()
               .title("Site Settings")
               .id("siteSettings")
               .child(

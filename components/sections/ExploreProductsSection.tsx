@@ -33,8 +33,11 @@ const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
 
 export function ExploreProductsSection({
   block,
+  showWave = true,
 }: {
   block: ExploreProductsBlock;
+  /** When false, the wave divider under the carousel is hidden (e.g. on Collection pages). */
+  showWave?: boolean;
 }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -89,15 +92,17 @@ export function ExploreProductsSection({
 
       <ExploreProductsCategoryCarousel categories={categories} />
 
-      <div className="w-full shrink-0 overflow-visible">
-        <div className="wave-full-bleed shrink-0">
-          <WaveDivider
-            navySrc="/VectorWavyNavy.svg"
-            wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
-            navyOutline="bottom"
-          />
+      {showWave && (
+        <div className="w-full shrink-0 overflow-visible">
+          <div className="wave-full-bleed shrink-0">
+            <WaveDivider
+              navySrc="/VectorWavyNavy.svg"
+              wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
+              navyOutline="bottom"
+            />
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

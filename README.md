@@ -16,7 +16,17 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing the page by modifying `app/page.tsx`.
+
+### Category (Collection) pages
+
+Category pages are driven by **Shopify Collections**. Each collection has a URL-friendly **handle** (e.g. `salmon`, `fresh-catch`). The app serves them at:
+
+- **URL:** `/collections/[handle]` (e.g. `/collections/salmon`)
+
+**Shopify backend:** No extra setup is required. In Shopify Admin, use **Products → Collections**. Create or edit a collection; its **handle** is the slug in the URL (you can set it in the collection’s “Search engine listing” or it’s auto-generated from the title). Assign products to the collection; the Storefront API exposes `collectionByHandle`, which this app uses to render the category page.
+
+**Sanity (optional):** Collection pages can be managed in Sanity like the home page. In Sanity Studio, open **Content → Collection Page** (separate from **Page**). Create a new **Collection Page**, set **Collection handle** to the Shopify collection handle (e.g. `salmon` for `/collections/salmon`), add **Sections** (same blocks as the home page), and publish. The app will render that content for that collection. If no Collection Page document exists for the handle or it has no sections, the app falls back to a replicated home layout using Shopify collection data.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

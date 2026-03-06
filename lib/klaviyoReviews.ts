@@ -38,7 +38,13 @@ function formatDisplayDate(isoDate: string | null | undefined): string {
   if (!isoDate) return "";
   try {
     const d = new Date(isoDate);
-    return isNaN(d.getTime()) ? "" : d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+    return isNaN(d.getTime())
+      ? ""
+      : d.toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "numeric",
+        });
   } catch {
     return "";
   }
@@ -50,7 +56,8 @@ function mapKlaviyoToReview(r: KlaviyoReviewResource): MappedReview | null {
   if (status !== "published" && status !== "featured") return null;
   if (a.review_type === "question") return null;
 
-  const rating = a.rating != null && a.rating >= 1 && a.rating <= 5 ? a.rating : 0;
+  const rating =
+    a.rating != null && a.rating >= 1 && a.rating <= 5 ? a.rating : 0;
   const content = [a.title, a.content].filter(Boolean).join(" ").trim() || "";
   if (!content && rating === 0) return null;
 
@@ -67,10 +74,10 @@ async function fetchKlaviyoReviewsUncached(): Promise<MappedReview[]> {
   if (!apiKey) return [];
 
   const params = new URLSearchParams({
-    "filter": "and(equals(status,'published'),equals(rating,5))",
+    filter: "and(equals(status,'published'),equals(rating,5))",
     "fields[review]": "rating,author,content,title,created,review_type,status",
     "page[size]": String(PAGE_SIZE),
-    "sort": "-created",
+    sort: "-created",
   });
 
   const url = `${KLAVIYO_REVIEWS_URL}?${params.toString()}`;
@@ -91,7 +98,9 @@ async function fetchKlaviyoReviewsUncached(): Promise<MappedReview[]> {
 
   const json = (await res.json()) as KlaviyoReviewsResponse;
   const list = json.data ?? [];
-  return list.map(mapKlaviyoToReview).filter((r): r is MappedReview => r != null);
+  return list
+    .map(mapKlaviyoToReview)
+    .filter((r): r is MappedReview => r != null);
 }
 
 /**
@@ -104,7 +113,67 @@ export async function getKlaviyoReviews(): Promise<MappedReview[]> {
   const cached = unstable_cache(
     fetchKlaviyoReviewsUncached,
     ["klaviyo-reviews"],
-    { revalidate: 60 }
+    { revalidate: 60 },
   );
   return cached();
+}
+
+/** Extract numeric Shopify product ID from GID (e.g. gid://shopify/Product/123 -> 123). */
+function shopifyProductIdFromGid(gid: string): string | null {
+  const match = /^gid:\/\/shopify\/Product\/(\d+)$/.exec(gid?.trim() ?? "");
+  return match ? match[1]! : null;
+}
+
+const PRODUCT_REVIEWS_PAGE_SIZE = 6;
+
+/**
+ * Fetches published Klaviyo reviews for a single product.
+ * @param shopifyProductGid - Shopify product GID from Storefront API (e.g. gid://shopify/Product/123).
+ * @returns Up to PRODUCT_REVIEWS_PAGE_SIZE reviews for that product, sorted by created desc.
+ * Call only from server (API route or server component).
+ */
+export async function getKlaviyoReviewsForProduct(
+  shopifyProductGid: string,
+): Promise<MappedReview[]> {
+  const numericId = shopifyProductIdFromGid(shopifyProductGid);
+  if (!numericId) return [];
+
+  const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
+  if (!apiKey) return [];
+
+  const itemId = `$shopify:::$default:::${numericId}`;
+  const filter = `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
+
+  const params = new URLSearchParams({
+    filter,
+    "fields[review]": "rating,author,content,title,created,review_type,status",
+    "page[size]": String(PRODUCT_REVIEWS_PAGE_SIZE),
+    sort: "-created",
+  });
+
+  const url = `${KLAVIYO_REVIEWS_URL}?${params.toString()}`;
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Klaviyo-API-Key ${apiKey}`,
+      Accept: "application/json",
+      Revision: REVISION,
+    },
+    next: { revalidate: 60 },
+  });
+
+  if (!res.ok) {
+    console.warn(
+      "Klaviyo product reviews fetch failed:",
+      res.status,
+      await res.text(),
+    );
+    return [];
+  }
+
+  const json = (await res.json()) as KlaviyoReviewsResponse;
+  const list = json.data ?? [];
+  return list
+    .map(mapKlaviyoToReview)
+    .filter((r): r is MappedReview => r != null);
 }

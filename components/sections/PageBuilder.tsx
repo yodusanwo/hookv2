@@ -27,7 +27,16 @@ type PageSection =
   | { _type: "faqBlock"; _key?: string; [key: string]: unknown }
   | { _type: "whyWildMattersBlock"; _key?: string; [key: string]: unknown };
 
-export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[]; promoBanner?: string | null }) {
+export function PageBuilder({
+  sections,
+  promoBanner,
+  hideExploreProductsWave,
+}: {
+  sections?: PageSection[];
+  promoBanner?: string | null;
+  /** When true, the wave under the Explore Products / Product Carousel section is hidden (e.g. on Collection pages). */
+  hideExploreProductsWave?: boolean;
+}) {
   const items = sections ?? [];
 
   return (
@@ -80,6 +89,7 @@ export function PageBuilder({ sections, promoBanner }: { sections?: PageSection[
               <ExploreProductsSection
                 key={key}
                 block={block as Parameters<typeof ExploreProductsSection>[0]["block"]}
+                showWave={!hideExploreProductsWave}
               />
             );
           case "ourStoryBlock":

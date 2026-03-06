@@ -17,6 +17,7 @@ import { faqBlock } from "./blocks/faq";
 import { whyWildMattersBlock } from "./blocks/whyWildMatters";
 
 import { page } from "./documents/page";
+import { collectionPage } from "./documents/collectionPage";
 import { siteSettings } from "./documents/siteSettings";
 
 export const schemaTypes = [
@@ -37,5 +38,6 @@ export const schemaTypes = [
   faqBlock,
   whyWildMattersBlock,
   page,
+  collectionPage,
   siteSettings,
 ];
