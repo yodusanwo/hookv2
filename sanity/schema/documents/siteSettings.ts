@@ -7,6 +7,7 @@ export const siteSettings = defineType({
   groups: [
     { name: "header", title: "Header" },
     { name: "footer", title: "Footer" },
+    { name: "shipping", title: "Shipping" },
   ],
   fields: [
     defineField({
@@ -82,6 +83,13 @@ export const siteSettings = defineType({
           ],
         },
       ],
+    }),
+    defineField({
+      name: "freeShippingMessage",
+      type: "string",
+      title: "Free Shipping Message",
+      description: "Shown on product pages (e.g. \"Free shipping for orders over $50\"). Leave empty to use the default.",
+      group: "shipping",
     }),
   ],
   preview: {

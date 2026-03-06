@@ -80,29 +80,22 @@ export function AddToCart({
   >("idle");
   const [error, setError] = React.useState<string | null>(null);
 
-  if (!selectedVariant) {
-    return (
-      <div className="rounded-xl border border-black/5 bg-white p-5 shadow-sm text-center text-sm text-slate-600">
-        No variants available for this product.
-      </div>
-    );
-  }
-
-  async function onAdd() {
+  const onAdd = React.useCallback(async () => {
+    if (!selectedVariant?.id) return;
     setStatus("loading");
     setError(null);
     try {
       const cartId = await ensureCartId();
       const res = await fetch("/api/cart/lines", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cartId,
           merchandiseId: selectedVariant.id,
           quantity: qty,
         }),
       });
-      const json = await res.json().catch(() => ({}));
+      const json = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
       setStatus("success");
       window.setTimeout(() => setStatus("idle"), 1500);
@@ -110,6 +103,14 @@ export function AddToCart({
       setStatus("error");
       setError(e instanceof Error ? e.message : "Unknown error");
     }
+  }, [selectedVariant, qty]);
+
+  if (!selectedVariant) {
+    return (
+      <div className="rounded-xl border border-black/5 bg-white p-5 shadow-sm text-center text-sm text-slate-600">
+        No variants available for this product.
+      </div>
+    );
   }
 
   const priceDisplay = formatMoney(
@@ -193,20 +194,32 @@ export function AddToCart({
 
         <button
           type="button"
-          onClick={onAdd}
+          onClick={(e) => {
+            e.preventDefault();
+            onAdd();
+          }}
           disabled={!selectedVariant.availableForSale || status === "loading"}
           className="inline-flex h-12 w-full min-w-[200px] items-center justify-center rounded-md px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-          style={{ backgroundColor: "var(--brand-green)" }}
+          style={{
+            backgroundColor:
+              selectedVariant.availableForSale
+                ? "var(--brand-green)"
+                : "var(--brand-navy, #1e3a5f)",
+          }}
         >
           {status === "loading"
             ? "Adding…"
             : status === "success"
               ? "Added!"
-              : "Add to cart"}
+              : !selectedVariant.availableForSale
+                ? "Sold out"
+                : "Add to cart"}
         </button>
 
         {status === "error" && error ? (
-          <p className="text-sm text-red-700">{error}</p>
+          <p className="mt-2 text-sm font-medium text-red-700" role="alert">
+            {error}
+          </p>
         ) : null}
       </div>
     );

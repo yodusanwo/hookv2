@@ -1,7 +1,12 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { ProductImageGallery } from "./ProductImageGallery";
-import { getKlaviyoReviewsForProduct, getKlaviyoReviews } from "@/lib/klaviyoReviews";
+import {
+  getKlaviyoReviewsForProduct,
+  getKlaviyoReviews,
+  getKlaviyoReviewCountForProduct,
+} from "@/lib/klaviyoReviews";
+import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import Link from "next/link";
 
 type ProductByHandleResponse = {
@@ -10,6 +15,8 @@ type ProductByHandleResponse = {
     title: string;
     description: string;
     descriptionHtml: string;
+    /** Short unique summary from metafield custom.summary (different from main description). */
+    summary: { value: string } | null;
     featuredImage: { url: string; altText: string | null } | null;
     images: { edges: Array<{ node: { url: string; altText: string | null } }> };
     options: Array<{ name: string; values: string[] }>;
@@ -34,6 +41,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       title
       description
       descriptionHtml
+      summary: metafield(namespace: "custom", key: "summary") { value }
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
       options { name values }
@@ -74,6 +82,15 @@ const OTHER_PRODUCTS_QUERY = `
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
 const NAVY = "var(--brand-navy)";
+
+/** Returns hero teaser: second paragraph if present, else first, else full description. */
+function heroTeaserFromDescription(description: string | null | undefined): string | null {
+  if (!description?.trim()) return null;
+  const paragraphs = description.trim().split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
+  if (paragraphs.length >= 2) return paragraphs[1]!;
+  if (paragraphs.length === 1) return paragraphs[0]!;
+  return description.trim();
+}
 
 export default async function ProductPage({
   params,
@@ -170,11 +187,24 @@ export default async function ProductPage({
   });
   const variants = product.variants.edges.map((e) => e.node);
   const subtitle = variants[0]?.title ?? product.title;
+  const heroTeaser = heroTeaserFromDescription(product.description);
 
-  const [productReviews, globalReviews] = await Promise.all([
-    getKlaviyoReviewsForProduct(product.id),
-    getKlaviyoReviews(),
-  ]);
+  const [productReviews, globalReviews, reviewCount, siteSettings] =
+    await Promise.all([
+      getKlaviyoReviewsForProduct(product.id),
+      getKlaviyoReviews(),
+      getKlaviyoReviewCountForProduct(product.id),
+      client
+        ? client.fetch<{ freeShippingMessage?: string | null }>(
+            SITE_SETTINGS_QUERY,
+            {},
+            { next: { revalidate: 60 } },
+          )
+        : Promise.resolve(null),
+    ]);
+  const freeShippingMessage =
+    siteSettings?.freeShippingMessage?.trim() ||
+    "Free shipping for orders over $50";
   const productSet = new Set(
     productReviews.map((r) => `${r.name}|${r.date}|${r.text}`)
   );
@@ -211,24 +241,53 @@ export default async function ProductPage({
               >
                 {product.title}
               </h1>
-              <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
+              <p
+                style={{
+                  marginTop: 21,
+                  marginBottom: 27,
+                  color: "#374151",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "24px",
+                  fontStyle: "normal",
+                  fontWeight: 300,
+                  lineHeight: "normal",
+                }}
+              >
+                {subtitle}
+              </p>
 
               <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
-                <span className="flex gap-0.5" aria-hidden>
+                <span
+                  className="flex justify-center items-center gap-0.5"
+                  style={{ color: "#FFA100" }}
+                  aria-hidden
+                >
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <span key={i} className="text-amber-400">
+                    <span
+                      key={i}
+                      className="flex items-center justify-center"
+                      style={{
+                        width: 24,
+                        height: 24,
+                        fontSize: 24,
+                        lineHeight: 1,
+                      }}
+                    >
                       ★
                     </span>
                   ))}
                 </span>
-                <span>Reviews</span>
+                <span className="text-slate-700">
+                  {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
+                </span>
               </div>
 
-              {product.description && (
+              {/* Short unique summary from metafield (custom.summary); fallback to hero teaser from description */}
+              {(product.summary?.value?.trim() || heroTeaser) ? (
                 <p className="mt-4 max-w-xl text-sm leading-6 text-slate-700 line-clamp-3">
-                  {product.description}
+                  {product.summary?.value?.trim() || heroTeaser}
                 </p>
-              )}
+              ) : null}
 
               <div className="mt-4 flex items-center gap-2 text-sm text-slate-700">
                 <svg
@@ -244,7 +303,7 @@ export default async function ProductPage({
                     d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                   />
                 </svg>
-                Free shipping for orders over $50
+                {freeShippingMessage}
               </div>
 
               <div className="mt-6">
@@ -315,9 +374,24 @@ export default async function ProductPage({
                   key={i}
                   className="rounded-xl bg-white p-5 shadow-sm text-left"
                 >
-                  <div className="flex justify-center gap-0.5 text-amber-400" aria-hidden>
+                  <div
+                    className="flex justify-center items-center gap-0.5"
+                    style={{ color: "#FFA100" }}
+                    aria-hidden
+                  >
                     {[1, 2, 3, 4, 5].map((j) => (
-                      <span key={j}>{j <= r.stars ? "★" : "☆"}</span>
+                      <span
+                        key={j}
+                        className="flex items-center justify-center"
+                        style={{
+                          width: 24,
+                          height: 24,
+                          fontSize: 24,
+                          lineHeight: 1,
+                        }}
+                      >
+                        {j <= r.stars ? "★" : "☆"}
+                      </span>
                     ))}
                   </div>
                   <p className="mt-3 text-sm text-slate-700">{r.text}</p>

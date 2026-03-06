@@ -21,7 +21,7 @@ export function BottomNav({
   const items = [
     { href: safeHref(nav[0]?.href) || "/", label: nav[0]?.label ?? "Home", icon: "home" as const },
     { href: safeHref(nav[1]?.href) || "#shop", label: nav[1]?.label ?? "Shop", icon: "search" as const },
-    { href: "#", label: "Cart", icon: "cart" as const },
+    { href: "/cart", label: "Cart", icon: "cart" as const },
     { href: safeHref(nav[3]?.href) || "#contact", label: nav[3]?.label ?? "Account", icon: "user" as const },
   ];
 

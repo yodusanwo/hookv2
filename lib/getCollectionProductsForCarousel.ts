@@ -84,7 +84,7 @@ export async function getCollectionProductsForCarousel(
         ? variant.compareAtPrice
         : null;
       const sizeOrDescription =
-        variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
+        variant?.selectedOptions?.map((o) => o.value)?.join(" / ") || null;
       return {
         id: node.id,
         title: node.title,

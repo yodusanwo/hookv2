@@ -20,7 +20,8 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   headerLogo { asset-> },
   headerBackgroundColor,
   promoBanner,
-  navLinks[] { label, href }
+  navLinks[] { label, href },
+  freeShippingMessage
 }`;
 
 /** GROQ query for homepage (page with slug "home") */

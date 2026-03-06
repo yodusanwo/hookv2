@@ -97,7 +97,7 @@ export function Header({
           <button type="button" aria-label="Account" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
             <IconUser className="h-5 w-5" />
           </button>
-          <Link href="#" aria-label="Cart" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <Link href="/cart" aria-label="Cart" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
             <IconCart className="h-5 w-5" />
           </Link>
         </div>

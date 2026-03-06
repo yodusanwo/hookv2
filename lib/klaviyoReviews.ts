@@ -28,6 +28,8 @@ type KlaviyoReviewResource = {
 
 type KlaviyoReviewsResponse = {
   data?: KlaviyoReviewResource[];
+  meta?: { count?: number };
+  links?: { next?: string };
 };
 
 const KLAVIYO_REVIEWS_URL = "https://a.klaviyo.com/api/reviews";
@@ -176,4 +178,60 @@ export async function getKlaviyoReviewsForProduct(
   return list
     .map(mapKlaviyoToReview)
     .filter((r): r is MappedReview => r != null);
+}
+
+const COUNT_PAGE_SIZE = 100;
+
+/**
+ * Returns the total count of published Klaviyo reviews for a single product.
+ * Call only from server (API route or server component).
+ */
+export async function getKlaviyoReviewCountForProduct(
+  shopifyProductGid: string,
+): Promise<number> {
+  const numericId = shopifyProductIdFromGid(shopifyProductGid);
+  if (!numericId) return 0;
+
+  const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
+  if (!apiKey) return 0;
+
+  const itemId = `$shopify:::$default:::${numericId}`;
+  const filter = `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
+
+  let total = 0;
+  let nextUrl: string | null = `${KLAVIYO_REVIEWS_URL}?${new URLSearchParams({
+    filter,
+    "fields[review]": "id",
+    "page[size]": String(COUNT_PAGE_SIZE),
+    sort: "-created",
+  })}`;
+
+  while (nextUrl) {
+    const res = await fetch(nextUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Klaviyo-API-Key ${apiKey}`,
+        Accept: "application/json",
+        Revision: REVISION,
+      },
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) break;
+
+    const json = (await res.json()) as KlaviyoReviewsResponse;
+    const list = json.data ?? [];
+    if (json.meta?.count != null) {
+      return json.meta.count;
+    }
+    total += list.length;
+    const next = json.links?.next;
+    nextUrl = next
+      ? next.startsWith("http")
+        ? next
+        : `${new URL(KLAVIYO_REVIEWS_URL).origin}${next}`
+      : null;
+  }
+
+  return total;
 }
