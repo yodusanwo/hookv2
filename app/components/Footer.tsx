@@ -25,9 +25,9 @@ export function Footer({ logoUrl }: { logoUrl?: string | null }) {
       </div>
       {/* Main footer content — 4 columns */}
       <div className="mx-auto max-w-6xl px-4 py-12 pb-16 md:pb-12" style={{ backgroundColor: "var(--footer-bg)" }}>
-        <div className="grid gap-12 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-12 md:[grid-template-columns:1fr_1fr_0.5fr_2fr]">
           {/* Column 1: Logo + copyright */}
-          <div>
+          <div className="border-2 border-red-500">
             <Link
               href="/"
               className="block border-0 outline-none ring-0"
@@ -45,7 +45,7 @@ export function Footer({ logoUrl }: { logoUrl?: string | null }) {
           </div>
 
           {/* Column 2: Newsletter — News, deals & drops */}
-          <div>
+          <div className="border-2 border-red-500">
             <form
               className="rounded-xl p-6 flex flex-col gap-3"
               style={{ backgroundColor: "#D4F2FF" }}
@@ -78,7 +78,7 @@ export function Footer({ logoUrl }: { logoUrl?: string | null }) {
           </div>
 
           {/* Column 3: Navigation links */}
-          <div>
+          <div className="border-2 border-red-500">
             <ul className="flex flex-col gap-2">
               <li>
                 <a href="#shop" className="hover:text-white transition-colors" style={footerTextStyle}>
@@ -114,7 +114,7 @@ export function Footer({ logoUrl }: { logoUrl?: string | null }) {
           </div>
 
           {/* Column 4: Proud member + org logos + social */}
-          <div>
+          <div className="border-2 border-red-500">
             <h3
               className="mb-4"
               style={{ ...footerTextStyle, fontSize: "16px", fontWeight: 600, maxWidth: 200 }}
