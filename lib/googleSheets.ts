@@ -73,7 +73,7 @@ export async function getEventsFromSheet(): Promise<SheetEvent[]> {
   });
 
   if (!res.ok) {
-    console.warn("Google Sheets fetch failed:", res.status, await res.text().slice(0, 200));
+    console.warn("Google Sheets fetch failed:", res.status, (await res.text()).slice(0, 200));
     return [];
   }
 
