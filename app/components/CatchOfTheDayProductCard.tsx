@@ -91,12 +91,11 @@ export function CatchOfTheDayProductCard({
   // Title: optional cleanup of trailing parentheses so "Name (8 oz)" shows as "Name"
   const titleSizeMatch = product.title.match(/\s*\(([^)]+)\)\s*$/);
   const displayTitle = titleSizeMatch ? product.title.slice(0, titleSizeMatch.index).trim() : product.title;
-  // Weight beneath title: from Shopify Storefront API (variant weight); never show Shopify's "Default Title" placeholder
-  const fallbackSubtitle =
+  // Subtitle beneath title: size/description from variant; never show Shopify's "Default Title" placeholder
+  const subtitle =
     product.sizeOrDescription?.trim() && product.sizeOrDescription !== "Default Title"
       ? product.sizeOrDescription
       : null;
-  const subtitle = product.productWeight ?? fallbackSubtitle;
 
   return (
     <>
