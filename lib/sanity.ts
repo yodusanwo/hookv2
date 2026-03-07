@@ -21,7 +21,10 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   headerBackgroundColor,
   promoBanner,
   navLinks[] { label, href },
-  freeShippingMessage
+  freeShippingMessage,
+  estimatedDeliveryProcessingDays,
+  estimatedDeliveryTransitDays,
+  estimatedDeliveryCutoffTime
 }`;
 
 /** GROQ query for homepage (page with slug "home") */

@@ -1,5 +1,6 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
+import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
 import { ProductImageGallery } from "./ProductImageGallery";
 import {
   getKlaviyoReviewsForProduct,
@@ -17,6 +18,8 @@ type ProductByHandleResponse = {
     descriptionHtml: string;
     /** Short unique summary from metafield custom.short_summary_under_images (different from main description). */
     summary: { value: string } | null;
+    /** Optional static estimated delivery from metafield custom.estimated_delivery. */
+    estimatedDelivery: { value: string } | null;
     featuredImage: { url: string; altText: string | null } | null;
     images: { edges: Array<{ node: { url: string; altText: string | null } }> };
     options: Array<{ name: string; values: string[] }>;
@@ -42,6 +45,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       description
       descriptionHtml
       summary: metafield(namespace: "custom", key: "short_summary_under_images") { value }
+      estimatedDelivery: metafield(namespace: "custom", key: "estimated_delivery") { value }
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
       options { name values }
@@ -195,7 +199,12 @@ export default async function ProductPage({
       getKlaviyoReviews(),
       getKlaviyoReviewCountForProduct(product.id),
       client
-        ? client.fetch<{ freeShippingMessage?: string | null }>(
+        ? client.fetch<{
+            freeShippingMessage?: string | null;
+            estimatedDeliveryProcessingDays?: number | null;
+            estimatedDeliveryTransitDays?: string | null;
+            estimatedDeliveryCutoffTime?: string | null;
+          }>(
             SITE_SETTINGS_QUERY,
             {},
             { next: { revalidate: 60 } },
@@ -205,6 +214,12 @@ export default async function ProductPage({
   const freeShippingMessage =
     siteSettings?.freeShippingMessage?.trim() ||
     "Free shipping for orders over $50";
+
+  const processingDays = siteSettings?.estimatedDeliveryProcessingDays ?? 2;
+  const transitStr = siteSettings?.estimatedDeliveryTransitDays?.trim() ?? "2-4";
+  const transitMatch = transitStr.match(/^(\d+)\s*-\s*(\d+)$/);
+  const transitDaysMin = transitMatch ? parseInt(transitMatch[1]!, 10) : 2;
+  const transitDaysMax = transitMatch ? parseInt(transitMatch[2]!, 10) : 4;
   const productSet = new Set(
     productReviews.map((r) => `${r.name}|${r.date}|${r.text}`)
   );
@@ -256,7 +271,9 @@ export default async function ProductPage({
                 {subtitle}
               </p>
 
-              <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
+              <div
+                className="mt-3 mb-[3.3125rem] flex items-center gap-2 text-sm text-slate-600"
+              >
                 <span
                   className="flex justify-center items-center gap-0.5"
                   style={{ color: "#FFA100" }}
@@ -284,27 +301,51 @@ export default async function ProductPage({
 
               {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
               {(product.summary?.value?.trim() || heroTeaser) ? (
-                <p className="mt-4 max-w-xl text-sm leading-6 text-slate-700 line-clamp-3">
+                <p
+                  className="mt-4 mb-[3.75rem] w-full md:w-[25.0625rem] line-clamp-3"
+                  style={{
+                    color: "var(--Text-Color, #1E1E1E)",
+                    fontFamily: "Inter, var(--font-inter), sans-serif",
+                    fontSize: "1rem",
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "1.6rem",
+                  }}
+                >
                   {product.summary?.value?.trim() || heroTeaser}
                 </p>
               ) : null}
 
-              <div className="mt-4 flex items-center gap-2 text-sm text-slate-700">
-                <svg
-                  className="h-5 w-5 shrink-0 text-slate-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="mt-4 flex items-center gap-2">
+                <img
+                  src="/delivery_truck_speed_24dp_000000_FILL0_wght400_GRAD0_opsz24%201.svg"
+                  alt=""
+                  className="shrink-0"
+                  width={35}
+                  height={35}
+                  aria-hidden
+                />
+                <span
+                  style={{
+                    color: "#374151",
+                    fontFamily: "Inter, var(--font-inter), sans-serif",
+                    fontSize: "16px",
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "150%",
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                  />
-                </svg>
-                {freeShippingMessage}
+                  {freeShippingMessage}
+                </span>
               </div>
+
+              <EstimatedDeliveryDisplay
+                staticText={product.estimatedDelivery?.value?.trim() ?? null}
+                processingDays={processingDays}
+                transitDaysMin={transitDaysMin}
+                transitDaysMax={transitDaysMax}
+                cutOffTime={siteSettings?.estimatedDeliveryCutoffTime ?? null}
+              />
 
               <div className="mt-6">
                 <AddToCart
