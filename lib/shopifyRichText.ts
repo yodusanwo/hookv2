@@ -24,13 +24,13 @@ export function renderShopifyRichText(value: string | null | undefined): string 
       scoped: false,
       newLineToBreak: true,
       classes: {
-        p: "mb-4 last:mb-0 text-slate-700",
-        ul: "list-disc list-inside mb-4 last:mb-0 text-slate-700",
-        ol: "list-decimal list-inside mb-4 last:mb-0 text-slate-700",
-        li: "text-sm leading-6",
-        a: "text-sky-700 underline hover:text-sky-800",
-        strong: "font-semibold",
-        em: "italic",
+        p: "mb-4 last:mb-0 text-[var(--Text-Color,#1E1E1E)]",
+        ul: "list-disc list-inside mb-4 last:mb-0 text-[var(--Text-Color,#1E1E1E)]",
+        ol: "list-decimal list-inside mb-4 last:mb-0 text-[var(--Text-Color,#1E1E1E)]",
+        li: "text-sm leading-6 text-[var(--Text-Color,#1E1E1E)]",
+        a: "underline hover:opacity-80 text-[var(--Text-Color,#1E1E1E)]",
+        strong: "font-semibold text-[var(--Text-Color,#1E1E1E)]",
+        em: "italic text-[var(--Text-Color,#1E1E1E)]",
       },
     });
   } catch {

@@ -389,49 +389,117 @@ export default async function ProductPage({
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 md:grid-cols-2">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">
+              <h2
+                style={{
+                  color: "var(--Text-Color, #1E1E1E)",
+                  fontFamily: "Inter",
+                  fontSize: "24px",
+                  fontStyle: "normal",
+                  fontWeight: 600,
+                  lineHeight: "150%",
+                }}
+              >
                 Product Description
               </h2>
-              {product.descriptionHtml ? (
-                <div
-                  className="product-description mt-3 text-sm leading-6 text-slate-700 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_p:first-child]:mt-0 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1 [&_ul]:mb-4"
-                  dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-                />
-              ) : (
-                <p className="mt-3 text-sm text-slate-600">
-                  Wild-caught, sustainably sourced. Perfect for grilling, pan-searing, or baking.
-                </p>
-              )}
+              <div style={{ width: "90%" }}>
+                {product.descriptionHtml ? (
+                  <div
+                    className="product-description mt-3 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_p:first-child]:mt-0 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1 [&_ul]:mb-4"
+                    style={{
+                      color: "var(--Text-Color, #1E1E1E)",
+                      fontFamily: "Inter",
+                      fontSize: "16px",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "160%",
+                    }}
+                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                  />
+                ) : (
+                  <p
+                    className="mt-3"
+                    style={{
+                      color: "var(--Text-Color, #1E1E1E)",
+                      fontFamily: "Inter",
+                      fontSize: "16px",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "160%",
+                    }}
+                  >
+                    Wild-caught, sustainably sourced. Perfect for grilling, pan-searing, or baking.
+                  </p>
+                )}
+              </div>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">
+              <h2
+                style={{
+                  color: "var(--Text-Color, #1E1E1E)",
+                  fontFamily: "Inter",
+                  fontSize: "24px",
+                  fontStyle: "normal",
+                  fontWeight: 600,
+                  lineHeight: "150%",
+                }}
+              >
                 What You Get
               </h2>
-              {product.whatYouGet?.value?.trim() ? (
-                (() => {
-                  const html = renderShopifyRichText(product.whatYouGet!.value);
-                  if (html) {
+              <div style={{ width: "90%" }}>
+                {product.whatYouGet?.value?.trim() ? (
+                  (() => {
+                    const html = renderShopifyRichText(product.whatYouGet!.value);
+                    if (html) {
+                      return (
+                        <div
+                          className="what-you-get mt-3"
+                          style={{
+                            color: "var(--Text-Color, #1E1E1E)",
+                            fontFamily: "Inter",
+                            fontSize: "16px",
+                            fontStyle: "normal",
+                            fontWeight: 400,
+                            lineHeight: "160%",
+                          }}
+                          dangerouslySetInnerHTML={{ __html: html }}
+                        />
+                      );
+                    }
                     return (
                       <div
-                        className="what-you-get mt-3 text-sm leading-6 text-slate-700"
-                        dangerouslySetInnerHTML={{ __html: html }}
-                      />
+                        className="mt-3 whitespace-pre-line"
+                        style={{
+                          color: "var(--Text-Color, #1E1E1E)",
+                          fontFamily: "Inter",
+                          fontSize: "16px",
+                          fontStyle: "normal",
+                          fontWeight: 400,
+                          lineHeight: "160%",
+                        }}
+                      >
+                        {product.whatYouGet!.value.trim()}
+                      </div>
                     );
-                  }
-                  return (
-                    <div className="mt-3 text-sm leading-6 text-slate-700 whitespace-pre-line">
-                      {product.whatYouGet!.value.trim()}
-                    </div>
-                  );
-                })()
-              ) : (
-                <ul className="mt-3 list-inside list-disc space-y-2 text-sm text-slate-700">
-                  <li>100% wild Alaskan seafood</li>
-                  <li>Individually vacuum-sealed</li>
-                  <li>All-natural (preservative free)</li>
-                  <li>Ideal for pan-searing, grilling, or oven cooking</li>
-                </ul>
-              )}
+                  })()
+                ) : (
+                  <ul
+                    className="mt-3 list-inside list-disc space-y-2"
+                    style={{
+                      color: "var(--Text-Color, #1E1E1E)",
+                      fontFamily: "Inter",
+                      fontSize: "16px",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "160%",
+                    }}
+                  >
+                    <li>100% wild Alaskan seafood</li>
+                    <li>Individually vacuum-sealed</li>
+                    <li>All-natural (preservative free)</li>
+                    <li>Ideal for pan-searing, grilling, or oven cooking</li>
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
         </div>
