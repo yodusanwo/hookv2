@@ -5,7 +5,7 @@ The product page shows a **short unique summary** in the product info column (ne
 ## Metafield used
 
 - **Namespace:** `custom`
-- **Key:** `summary`
+- **Key:** `short_summary_under_images`
 - **Type:** Single line or multi-line text (Storefront API returns `value` as string)
 
 ## 1. Create the metafield definition in Shopify
@@ -20,7 +20,7 @@ You must expose this metafield to the Storefront API (required for headless stor
    - **Name:** e.g. "Short summary" or "Summary (under images)"
    - **Namespace and key:**  
      - Namespace: `custom`  
-     - Key: `summary`
+     - Key: `short_summary_under_images`
    - **Type:** Single line text or Multi-line text
 4. Under **Storefront API access**, enable **Storefronts access** (or equivalent so the metafield is readable by the Storefront API).
 
@@ -35,7 +35,7 @@ mutation {
   metafieldDefinitionCreate(
     definition: {
       namespace: "custom"
-      key: "summary"
+      key: "short_summary_under_images"
       name: "Short summary (under images)"
       type: "single_line_text_field"
       ownerType: PRODUCT
@@ -63,7 +63,7 @@ For each product that should show a short summary:
 
 1. In **Shopify Admin**, go to **Products** and open the product.
 2. Scroll to the **Metafields** section (or the "Short summary" field if it appears there).
-3. Enter the short summary text in the **custom.summary** field and save.
+3. Enter the short summary text in the **custom.short_summary_under_images** field and save.
 
 When the metafield is set, that text is shown in the summary spot (under the reviews). When it’s empty, the app falls back to a short teaser from the main product description.
 

@@ -15,7 +15,7 @@ type ProductByHandleResponse = {
     title: string;
     description: string;
     descriptionHtml: string;
-    /** Short unique summary from metafield custom.summary (different from main description). */
+    /** Short unique summary from metafield custom.short_summary_under_images (different from main description). */
     summary: { value: string } | null;
     featuredImage: { url: string; altText: string | null } | null;
     images: { edges: Array<{ node: { url: string; altText: string | null } }> };
@@ -41,7 +41,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       title
       description
       descriptionHtml
-      summary: metafield(namespace: "custom", key: "summary") { value }
+      summary: metafield(namespace: "custom", key: "short_summary_under_images") { value }
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
       options { name values }
@@ -282,7 +282,7 @@ export default async function ProductPage({
                 </span>
               </div>
 
-              {/* Short unique summary from metafield (custom.summary); fallback to hero teaser from description */}
+              {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
               {(product.summary?.value?.trim() || heroTeaser) ? (
                 <p className="mt-4 max-w-xl text-sm leading-6 text-slate-700 line-clamp-3">
                   {product.summary?.value?.trim() || heroTeaser}

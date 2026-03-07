@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { IconCart, IconSearch, IconUser } from "./Icons";
+import { IconSearch, IconUser } from "./Icons";
+import { CartCount } from "./CartCount";
 import { safeHref } from "@/lib/urlValidation";
 
 const FALLBACK_NAV = [
@@ -97,9 +98,7 @@ export function Header({
           <button type="button" aria-label="Account" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
             <IconUser className="h-5 w-5" />
           </button>
-          <Link href="/cart" aria-label="Cart" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-            <IconCart className="h-5 w-5" />
-          </Link>
+          <CartCount />
         </div>
       </div>
 

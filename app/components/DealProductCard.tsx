@@ -70,10 +70,16 @@ export function DealProductCard({
         if (!controller.signal.aborted) {
           setCheckoutUrl((json as { checkoutUrl?: string }).checkoutUrl ?? null);
           setModalOpen(true);
+          window.dispatchEvent(new CustomEvent("cart-updated"));
         }
       } catch (err) {
         if (err instanceof Error && err.name !== "AbortError") {
-          // Could show a toast; for now just ignore
+          const msg = err.message.toLowerCase();
+          if (msg.includes("cart not found") || msg.includes("expired")) {
+            if (typeof window !== "undefined") {
+              window.localStorage.removeItem("shopify_cart_id");
+            }
+          }
         }
       } finally {
         if (!controller.signal.aborted) setAdding(false);

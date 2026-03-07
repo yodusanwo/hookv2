@@ -56,7 +56,11 @@ export default function CartPage() {
   const fetchCart = React.useCallback(async (id: string) => {
     const res = await fetch(`/api/cart?cartId=${encodeURIComponent(id)}`);
     if (res.status === 404) {
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem(CART_ID_KEY);
+      }
       setCart(null);
+      setCartId(null);
       setError("Cart not found or expired.");
       return;
     }
@@ -84,9 +88,38 @@ export default function CartPage() {
     }
   }, [fetchCart]);
 
+  const recomputeCost = React.useCallback((lines: CartLine[]) => {
+    const currencyCode = lines[0]?.merchandise?.price?.currencyCode ?? "USD";
+    const total = lines.reduce(
+      (sum, l) =>
+        sum +
+        parseFloat(l.merchandise.price.amount) * l.quantity,
+      0
+    );
+    return {
+      totalAmount: {
+        amount: total.toFixed(2),
+        currencyCode,
+      },
+    };
+  }, []);
+
   const updateQuantity = React.useCallback(
     async (lineId: string, quantity: number) => {
       if (!cartId || !cart) return;
+      const optimisticLines = cart.lines.edges.map((e) => {
+        if (e.node.id === lineId) {
+          return { ...e, node: { ...e.node, quantity } };
+        }
+        return e;
+      });
+      const optimisticCart: Cart = {
+        ...cart,
+        lines: { edges: optimisticLines },
+        cost: recomputeCost(optimisticLines.map((e) => e.node)),
+      };
+      setCart(optimisticCart);
+      setError(null);
       setUpdatingIds((prev) => new Set(prev).add(lineId));
       try {
         const res = await fetch("/api/cart/lines", {
@@ -99,11 +132,18 @@ export default function CartPage() {
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
+          await fetchCart(cartId);
           setError(data?.error ?? "Failed to update.");
           return;
         }
         await fetchCart(cartId);
         setError(null);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("cart-updated"));
+        }
+      } catch {
+        await fetchCart(cartId);
+        setError("Network error. Please try again.");
       } finally {
         setUpdatingIds((prev) => {
           const next = new Set(prev);
@@ -112,12 +152,21 @@ export default function CartPage() {
         });
       }
     },
-    [cartId, cart, fetchCart]
+    [cartId, cart, fetchCart, recomputeCost]
   );
 
   const removeLine = React.useCallback(
     async (lineId: string) => {
       if (!cartId || !cart) return;
+      const optimisticEdges = cart.lines.edges.filter((e) => e.node.id !== lineId);
+      const optimisticLines = optimisticEdges.map((e) => e.node);
+      const optimisticCart: Cart = {
+        ...cart,
+        lines: { edges: optimisticEdges },
+        cost: recomputeCost(optimisticLines),
+      };
+      setCart(optimisticCart);
+      setError(null);
       setUpdatingIds((prev) => new Set(prev).add(lineId));
       try {
         const res = await fetch("/api/cart/lines", {
@@ -127,11 +176,18 @@ export default function CartPage() {
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
+          await fetchCart(cartId);
           setError(data?.error ?? "Failed to remove.");
           return;
         }
         await fetchCart(cartId);
         setError(null);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("cart-updated"));
+        }
+      } catch {
+        await fetchCart(cartId);
+        setError("Network error. Please try again.");
       } finally {
         setUpdatingIds((prev) => {
           const next = new Set(prev);
@@ -140,7 +196,7 @@ export default function CartPage() {
         });
       }
     },
-    [cartId, cart, fetchCart]
+    [cartId, cart, fetchCart, recomputeCost]
   );
 
   const lines = cart?.lines?.edges?.map((e) => e.node) ?? [];
@@ -323,7 +379,10 @@ export default function CartPage() {
           </p>
           <a
             href={cart.checkoutUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-4 inline-block w-full max-w-xs bg-black px-6 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-slate-800 sm:w-auto"
+            aria-label="Check out (opens in new tab)"
           >
             Check out
           </a>

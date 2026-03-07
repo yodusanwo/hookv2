@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 
 type Variant = {
   id: string;
@@ -79,6 +80,7 @@ export function AddToCart({
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [error, setError] = React.useState<string | null>(null);
+  const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
 
   const onAdd = React.useCallback(async () => {
     if (!selectedVariant?.id) return;
@@ -95,15 +97,36 @@ export function AddToCart({
           quantity: qty,
         }),
       });
-      const json = (await res.json().catch(() => ({}))) as { error?: string };
+      const json = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        checkoutUrl?: string;
+      };
       if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
+      setCheckoutUrl(json.checkoutUrl ?? null);
       setStatus("success");
-      window.setTimeout(() => setStatus("idle"), 1500);
+      window.dispatchEvent(new CustomEvent("cart-updated"));
     } catch (e) {
       setStatus("error");
-      setError(e instanceof Error ? e.message : "Unknown error");
+      const message = e instanceof Error ? e.message : "Unknown error";
+      setError(message);
+      if (
+        typeof message === "string" &&
+        (message.toLowerCase().includes("cart not found") ||
+          message.toLowerCase().includes("expired"))
+      ) {
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem("shopify_cart_id");
+        }
+      }
     }
   }, [selectedVariant, qty]);
+
+  // Reset to idle when user changes qty or variant so they can add again
+  React.useEffect(() => {
+    if (status === "success" || status === "error") {
+      setStatus("idle");
+    }
+  }, [qty, selectedVariant?.id]);
 
   if (!selectedVariant) {
     return (
@@ -215,6 +238,28 @@ export function AddToCart({
                 ? "Sold out"
                 : "Add to cart"}
         </button>
+
+        {status === "success" ? (
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/cart"
+              className="inline-flex h-10 min-w-[100px] items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+            >
+              View cart
+            </Link>
+            {checkoutUrl ? (
+              <a
+                href={checkoutUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 min-w-[100px] items-center justify-center rounded-md px-4 text-sm font-semibold text-white hover:opacity-90"
+                style={{ backgroundColor: "var(--brand-green)" }}
+              >
+                Checkout
+              </a>
+            ) : null}
+          </div>
+        ) : null}
 
         {status === "error" && error ? (
           <p className="mt-2 text-sm font-medium text-red-700" role="alert">
