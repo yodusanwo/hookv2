@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@thebeyondgroup/shopify-rich-text-renderer": "^2.1.2",
     "next": "16.1.6",
     "next-sanity": "^12.1.0",
     "node-fetch": "^3.3.2",

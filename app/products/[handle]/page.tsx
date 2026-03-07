@@ -8,6 +8,7 @@ import {
   getKlaviyoReviewCountForProduct,
 } from "@/lib/klaviyoReviews";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
+import { renderShopifyRichText } from "@/lib/shopifyRichText";
 import Link from "next/link";
 
 type ProductByHandleResponse = {
@@ -22,6 +23,8 @@ type ProductByHandleResponse = {
     estimatedDelivery: { value: string } | null;
     /** Metafield custom.is_frozen (boolean). When "true", uses frozen delivery logic. */
     isFrozen: { value: string } | null;
+    /** Metafield custom.what_you_get (rich text). Per-product "What You Get" content. */
+    whatYouGet: { value: string } | null;
     productType: string;
     featuredImage: { url: string; altText: string | null } | null;
     images: { edges: Array<{ node: { url: string; altText: string | null } }> };
@@ -50,6 +53,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       summary: metafield(namespace: "custom", key: "short_summary_under_images") { value }
       estimatedDelivery: metafield(namespace: "custom", key: "estimated_delivery") { value }
       isFrozen: metafield(namespace: "custom", key: "is_frozen") { value }
+      whatYouGet: metafield(namespace: "custom", key: "what_you_get") { value }
       productType
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
@@ -403,12 +407,31 @@ export default async function ProductPage({
               <h2 className="text-lg font-semibold text-slate-900">
                 What You Get
               </h2>
-              <ul className="mt-3 list-inside list-disc space-y-2 text-sm text-slate-700">
-                <li>100% wild Alaskan seafood</li>
-                <li>Individually vacuum-sealed</li>
-                <li>All-natural (preservative free)</li>
-                <li>Ideal for pan-searing, grilling, or oven cooking</li>
-              </ul>
+              {product.whatYouGet?.value?.trim() ? (
+                (() => {
+                  const html = renderShopifyRichText(product.whatYouGet!.value);
+                  if (html) {
+                    return (
+                      <div
+                        className="what-you-get mt-3 text-sm leading-6 text-slate-700"
+                        dangerouslySetInnerHTML={{ __html: html }}
+                      />
+                    );
+                  }
+                  return (
+                    <div className="mt-3 text-sm leading-6 text-slate-700 whitespace-pre-line">
+                      {product.whatYouGet!.value.trim()}
+                    </div>
+                  );
+                })()
+              ) : (
+                <ul className="mt-3 list-inside list-disc space-y-2 text-sm text-slate-700">
+                  <li>100% wild Alaskan seafood</li>
+                  <li>Individually vacuum-sealed</li>
+                  <li>All-natural (preservative free)</li>
+                  <li>Ideal for pan-searing, grilling, or oven cooking</li>
+                </ul>
+              )}
             </div>
           </div>
         </div>
