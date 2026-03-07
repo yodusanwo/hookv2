@@ -1,4 +1,7 @@
-import { convertSchemaToHtml } from "@thebeyondgroup/shopify-rich-text-renderer";
+import {
+  convertSchemaToHtml,
+  type Schema,
+} from "@thebeyondgroup/shopify-rich-text-renderer";
 
 /**
  * Renders Shopify rich text metafield value to HTML.
@@ -20,7 +23,7 @@ export function renderShopifyRichText(value: string | null | undefined): string 
   const schema = parsed as { type: string; children?: unknown[] };
   if (schema.type !== "root") return null;
   try {
-    return convertSchemaToHtml(parsed, {
+    return convertSchemaToHtml(schema as Schema, {
       scoped: false,
       newLineToBreak: true,
       classes: {
