@@ -20,6 +20,9 @@ type ProductByHandleResponse = {
     summary: { value: string } | null;
     /** Optional static estimated delivery from metafield custom.estimated_delivery. */
     estimatedDelivery: { value: string } | null;
+    /** Metafield custom.is_frozen (boolean). When "true", uses frozen delivery logic. */
+    isFrozen: { value: string } | null;
+    productType: string;
     featuredImage: { url: string; altText: string | null } | null;
     images: { edges: Array<{ node: { url: string; altText: string | null } }> };
     options: Array<{ name: string; values: string[] }>;
@@ -46,6 +49,8 @@ const PRODUCT_BY_HANDLE_QUERY = `
       descriptionHtml
       summary: metafield(namespace: "custom", key: "short_summary_under_images") { value }
       estimatedDelivery: metafield(namespace: "custom", key: "estimated_delivery") { value }
+      isFrozen: metafield(namespace: "custom", key: "is_frozen") { value }
+      productType
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
       options { name values }
@@ -204,6 +209,8 @@ export default async function ProductPage({
             estimatedDeliveryProcessingDays?: number | null;
             estimatedDeliveryTransitDays?: string | null;
             estimatedDeliveryCutoffTime?: string | null;
+            estimatedDeliveryFrozenProcessingDays?: number | null;
+            estimatedDeliveryFrozenTransitDays?: string | null;
           }>(
             SITE_SETTINGS_QUERY,
             {},
@@ -215,11 +222,21 @@ export default async function ProductPage({
     siteSettings?.freeShippingMessage?.trim() ||
     "Free shipping for orders over $50";
 
-  const processingDays = siteSettings?.estimatedDeliveryProcessingDays ?? 2;
-  const transitStr = siteSettings?.estimatedDeliveryTransitDays?.trim() ?? "2-4";
+  const isFrozen =
+    product.isFrozen?.value?.toLowerCase() === "true" ||
+    (product.productType?.toLowerCase() ?? "").includes("frozen");
+
+  const processingDays = isFrozen
+    ? (siteSettings?.estimatedDeliveryFrozenProcessingDays ?? 1)
+    : (siteSettings?.estimatedDeliveryProcessingDays ?? 2);
+
+  const transitStr = isFrozen
+    ? (siteSettings?.estimatedDeliveryFrozenTransitDays?.trim() ?? "1-2")
+    : (siteSettings?.estimatedDeliveryTransitDays?.trim() ?? "2-4");
+
   const transitMatch = transitStr.match(/^(\d+)\s*-\s*(\d+)$/);
-  const transitDaysMin = transitMatch ? parseInt(transitMatch[1]!, 10) : 2;
-  const transitDaysMax = transitMatch ? parseInt(transitMatch[2]!, 10) : 4;
+  const transitDaysMin = transitMatch ? parseInt(transitMatch[1]!, 10) : isFrozen ? 1 : 2;
+  const transitDaysMax = transitMatch ? parseInt(transitMatch[2]!, 10) : isFrozen ? 2 : 4;
   const productSet = new Set(
     productReviews.map((r) => `${r.name}|${r.date}|${r.text}`)
   );
@@ -302,7 +319,7 @@ export default async function ProductPage({
               {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
               {(product.summary?.value?.trim() || heroTeaser) ? (
                 <p
-                  className="mt-4 mb-[3.75rem] w-full md:w-[25.0625rem] line-clamp-3"
+                  className="mt-4 mb-[3.75rem] w-full max-w-full line-clamp-3"
                   style={{
                     color: "var(--Text-Color, #1E1E1E)",
                     fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -371,10 +388,11 @@ export default async function ProductPage({
               <h2 className="text-lg font-semibold text-slate-900">
                 Product Description
               </h2>
-              {product.description ? (
-                <div className="mt-3 text-sm leading-6 text-slate-700 whitespace-pre-line">
-                  {product.description}
-                </div>
+              {product.descriptionHtml ? (
+                <div
+                  className="product-description mt-3 text-sm leading-6 text-slate-700 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_p:first-child]:mt-0 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1 [&_ul]:mb-4"
+                  dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                />
               ) : (
                 <p className="mt-3 text-sm text-slate-600">
                   Wild-caught, sustainably sourced. Perfect for grilling, pan-searing, or baking.

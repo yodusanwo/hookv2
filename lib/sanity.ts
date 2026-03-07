@@ -24,7 +24,9 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   freeShippingMessage,
   estimatedDeliveryProcessingDays,
   estimatedDeliveryTransitDays,
-  estimatedDeliveryCutoffTime
+  estimatedDeliveryCutoffTime,
+  estimatedDeliveryFrozenProcessingDays,
+  estimatedDeliveryFrozenTransitDays
 }`;
 
 /** GROQ query for homepage (page with slug "home") */

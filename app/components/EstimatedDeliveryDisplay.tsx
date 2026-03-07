@@ -193,18 +193,17 @@ export function EstimatedDeliveryDisplay({
   const deliveryRange = formatDateRange(dates.deliveryStart, dates.deliveryEnd);
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 w-full max-w-full">
       {/* Top message with countdown and delivery dates */}
       <div
-        className="space-y-1"
+        className="space-y-1 w-full max-w-full text-sm sm:text-base"
         style={{
           color: "#333333",
           fontFamily: "Inter, var(--font-inter), sans-serif",
-          fontSize: "1rem",
           lineHeight: "150%",
         }}
       >
-        <p>
+        <p className="break-words">
           Order today
           {countdown != null ? (
             <>
@@ -218,7 +217,7 @@ export function EstimatedDeliveryDisplay({
           ) : null}{" "}
           you&apos;ll receive
         </p>
-        <p>
+        <p className="break-words">
           your package between{" "}
           <span className="font-semibold" style={{ color: "#1E1E1E" }}>
             {startStr}

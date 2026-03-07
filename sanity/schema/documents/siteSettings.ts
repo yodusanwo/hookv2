@@ -114,6 +114,22 @@ export const siteSettings = defineType({
       description: "24h time (e.g. \"17:00\") for countdown. Order before this for same-day processing. Leave empty to hide countdown.",
       group: "shipping",
     }),
+    defineField({
+      name: "estimatedDeliveryFrozenProcessingDays",
+      type: "number",
+      title: "Estimated Delivery (Frozen) – Processing Days",
+      description: "Days from order to ship for frozen products. Used when product has custom.is_frozen metafield or product type contains 'frozen'.",
+      group: "shipping",
+      initialValue: 1,
+    }),
+    defineField({
+      name: "estimatedDeliveryFrozenTransitDays",
+      type: "string",
+      title: "Estimated Delivery (Frozen) – Transit Days Range",
+      description: "Min-max transit days for frozen products (e.g. \"1-2\" or \"2-3\").",
+      group: "shipping",
+      initialValue: "1-2",
+    }),
   ],
   preview: {
     select: { title: "title" },
