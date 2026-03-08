@@ -263,7 +263,17 @@ export function OurStorySection({
         </div>
       </div>
 
-      {!hideWave && (
+      {isStoryPage ? (
+        <div className="w-full shrink-0 overflow-visible pb-8 bg-[#D4F2FF]">
+          <div className="wave-full-bleed shrink-0 overflow-visible">
+            <WaveDivider
+              navySrc="/VectorWavyNavy.svg"
+              wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
+              navyOutline="bottom"
+            />
+          </div>
+        </div>
+      ) : !hideWave ? (
         <div className="mt-auto w-full shrink-0 overflow-visible">
           <div className="wave-full-bleed mt-auto shrink-0">
             <WaveDivider
@@ -272,7 +282,7 @@ export function OurStorySection({
             />
           </div>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }
