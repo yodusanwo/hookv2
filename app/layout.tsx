@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Mulish } from "next/font/google";
 import "./globals.css";
 
 const zamenhofOutline = localFont({
@@ -41,6 +41,12 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+const mulish = Mulish({
+  variable: "--font-mulish",
+  subsets: ["latin"],
+  weight: ["300", "800"],
+});
+
 export const metadata: Metadata = {
   title: "Hook Point — Wild Alaskan Fish",
   description: "From our family to yours.",
@@ -77,7 +83,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${zamenhofOutline.variable} ${zamenhofInverse.variable} ${zamenhofInline.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${mulish.variable} ${zamenhofOutline.variable} ${zamenhofInverse.variable} ${zamenhofInline.variable} antialiased`}
       >
         <SiteLayout
           headerLogoUrl={headerLogoUrl}

@@ -21,6 +21,16 @@ const BODY_STYLE = {
   color: "#1E1E1E",
 } as const;
 
+/** Story page only: right-column copy styling */
+const STORY_PAGE_COPY_STYLE = {
+  color: "var(--White, #FFF)",
+  fontFamily: "var(--font-mulish), Mulish, sans-serif",
+  fontSize: "24px",
+  fontStyle: "normal" as const,
+  fontWeight: 300,
+  lineHeight: "normal",
+};
+
 const HOOK_POINT_BODY = (
   <>
     <p style={BODY_STYLE}>
@@ -86,7 +96,7 @@ export function OurStorySection({
       }}
     >
       <div
-        className="mx-auto w-full px-4 pb-12 pt-10"
+        className={`mx-auto w-full px-4 pb-12 pt-10 ${isStoryPage ? "pl-[2.25rem]" : ""}`}
         style={{ maxWidth: 1440 }}
       >
         {!hideTitle && (
@@ -97,18 +107,20 @@ export function OurStorySection({
             titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
           />
         )}
-        <div className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${!hideTitle ? "mt-10" : ""}`}>
-          <div className="overflow-hidden rounded-xl bg-slate-200">
+        <div className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${isStoryPage ? "pt-[6.25rem]" : ""} ${!hideTitle ? "mt-10" : ""}`}>
+          <div
+            className={`overflow-hidden rounded-xl bg-slate-200 ${isStoryPage ? "w-[86.625%] h-[259.875px] md:h-[363.825px] ml-[4.5625rem]" : ""}`}
+          >
             {img ? (
               <img
                 src={img.url()}
                 alt={hideTitle ? (block.title ?? "Our story") : title}
-                className="h-[300px] w-full max-w-full object-cover md:h-[420px]"
+                className={isStoryPage ? "h-[259.875px] w-full max-w-full object-cover md:h-[363.825px]" : "h-[300px] w-full max-w-full object-cover md:h-[420px]"}
                 style={{ objectPosition: "center top" }}
                 loading="lazy"
               />
             ) : (
-              <div className="h-[300px] w-full md:h-[420px]" />
+              <div className={isStoryPage ? "h-[259.875px] w-full md:h-[363.825px]" : "h-[300px] w-full md:h-[420px]"} />
             )}
           </div>
           <div
@@ -123,24 +135,20 @@ export function OurStorySection({
                   src="/quote.png"
                   alt=""
                   aria-hidden
-                  className="h-16 w-10 shrink-0 object-contain sm:h-20 sm:w-12 lg:h-24 lg:w-14"
+                  className="-mt-[2.8125rem] h-16 w-10 shrink-0 object-contain sm:h-20 sm:w-12 lg:h-24 lg:w-14"
                 />
-                <div className="min-w-0 flex-1">
-                  <h3
-                    className="mb-4 text-left font-bold"
-                    style={{
-                      fontFamily: "var(--font-inter), Inter, sans-serif",
-                      fontSize: "24px",
-                      color: "#fff",
-                    }}
-                  >
+                <div
+                  className="min-w-0 flex-1"
+                  style={STORY_PAGE_COPY_STYLE}
+                >
+                  <h3 className="mb-4 text-left font-light !text-white">
                     {subheading}
                   </h3>
                   {block.body && block.body.length > 0 && !useFallbackBody ? (
                     <>
                       <div
-                        className={`our-story-body max-w-none [&_p]:mt-4 first:[&_p]:mt-0 [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white`}
-                        style={{ ...BODY_STYLE, color: "#ffffff" }}
+                        className="our-story-body max-w-none [&_p]:mt-4 first:[&_p]:mt-0 [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white"
+                        style={{ fontWeight: 300, fontSize: "24px", lineHeight: "normal", color: "#FFF" }}
                       >
                         <PortableText
                           value={
@@ -150,34 +158,46 @@ export function OurStorySection({
                       </div>
                       <>
                         <p
-                          className="mt-6 font-extrabold text-2xl !text-white"
-                          style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
+                          className="-ml-[1.0625rem] mt-6"
+                          style={{
+                            color: "var(--White, #FFF)",
+                            fontFamily: "var(--font-mulish), Mulish, sans-serif",
+                            fontSize: "24px",
+                            fontStyle: "normal",
+                            fontWeight: 800,
+                            lineHeight: "normal",
+                          }}
                         >
-                          Riendeau Family,
+                          – Riendeau Family,
                         </p>
-                        <p
-                          className="mt-1 font-light text-2xl !text-white"
-                          style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
-                        >
+                        <p className="mt-1 font-light !text-white">
                           Founder of Hook Point Fisheries
                         </p>
                       </>
                     </>
                   ) : (
-                    <div className="[&_p]:!text-white" style={{ ...BODY_STYLE, color: "#ffffff" }}>
-                      <p style={{ color: "#ffffff" }}>We are Hook Point.</p>
-                      <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
-                      <p style={{ color: "#ffffff" }} className="mb-0">
+                    <div className="[&_p]:!text-white [&_p]:font-light">
+                      <p className="!text-white">We are Hook Point.</p>
+                      <p className="mb-0 !text-white">&nbsp;</p>
+                      <p className="mb-0 !text-white">
                         Our family fishes the pristine waters of Kodiak, Alaska to bring you the highest quality seafood around.
                       </p>
-                      <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
-                      <p style={{ color: "#ffffff" }} className="mb-0">We are proud to be your fisherfolk</p>
-                      <p className="mt-6 font-extrabold text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
-                        Riendeau Family,
+                      <p className="mb-0 !text-white">&nbsp;</p>
+                      <p className="mb-0 !text-white">We are proud to be your fisherfolk</p>
+                      <p
+                        className="-ml-[1.0625rem] mt-6"
+                        style={{
+                          color: "var(--White, #FFF)",
+                          fontFamily: "var(--font-mulish), Mulish, sans-serif",
+                          fontSize: "24px",
+                          fontStyle: "normal",
+                          fontWeight: 800,
+                          lineHeight: "normal",
+                        }}
+                      >
+                        – Riendeau Family,
                       </p>
-                      <p className="mt-1 font-light text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
-                        Founder of Hook Point Fisheries
-                      </p>
+                      <p className="mt-1 font-light !text-white">Founder of Hook Point Fisheries</p>
                     </div>
                   )}
                   {!hideCta && hasCtaFromSanity && (
@@ -263,7 +283,7 @@ export function OurStorySection({
         </div>
       </div>
 
-      {isStoryPage ? (
+      {isStoryPage && !hideWave ? (
         <div className="w-full shrink-0 overflow-visible pb-8 bg-[#D4F2FF]">
           <div className="wave-full-bleed shrink-0 overflow-visible">
             <WaveDivider
@@ -273,7 +293,7 @@ export function OurStorySection({
             />
           </div>
         </div>
-      ) : !hideWave ? (
+      ) : !isStoryPage && !hideWave ? (
         <div className="mt-auto w-full shrink-0 overflow-visible">
           <div className="wave-full-bleed mt-auto shrink-0">
             <WaveDivider

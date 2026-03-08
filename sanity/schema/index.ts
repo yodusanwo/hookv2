@@ -7,6 +7,7 @@ import { heroBlock } from "./blocks/hero";
 import { catchOfTheDayBlock } from "./blocks/catchOfTheDay";
 import { exploreProductsBlock } from "./blocks/exploreProducts";
 import { ourStoryBlock } from "./blocks/ourStory";
+import { ourStoryExtendedBlock } from "./blocks/ourStoryExtended";
 import { dealPromotionsBlock } from "./blocks/dealPromotions";
 import { reviewsBlock } from "./blocks/reviews";
 import { recipesBlock } from "./blocks/recipes";
@@ -29,6 +30,7 @@ export const schemaTypes = [
   catchOfTheDayBlock,
   exploreProductsBlock,
   ourStoryBlock,
+  ourStoryExtendedBlock,
   dealPromotionsBlock,
   reviewsBlock,
   recipesBlock,

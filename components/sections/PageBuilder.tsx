@@ -4,6 +4,7 @@ import { HeroSection } from "./HeroSection";
 import { CatchOfTheDaySection } from "./CatchOfTheDaySection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
 import { OurStorySection } from "./OurStorySection";
+import { OurStoryExtendedSection } from "./OurStoryExtendedSection";
 import { DealPromotionsSection } from "./DealPromotionsSection";
 import { ReviewsSection } from "./ReviewsSection";
 import { RecipesSection } from "./RecipesSection";
@@ -18,6 +19,7 @@ type PageSection =
   | { _type: "catchOfTheDayBlock"; _key?: string; [key: string]: unknown }
   | { _type: "exploreProductsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "ourStoryBlock"; _key?: string; [key: string]: unknown }
+  | { _type: "ourStoryExtendedBlock"; _key?: string; [key: string]: unknown }
   | { _type: "dealPromotionsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "reviewsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "recipesBlock"; _key?: string; [key: string]: unknown }
@@ -113,6 +115,13 @@ export function PageBuilder({
                 hideCta={hideOurStoryCta}
                 hideWave={hideOurStoryWave}
                 variant={ourStoryVariant}
+              />
+            );
+          case "ourStoryExtendedBlock":
+            return (
+              <OurStoryExtendedSection
+                key={key}
+                block={block as Parameters<typeof OurStoryExtendedSection>[0]["block"]}
               />
             );
           case "dealPromotionsBlock":

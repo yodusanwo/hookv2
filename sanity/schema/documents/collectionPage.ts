@@ -29,6 +29,7 @@ export const collectionPage = defineType({
         { type: "catchOfTheDayBlock" },
         { type: "exploreProductsBlock" },
         { type: "ourStoryBlock" },
+        { type: "ourStoryExtendedBlock" },
         { type: "dealPromotionsBlock" },
         { type: "reviewsBlock" },
         { type: "recipesBlock" },
