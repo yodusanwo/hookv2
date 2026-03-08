@@ -44,10 +44,7 @@ export function HeroCarousel({
   return (
     <section className="relative -mt-[100px] w-full min-w-0 max-w-full overflow-visible">
       {/* Hero image area: full width × 666px */}
-      <div
-        className="relative w-full overflow-hidden"
-        style={{ height: 666 }}
-      >
+      <div className="relative w-full overflow-hidden" style={{ height: 666 }}>
         {active.src ? (
           <img
             key={active.src}
@@ -56,70 +53,98 @@ export function HeroCarousel({
             className={`${IMAGE_LAYER} object-cover`}
             style={
               variant === "story"
-                ? { ...IMAGE_LAYER_STYLE, objectPosition: "center calc(50% + 75px)" }
+                ? {
+                    ...IMAGE_LAYER_STYLE,
+                    objectPosition: "center calc(50% + 75px)",
+                  }
                 : IMAGE_LAYER_STYLE
             }
           />
         ) : (
-          <div className={`${IMAGE_LAYER} bg-slate-200`} style={IMAGE_LAYER_STYLE} />
+          <div
+            className={`${IMAGE_LAYER} bg-slate-200`}
+            style={IMAGE_LAYER_STYLE}
+          />
         )}
-      <div className={`${IMAGE_LAYER} ring-1 ring-black/5`} style={IMAGE_LAYER_STYLE} />
-      <div
-        className={`${IMAGE_LAYER} z-10 pointer-events-none`}
-        style={
-          variant === "story"
-            ? { background: "linear-gradient(-0.64deg, rgba(0,0,0,0.4) 61.281%, rgba(255,255,255,0) 87.677%)", ...IMAGE_LAYER_STYLE }
-            : { background: "linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.25), rgba(0,0,0,0.05))", ...IMAGE_LAYER_STYLE }
-        }
-      />
+        <div
+          className={`${IMAGE_LAYER} ring-1 ring-black/5`}
+          style={IMAGE_LAYER_STYLE}
+        />
+        <div
+          className={`${IMAGE_LAYER} z-10 pointer-events-none`}
+          style={
+            variant === "story"
+              ? {
+                  background:
+                    "linear-gradient(-0.64deg, rgba(0,0,0,0.4) 61.281%, rgba(255,255,255,0) 87.677%)",
+                  ...IMAGE_LAYER_STYLE,
+                }
+              : {
+                  background:
+                    "linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.25), rgba(0,0,0,0.05))",
+                  ...IMAGE_LAYER_STYLE,
+                }
+          }
+        />
 
-      <div
-        className={
-          variant === "story"
-            ? "absolute z-20 flex flex-col gap-[29px] left-4 right-4 sm:left-8 md:left-[100px] lg:left-[164px] top-[369px] max-w-[740px] text-left items-start"
-            : "absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[920px] text-left items-start px-6 py-5 sm:px-8 sm:py-6 rounded-xl bg-gradient-to-br from-black/30 via-black/15 to-transparent backdrop-blur-[2px]"
-        }
-      >
-        <h1
-          className={`${FONT_INTER} max-w-full`}
-          style={{
-            fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: variant === "story" ? "clamp(1.75rem, 4.5vw, 48px)" : "clamp(1.5rem, 6vw, 56px)",
-            fontWeight: variant === "story" ? 600 : 300,
-            lineHeight: variant === "story" ? 1.3 : "120%",
-            letterSpacing: "-0.02em",
-            color: "var(--gray-content-background-text-icon-0, #F2F6EF)",
-            fontStyle: "normal",
-          }}
+        <div
+          className={
+            variant === "story"
+              ? "absolute z-20 flex flex-col gap-[29px] left-4 right-4 sm:left-8 md:left-[100px] lg:left-[164px] top-[369px] max-w-[740px] text-left items-start"
+              : "absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[920px] text-left items-start px-6 py-5 sm:px-8 sm:py-6 rounded-xl bg-gradient-to-br from-black/30 via-black/15 to-transparent backdrop-blur-[2px]"
+          }
         >
-          <span className="block">{headlineLine1}</span>
-          {headlineLine2 ? <span className="block">{headlineLine2}</span> : null}
-        </h1>
-        <p
-          className={variant === "story" ? `${FONT_INTER} max-w-[740px]` : `${FONT_INTER} mt-3 sm:mt-6 max-w-[920px]`}
-          style={{
-            color: "#FFF",
-            fontFamily: "Inter, var(--font-inter), sans-serif",
-            fontSize: "24px",
-            fontStyle: "normal",
-            fontWeight: 500,
-            lineHeight: "normal",
-          }}
-        >
-          {subline}
-        </p>
-        {ctaLabel && ctaHref && variant !== "story" && (
-          <Link
-            href={ctaHref}
-            className="inline-flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl border border-transparent transition-all duration-300 ease-out bg-[var(--brand-green)] hover:bg-white/20 hover:border-white/40 hover:backdrop-blur-sm"
-            style={{ lineHeight: "normal", fontFamily: "var(--font-inter), Inter, sans-serif" }}
+          <h1
+            className={`${FONT_INTER} max-w-full`}
+            style={{
+              fontFamily: "var(--font-inter), Inter, sans-serif",
+              fontSize:
+                variant === "story"
+                  ? "clamp(1.75rem, 4.5vw, 48px)"
+                  : "clamp(1.5rem, 6vw, 56px)",
+              fontWeight: variant === "story" ? 600 : 300,
+              lineHeight: variant === "story" ? 1.3 : "120%",
+              letterSpacing: "-0.02em",
+              color: "var(--gray-content-background-text-icon-0, #F2F6EF)",
+              fontStyle: "normal",
+            }}
           >
-            {ctaLabel}
-          </Link>
-        )}
-      </div>
+            <span className="block">{headlineLine1}</span>
+            {headlineLine2 ? (
+              <span className="block">{headlineLine2}</span>
+            ) : null}
+          </h1>
+          <p
+            className={
+              variant === "story"
+                ? `${FONT_INTER} max-w-[740px]`
+                : `${FONT_INTER} mt-3 sm:mt-6 max-w-[920px]`
+            }
+            style={{
+              color: "#FFF",
+              fontFamily: "Inter, var(--font-inter), sans-serif",
+              fontSize: "24px",
+              fontStyle: "normal",
+              fontWeight: 500,
+              lineHeight: "normal",
+            }}
+          >
+            {subline}
+          </p>
+          {ctaLabel && ctaHref && variant !== "story" && (
+            <Link
+              href={ctaHref}
+              className="inline-flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl border border-transparent transition-all duration-300 ease-out bg-[var(--brand-green)] hover:bg-white/20 hover:border-white/40 hover:backdrop-blur-sm"
+              style={{
+                lineHeight: "normal",
+                fontFamily: "var(--font-inter), Inter, sans-serif",
+              }}
+            >
+              {ctaLabel}
+            </Link>
+          )}
+        </div>
       </div>
     </section>
   );
 }
-
