@@ -48,12 +48,15 @@ export function OurStorySection({
   block,
   hideTitle,
   hideCta,
+  variant = "default",
 }: {
   block: OurStoryBlock;
   /** When true, the section heading is hidden (e.g. on /story page only). */
   hideTitle?: boolean;
   /** When true, the CTA link is hidden (e.g. on /story page only). */
   hideCta?: boolean;
+  /** "story-page" = dark bg #171730 + white text on /story only; "default" = unchanged. */
+  variant?: "default" | "story-page";
 }) {
   const title = block.title ?? "We are Hook Point";
   const subheading = block.subheading ?? "Who We Are";
@@ -67,12 +70,15 @@ export function OurStorySection({
   const ctaHref = rawHref ? safeHref(rawHref) : "#learn";
 
   const useFallbackBody = !block.body?.length || isLoremIpsum(block.body);
+  const isStoryPage = variant === "story-page";
 
   return (
     <section
       id="about"
       className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
-      style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+      style={{
+        backgroundColor: isStoryPage ? "#171730" : "var(--brand-light-blue-bg)",
+      }}
     >
       <div
         className="mx-auto w-full px-4 pb-12 pt-10"
@@ -82,7 +88,7 @@ export function OurStorySection({
           <SectionHeading
             title={title}
             variant="display"
-            theme="light"
+            theme={isStoryPage ? "dark" : "light"}
             titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
           />
         )}
@@ -102,31 +108,78 @@ export function OurStorySection({
           </div>
           <div
             className="flex max-w-xl flex-col justify-center rounded-xl px-6 pb-6 pt-0"
-            style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+            style={{
+              backgroundColor: isStoryPage ? "transparent" : "var(--brand-light-blue-bg)",
+            }}
           >
             <h3
               className="mb-4 text-left font-bold"
               style={{
                 fontFamily: "var(--font-inter), Inter, sans-serif",
                 fontSize: "24px",
-                color: "#171717",
+                color: isStoryPage ? "#fff" : "#171717",
               }}
             >
               {subheading}
             </h3>
             {block.body && block.body.length > 0 && !useFallbackBody ? (
-              <div
-                className="our-story-body prose prose-slate max-w-none [&_p]:mt-4 first:[&_p]:mt-0"
-                style={BODY_STYLE}
-              >
-                <PortableText
-                  value={
-                    block.body as import("@portabletext/types").PortableTextBlock[]
-                  }
-                />
-              </div>
+              <>
+                <div
+                  className={`our-story-body max-w-none [&_p]:mt-4 first:[&_p]:mt-0 ${isStoryPage ? "[&_p]:!text-white [&_span]:!text-white [&_a]:!text-white" : "prose prose-slate"}`}
+                  style={{
+                    ...BODY_STYLE,
+                    ...(isStoryPage ? { color: "#ffffff" } : {}),
+                  }}
+                >
+                  <PortableText
+                    value={
+                      block.body as import("@portabletext/types").PortableTextBlock[]
+                    }
+                  />
+                </div>
+                {isStoryPage && (
+                  <>
+                    <p
+                      className="mt-6 font-extrabold text-2xl !text-white"
+                      style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
+                    >
+                      Riendeau Family,
+                    </p>
+                    <p
+                      className="mt-1 font-light text-2xl !text-white"
+                      style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
+                    >
+                      Founder of Hook Point Fisheries
+                    </p>
+                  </>
+                )}
+              </>
             ) : (
-              HOOK_POINT_BODY
+              isStoryPage ? (
+                <div
+                  className="[&_p]:!text-white"
+                  style={{
+                    ...BODY_STYLE,
+                    color: "#ffffff",
+                  }}
+                >
+                  <p style={{ color: "#ffffff" }}>We are Hook Point.</p>
+                  <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
+                  <p style={{ color: "#ffffff" }} className="mb-0">
+                    Our family fishes the pristine waters of Kodiak, Alaska to bring you the highest quality seafood around.
+                  </p>
+                  <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
+                  <p style={{ color: "#ffffff" }} className="mb-0">We are proud to be your fisherfolk</p>
+                  <p className="mt-6 font-extrabold text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
+                    Riendeau Family,
+                  </p>
+                  <p className="mt-1 font-light text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
+                    Founder of Hook Point Fisheries
+                  </p>
+                </div>
+              ) : (
+                HOOK_POINT_BODY
+              )
             )}
             {!hideCta && (
               <div className="mt-6">

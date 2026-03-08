@@ -120,6 +120,7 @@ export default async function Story() {
             promoBanner={null}
             hideOurStoryTitle
             hideOurStoryCta
+            ourStoryVariant="story-page"
           />
         </main>
       );
