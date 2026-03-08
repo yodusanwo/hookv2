@@ -121,6 +121,7 @@ export default async function Story() {
           <PageBuilder
             sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
             promoBanner={promoBanner}
+            hideOurStoryTitle
           />
         </main>
       );

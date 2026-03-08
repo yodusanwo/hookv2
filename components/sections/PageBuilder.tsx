@@ -31,11 +31,14 @@ export function PageBuilder({
   sections,
   promoBanner,
   hideExploreProductsWave,
+  hideOurStoryTitle,
 }: {
   sections?: PageSection[];
   promoBanner?: string | null;
   /** When true, the wave under the Explore Products / Product Carousel section is hidden (e.g. on Collection pages). */
   hideExploreProductsWave?: boolean;
+  /** When true, the Our Story section heading is hidden (e.g. on /story page only). */
+  hideOurStoryTitle?: boolean;
 }) {
   const items = sections ?? [];
 
@@ -97,6 +100,7 @@ export function PageBuilder({
               <OurStorySection
                 key={key}
                 block={block as Parameters<typeof OurStorySection>[0]["block"]}
+                hideTitle={hideOurStoryTitle}
               />
             );
           case "dealPromotionsBlock":

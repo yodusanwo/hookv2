@@ -44,7 +44,14 @@ function isLoremIpsum(body: unknown[] | undefined): boolean {
   );
 }
 
-export function OurStorySection({ block }: { block: OurStoryBlock }) {
+export function OurStorySection({
+  block,
+  hideTitle,
+}: {
+  block: OurStoryBlock;
+  /** When true, the section heading is hidden (e.g. on /story page only). */
+  hideTitle?: boolean;
+}) {
   const title = block.title ?? "We are Hook Point";
   const subheading = block.subheading ?? "Who We Are";
   const img = urlFor(block.image);
@@ -68,18 +75,20 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
         className="mx-auto w-full px-4 pb-12 pt-10"
         style={{ maxWidth: 1440 }}
       >
-        <SectionHeading
-          title={title}
-          variant="display"
-          theme="light"
-          titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
-        />
-        <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-stretch">
+        {!hideTitle && (
+          <SectionHeading
+            title={title}
+            variant="display"
+            theme="light"
+            titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
+          />
+        )}
+        <div className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${!hideTitle ? "mt-10" : ""}`}>
           <div className="overflow-hidden rounded-xl bg-slate-200">
             {img ? (
               <img
                 src={img.url()}
-                alt={title}
+                alt={hideTitle ? (block.title ?? "Our story") : title}
                 className="h-[300px] w-full max-w-full object-cover md:h-[420px]"
                 style={{ objectPosition: "center top" }}
                 loading="lazy"
