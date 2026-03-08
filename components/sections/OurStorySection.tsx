@@ -61,6 +61,8 @@ export function OurStorySection({
   const title = block.title ?? "We are Hook Point";
   const subheading = block.subheading ?? "Who We Are";
   const img = urlFor(block.image);
+  const hasCtaFromSanity =
+    !!block.cta && (!!block.cta.label?.trim() || !!block.cta.href?.trim());
   const rawCtaLabel = block.cta?.label ?? "Meet your fishermen";
   const ctaLabel =
     rawCtaLabel.length > 0
@@ -112,99 +114,147 @@ export function OurStorySection({
               backgroundColor: isStoryPage ? "transparent" : "var(--brand-light-blue-bg)",
             }}
           >
-            <h3
-              className="mb-4 text-left font-bold"
-              style={{
-                fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: "24px",
-                color: isStoryPage ? "#fff" : "#171717",
-              }}
-            >
-              {subheading}
-            </h3>
-            {block.body && block.body.length > 0 && !useFallbackBody ? (
+            {isStoryPage ? (
+              <div className="flex items-start gap-3 sm:gap-4">
+                <img
+                  src="/quote.png"
+                  alt=""
+                  aria-hidden
+                  className="h-16 w-10 shrink-0 object-contain sm:h-20 sm:w-12 lg:h-24 lg:w-14"
+                />
+                <div className="min-w-0 flex-1">
+                  <h3
+                    className="mb-4 text-left font-bold"
+                    style={{
+                      fontFamily: "var(--font-inter), Inter, sans-serif",
+                      fontSize: "24px",
+                      color: "#fff",
+                    }}
+                  >
+                    {subheading}
+                  </h3>
+                  {block.body && block.body.length > 0 && !useFallbackBody ? (
+                    <>
+                      <div
+                        className={`our-story-body max-w-none [&_p]:mt-4 first:[&_p]:mt-0 [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white`}
+                        style={{ ...BODY_STYLE, color: "#ffffff" }}
+                      >
+                        <PortableText
+                          value={
+                            block.body as import("@portabletext/types").PortableTextBlock[]
+                          }
+                        />
+                      </div>
+                      <>
+                        <p
+                          className="mt-6 font-extrabold text-2xl !text-white"
+                          style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
+                        >
+                          Riendeau Family,
+                        </p>
+                        <p
+                          className="mt-1 font-light text-2xl !text-white"
+                          style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
+                        >
+                          Founder of Hook Point Fisheries
+                        </p>
+                      </>
+                    </>
+                  ) : (
+                    <div className="[&_p]:!text-white" style={{ ...BODY_STYLE, color: "#ffffff" }}>
+                      <p style={{ color: "#ffffff" }}>We are Hook Point.</p>
+                      <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
+                      <p style={{ color: "#ffffff" }} className="mb-0">
+                        Our family fishes the pristine waters of Kodiak, Alaska to bring you the highest quality seafood around.
+                      </p>
+                      <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
+                      <p style={{ color: "#ffffff" }} className="mb-0">We are proud to be your fisherfolk</p>
+                      <p className="mt-6 font-extrabold text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
+                        Riendeau Family,
+                      </p>
+                      <p className="mt-1 font-light text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
+                        Founder of Hook Point Fisheries
+                      </p>
+                    </div>
+                  )}
+                  {!hideCta && hasCtaFromSanity && (
+                    <div className="mt-6">
+                      <a
+                        href={ctaHref}
+                        className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case text-white"
+                        style={{
+                          fontFamily: "Inter, var(--font-inter), sans-serif",
+                          fontSize: "16px",
+                          fontStyle: "normal",
+                          fontWeight: 500,
+                          lineHeight: "normal",
+                          textTransform: "none",
+                        }}
+                      >
+                        {ctaLabel}
+                        <img
+                          src="/Vector.svg"
+                          alt=""
+                          aria-hidden
+                          className="shrink-0 max-w-full h-auto w-[28px] invert"
+                        />
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
               <>
-                <div
-                  className={`our-story-body max-w-none [&_p]:mt-4 first:[&_p]:mt-0 ${isStoryPage ? "[&_p]:!text-white [&_span]:!text-white [&_a]:!text-white" : "prose prose-slate"}`}
+                <h3
+                  className="mb-4 text-left font-bold"
                   style={{
-                    ...BODY_STYLE,
-                    ...(isStoryPage ? { color: "#ffffff" } : {}),
+                    fontFamily: "var(--font-inter), Inter, sans-serif",
+                    fontSize: "24px",
+                    color: "#171717",
                   }}
                 >
-                  <PortableText
-                    value={
-                      block.body as import("@portabletext/types").PortableTextBlock[]
-                    }
-                  />
-                </div>
-                {isStoryPage && (
-                  <>
-                    <p
-                      className="mt-6 font-extrabold text-2xl !text-white"
-                      style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
+                  {subheading}
+                </h3>
+                {block.body && block.body.length > 0 && !useFallbackBody ? (
+                  <div
+                    className="our-story-body prose prose-slate max-w-none [&_p]:mt-4 first:[&_p]:mt-0"
+                    style={BODY_STYLE}
+                  >
+                    <PortableText
+                      value={
+                        block.body as import("@portabletext/types").PortableTextBlock[]
+                      }
+                    />
+                  </div>
+                ) : (
+                  HOOK_POINT_BODY
+                )}
+                {!hideCta && hasCtaFromSanity && (
+                  <div className="mt-6">
+                    <a
+                      href={ctaHref}
+                      className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
+                      style={{
+                        color: "#498CCB",
+                        fontFamily: "Inter, var(--font-inter), sans-serif",
+                        fontSize: "16px",
+                        fontStyle: "normal",
+                        fontWeight: 500,
+                        lineHeight: "normal",
+                        textTransform: "none",
+                      }}
                     >
-                      Riendeau Family,
-                    </p>
-                    <p
-                      className="mt-1 font-light text-2xl !text-white"
-                      style={{ fontFamily: "var(--font-inter), Inter, sans-serif", color: "#ffffff" }}
-                    >
-                      Founder of Hook Point Fisheries
-                    </p>
-                  </>
+                      {ctaLabel}
+                      <img
+                        src="/Vector.svg"
+                        alt=""
+                        aria-hidden
+                        className="shrink-0 max-w-full h-auto w-[28px]"
+                      />
+                    </a>
+                  </div>
                 )}
               </>
-            ) : (
-              isStoryPage ? (
-                <div
-                  className="[&_p]:!text-white"
-                  style={{
-                    ...BODY_STYLE,
-                    color: "#ffffff",
-                  }}
-                >
-                  <p style={{ color: "#ffffff" }}>We are Hook Point.</p>
-                  <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
-                  <p style={{ color: "#ffffff" }} className="mb-0">
-                    Our family fishes the pristine waters of Kodiak, Alaska to bring you the highest quality seafood around.
-                  </p>
-                  <p style={{ color: "#ffffff" }} className="mb-0">&nbsp;</p>
-                  <p style={{ color: "#ffffff" }} className="mb-0">We are proud to be your fisherfolk</p>
-                  <p className="mt-6 font-extrabold text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
-                    Riendeau Family,
-                  </p>
-                  <p className="mt-1 font-light text-2xl" style={{ color: "#ffffff", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
-                    Founder of Hook Point Fisheries
-                  </p>
-                </div>
-              ) : (
-                HOOK_POINT_BODY
-              )
-            )}
-            {!hideCta && (
-              <div className="mt-6">
-                <a
-                  href={ctaHref}
-                  className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
-                  style={{
-                    color: "#498CCB",
-                    fontFamily: "Inter, var(--font-inter), sans-serif",
-                    fontSize: "16px",
-                    fontStyle: "normal",
-                    fontWeight: 500,
-                    lineHeight: "normal",
-                    textTransform: "none",
-                  }}
-                >
-                  {ctaLabel}
-                  <img
-                    src="/Vector.svg"
-                    alt=""
-                    aria-hidden
-                    className="shrink-0 max-w-full h-auto w-[28px]"
-                  />
-                </a>
-              </div>
             )}
           </div>
         </div>
