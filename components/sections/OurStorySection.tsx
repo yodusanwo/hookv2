@@ -48,6 +48,7 @@ export function OurStorySection({
   block,
   hideTitle,
   hideCta,
+  hideWave,
   variant = "default",
 }: {
   block: OurStoryBlock;
@@ -55,6 +56,8 @@ export function OurStorySection({
   hideTitle?: boolean;
   /** When true, the CTA link is hidden (e.g. on /story page only). */
   hideCta?: boolean;
+  /** When true, the wave below the section is hidden (e.g. on /story page only). */
+  hideWave?: boolean;
   /** "story-page" = dark bg #171730 + white text on /story only; "default" = unchanged. */
   variant?: "default" | "story-page";
 }) {
@@ -260,14 +263,16 @@ export function OurStorySection({
         </div>
       </div>
 
-      <div className="mt-auto w-full shrink-0 overflow-visible">
-        <div className="wave-full-bleed mt-auto shrink-0">
-          <WaveDivider
-            navySrc="/VectorWavyNavyOurStory.svg"
-            navyOutline="top"
-          />
+      {!hideWave && (
+        <div className="mt-auto w-full shrink-0 overflow-visible">
+          <div className="wave-full-bleed mt-auto shrink-0">
+            <WaveDivider
+              navySrc="/VectorWavyNavyOurStory.svg"
+              navyOutline="top"
+            />
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

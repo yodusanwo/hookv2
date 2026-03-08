@@ -33,6 +33,7 @@ export function PageBuilder({
   hideExploreProductsWave,
   hideOurStoryTitle,
   hideOurStoryCta,
+  hideOurStoryWave,
   ourStoryVariant,
 }: {
   sections?: PageSection[];
@@ -43,6 +44,8 @@ export function PageBuilder({
   hideOurStoryTitle?: boolean;
   /** When true, the Our Story section CTA is hidden (e.g. on /story page only). */
   hideOurStoryCta?: boolean;
+  /** When true, the wave below the Our Story section is hidden (e.g. on /story page only). */
+  hideOurStoryWave?: boolean;
   /** "story-page" = dark bg + white text on /story only. */
   ourStoryVariant?: "default" | "story-page";
 }) {
@@ -108,6 +111,7 @@ export function PageBuilder({
                 block={block as Parameters<typeof OurStorySection>[0]["block"]}
                 hideTitle={hideOurStoryTitle}
                 hideCta={hideOurStoryCta}
+                hideWave={hideOurStoryWave}
                 variant={ourStoryVariant}
               />
             );
