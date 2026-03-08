@@ -32,6 +32,7 @@ export function PageBuilder({
   promoBanner,
   hideExploreProductsWave,
   hideOurStoryTitle,
+  hideOurStoryCta,
 }: {
   sections?: PageSection[];
   promoBanner?: string | null;
@@ -39,6 +40,8 @@ export function PageBuilder({
   hideExploreProductsWave?: boolean;
   /** When true, the Our Story section heading is hidden (e.g. on /story page only). */
   hideOurStoryTitle?: boolean;
+  /** When true, the Our Story section CTA is hidden (e.g. on /story page only). */
+  hideOurStoryCta?: boolean;
 }) {
   const items = sections ?? [];
 
@@ -101,6 +104,7 @@ export function PageBuilder({
                 key={key}
                 block={block as Parameters<typeof OurStorySection>[0]["block"]}
                 hideTitle={hideOurStoryTitle}
+                hideCta={hideOurStoryCta}
               />
             );
           case "dealPromotionsBlock":

@@ -47,10 +47,13 @@ function isLoremIpsum(body: unknown[] | undefined): boolean {
 export function OurStorySection({
   block,
   hideTitle,
+  hideCta,
 }: {
   block: OurStoryBlock;
   /** When true, the section heading is hidden (e.g. on /story page only). */
   hideTitle?: boolean;
+  /** When true, the CTA link is hidden (e.g. on /story page only). */
+  hideCta?: boolean;
 }) {
   const title = block.title ?? "We are Hook Point";
   const subheading = block.subheading ?? "Who We Are";
@@ -125,29 +128,31 @@ export function OurStorySection({
             ) : (
               HOOK_POINT_BODY
             )}
-            <div className="mt-6">
-              <a
-                href={ctaHref}
-                className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
-                style={{
-                  color: "#498CCB",
-                  fontFamily: "Inter, var(--font-inter), sans-serif",
-                  fontSize: "16px",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  lineHeight: "normal",
-                  textTransform: "none",
-                }}
-              >
-                {ctaLabel}
-                <img
-                  src="/Vector.svg"
-                  alt=""
-                  aria-hidden
-                  className="shrink-0 max-w-full h-auto w-[28px]"
-                />
-              </a>
-            </div>
+            {!hideCta && (
+              <div className="mt-6">
+                <a
+                  href={ctaHref}
+                  className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
+                  style={{
+                    color: "#498CCB",
+                    fontFamily: "Inter, var(--font-inter), sans-serif",
+                    fontSize: "16px",
+                    fontStyle: "normal",
+                    fontWeight: 500,
+                    lineHeight: "normal",
+                    textTransform: "none",
+                  }}
+                >
+                  {ctaLabel}
+                  <img
+                    src="/Vector.svg"
+                    alt=""
+                    aria-hidden
+                    className="shrink-0 max-w-full h-auto w-[28px]"
+                  />
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

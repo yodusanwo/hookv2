@@ -1,8 +1,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { PromoBanner } from "@/components/PromoBanner";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { getEventsFromSheet } from "@/lib/googleSheets";
-import { client, STORY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity";
+import { client, STORY_PAGE_QUERY } from "@/lib/sanity";
 import { shopifyFetch } from "@/lib/shopify";
 import { Carousel } from "@/app/components/Carousel";
 import { HeroCarousel } from "@/app/components/HeroCarousel";
@@ -92,16 +91,14 @@ export default async function Story() {
       !!process.env.NEXT_PUBLIC_SANITY_DATASET;
 
     let sanityPage: { sections?: unknown[] } | null = null;
-    let promoBanner: string | null = null;
 
     if (hasSanity) {
       try {
-        [sanityPage, promoBanner] = await Promise.all([
-          client.fetch<{ sections?: unknown[] } | null>(STORY_PAGE_QUERY, {}, { next: { revalidate: 60 } }),
-          client
-            .fetch<{ promoBanner?: string } | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } })
-            .then((s) => s?.promoBanner ?? null),
-        ]);
+        sanityPage = await client.fetch<{ sections?: unknown[] } | null>(
+          STORY_PAGE_QUERY,
+          {},
+          { next: { revalidate: 60 } }
+        );
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
@@ -120,8 +117,9 @@ export default async function Story() {
         <main className="bg-white">
           <PageBuilder
             sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
-            promoBanner={promoBanner}
+            promoBanner={null}
             hideOurStoryTitle
+            hideOurStoryCta
           />
         </main>
       );
@@ -134,19 +132,6 @@ export default async function Story() {
 
     const products = data.products.edges;
 
-    let fallbackPromoBanner: string | null = null;
-    if (hasSanity) {
-      try {
-        const settings = await client.fetch<{ promoBanner?: string } | null>(
-          SITE_SETTINGS_QUERY,
-          {},
-          { next: { revalidate: 60 } }
-        );
-        fallbackPromoBanner = settings?.promoBanner ?? null;
-      } catch {
-        // ignore
-      }
-    }
     const heroImg =
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
     const aboutImg =
@@ -179,7 +164,6 @@ export default async function Story() {
             { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
           ]}
         />
-        {fallbackPromoBanner && <PromoBanner text={fallbackPromoBanner} />}
 
         <section id="about" className="bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">
