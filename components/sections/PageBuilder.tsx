@@ -5,6 +5,7 @@ import { CatchOfTheDaySection } from "./CatchOfTheDaySection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
 import { OurStorySection } from "./OurStorySection";
 import { OurStoryExtendedSection } from "./OurStoryExtendedSection";
+import { OurStoryExtendedReversedSection } from "./OurStoryExtendedReversedSection";
 import { DealPromotionsSection } from "./DealPromotionsSection";
 import { ReviewsSection } from "./ReviewsSection";
 import { RecipesSection } from "./RecipesSection";
@@ -20,6 +21,7 @@ type PageSection =
   | { _type: "exploreProductsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "ourStoryBlock"; _key?: string; [key: string]: unknown }
   | { _type: "ourStoryExtendedBlock"; _key?: string; [key: string]: unknown }
+  | { _type: "ourStoryExtendedReversedBlock"; _key?: string; [key: string]: unknown }
   | { _type: "dealPromotionsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "reviewsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "recipesBlock"; _key?: string; [key: string]: unknown }
@@ -122,6 +124,13 @@ export function PageBuilder({
               <OurStoryExtendedSection
                 key={key}
                 block={block as Parameters<typeof OurStoryExtendedSection>[0]["block"]}
+              />
+            );
+          case "ourStoryExtendedReversedBlock":
+            return (
+              <OurStoryExtendedReversedSection
+                key={key}
+                block={block as Parameters<typeof OurStoryExtendedReversedSection>[0]["block"]}
               />
             );
           case "dealPromotionsBlock":

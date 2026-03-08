@@ -1,5 +1,4 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { WaveDivider } from "@/components/ui/WaveDivider";
 import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
@@ -190,16 +189,6 @@ export function OurStoryExtendedSection({ block }: { block: OurStoryExtendedBloc
                 )}
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="w-full shrink-0 overflow-visible pb-8 bg-[#D4F2FF]">
-        <div className="wave-full-bleed shrink-0 overflow-visible">
-          <WaveDivider
-            navySrc="/VectorWavyNavy.svg"
-            wrapperClassName="-mt-px [transform:scaleX(-1)] bg-[#D4F2FF]"
-            navyOutline="bottom"
-          />
         </div>
       </div>
     </section>
