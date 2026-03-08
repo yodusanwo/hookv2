@@ -4,6 +4,7 @@ import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type HeroBlock = {
+  variant?: "default" | "story";
   headline?: string;
   subline?: string;
   cta?: { label?: string; href?: string };
@@ -34,10 +35,16 @@ function normalizeHeadline(raw: string | undefined): { line1: string; line2: str
 }
 
 export function HeroSection({ block, promoBanner }: { block: HeroBlock; promoBanner?: string | null }) {
+  const variant = block.variant === "story" ? "story" : "default";
   const headline = normalizeHeadline(block.headline);
-  const subline = block.subline ?? "Wild-caught  •  Family-run  •  Sustainably sourced";
-  const ctaLabel = block.cta?.label ?? "Get Fresh Fish";
-  const ctaHref = (block.cta?.href ? safeHref(block.cta.href) : "") || "#shop";
+  const subline = block.subline ?? (variant === "story" ? "Tradition  •  Quality  •  Respect for the ocean" : "Wild-caught  •  Family-run  •  Sustainably sourced");
+  const showCta = variant !== "story";
+  const ctaLabel = showCta
+    ? (block.cta?.label?.trim() || "Get Fresh Fish")
+    : undefined;
+  const ctaHref = showCta
+    ? (block.cta?.href?.trim() ? safeHref(block.cta.href!.trim()) : "#shop")
+    : undefined;
 
   const items: Array<{ src: string; alt: string }> =
     block.images
@@ -52,12 +59,12 @@ export function HeroSection({ block, promoBanner }: { block: HeroBlock; promoBan
     { src: "/1A4A6382.jpeg", alt: "Fresh catch on dock" },
     { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
   ];
-  const fallbackItems = items.length > 0 ? items : defaultImages;
-  const carouselItems = fallbackItems.length >= 2 ? fallbackItems : [...fallbackItems, ...defaultImages].slice(0, 2);
+  const carouselItems = items.length > 0 ? items : defaultImages;
 
   return (
     <>
       <HeroCarousel
+        variant={variant}
         headlineLine1={headline.line1}
         headlineLine2={headline.line2}
         subline={subline}

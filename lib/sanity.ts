@@ -29,6 +29,25 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   estimatedDeliveryFrozenTransitDays
 }`;
 
+/** GROQ query for story page (page with slug "story") */
+export const STORY_PAGE_QUERY = `*[_type == "page" && slug.current == "story"][0] {
+  _id,
+  title,
+  slug,
+  sections[] {
+    _type,
+    _key,
+    ...,
+    cta { label, href },
+    images[] { asset-> },
+    image { asset-> },
+    body,
+    "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
+    "filterCollections": filterCollections[] { label, collectionHandle, image },
+    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
+  }
+}`;
+
 /** GROQ query for homepage (page with slug "home") */
 export const HOMEPAGE_QUERY = `*[_type == "page" && slug.current == "home"][0] {
   _id,

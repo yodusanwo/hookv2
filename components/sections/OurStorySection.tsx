@@ -53,7 +53,8 @@ export function OurStorySection({ block }: { block: OurStoryBlock }) {
     rawCtaLabel.length > 0
       ? rawCtaLabel.charAt(0).toUpperCase() + rawCtaLabel.slice(1).toLowerCase()
       : "Meet your fishermen";
-  const ctaHref = block.cta?.href ? safeHref(block.cta.href) : "#learn";
+  const rawHref = block.cta?.href?.trim();
+  const ctaHref = rawHref ? safeHref(rawHref) : "#learn";
 
   const useFallbackBody = !block.body?.length || isLoremIpsum(block.body);
 

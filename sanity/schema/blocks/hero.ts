@@ -5,6 +5,17 @@ export const heroBlock = defineType({
   type: "object",
   title: "Hero",
   fields: [
+    defineField({
+      name: "variant",
+      type: "string",
+      title: "Layout",
+      options: {
+        list: [
+          { title: "Default (centered, for homepage)", value: "default" },
+          { title: "Story (text lower, for Our Story page)", value: "story" },
+        ],
+      },
+    }),
     defineField({ name: "headline", type: "string", title: "Headline" }),
     defineField({ name: "subline", type: "string", title: "Subline" }),
     defineField({
