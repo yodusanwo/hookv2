@@ -1,10 +1,18 @@
 import { defineType, defineField } from "sanity";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const catchOfTheDayBlock = defineType({
   name: "catchOfTheDayBlock",
   type: "object",
   title: "Product Carousel",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#171730",
+    }),
     defineField({
       name: "title",
       type: "string",

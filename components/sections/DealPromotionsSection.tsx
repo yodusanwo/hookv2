@@ -5,6 +5,7 @@ import { shopifyFetch } from "@/lib/shopify";
 type ProductRef = { shopifyHandle?: string; featuredImageIndex?: number };
 
 type DealPromotionsBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   productRefs?: ProductRef[];
@@ -36,14 +37,13 @@ type ProductByHandleResponse = {
 export async function DealPromotionsSection({
   block,
   sectionId = "deals",
-  backgroundColor = "var(--brand-navy)",
 }: {
   block: DealPromotionsBlock;
   sectionId?: string;
-  backgroundColor?: string;
 }) {
   const title = block.title ?? "Deal & Promotions";
   const description = block.description ?? "";
+  const backgroundColor = block.backgroundColor ?? "#171730";
   const maxProducts = Math.min(12, Math.max(1, block.maxProducts ?? 6));
   const selections = (block.productRefs ?? [])
     .map((r) => {

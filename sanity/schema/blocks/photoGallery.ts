@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { PhotoGalleryPreview } from "../../components/PhotoGalleryPreview";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const photoGalleryBlock = defineType({
   name: "photoGalleryBlock",
@@ -8,6 +9,13 @@ export const photoGalleryBlock = defineType({
   description:
     "Grid of photos with a centered title. Layout uses gridTemplateAreas: p1,p4,p5,p8 span 2 rows (tall); p2,p3,p6,p7,p9 are 1 row (short). Max 9 in main grid.",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#E6F7FF",
+    }),
     defineField({ name: "title", type: "string", title: "Title" }),
     defineField({
       name: "galleryImages",

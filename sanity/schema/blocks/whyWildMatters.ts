@@ -1,10 +1,18 @@
 import { defineType, defineField } from "sanity";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const whyWildMattersBlock = defineType({
   name: "whyWildMattersBlock",
   type: "object",
   title: "Why Wild Matters",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#d4f2ff",
+    }),
     defineField({ name: "title", type: "string", title: "Title", initialValue: "WHY WILD MATTERS" }),
     defineField({
       name: "description",

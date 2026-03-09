@@ -29,6 +29,7 @@ type CoopItem = {
 };
 
 type LocalFoodsCoopsBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   body?: unknown[];
@@ -51,7 +52,7 @@ export function LocalFoodsCoopsSection({
   return (
     <section
       className="relative z-20 flex min-h-[374px] flex-col justify-center py-14"
-      style={{ backgroundColor: "#D4F2FF", minHeight: 374 }}
+      style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF", minHeight: 374 }}
     >
       <div
         className="mx-auto w-full px-4 text-center"

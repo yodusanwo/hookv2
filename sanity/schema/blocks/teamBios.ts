@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { TeamBiosPreview } from "../../components/TeamBiosPreview";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const teamBiosBlock = defineType({
   name: "teamBiosBlock",
@@ -8,6 +9,13 @@ export const teamBiosBlock = defineType({
   description:
     "Team member gallery with circular photos, names, and roles. Add, remove, or reorder members; the order in the list is the display order.",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#d4f2ff",
+    }),
     defineField({
       name: "title",
       type: "string",

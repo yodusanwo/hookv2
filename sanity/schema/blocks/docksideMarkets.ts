@@ -1,10 +1,18 @@
 import { defineType, defineField } from "sanity";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const docksideMarketsBlock = defineType({
   name: "docksideMarketsBlock",
   type: "object",
   title: "Dockside and Farmers Markets",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#FAFAFC",
+    }),
     defineField({ name: "title", type: "string", title: "Title" }),
     defineField({ name: "description", type: "text", title: "Description" }),
     defineField({

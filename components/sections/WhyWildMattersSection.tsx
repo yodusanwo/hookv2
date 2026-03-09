@@ -12,6 +12,7 @@ type WhyWildMattersPoint = {
 };
 
 type WhyWildMattersBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   image?: { _ref?: string; asset?: { _ref?: string } };
@@ -55,7 +56,7 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
   return (
     <section
       className="relative z-10 overflow-visible pt-24 pb-14"
-      style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+      style={{ backgroundColor: block.backgroundColor ?? "#d4f2ff" }}
     >
       <div className="mx-auto w-full max-w-7xl px-4">
         <SectionHeading

@@ -12,6 +12,7 @@ type TeamMember = {
 };
 
 type TeamBiosBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   teamMembers?: TeamMember[];
@@ -28,7 +29,7 @@ export function TeamBiosSection({ block }: { block: TeamBiosBlock }) {
     <section
       id="team-bios"
       className="relative z-10 overflow-hidden py-14 md:py-16"
-      style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+      style={{ backgroundColor: block.backgroundColor ?? "#d4f2ff" }}
     >
       <div className="mx-auto w-full max-w-6xl px-4">
         {/* Heading */}

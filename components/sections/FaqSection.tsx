@@ -7,6 +7,7 @@ import { safeHref } from "@/lib/urlValidation";
 type FaqItem = { question?: string; answer?: string };
 
 type FaqBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   faqs?: FaqItem[];
@@ -22,8 +23,9 @@ export function FaqSection({ block }: { block: FaqBlock }) {
 
   if (faqs.length === 0) return null;
 
+  const bgColor = block.backgroundColor ?? "#f2f2f5";
   return (
-    <section id="faq" className="py-14 section-bg-light">
+    <section id="faq" className="py-14" style={{ backgroundColor: bgColor }}>
       <div className="mx-auto w-full px-4">
         <SectionHeading
           title={title}

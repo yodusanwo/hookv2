@@ -9,6 +9,7 @@ import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsFor
 import type { FilterItem } from "@/lib/types";
 
 type CatchOfTheDayBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   filterCollections?: FilterItem[];
@@ -47,7 +48,7 @@ export async function CatchOfTheDaySection({
     <section
       id="catch-of-the-day"
       className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
-      style={{ backgroundColor: "var(--brand-navy)" }}
+      style={{ backgroundColor: block.backgroundColor ?? "#171730" }}
     >
       <div className="mx-auto w-full max-w-[1100px] px-4">
         <SectionHeading

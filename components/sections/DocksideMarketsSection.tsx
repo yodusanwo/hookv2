@@ -17,6 +17,7 @@ type MarketItem = {
 };
 
 type DocksideMarketsBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   items?: MarketItem[];
@@ -39,11 +40,13 @@ export function DocksideMarketsSection({
     el.scrollBy({ left: dir * step, behavior: "smooth" });
   }
 
+  const bgColor = block.backgroundColor ?? "#FAFAFC";
   return (
     <section
       id="markets"
-      className="relative z-0 -mt-1 mx-auto flex flex-col justify-start bg-[#FAFAFC]"
+      className="relative z-0 -mt-1 mx-auto flex flex-col justify-start"
       style={{
+        backgroundColor: bgColor,
         width: "100%",
         minHeight: 662,
         paddingTop: "clamp(9rem, 18vw, 13.5rem)",

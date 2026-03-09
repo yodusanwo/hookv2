@@ -1,10 +1,18 @@
 import { defineType, defineField } from "sanity";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const localFoodsCoopsBlock = defineType({
   name: "localFoodsCoopsBlock",
   type: "object",
   title: "Local Foods Co-ops",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#D4F2FF",
+    }),
     defineField({ name: "title", type: "string", title: "Title", initialValue: "LOCAL FOODS CO-OPS" }),
     defineField({ name: "description", type: "text", title: "Description" }),
     defineField({

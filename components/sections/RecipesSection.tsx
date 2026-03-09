@@ -22,6 +22,7 @@ type Recipe = {
 };
 
 type RecipesBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   recipes?: Recipe[];
@@ -36,11 +37,12 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
 
   if (recipes.length === 0) return null;
 
+  const bgColor = block.backgroundColor ?? RECIPES_BG;
   return (
     <section
       id="recipes"
       className="relative z-10 mx-auto flex min-w-0 flex-col justify-start pb-0"
-      style={{ backgroundColor: RECIPES_BG, width: "100%", minHeight: 433 }}
+      style={{ backgroundColor: bgColor, width: "100%", minHeight: 433 }}
     >
       <div
         className="mx-auto w-full max-w-full px-4"
@@ -69,7 +71,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                 key={idx}
                 href={href}
                 className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md"
-                style={{ backgroundColor: RECIPES_BG }}
+                style={{ backgroundColor: bgColor }}
               >
                 <div
                   className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
@@ -86,7 +88,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                 />
                 <div
                   className="px-4 py-3"
-                  style={{ backgroundColor: RECIPES_BG }}
+                  style={{ backgroundColor: bgColor }}
                 >
                   <h3 className="font-semibold text-slate-900">
                     {r.title ?? "Recipe"}

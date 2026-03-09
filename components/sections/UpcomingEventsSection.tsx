@@ -18,6 +18,7 @@ type Event = {
 };
 
 type UpcomingEventsBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   images?: { asset?: { _ref?: string } }[];
@@ -35,12 +36,14 @@ export function UpcomingEventsSection({
   const images = block.images ?? [];
   const events = (block.events ?? []).slice(0, 3);
   const showAllUrl = block.showAllUrl;
+  const bgColor = block.backgroundColor ?? "#f1f5f9";
 
   return (
     <section
       id="events"
-      className="bg-slate-100 pb-14"
+      className="pb-14"
       style={{
+        backgroundColor: bgColor,
         // Matches WAVE_HALF from RecipesSection — the other 80px of the wave
         // that hangs into this section. Extra 24px gives breathing room.
         paddingTop: "104px",
@@ -62,7 +65,8 @@ export function UpcomingEventsSection({
               return (
                 <div
                   key={idx}
-                  className="aspect-[4/3] w-full max-w-[320px] overflow-hidden rounded-lg bg-slate-100"
+                  className="aspect-[4/3] w-full max-w-[320px] overflow-hidden rounded-lg"
+                  style={{ backgroundColor: bgColor }}
                 >
                   <img
                     src={img.url()}
@@ -78,7 +82,7 @@ export function UpcomingEventsSection({
 
         {events.length > 0 ? (
           <div className="mt-10 w-full max-w-[1200px] mx-auto">
-            <div className="overflow-hidden bg-slate-100">
+            <div className="overflow-hidden" style={{ backgroundColor: bgColor }}>
               {events.map((e, idx) => (
                 <div
                   key={idx}

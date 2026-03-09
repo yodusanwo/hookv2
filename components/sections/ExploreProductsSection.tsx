@@ -15,6 +15,7 @@ type FilterCollection = FilterItem & {
 type Category = { label?: string; collectionHandle?: string };
 
 type ExploreProductsBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   filterCollections?: FilterCollection[];
@@ -77,7 +78,7 @@ export function ExploreProductsSection({
     <section
       id="shop"
       className="relative z-20 overflow-visible pt-14 pb-0"
-      style={{ backgroundColor: "var(--brand-navy)" }}
+      style={{ backgroundColor: block.backgroundColor ?? "#171730" }}
     >
       <div className="mx-auto w-full max-w-[1100px] px-4">
         <SectionHeading

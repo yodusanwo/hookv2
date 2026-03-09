@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const ourStoryExtendedBlock = defineType({
   name: "ourStoryExtendedBlock",
@@ -6,6 +7,13 @@ export const ourStoryExtendedBlock = defineType({
   title: "Our Story Extended",
   description: "Extended Our Story section with quote, dark background, and wave (e.g. for /story page).",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#D4F2FF",
+    }),
     defineField({ name: "title", type: "string", title: "Title" }),
     defineField({
       name: "introText",

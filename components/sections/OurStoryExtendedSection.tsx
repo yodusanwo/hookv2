@@ -4,6 +4,7 @@ import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type OurStoryExtendedBlock = {
+  backgroundColor?: string;
   title?: string;
   introText?: string;
   body?: unknown[];
@@ -62,7 +63,7 @@ export function OurStoryExtendedSection({ block }: { block: OurStoryExtendedBloc
     <section
       id="our-story-extended"
       className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
-      style={{ backgroundColor: "#D4F2FF" }}
+      style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF" }}
     >
       <div
         className="mx-auto w-full px-4 pb-12 pt-10 pl-[2.25rem]"

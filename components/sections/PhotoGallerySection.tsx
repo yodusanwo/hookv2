@@ -8,6 +8,7 @@ type GalleryImage = {
 };
 
 type PhotoGalleryBlock = {
+  backgroundColor?: string;
   title?: string;
   galleryImages?: GalleryImage[];
 };
@@ -40,7 +41,7 @@ export function PhotoGallerySection({ block }: { block: PhotoGalleryBlock }) {
     <section
       id="photo-gallery"
       className="relative z-10 overflow-hidden py-12 md:py-14"
-      style={{ backgroundColor: "#E6F7FF" }}
+      style={{ backgroundColor: block.backgroundColor ?? "#E6F7FF" }}
     >
       <div className="mx-auto w-full max-w-6xl px-4">
         {title && (

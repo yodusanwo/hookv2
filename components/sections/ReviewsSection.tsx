@@ -4,6 +4,7 @@ import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
 type Review = { stars?: number; text?: string; name?: string; date?: string };
 
 type ReviewsBlock = {
+  backgroundColor?: string;
   title?: string;
   description?: string;
   reviews?: Review[];
@@ -24,8 +25,12 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
 
   if (reviews.length === 0) return null;
 
+  const bgColor = block.backgroundColor ?? "#f2f2f5";
   return (
-    <section className="flex min-h-0 flex-col justify-center section-bg-light py-14">
+    <section
+      className="flex min-h-0 flex-col justify-center py-14"
+      style={{ backgroundColor: bgColor }}
+    >
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}

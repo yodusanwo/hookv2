@@ -13,6 +13,7 @@ import { safeHref } from "@/lib/urlValidation";
  * - Margins (md:ml, md:mr) apply from md breakpoint only to avoid overflow on mobile
  */
 type OurStoryExtendedReversedBlock = {
+  backgroundColor?: string;
   title?: string;
   introText?: string;
   body?: unknown[];
@@ -75,7 +76,7 @@ export function OurStoryExtendedReversedSection({
     <section
       id="our-story-extended-reversed"
       className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
-      style={{ backgroundColor: "#D4F2FF" }}
+      style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF" }}
     >
       <div
         className="mx-auto w-full px-4 pb-12 pt-10 pl-4 md:pl-[2.25rem]"

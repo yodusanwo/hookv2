@@ -5,6 +5,7 @@ import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type OurStoryBlock = {
+  backgroundColor?: string;
   title?: string;
   body?: unknown[];
   image?: { asset?: { _ref?: string } };
@@ -92,7 +93,7 @@ export function OurStorySection({
       id="about"
       className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
       style={{
-        backgroundColor: isStoryPage ? "#171730" : "var(--brand-light-blue-bg)",
+        backgroundColor: isStoryPage ? "#171730" : (block.backgroundColor ?? "#d4f2ff"),
       }}
     >
       <div
@@ -126,7 +127,7 @@ export function OurStorySection({
           <div
             className="flex max-w-xl flex-col justify-center rounded-xl px-6 pb-6 pt-0"
             style={{
-              backgroundColor: isStoryPage ? "transparent" : "var(--brand-light-blue-bg)",
+              backgroundColor: isStoryPage ? "transparent" : (block.backgroundColor ?? "#d4f2ff"),
             }}
           >
             {isStoryPage ? (

@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const ourStoryExtendedReversedBlock = defineType({
   name: "ourStoryExtendedReversedBlock",
@@ -7,6 +8,13 @@ export const ourStoryExtendedReversedBlock = defineType({
   description:
     "Same as Our Story Extended but copy on the left, image on the right.",
   fields: [
+    defineField({
+      name: "backgroundColor",
+      type: "string",
+      title: "Background color",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
+      initialValue: "#D4F2FF",
+    }),
     defineField({ name: "title", type: "string", title: "Title" }),
     defineField({
       name: "introText",
