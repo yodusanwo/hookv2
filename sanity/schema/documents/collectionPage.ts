@@ -32,6 +32,7 @@ export const collectionPage = defineType({
         { type: "ourStoryExtendedBlock" },
         { type: "ourStoryExtendedReversedBlock" },
         { type: "photoGalleryBlock" },
+        { type: "teamBiosBlock" },
         { type: "dealPromotionsBlock" },
         { type: "reviewsBlock" },
         { type: "recipesBlock" },
