@@ -37,6 +37,7 @@ export function PageBuilder({
   sections,
   promoBanner,
   hideExploreProductsWave,
+  hideLocalFoodsCoopsWave,
   hideOurStoryTitle,
   hideOurStoryCta,
   hideOurStoryWave,
@@ -46,6 +47,8 @@ export function PageBuilder({
   promoBanner?: string | null;
   /** When true, the wave under the Explore Products / Product Carousel section is hidden (e.g. on Collection pages). */
   hideExploreProductsWave?: boolean;
+  /** When true, the wave below the Local Foods Co-ops section is hidden (e.g. on /story page only). */
+  hideLocalFoodsCoopsWave?: boolean;
   /** When true, the Our Story section heading is hidden (e.g. on /story page only). */
   hideOurStoryTitle?: boolean;
   /** When true, the Our Story section CTA is hidden (e.g. on /story page only). */
@@ -159,7 +162,13 @@ export function PageBuilder({
           case "upcomingEventsBlock":
             return <UpcomingEventsSection key={key} block={block as Parameters<typeof UpcomingEventsSection>[0]["block"]} />;
           case "localFoodsCoopsBlock":
-            return <LocalFoodsCoopsSection key={key} block={block as Parameters<typeof LocalFoodsCoopsSection>[0]["block"]} />;
+            return (
+              <LocalFoodsCoopsSection
+                key={key}
+                block={block as Parameters<typeof LocalFoodsCoopsSection>[0]["block"]}
+                hideWave={hideLocalFoodsCoopsWave}
+              />
+            );
           case "faqBlock":
             return <FaqSection key={key} block={block as Parameters<typeof FaqSection>[0]["block"]} />;
           case "whyWildMattersBlock":

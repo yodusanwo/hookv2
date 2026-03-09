@@ -38,8 +38,11 @@ type LocalFoodsCoopsBlock = {
 
 export function LocalFoodsCoopsSection({
   block,
+  hideWave = false,
 }: {
   block: LocalFoodsCoopsBlock;
+  /** When true, the wave below the section is hidden (e.g. on /story page only). */
+  hideWave?: boolean;
 }) {
   const title = block.title ?? "LOCAL FOODS CO-OPS";
   const description = block.description ?? "";
@@ -108,21 +111,23 @@ export function LocalFoodsCoopsSection({
           })}
         </div>
       </div>
-      <div
-        className="relative top-[100px] -mt-8 w-full shrink-0"
-        style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
-      >
-        <WaveDivider
-          navySrc="/VectorWavyNavyOurStory.svg"
-          wrapperClassName="mt-3 -mb-px [background-color:transparent]"
-          navyOutline="top"
-        />
-        <WaveDivider
-          navySrc="/VectorWavyNavy.svg"
-          wrapperClassName="-mt-px [background-color:transparent]"
-          navyOutline="bottom"
-        />
-      </div>
+      {!hideWave && (
+        <div
+          className="relative top-[100px] -mt-8 w-full shrink-0"
+          style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
+        >
+          <WaveDivider
+            navySrc="/VectorWavyNavyOurStory.svg"
+            wrapperClassName="mt-3 -mb-px [background-color:transparent]"
+            navyOutline="top"
+          />
+          <WaveDivider
+            navySrc="/VectorWavyNavy.svg"
+            wrapperClassName="-mt-px [background-color:transparent]"
+            navyOutline="bottom"
+          />
+        </div>
+      )}
     </section>
   );
 }

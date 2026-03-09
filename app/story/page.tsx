@@ -118,6 +118,8 @@ export default async function Story() {
           <PageBuilder
             sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
             promoBanner={null}
+            hideExploreProductsWave
+            hideLocalFoodsCoopsWave
             hideOurStoryTitle
             hideOurStoryCta
             ourStoryVariant="story-page"
