@@ -9,6 +9,7 @@ import { exploreProductsBlock } from "./blocks/exploreProducts";
 import { ourStoryBlock } from "./blocks/ourStory";
 import { ourStoryExtendedBlock } from "./blocks/ourStoryExtended";
 import { ourStoryExtendedReversedBlock } from "./blocks/ourStoryExtendedReversed";
+import { photoGalleryBlock } from "./blocks/photoGallery";
 import { dealPromotionsBlock } from "./blocks/dealPromotions";
 import { reviewsBlock } from "./blocks/reviews";
 import { recipesBlock } from "./blocks/recipes";
@@ -33,6 +34,7 @@ export const schemaTypes = [
   ourStoryBlock,
   ourStoryExtendedBlock,
   ourStoryExtendedReversedBlock,
+  photoGalleryBlock,
   dealPromotionsBlock,
   reviewsBlock,
   recipesBlock,
