@@ -23,9 +23,25 @@ export const faqBlock = defineType({
         {
           type: "object",
           fields: [
+            {
+              name: "categoryTitle",
+              type: "string",
+              title: "Category title",
+              description:
+                "Optional. Shown above this group of Q/A (e.g. “Shipping & Delivery”). Leave empty for no category heading.",
+            },
             { name: "question", type: "string", title: "Question" },
             { name: "answer", type: "text", title: "Answer" },
           ],
+          preview: {
+            select: { categoryTitle: "categoryTitle", question: "question" },
+            prepare({ categoryTitle, question }) {
+              return {
+                title: question || "FAQ item",
+                subtitle: categoryTitle ? `Category: ${categoryTitle}` : undefined,
+              };
+            },
+          },
         },
       ],
     }),

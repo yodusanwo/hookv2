@@ -29,6 +29,27 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   estimatedDeliveryFrozenTransitDays
 }`;
 
+/** GROQ query for any page by slug (for dynamic routes). Use with $slug. */
+export const PAGE_BY_SLUG_QUERY = `*[_type == "page" && slug.current == $slug][0] {
+  _id,
+  title,
+  slug,
+  sections[] {
+    _type,
+    _key,
+    ...,
+    cta { label, href },
+    images[] { asset-> },
+    galleryImages[] { image, alt, caption, badge },
+    teamMembers[] { _key, image, name, role },
+    image { asset-> },
+    body,
+    "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
+    "filterCollections": filterCollections[] { label, collectionHandle, image },
+    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
+  }
+}`;
+
 /** GROQ query for contact page (page with slug "contact") */
 export const CONTACT_PAGE_QUERY = `*[_type == "page" && slug.current == "contact"][0] {
   _id,

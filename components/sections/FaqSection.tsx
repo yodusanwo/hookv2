@@ -4,7 +4,11 @@ import * as React from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { safeHref } from "@/lib/urlValidation";
 
-type FaqItem = { question?: string; answer?: string };
+type FaqItem = {
+  categoryTitle?: string;
+  question?: string;
+  answer?: string;
+};
 
 type FaqBlock = {
   backgroundColor?: string;
@@ -13,6 +17,32 @@ type FaqBlock = {
   faqs?: FaqItem[];
   showMoreUrl?: string;
 };
+
+/** Group FAQ items: same category title = same group; item with no title continues current group. */
+function groupFaqsByCategory(faqs: FaqItem[]): { categoryTitle?: string; items: FaqItem[] }[] {
+  const groups: { categoryTitle?: string; items: FaqItem[] }[] = [];
+  let current: { categoryTitle?: string; items: FaqItem[] } | null = null;
+
+  for (const faq of faqs) {
+    const title = (faq.categoryTitle ?? "").trim() || undefined;
+    if (title) {
+      if (current?.categoryTitle === title) {
+        current.items.push(faq);
+      } else {
+        current = { categoryTitle: title, items: [faq] };
+        groups.push(current);
+      }
+    } else {
+      if (!current) {
+        current = { categoryTitle: undefined, items: [] };
+        groups.push(current);
+      }
+      current.items.push(faq);
+    }
+  }
+
+  return groups;
+}
 
 export function FaqSection({ block }: { block: FaqBlock }) {
   const [openIdx, setOpenIdx] = React.useState<number | null>(null);
@@ -23,7 +53,10 @@ export function FaqSection({ block }: { block: FaqBlock }) {
 
   if (faqs.length === 0) return null;
 
+  const groups = groupFaqsByCategory(faqs);
   const bgColor = block.backgroundColor ?? "#f2f2f5";
+  let flatIdx = 0;
+
   return (
     <section id="faq" className="py-14" style={{ backgroundColor: bgColor }}>
       <div className="mx-auto w-full px-4">
@@ -34,30 +67,47 @@ export function FaqSection({ block }: { block: FaqBlock }) {
           theme="light"
           wideTitleOnDesktop
         />
-        <div className="mx-auto mt-8 max-w-3xl space-y-2">
-          {faqs.map((faq, idx) => {
-            const isOpen = openIdx === idx;
-            return (
-              <div
-                key={idx}
-                className="rounded-xl border border-black/5 bg-white overflow-hidden"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenIdx(isOpen ? null : idx)}
-                  className="w-full px-6 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 flex justify-between items-center"
+        <div className="mx-auto mt-8 max-w-3xl space-y-8">
+          {groups.map((group, groupIdx) => (
+            <div key={groupIdx} className="space-y-2">
+              {group.categoryTitle && (
+                <h3
+                  className="text-left text-lg font-semibold text-slate-900"
+                  style={{
+                    fontFamily: "var(--font-inter), Inter, sans-serif",
+                  }}
                 >
-                  {faq.question}
-                  <span className="text-slate-400">{isOpen ? "−" : "+"}</span>
-                </button>
-                {isOpen && faq.answer && (
-                  <div className="border-t border-black/5 px-6 py-4 text-sm text-slate-700">
-                    {faq.answer}
-                  </div>
-                )}
+                  {group.categoryTitle}
+                </h3>
+              )}
+              <div className="space-y-2">
+                {group.items.map((faq) => {
+                  const idx = flatIdx++;
+                  const isOpen = openIdx === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-black/5 bg-white overflow-hidden"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setOpenIdx(isOpen ? null : idx)}
+                        className="w-full px-6 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 flex justify-between items-center"
+                      >
+                        {faq.question}
+                        <span className="text-slate-400">{isOpen ? "−" : "+"}</span>
+                      </button>
+                      {isOpen && faq.answer && (
+                        <div className="border-t border-black/5 px-6 py-4 text-sm text-slate-700">
+                          {faq.answer}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
         {showMoreUrl && (
           <div className="mx-auto mt-8 flex max-w-3xl justify-center">

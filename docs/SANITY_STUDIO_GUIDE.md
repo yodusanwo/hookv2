@@ -96,6 +96,21 @@ Visit `http://localhost:3000` to see the Sanity-driven homepage. Add more sectio
 
 ---
 
+## Creating a New Page (same header, wave, footer, and all components)
+
+You can create a new page in Sanity that automatically uses the same site layout (header, top wave, footer with wave) and has access to all existing section types.
+
+1. In **Structure**, open **Page** and click **Create** (or **+** next to Page).
+2. Enter a **Title** (e.g. `About Us`, `Shipping Info`, `FAQ`).
+3. In **Slug**, click **Generate** and ensure the slug is what you want in the URL (e.g. `about-us` → site will have `/about-us`).
+4. **Do not use** these slugs (they are reserved): `home`, `story`, `contact`, `collections`, `cart`, `products`, `studio`.
+5. Add any **Sections** you want (Hero, Our Story, Photo Gallery, Contact, FAQ, etc.) using the same block types as the homepage or story page.
+6. **Publish**.
+
+The new URL (e.g. `https://yoursite.com/about-us`) will use the same header, top wave, and footer as the rest of the site and render the sections you added. No new code or routes are required.
+
+---
+
 ## Troubleshooting
 
 - **Homepage still shows fallback** — Confirm slug is exactly `home` and the page is **Published**
