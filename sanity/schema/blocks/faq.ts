@@ -47,8 +47,10 @@ export const faqBlock = defineType({
     }),
     defineField({
       name: "showMoreUrl",
-      type: "url",
+      type: "string",
       title: "Show More Link",
+      description:
+        "URL or path for the “View All FAQs” button. Use a full URL (https://…) or a relative path (e.g. /faq).",
     }),
   ],
   preview: {

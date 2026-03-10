@@ -112,12 +112,21 @@ export function FaqSection({ block }: { block: FaqBlock }) {
           ))}
         </div>
         {showMoreUrl && (
-          <div className="mx-auto mt-8 flex max-w-3xl justify-center">
+          <div className="mx-auto mt-8 max-w-3xl">
             <a
               href={safeHref(showMoreUrl)}
-              className="btn-primary"
+              className="inline-flex items-center gap-2 hover:underline"
+              style={{
+                color: "#498CCB",
+                fontFamily: "var(--font-inter), Inter, sans-serif",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: 500,
+                lineHeight: "normal",
+              }}
             >
-              View All FAQs
+              Show More
+              <span className="text-xl leading-none" aria-hidden>›</span>
             </a>
           </div>
         )}
