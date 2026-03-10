@@ -18,15 +18,17 @@ type FaqBlock = {
   showMoreUrl?: string;
 };
 
+type FaqGroup = { categoryTitle?: string; items: FaqItem[] };
+
 /** Group FAQ items: same category title = same group; item with no title continues current group. */
-function groupFaqsByCategory(faqs: FaqItem[]): { categoryTitle?: string; items: FaqItem[] }[] {
-  const groups: { categoryTitle?: string; items: FaqItem[] }[] = [];
-  let current: { categoryTitle?: string; items: FaqItem[] } | null = null;
+function groupFaqsByCategory(faqs: FaqItem[]): FaqGroup[] {
+  const groups: FaqGroup[] = [];
+  let current: FaqGroup | null = null;
 
   for (const faq of faqs) {
     const title = (faq.categoryTitle ?? "").trim() || undefined;
     if (title) {
-      if (current?.categoryTitle === title) {
+      if (current && current.categoryTitle === title) {
         current.items.push(faq);
       } else {
         current = { categoryTitle: title, items: [faq] };
