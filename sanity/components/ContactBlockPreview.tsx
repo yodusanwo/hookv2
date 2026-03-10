@@ -5,7 +5,8 @@ import type { PreviewProps } from "sanity";
 
 type ContactBlockPreviewProps = PreviewProps & {
   blockTitle?: string;
-  description?: string;
+  /** Block's description field (alias to avoid clashing with PreviewProps.description). */
+  blockDescription?: string;
   email?: string;
   phone?: string;
 };
@@ -14,7 +15,7 @@ type ContactBlockPreviewProps = PreviewProps & {
  * Custom preview for Contact block. Shows title and a short form summary.
  */
 export function ContactBlockPreview(props: ContactBlockPreviewProps) {
-  const { blockTitle, description, email } = props;
+  const { blockTitle, blockDescription, email } = props;
 
   return (
     <div
@@ -40,7 +41,7 @@ export function ContactBlockPreview(props: ContactBlockPreviewProps) {
           {blockTitle}
         </div>
       )}
-      {description && (
+      {blockDescription && (
         <div
           style={{
             color: "#6b7280",
@@ -51,8 +52,8 @@ export function ContactBlockPreview(props: ContactBlockPreviewProps) {
             textOverflow: "ellipsis",
           }}
         >
-          {description.slice(0, 60)}
-          {description.length > 60 ? "…" : ""}
+          {blockDescription.slice(0, 60)}
+          {blockDescription.length > 60 ? "…" : ""}
         </div>
       )}
       <div style={{ color: "#6b7280", fontSize: 11 }}>

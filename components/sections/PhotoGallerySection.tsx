@@ -22,6 +22,17 @@ type PhotoGalleryBlock = {
  */
 const GRID_AREAS = ["p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9"] as const;
 
+/** Per-image layout tweaks (margin/translate). Adjust translateY to move an image up (negative) or down (positive). */
+const GRID_ITEM_OFFSETS: Partial<
+  Record<number, { marginTop?: number; marginBottom?: number; translateY?: number }>
+> = {
+  4: { marginTop: -13 },
+  5: { marginTop: -6, translateY: -4 },
+  6: { marginTop: -6, translateY: 42 },
+  7: { marginBottom: -11, translateY: -10 },
+  8: { marginTop: -40, translateY: 18 },
+};
+
 /** Carousel slide groups for mobile: single tall or two stacked. [startIdx, count][] */
 const CAROUSEL_SLIDES: [number, number][] = [
   [0, 1],
@@ -125,7 +136,7 @@ export function PhotoGallerySection({ block }: { block: PhotoGalleryBlock }) {
             <div
               className="photo-gallery-wrapper mt-8 mx-auto w-full max-w-[1072px] overflow-hidden [container-type:inline-size] hidden md:block"
             style={{
-              aspectRatio: "1072 / 1008",
+              aspectRatio: "1072 / 1085",
               position: "relative",
             }}
           >
@@ -152,7 +163,7 @@ export function PhotoGallerySection({ block }: { block: PhotoGalleryBlock }) {
                   "p5 p7 p9"
                 `,
                 width: 1072,
-                aspectRatio: "1072 / 1008",
+                aspectRatio: "1072 / 1085",
               }}
             >
             {gridImages.map((item, idx) => {
@@ -160,25 +171,32 @@ export function PhotoGallerySection({ block }: { block: PhotoGalleryBlock }) {
               const alt = item.alt?.trim() || `Gallery image ${idx + 1}`;
               const badge = item.badge?.trim();
               const gridArea = GRID_AREAS[idx];
+              const offsets = GRID_ITEM_OFFSETS[idx];
+              const baseSize =
+                [1, 5, 6, 7, 8].includes(idx)
+                  ? { minWidth: 350, minHeight: 261, aspectRatio: "350 / 261" as const }
+                  : idx === 2
+                    ? { minWidth: 350, minHeight: 256, aspectRatio: "350 / 256" as const }
+                    : [0, 3, 4].includes(idx)
+                      ? { minWidth: 350, minHeight: 467, aspectRatio: "350 / 467" as const }
+                      : {};
+              const offsetStyle = offsets
+                ? {
+                    ...(offsets.marginTop !== undefined && { marginTop: offsets.marginTop }),
+                    ...(offsets.marginBottom !== undefined && { marginBottom: offsets.marginBottom }),
+                    ...(offsets.translateY !== undefined && {
+                      transform: `translateY(${offsets.translateY}px)`,
+                    }),
+                  }
+                : {};
               return (
                 <div
                   key={idx}
                   className="relative overflow-hidden rounded-[10px] bg-white shadow-md"
                   style={{
                     gridArea,
-                    ...([1, 5, 6, 7, 8].includes(idx)
-                      ? { minWidth: 350, minHeight: 261, aspectRatio: "350 / 261" }
-                      : {}),
-                    ...(idx === 2
-                      ? { minWidth: 350, minHeight: 256, aspectRatio: "350 / 256" }
-                      : {}),
-                    ...([0, 3, 4].includes(idx)
-                      ? { minWidth: 350, minHeight: 467, aspectRatio: "350 / 467" }
-                      : {}),
-                    ...(idx === 4 ? { marginTop: -13 } : {}),
-                    ...([5, 6].includes(idx) ? { marginTop: -6 } : {}),
-                    ...(idx === 7 ? { marginBottom: -11 } : {}),
-                    ...(idx === 8 ? { marginTop: -60 } : {}),
+                    ...baseSize,
+                    ...offsetStyle,
                   }}
                 >
                   {img ? (

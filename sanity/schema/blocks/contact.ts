@@ -53,11 +53,12 @@ export const contactBlock = defineType({
     }),
   ],
   preview: {
-    select: { blockTitle: "title", description: "description", email: "email" },
-    prepare({ blockTitle, email }) {
+    select: { blockTitle: "title", blockDescription: "description", email: "email" },
+    prepare({ blockTitle, blockDescription, email }) {
       return {
         title: "Contact",
         subtitle: blockTitle ? `${blockTitle}${email ? ` · ${email}` : ""}` : undefined,
+        blockDescription,
       };
     },
   },
