@@ -25,6 +25,7 @@ export const page = defineType({
         { type: "ourStoryExtendedReversedBlock" },
         { type: "photoGalleryBlock" },
         { type: "teamBiosBlock" },
+        { type: "contactBlock" },
         { type: "dealPromotionsBlock" },
         { type: "reviewsBlock" },
         { type: "recipesBlock" },

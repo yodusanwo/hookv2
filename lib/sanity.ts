@@ -29,6 +29,18 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   estimatedDeliveryFrozenTransitDays
 }`;
 
+/** GROQ query for contact page (page with slug "contact") */
+export const CONTACT_PAGE_QUERY = `*[_type == "page" && slug.current == "contact"][0] {
+  _id,
+  title,
+  slug,
+  sections[] {
+    _type,
+    _key,
+    ...
+  }
+}`;
+
 /** GROQ query for story page (page with slug "story") */
 export const STORY_PAGE_QUERY = `*[_type == "page" && slug.current == "story"][0] {
   _id,

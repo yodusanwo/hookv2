@@ -11,7 +11,7 @@ const FALLBACK_NAV = [
   { href: "#about", label: "Our Story" },
   { href: "#recipes", label: "Recipes" },
   { href: "#calendar", label: "Calendar" },
-  { href: "#contact", label: "Contact Us" },
+  { href: "/contact", label: "Contact Us" },
 ];
 
 const FALLBACK_LOGO = "/Hook_Point_Shirt_White_Letters_042acd76-dff8-4246-874a-1df73d011a24%201.png";

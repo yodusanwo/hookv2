@@ -20,12 +20,22 @@ const footerNavLinkStyle = {
   lineHeight: "normal",
 };
 
-export function Footer({ logoUrl }: { logoUrl?: string | null }) {
+const CONTACT_PAGE_FOOTER_BG = "#D4F2FF";
+
+export function Footer({
+  logoUrl,
+  pathname,
+}: {
+  logoUrl?: string | null;
+  /** When pathname is /contact, footer uses light blue background. */
+  pathname?: string | null;
+}) {
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
+  const isContactPage = pathname === "/contact";
   return (
     <footer id="contact" className="relative overflow-visible" style={{ backgroundColor: "var(--footer-bg)" }}>
-      {/* Wave above footer content — pt for drop-shadow clearance on mobile */}
-      <div className="w-full pt-6 sm:pt-8 section-bg-light" aria-hidden>
+      {/* Wave above footer content — pt for drop-shadow clearance on mobile; on /contact only this strip is light blue */}
+      <div className="w-full pt-6 sm:pt-8 section-bg-light" aria-hidden style={isContactPage ? { backgroundColor: CONTACT_PAGE_FOOTER_BG } : undefined}>
         <img
           src="/wavefooter.png"
           alt=""
@@ -116,7 +126,7 @@ export function Footer({ logoUrl }: { logoUrl?: string | null }) {
                 </a>
               </li>
               <li>
-                <a href="#contact" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="/contact" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Contact
                 </a>
               </li>
