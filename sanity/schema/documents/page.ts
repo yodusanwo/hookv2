@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 
 export const page = defineType({
   name: "page",
@@ -11,6 +12,13 @@ export const page = defineType({
       type: "slug",
       title: "Slug",
       options: { source: "title" },
+    }),
+    defineField({
+      name: "footerWaveBackgroundColor",
+      type: "string",
+      title: "Color above footer",
+      description: "Background color of the area above the footer (the wave strip). Leave empty for default.",
+      options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
     }),
     defineField({
       name: "sections",

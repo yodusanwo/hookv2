@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Header } from "./Header";
 import { HeaderWave } from "./HeaderWave";
 import { Footer } from "./Footer";
@@ -23,7 +24,32 @@ export function SiteLayout({
   headerBackgroundColor,
 }: SiteLayoutProps) {
   const pathname = usePathname();
+  const [footerWaveColor, setFooterWaveColor] = useState<string | null>(null);
   const isStudio = pathname?.startsWith("/studio");
+
+  useEffect(() => {
+    if (!pathname || isStudio) {
+      setFooterWaveColor(null);
+      return;
+    }
+    let cancelled = false;
+    const path = pathname === "/" ? "/" : pathname;
+    fetch(`/api/footer-wave-color?path=${encodeURIComponent(path)}`)
+      .then((res) => res.json())
+      .then((data: { color?: string | null }) => {
+        if (!cancelled && data && typeof data.color === "string" && data.color.trim()) {
+          setFooterWaveColor(data.color.trim());
+        } else {
+          setFooterWaveColor(null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setFooterWaveColor(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname, isStudio]);
 
   if (isStudio) {
     return <>{children}</>;
@@ -41,7 +67,11 @@ export function SiteLayout({
       <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">
         {children}
       </div>
-      <Footer logoUrl={headerLogoUrl} pathname={pathname ?? undefined} />
+      <Footer
+        logoUrl={headerLogoUrl}
+        pathname={pathname ?? undefined}
+        footerWaveBackgroundColor={footerWaveColor}
+      />
     </>
   );
 }
