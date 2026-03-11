@@ -1,9 +1,10 @@
 /**
  * "Why Wild Matters" section: title, intro, large image left, and 3 (or more) points with icons on the right.
- * Light blue background, two-column layout.
+ * Light blue background, two-column layout. Optional "Learn more" CTA below the points.
  */
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { urlFor } from "@/lib/sanityImage";
+import { safeHref } from "@/lib/urlValidation";
 
 type WhyWildMattersPoint = {
   title?: string;
@@ -17,6 +18,7 @@ type WhyWildMattersBlock = {
   description?: string;
   image?: { _ref?: string; asset?: { _ref?: string } };
   points?: WhyWildMattersPoint[];
+  cta?: { label?: string; href?: string };
 };
 
 const DEFAULT_TITLE = "WHY WILD MATTERS";
@@ -139,6 +141,28 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
             })}
           </div>
         </div>
+
+        {block.cta?.label && block.cta?.href && (
+          <div className="mt-10 flex justify-center">
+            <a
+              href={safeHref(block.cta.href) ?? "#"}
+              className="inline-flex items-center gap-2 hover:underline"
+              style={{
+                color: "#498CCB",
+                fontFamily: "var(--font-inter), Inter, sans-serif",
+                fontSize: "20px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "150%",
+              }}
+            >
+              {block.cta.label}
+              <span className="text-xl leading-none" aria-hidden>
+                →
+              </span>
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );

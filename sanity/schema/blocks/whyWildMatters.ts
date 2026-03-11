@@ -59,6 +59,26 @@ export const whyWildMattersBlock = defineType({
       ],
       validation: (Rule) => Rule.max(6),
     }),
+    defineField({
+      name: "cta",
+      type: "object",
+      title: "Learn More CTA",
+      description: "Link shown below the points (e.g. “Learn more →”). Leave label or URL empty to hide.",
+      fields: [
+        defineField({
+          name: "label",
+          type: "string",
+          title: "Label",
+          initialValue: "Learn more",
+        }),
+        defineField({
+          name: "href",
+          type: "string",
+          title: "Link URL",
+          description: "Full URL or path (e.g. /our-story or https://...)",
+        }),
+      ],
+    }),
   ],
   preview: {
     select: { title: "title" },
