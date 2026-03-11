@@ -109,6 +109,7 @@ export default async function DynamicPage({
       <PageBuilder
         sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
         promoBanner={null}
+        pageSlug={slug}
       />
     </main>
   );

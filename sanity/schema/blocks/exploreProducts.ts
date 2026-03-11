@@ -13,6 +13,13 @@ export const exploreProductsBlock = defineType({
       options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
       initialValue: "#171730",
     }),
+    defineField({
+      name: "hideWave",
+      type: "boolean",
+      title: "Hide bottom wave",
+      description: "When on, the wave divider below this section is hidden.",
+      initialValue: false,
+    }),
     defineField({ name: "title", type: "string", title: "Title", initialValue: "EXPLORE OUR PRODUCTS" }),
     defineField({ name: "description", type: "text", title: "Description" }),
     defineField({

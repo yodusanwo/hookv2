@@ -6,6 +6,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CatchOfTheDayGrid } from "./CatchOfTheDayGrid";
 import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsForCarousel";
+import { isLightBackgroundColor } from "@/lib/theme";
 import type { FilterItem } from "@/lib/types";
 
 type CatchOfTheDayBlock = {
@@ -44,6 +45,10 @@ export async function CatchOfTheDaySection({
     ? await getCollectionProductsForCarousel(firstHandle)
     : [];
 
+  const isLightBg = isLightBackgroundColor(block.backgroundColor);
+  const textTheme = isLightBg ? "light" : "dark";
+  const LIGHT_TEXT_COLOR = "#1E1E1E";
+
   return (
     <section
       id="catch-of-the-day"
@@ -55,7 +60,9 @@ export async function CatchOfTheDaySection({
           title={title}
           description={description}
           variant="display"
-          theme="dark"
+          theme={textTheme}
+          titleColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
+          descriptionColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
           descriptionAsLead
           titleFontFamily="var(--font-zamenhof-inline), var(--font-inter), Inter, sans-serif"
         />

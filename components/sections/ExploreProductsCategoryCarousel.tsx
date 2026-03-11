@@ -21,8 +21,14 @@ const GAP = 24;
 
 export function ExploreProductsCategoryCarousel({
   categories,
+  textTheme = "dark",
+  labelColor,
 }: {
   categories: ExploreCategoryItem[];
+  /** "light" = dark text/arrows for light backgrounds; "dark" = white text/arrows. */
+  textTheme?: "light" | "dark";
+  /** Override label color (e.g. #1E1E1E for light backgrounds). */
+  labelColor?: string;
 }) {
   const ref = React.useRef<HTMLDivElement>(null);
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
@@ -102,7 +108,12 @@ export function ExploreProductsCategoryCarousel({
                 )}
               </div>
               <div className="py-3 text-center">
-                <span className="text-sm font-medium text-white tracking-wide">
+                <span
+                  className="text-sm font-medium tracking-wide"
+                  style={{
+                    color: labelColor ?? (textTheme === "light" ? "#1E1E1E" : "#ffffff"),
+                  }}
+                >
                   {cat.label ?? "Shop"}
                 </span>
               </div>
@@ -116,12 +127,14 @@ export function ExploreProductsCategoryCarousel({
         disabled={!canScrollPrev}
         onClick={() => scroll(-1)}
         ariaLabel="Scroll left"
+        theme={textTheme}
       />
       <CarouselArrow
         direction="next"
         disabled={!canScrollNext}
         onClick={() => scroll(1)}
         ariaLabel="Scroll right"
+        theme={textTheme}
       />
     </div>
   );

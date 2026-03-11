@@ -16,6 +16,10 @@ export type SheetEvent = {
   time: string;
   eventType: string;
   address: string;
+  /** Month 1–12 for filtering (e.g. on /calendar page). */
+  eventMonth?: number;
+  /** Full year for filtering (e.g. on /calendar page). */
+  eventYear?: number;
 };
 
 const DEFAULT_RANGE = "Sheet1!A2:D500";
@@ -99,6 +103,8 @@ export async function getEventsFromSheet(): Promise<SheetEvent[]> {
         time: String(cells[1] ?? "").trim() || "—",
         eventType: String(cells[2] ?? "").trim() || "—",
         address: String(cells[3] ?? "").trim() || "—",
+        eventMonth: dateParsed.getUTCMonth() + 1,
+        eventYear: dateParsed.getUTCFullYear(),
       },
     });
   }

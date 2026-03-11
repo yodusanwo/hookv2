@@ -88,15 +88,22 @@ export function DocksideMarketsSection({
                       <div
                         role="img"
                         aria-label={item.label ?? ""}
-                        className="max-w-full shrink-0 rounded-none"
+                        className="max-w-full shrink-0 rounded-none flex items-center justify-center"
                         style={{
                           width: w,
                           height: h,
                           maxWidth: "100%",
                           aspectRatio: logoAspect,
-                          background: `url(${img.url()}) #FAFAFC 50% / contain no-repeat`,
+                          backgroundColor: "transparent",
                         }}
-                      />
+                      >
+                        <img
+                          src={img.url()}
+                          alt=""
+                          className="max-w-full max-h-full w-auto h-auto object-contain"
+                          style={{ display: "block" }}
+                        />
+                      </div>
                     ) : (
                       <span className="text-xs font-semibold text-slate-700">
                         {item.label}
@@ -104,7 +111,8 @@ export function DocksideMarketsSection({
                     );
                     const safeUrl = safeHref(item.url);
                     const cellClass =
-                      "flex shrink-0 items-center justify-center bg-[#FAFAFC] p-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px]";
+                      "flex shrink-0 items-center justify-center p-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px]";
+                    const cellStyle = { backgroundColor: img ? bgColor : "#FAFAFC" };
                     return safeUrl !== "#" ? (
                       <a
                         key={idx}
@@ -112,11 +120,12 @@ export function DocksideMarketsSection({
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`${cellClass} hover:opacity-80 transition-opacity`}
+                        style={cellStyle}
                       >
                         {content}
                       </a>
                     ) : (
-                      <div key={idx} className={cellClass}>
+                      <div key={idx} className={cellClass} style={cellStyle}>
                         {content}
                       </div>
                     );

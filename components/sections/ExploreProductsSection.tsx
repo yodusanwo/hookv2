@@ -5,6 +5,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 import { ExploreProductsCategoryCarousel } from "./ExploreProductsCategoryCarousel";
+import { isLightBackgroundColor } from "@/lib/theme";
 import { urlFor } from "@/lib/sanityImage";
 import type { FilterItem } from "@/lib/types";
 
@@ -16,6 +17,7 @@ type Category = { label?: string; collectionHandle?: string };
 
 type ExploreProductsBlock = {
   backgroundColor?: string;
+  hideWave?: boolean;
   title?: string;
   description?: string;
   filterCollections?: FilterCollection[];
@@ -32,16 +34,21 @@ const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
+const LIGHT_TEXT_COLOR = "#1E1E1E";
+
 export function ExploreProductsSection({
   block,
-  showWave = true,
+  hideExploreProductsWave = false,
 }: {
   block: ExploreProductsBlock;
-  /** When false, the wave divider under the carousel is hidden (e.g. on Collection pages). */
-  showWave?: boolean;
+  /** When true, the wave under this section is hidden (e.g. page-level override). */
+  hideExploreProductsWave?: boolean;
 }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
+  const isLightBg = isLightBackgroundColor(block.backgroundColor);
+  const textTheme = isLightBg ? "light" : "dark";
+  const showWave = !hideExploreProductsWave && !block.hideWave;
 
   // Build category list: filterCollections (with optional image) or legacy categories
   const filterCollections =
@@ -85,13 +92,19 @@ export function ExploreProductsSection({
           title={title}
           description={description}
           variant="display"
-          theme="dark"
+          theme={textTheme}
+          titleColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
+          descriptionColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
           descriptionAsLead
           titleFontFamily="var(--font-zamenhof-inline), var(--font-inter), Inter, sans-serif"
         />
       </div>
 
-      <ExploreProductsCategoryCarousel categories={categories} />
+      <ExploreProductsCategoryCarousel
+        categories={categories}
+        textTheme={textTheme}
+        labelColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
+      />
 
       {showWave && (
         <div className="w-full shrink-0 overflow-visible">

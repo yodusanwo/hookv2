@@ -40,6 +40,7 @@ type PageSection =
 export function PageBuilder({
   sections,
   promoBanner,
+  pageSlug,
   hideExploreProductsWave,
   hideLocalFoodsCoopsWave,
   hideOurStoryTitle,
@@ -49,6 +50,8 @@ export function PageBuilder({
 }: {
   sections?: PageSection[];
   promoBanner?: string | null;
+  /** When "calendar", Upcoming Events section shows month filter (e.g. on /calendar page). */
+  pageSlug?: string | null;
   /** When true, the wave under the Explore Products / Product Carousel section is hidden (e.g. on Collection pages). */
   hideExploreProductsWave?: boolean;
   /** When true, the wave below the Local Foods Co-ops section is hidden (e.g. on /story page only). */
@@ -114,7 +117,7 @@ export function PageBuilder({
               <ExploreProductsSection
                 key={key}
                 block={block as Parameters<typeof ExploreProductsSection>[0]["block"]}
-                showWave={!hideExploreProductsWave}
+                hideExploreProductsWave={hideExploreProductsWave}
               />
             );
           case "ourStoryBlock":
@@ -178,7 +181,13 @@ export function PageBuilder({
           case "docksideMarketsBlock":
             return <DocksideMarketsSection key={key} block={block as Parameters<typeof DocksideMarketsSection>[0]["block"]} />;
           case "upcomingEventsBlock":
-            return <UpcomingEventsSection key={key} block={block as Parameters<typeof UpcomingEventsSection>[0]["block"]} />;
+            return (
+              <UpcomingEventsSection
+                key={key}
+                block={block as Parameters<typeof UpcomingEventsSection>[0]["block"]}
+                pageSlug={pageSlug ?? undefined}
+              />
+            );
           case "localFoodsCoopsBlock":
             return (
               <LocalFoodsCoopsSection

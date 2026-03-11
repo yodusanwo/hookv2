@@ -47,9 +47,10 @@ export const upcomingEventsBlock = defineType({
     }),
     defineField({
       name: "showAllUrl",
-      type: "url",
+      type: "string",
       title: "Show All Events Link",
-      description: "URL for the 'Show all events' CTA.",
+      description:
+        "URL or path for the “Show all events” link below the event list. Use a full URL or relative path (e.g. /calendar). Leave empty to hide the link.",
     }),
   ],
   preview: {
