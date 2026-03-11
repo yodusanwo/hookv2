@@ -20,14 +20,14 @@ export type SheetEvent = {
 
 const DEFAULT_RANGE = "Sheet1!A2:D500";
 
-/** ISO date-only (YYYY-MM-DD) parses as UTC midnight so calendar date is timezone-invariant. */
+/** ISO date-only (YYYY-MM-DD). Use noon UTC so display in Chicago stays on the same calendar day. */
 const ISO_DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 
 function parseDate(value: unknown): Date | null {
   if (value == null || value === "") return null;
   const s = String(value).trim();
   if (!s) return null;
-  const iso = ISO_DATE_ONLY.test(s) ? `${s}T00:00:00.000Z` : s;
+  const iso = ISO_DATE_ONLY.test(s) ? `${s}T12:00:00.000Z` : s;
   const d = new Date(iso);
   return Number.isNaN(d.getTime()) ? null : d;
 }

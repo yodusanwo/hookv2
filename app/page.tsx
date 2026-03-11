@@ -107,7 +107,7 @@ export default async function Home() {
       const sectionsWithEvents = sanityPage.sections.map((section: unknown) => {
         const s = section as { _type?: string; [key: string]: unknown };
         if (s._type === "upcomingEventsBlock") {
-          return { ...s, events: sheetEvents };
+          return { ...s, events: sheetEvents, eventsLimit: 3 };
         }
         return section;
       });

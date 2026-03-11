@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageBuilder } from "@/components/sections/PageBuilder";
+import { getEventsFromSheet } from "@/lib/googleSheets";
 import { client, PAGE_BY_SLUG_QUERY } from "@/lib/sanity";
 
 /** Slugs that are reserved by other app routes (e.g. /contact, /story) or reserved for future use. */
@@ -82,7 +83,16 @@ export default async function DynamicPage({
     );
   }
 
-  const firstSection = sections[0];
+  const sheetEvents = await getEventsFromSheet();
+  const sectionsWithEvents = sections.map((section: unknown) => {
+    const s = section as { _type?: string; [key: string]: unknown };
+    if (s._type === "upcomingEventsBlock") {
+      return { ...s, events: sheetEvents };
+    }
+    return section;
+  });
+
+  const firstSection = sectionsWithEvents[0];
   const firstBg =
     firstSection &&
     typeof firstSection === "object" &&
@@ -97,7 +107,7 @@ export default async function DynamicPage({
       style={{ backgroundColor: firstBg }}
     >
       <PageBuilder
-        sections={sections as Parameters<typeof PageBuilder>[0]["sections"]}
+        sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
         promoBanner={null}
       />
     </main>

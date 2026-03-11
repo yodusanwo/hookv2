@@ -23,6 +23,8 @@ type UpcomingEventsBlock = {
   description?: string;
   images?: { asset?: { _ref?: string } }[];
   events?: Event[];
+  /** When set (e.g. 3 on home), only show first N events. When undefined, show all (e.g. on /calendar). */
+  eventsLimit?: number;
   showAllUrl?: string;
 };
 
@@ -34,7 +36,8 @@ export function UpcomingEventsSection({
   const title = block.title ?? "UPCOMING EVENTS";
   const description = block.description ?? "";
   const images = block.images ?? [];
-  const events = (block.events ?? []).slice(0, 3);
+  const allEvents = block.events ?? [];
+  const events = allEvents.slice(0, block.eventsLimit ?? allEvents.length);
   const showAllUrl = block.showAllUrl;
   const bgColor = block.backgroundColor ?? "#f1f5f9";
 
