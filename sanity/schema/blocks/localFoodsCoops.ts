@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const localFoodsCoopsBlock = defineType({
   name: "localFoodsCoopsBlock",
@@ -21,7 +22,13 @@ export const localFoodsCoopsBlock = defineType({
       title: "Body",
       of: [{ type: "block" }],
     }),
-    defineField({ name: "image", type: "image", title: "Image" }),
+    defineField({
+      name: "image",
+      type: "image",
+      title: "Image",
+      options: { accept: IMAGE_ACCEPT },
+      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+    }),
     defineField({
       name: "logoButtons",
       type: "array",
@@ -31,7 +38,15 @@ export const localFoodsCoopsBlock = defineType({
           type: "object",
           fields: [
             { name: "label", type: "string", title: "Label", description: "e.g. Locavana (shown with map pin when no logo)" },
-            { name: "logo", type: "image", title: "Logo", description: "Optional; if set, logo is shown instead of map pin + label" },
+            {
+            name: "logo",
+            type: "image",
+            title: "Logo",
+            description: "Optional; if set, logo is shown instead of map pin + label",
+            options: { accept: IMAGE_ACCEPT },
+            validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+              Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+          },
             { name: "url", type: "url", title: "Link URL" },
             { name: "bordered", type: "boolean", title: "Show border", initialValue: false, description: "Optional light border around this item" },
           ],

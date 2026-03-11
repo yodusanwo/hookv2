@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const heroBlock = defineType({
   name: "heroBlock",
@@ -35,7 +36,14 @@ export const heroBlock = defineType({
       name: "images",
       type: "array",
       title: "Images",
-      of: [{ type: "image" }],
+      of: [
+        {
+          type: "image",
+          options: { accept: IMAGE_ACCEPT },
+          validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+            Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+        },
+      ],
       options: { layout: "grid" },
     }),
   ],

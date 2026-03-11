@@ -21,6 +21,13 @@ export const page = defineType({
       options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
     }),
     defineField({
+      name: "hideHeaderWave",
+      type: "boolean",
+      title: "Hide top wave",
+      description: "When on, the wave graphic below the header is hidden on this page (e.g. for Our Story Extended).",
+      initialValue: false,
+    }),
+    defineField({
       name: "sections",
       type: "array",
       title: "Sections",

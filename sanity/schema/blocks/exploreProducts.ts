@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const exploreProductsBlock = defineType({
   name: "exploreProductsBlock",
@@ -38,7 +39,15 @@ export const exploreProductsBlock = defineType({
               title: "Collection Handle",
               description: "Shopify collection handle. Used for link URL.",
             },
-            { name: "image", type: "image", title: "Image", description: "Category card image" },
+            {
+              name: "image",
+              type: "image",
+              title: "Image",
+              description: "Category card image",
+              options: { accept: IMAGE_ACCEPT },
+              validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+                Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+            },
           ],
           preview: {
             select: { label: "label" },
@@ -83,7 +92,14 @@ export const exploreProductsBlock = defineType({
           fields: [
             { name: "label", type: "string", title: "Label" },
             { name: "collectionHandle", type: "string", title: "Collection Handle" },
-            { name: "image", type: "image", title: "Image" },
+            {
+              name: "image",
+              type: "image",
+              title: "Image",
+              options: { accept: IMAGE_ACCEPT },
+              validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+                Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+            },
           ],
         },
       ],

@@ -29,8 +29,11 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   estimatedDeliveryFrozenTransitDays
 }`;
 
-/** GROQ query for footer wave background color by path (slug). Use with $slug (e.g. "calendar", "contact", "home"). */
-export const FOOTER_WAVE_COLOR_QUERY = `*[_type == "page" && slug.current == $slug][0].footerWaveBackgroundColor`;
+/** GROQ query for page layout settings by path (slug). Use with $slug (e.g. "calendar", "contact", "story", "home"). */
+export const PAGE_LAYOUT_SETTINGS_QUERY = `*[_type == "page" && slug.current == $slug][0] {
+  "color": footerWaveBackgroundColor,
+  "hideHeaderWave": hideHeaderWave
+}`;
 
 /** GROQ query for any page by slug (for dynamic routes). Use with $slug. */
 export const PAGE_BY_SLUG_QUERY = `*[_type == "page" && slug.current == $slug][0] {

@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const recipesBlock = defineType({
   name: "recipesBlock",
@@ -24,7 +25,14 @@ export const recipesBlock = defineType({
           type: "object",
           fields: [
             { name: "title", type: "string", title: "Recipe Title" },
-            { name: "image", type: "image", title: "Image" },
+            {
+            name: "image",
+            type: "image",
+            title: "Image",
+            options: { accept: IMAGE_ACCEPT },
+            validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+              Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+          },
             { name: "url", type: "url", title: "Link URL" },
           ],
         },

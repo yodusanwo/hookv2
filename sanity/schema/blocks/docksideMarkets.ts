@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const docksideMarketsBlock = defineType({
   name: "docksideMarketsBlock",
@@ -24,7 +25,14 @@ export const docksideMarketsBlock = defineType({
           type: "object",
           fields: [
             { name: "label", type: "string", title: "Label" },
-            { name: "logo", type: "image", title: "Logo" },
+            {
+            name: "logo",
+            type: "image",
+            title: "Logo",
+            options: { accept: IMAGE_ACCEPT },
+            validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+              Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+          },
             { name: "url", type: "url", title: "Link URL" },
             { name: "logoWidth", type: "number", title: "Logo width (px)", description: "Optional. Default 115. Use for rectangular logos (e.g. 200)." },
             { name: "logoHeight", type: "number", title: "Logo height (px)", description: "Optional. Default 115. Use for rectangular logos (e.g. 75)." },

@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const siteSettings = defineType({
   name: "siteSettings",
@@ -25,6 +26,8 @@ export const siteSettings = defineType({
       title: "Header Logo",
       description: "Logo displayed in the top nav. Upload your logo image.",
       group: "header",
+      options: { accept: IMAGE_ACCEPT },
+      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
     }),
     defineField({
       name: "headerBackgroundColor",
@@ -61,13 +64,22 @@ export const siteSettings = defineType({
       type: "image",
       title: "Footer Logo",
       group: "footer",
+      options: { accept: IMAGE_ACCEPT },
+      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
     }),
     defineField({
       name: "footerOrgLogos",
       type: "array",
       title: "Footer Org Logos",
       group: "footer",
-      of: [{ type: "image" }],
+      of: [
+        {
+          type: "image",
+          options: { accept: IMAGE_ACCEPT },
+          validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+            Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+        },
+      ],
     }),
     defineField({
       name: "footerNavLinks",

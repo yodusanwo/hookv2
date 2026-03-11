@@ -1,6 +1,7 @@
 import { defineType, defineField } from "sanity";
 import { TeamBiosPreview } from "../../components/TeamBiosPreview";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const teamBiosBlock = defineType({
   name: "teamBiosBlock",
@@ -48,7 +49,8 @@ export const teamBiosBlock = defineType({
               name: "image",
               type: "image",
               title: "Photo",
-              options: { hotspot: true },
+              options: { hotspot: true, accept: IMAGE_ACCEPT },
+              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
             }),
             defineField({
               name: "name",

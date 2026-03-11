@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const ourStoryExtendedReversedBlock = defineType({
   name: "ourStoryExtendedReversedBlock",
@@ -29,7 +30,13 @@ export const ourStoryExtendedReversedBlock = defineType({
       title: "Body",
       of: [{ type: "block" }],
     }),
-    defineField({ name: "image", type: "image", title: "Image" }),
+    defineField({
+      name: "image",
+      type: "image",
+      title: "Image",
+      options: { accept: IMAGE_ACCEPT },
+      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+    }),
     defineField({
       name: "subheading",
       type: "text",

@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const whyWildMattersBlock = defineType({
   name: "whyWildMattersBlock",
@@ -26,6 +27,8 @@ export const whyWildMattersBlock = defineType({
       type: "image",
       title: "Image",
       description: "Large image on the left",
+      options: { accept: IMAGE_ACCEPT },
+      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
     }),
     defineField({
       name: "points",
@@ -42,6 +45,8 @@ export const whyWildMattersBlock = defineType({
               type: "image",
               title: "Icon",
               description: "Small line-art icon (e.g. SVG or PNG)",
+              options: { accept: IMAGE_ACCEPT },
+              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
             }),
           ],
           preview: {

@@ -1,6 +1,7 @@
 import { defineType, defineField } from "sanity";
 import { PhotoGalleryPreview } from "../../components/PhotoGalleryPreview";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const photoGalleryBlock = defineType({
   name: "photoGalleryBlock",
@@ -32,7 +33,13 @@ export const photoGalleryBlock = defineType({
           type: "object",
           name: "galleryImage",
           fields: [
-            defineField({ name: "image", type: "image", title: "Image" }),
+            defineField({
+              name: "image",
+              type: "image",
+              title: "Image",
+              options: { accept: IMAGE_ACCEPT },
+              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+            }),
             defineField({ name: "alt", type: "string", title: "Alt text (for accessibility)" }),
             defineField({ name: "caption", type: "string", title: "Caption (optional)" }),
             defineField({

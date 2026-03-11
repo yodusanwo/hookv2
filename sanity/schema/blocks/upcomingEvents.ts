@@ -1,5 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
+import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
 
 export const upcomingEventsBlock = defineType({
   name: "upcomingEventsBlock",
@@ -21,7 +22,14 @@ export const upcomingEventsBlock = defineType({
       title: "Promotional Images",
       description: "Two images displayed side-by-side above the event list (e.g. market/event photos).",
       validation: (Rule) => Rule.max(2),
-      of: [{ type: "image", options: { hotspot: true } }],
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true, accept: IMAGE_ACCEPT },
+          validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+            Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+        },
+      ],
     }),
     defineField({
       name: "events",
