@@ -25,14 +25,13 @@ export const recipesBlock = defineType({
           type: "object",
           fields: [
             { name: "title", type: "string", title: "Recipe Title" },
-            {
-            name: "image",
-            type: "image",
-            title: "Image",
-            options: { accept: IMAGE_ACCEPT },
-            validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
-              Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
-          },
+            defineField({
+              name: "image",
+              type: "image",
+              title: "Image",
+              options: { accept: IMAGE_ACCEPT },
+              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+            }),
             { name: "url", type: "url", title: "Link URL" },
           ],
         },

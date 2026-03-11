@@ -38,15 +38,14 @@ export const localFoodsCoopsBlock = defineType({
           type: "object",
           fields: [
             { name: "label", type: "string", title: "Label", description: "e.g. Locavana (shown with map pin when no logo)" },
-            {
-            name: "logo",
-            type: "image",
-            title: "Logo",
-            description: "Optional; if set, logo is shown instead of map pin + label",
-            options: { accept: IMAGE_ACCEPT },
-            validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
-              Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
-          },
+            defineField({
+              name: "logo",
+              type: "image",
+              title: "Logo",
+              description: "Optional; if set, logo is shown instead of map pin + label",
+              options: { accept: IMAGE_ACCEPT },
+              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+            }),
             { name: "url", type: "url", title: "Link URL" },
             { name: "bordered", type: "boolean", title: "Show border", initialValue: false, description: "Optional light border around this item" },
           ],

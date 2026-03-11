@@ -39,15 +39,14 @@ export const exploreProductsBlock = defineType({
               title: "Collection Handle",
               description: "Shopify collection handle. Used for link URL.",
             },
-            {
+            defineField({
               name: "image",
               type: "image",
               title: "Image",
               description: "Category card image",
               options: { accept: IMAGE_ACCEPT },
-              validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
-                Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
-            },
+              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+            }),
           ],
           preview: {
             select: { label: "label" },
@@ -92,14 +91,13 @@ export const exploreProductsBlock = defineType({
           fields: [
             { name: "label", type: "string", title: "Label" },
             { name: "collectionHandle", type: "string", title: "Collection Handle" },
-            {
+            defineField({
               name: "image",
               type: "image",
               title: "Image",
               options: { accept: IMAGE_ACCEPT },
-              validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
-                Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
-            },
+              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+            }),
           ],
         },
       ],
