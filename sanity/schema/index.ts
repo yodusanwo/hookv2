@@ -24,6 +24,7 @@ import { whyWildMattersBlock } from "./blocks/whyWildMatters";
 import { page } from "./documents/page";
 import { collectionPage } from "./documents/collectionPage";
 import { siteSettings } from "./documents/siteSettings";
+import { recipe } from "./documents/recipe";
 
 export const schemaTypes = [
   seo,
@@ -50,4 +51,5 @@ export const schemaTypes = [
   page,
   collectionPage,
   siteSettings,
+  recipe,
 ];

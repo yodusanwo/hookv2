@@ -32,15 +32,21 @@ export const recipesBlock = defineType({
               options: { accept: IMAGE_ACCEPT },
               validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
             }),
-            { name: "url", type: "url", title: "Link URL" },
+            defineField({
+              name: "url",
+              type: "string",
+              title: "Link URL",
+              description: "Internal path (e.g. /recipes/salmon-piccata or just salmon-piccata), or full URL (https://...).",
+            }),
           ],
         },
       ],
     }),
     defineField({
       name: "showMoreUrl",
-      type: "url",
+      type: "string",
       title: "Show More Link",
+      description: "URL for “Show more recipes”. Use /recipes to link to the full recipes index, or a full URL.",
     }),
   ],
   preview: {

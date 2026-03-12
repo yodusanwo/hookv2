@@ -65,7 +65,21 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
         >
           {recipes.map((r, idx) => {
             const img = urlFor(r.image);
-            const href = safeHref(r.url) || "#";
+            let raw = (r.url ?? "").trim();
+            // Avoid double-prefix: "recipes" → "/recipes", "recipes/slug" → "/recipes/slug"
+            if (raw && !raw.startsWith("/") && !raw.startsWith("#") && !raw.startsWith("http")) {
+              if (raw === "recipes" || raw.startsWith("recipes/")) {
+                raw = `/${raw}`;
+              }
+            }
+            const isAbsoluteUrl =
+              raw.startsWith("http://") || raw.startsWith("https://");
+            const href =
+              !raw
+                ? "#"
+                : raw.startsWith("/") || raw.startsWith("#") || isAbsoluteUrl
+                  ? safeHref(raw) || "#"
+                  : safeHref(`/recipes/${raw}`) || "#";
             return (
               <Link
                 key={idx}

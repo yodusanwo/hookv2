@@ -110,6 +110,35 @@ export const HOMEPAGE_QUERY = `*[_type == "page" && slug.current == "home"][0] {
   }
 }`;
 
+/** GROQ query for the first Explore Products block from the home page (for use on recipe pages, etc.). */
+export const EXPLORE_PRODUCTS_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "exploreProductsBlock"][0] {
+  _type,
+  _key,
+  backgroundColor,
+  hideWave,
+  title,
+  description,
+  "filterCollections": filterCollections[] { label, collectionHandle, image { asset-> } }
+}`;
+
+/** GROQ query for all recipes (for index page). */
+export const RECIPES_LIST_QUERY = `*[_type == "recipe"] | order(title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  "mainImage": images[0] { asset-> }
+}`;
+
+/** GROQ query for a single recipe by slug. Use with $slug (e.g. "salmon-piccata"). */
+export const RECIPE_BY_SLUG_QUERY = `*[_type == "recipe" && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  "images": images[] { _ref, asset-> },
+  ingredients[] { text, productHandle },
+  directions[] { step }
+}`;
+
 /** GROQ query for a collection page (collectionPage document whose collectionHandle matches) */
 export const COLLECTION_PAGE_QUERY = `*[_type == "collectionPage" && collectionHandle == $handle][0] {
   _id,

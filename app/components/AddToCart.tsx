@@ -58,7 +58,8 @@ export function AddToCart({
   options: Array<{ name: string; values: string[] }>;
   variants: Variant[];
   /** "productPage" = inline quantity stepper, price beside it, green Add to cart button, no card wrapper */
-  variant?: "default" | "productPage";
+  /** "recipeIngredient" = single compact green "Add to cart" button (e.g. next to recipe ingredients) */
+  variant?: "default" | "productPage" | "recipeIngredient";
 }) {
   const initialSelected = React.useMemo(() => {
     const first = variants.find((v) => v.availableForSale) ?? variants[0];
@@ -140,6 +141,28 @@ export function AddToCart({
     selectedVariant.price.amount,
     selectedVariant.price.currencyCode
   );
+
+  if (variant === "recipeIngredient") {
+    return (
+      <span className="inline-flex shrink-0">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            onAdd();
+          }}
+          disabled={!selectedVariant.availableForSale || status === "loading"}
+          className="inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          style={{
+            backgroundColor:
+              selectedVariant.availableForSale ? "var(--brand-green)" : "var(--brand-navy, #1e3a5f)",
+          }}
+        >
+          {status === "loading" ? "Adding…" : status === "success" ? "Added!" : "Add to cart"}
+        </button>
+      </span>
+    );
+  }
 
   if (variant === "productPage") {
     return (
