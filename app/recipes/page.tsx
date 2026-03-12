@@ -68,6 +68,10 @@ export default async function RecipesIndexPage() {
               } catch {
                 // ignore
               }
+              const cardBackground =
+                imageUrl != null && imageUrl !== ""
+                  ? { background: `url(${imageUrl}) center / cover no-repeat` }
+                  : undefined;
               return (
                 <Link
                   key={r._id}
@@ -76,12 +80,7 @@ export default async function RecipesIndexPage() {
                 >
                   <div
                     className="h-48 w-full shrink-0 bg-slate-200"
-                    style={
-                      imageUrl
-                        ? {
-                            background: `url(${imageUrl}) center / cover no-repeat`,
-                          }
-                    }
+                    style={cardBackground}
                   />
                   <div className="flex flex-1 flex-col p-4">
                     <h2 className="font-semibold text-slate-900">
