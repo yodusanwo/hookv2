@@ -52,6 +52,13 @@ export const recipe = defineType({
               title: "Shopify product handle (optional)",
               description: "If set, an “Add to cart” button appears next to this ingredient. Use the product’s handle from Shopify (e.g. wild-alaska-sockeye-portions).",
             }),
+            defineField({
+              name: "filterCategory",
+              type: "reference",
+              title: "Filter category",
+              description: "Category for the recipes page filter (e.g. Salmon, Seafood). Select from the list or create a new one.",
+              to: [{ type: "recipeCategory" }],
+            }),
           ],
           preview: {
             select: { text: "text" },

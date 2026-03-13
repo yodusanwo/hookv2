@@ -25,6 +25,7 @@ import { page } from "./documents/page";
 import { collectionPage } from "./documents/collectionPage";
 import { siteSettings } from "./documents/siteSettings";
 import { recipe } from "./documents/recipe";
+import { recipeCategory } from "./documents/recipeCategory";
 
 export const schemaTypes = [
   seo,
@@ -52,4 +53,5 @@ export const schemaTypes = [
   collectionPage,
   siteSettings,
   recipe,
+  recipeCategory,
 ];

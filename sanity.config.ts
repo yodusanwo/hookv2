@@ -29,6 +29,9 @@ export default defineConfig({
               .title("Recipes")
               .child(S.documentTypeList("recipe").title("Recipes")),
             S.listItem()
+              .title("Recipe Categories")
+              .child(S.documentTypeList("recipeCategory").title("Recipe Categories")),
+            S.listItem()
               .title("Site Settings")
               .id("siteSettings")
               .child(

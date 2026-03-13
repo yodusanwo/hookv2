@@ -121,12 +121,27 @@ export const EXPLORE_PRODUCTS_BLOCK_QUERY = `*[_type == "page" && slug.current =
   "filterCollections": filterCollections[] { label, collectionHandle, image { asset-> } }
 }`;
 
-/** GROQ query for all recipes (for index page). */
+/** Title and description from the Sanity "Recipes" page (first recipesBlock). Use for /recipes page heading. */
+export const RECIPES_PAGE_CONTENT_QUERY = `*[_type == "page" && slug.current == "recipes"][0].sections[_type == "recipesBlock"][0] {
+  title,
+  description,
+  backgroundColor
+}`;
+
+/** GROQ query for all recipes (for index page). Includes ingredient category slugs for filter (from filterCategory reference). */
 export const RECIPES_LIST_QUERY = `*[_type == "recipe"] | order(title asc) {
   _id,
   title,
   "slug": slug.current,
-  "mainImage": images[0] { asset-> }
+  "mainImage": images[0] { asset-> },
+  "ingredientHandles": ingredients[].productHandle,
+  "ingredientCategorySlugs": ingredients[].filterCategory->slug.current
+}`;
+
+/** All recipe categories for the /recipes page filter buttons. Create and manage in Studio under Recipe Categories. */
+export const RECIPE_CATEGORIES_QUERY = `*[_type == "recipeCategory"] | order(title asc) {
+  "value": slug.current,
+  "label": title
 }`;
 
 /** GROQ query for a single recipe by slug. Use with $slug (e.g. "salmon-piccata"). */

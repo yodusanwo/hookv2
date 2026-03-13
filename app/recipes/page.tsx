@@ -1,15 +1,32 @@
 import Link from "next/link";
-import { client, RECIPES_LIST_QUERY } from "@/lib/sanity";
-import { urlFor } from "@/lib/sanityImage";
+import { client, RECIPES_LIST_QUERY, RECIPES_PAGE_CONTENT_QUERY, RECIPE_CATEGORIES_QUERY } from "@/lib/sanity";
+import { RecipesPageClient } from "./RecipesPageClient";
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
+
+type RecipeFromSanity = {
+  _id: string;
+  title?: string;
+  slug?: string;
+  mainImage?: { asset?: { _ref?: string } };
+  ingredientCategorySlugs?: (string | null)[];
+};
 
 type RecipeListItem = {
   _id: string;
   title?: string;
   slug?: string;
   mainImage?: { asset?: { _ref?: string } };
+  categories: string[];
 };
+
+type RecipesPageContent = {
+  title?: string | null;
+  description?: string | null;
+  backgroundColor?: string | null;
+} | null;
+
+type RecipeCategoryOption = { value: string; label: string };
 
 export const metadata = {
   title: "Recipes",
@@ -17,19 +34,43 @@ export const metadata = {
 };
 
 export default async function RecipesIndexPage() {
-  let recipes: RecipeListItem[] = [];
+  let recipesRaw: RecipeFromSanity[] = [];
+  let pageContent: RecipesPageContent = null;
+  let categoryOptions: RecipeCategoryOption[] = [];
   if (client) {
     try {
-      recipes = await client.fetch<RecipeListItem[]>(RECIPES_LIST_QUERY);
+      [recipesRaw, pageContent, categoryOptions] = await Promise.all([
+        client.fetch<RecipeFromSanity[]>(RECIPES_LIST_QUERY),
+        client.fetch<RecipesPageContent>(RECIPES_PAGE_CONTENT_QUERY),
+        client.fetch<RecipeCategoryOption[]>(RECIPE_CATEGORIES_QUERY).then((list) => list ?? []),
+      ]);
     } catch {
-      recipes = [];
+      recipesRaw = [];
+      pageContent = null;
+      categoryOptions = [];
     }
   }
+
+  const recipes: RecipeListItem[] = recipesRaw.map((r) => {
+    const slugs = (r.ingredientCategorySlugs ?? []).map((s) => (s ?? "").trim()).filter(Boolean);
+    const categories = [...new Set(slugs)];
+    return {
+      _id: r._id,
+      title: r.title,
+      slug: r.slug,
+      mainImage: r.mainImage,
+      categories,
+    };
+  });
+
+  const title = (pageContent?.title ?? "").trim() || "Recipes";
+  const description = (pageContent?.description ?? "").trim() || "Wild-caught seafood recipes from our kitchen to yours.";
+  const bgColor = (pageContent?.backgroundColor ?? "").trim() || LIGHT_BG;
 
   return (
     <main
       className="px-4 pt-[140px] pb-14 sm:pt-[170px] md:pt-[230px]"
-      style={{ backgroundColor: LIGHT_BG }}
+      style={{ backgroundColor: bgColor }}
     >
       <div className="mx-auto max-w-6xl">
         <h1
@@ -41,57 +82,15 @@ export default async function RecipesIndexPage() {
             fontWeight: 500,
           }}
         >
-          Recipes
+          {title}
         </h1>
         <p
           className="mb-10 text-slate-600"
           style={{ fontFamily: "Inter, sans-serif", fontSize: "16px" }}
         >
-          Wild-caught seafood recipes from our kitchen to yours.
+          {description}
         </p>
-        {recipes.length === 0 ? (
-          <p className="text-slate-600">No recipes yet. Check back soon.</p>
-        ) : (
-          <div
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            }}
-          >
-            {recipes.map((r) => {
-              const slug = r.slug ?? "";
-              const href = slug ? `/recipes/${slug}` : "#";
-              let imageUrl: string | null = null;
-              try {
-                const u = urlFor(r.mainImage);
-                if (u) imageUrl = u.url();
-              } catch {
-                // ignore
-              }
-              const cardBackground =
-                imageUrl != null && imageUrl !== ""
-                  ? { background: `url(${imageUrl}) center / cover no-repeat` }
-                  : undefined;
-              return (
-                <Link
-                  key={r._id}
-                  href={href}
-                  className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <div
-                    className="h-48 w-full shrink-0 bg-slate-200"
-                    style={cardBackground}
-                  />
-                  <div className="flex flex-1 flex-col p-4">
-                    <h2 className="font-semibold text-slate-900">
-                      {r.title ?? "Recipe"}
-                    </h2>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+        <RecipesPageClient recipes={recipes} bgColor={bgColor} categoryOptions={categoryOptions} />
         <div className="mt-10">
           <Link
             href="/"
