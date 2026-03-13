@@ -74,19 +74,29 @@ export default async function RecipesIndexPage() {
     >
       <div className="mx-auto max-w-6xl">
         <h1
-          className="mb-2"
+          className="mb-2 text-center"
           style={{
-            color: "var(--Text-Color, #1E1E1E)",
+            color: "#111827",
             fontFamily: "Inter, sans-serif",
-            fontSize: "40px",
-            fontWeight: 500,
+            fontSize: "48px",
+            fontStyle: "normal",
+            fontWeight: 600,
+            lineHeight: "normal",
+            textTransform: "uppercase",
           }}
         >
           {title}
         </h1>
         <p
-          className="mb-10 text-slate-600"
-          style={{ fontFamily: "Inter, sans-serif", fontSize: "16px" }}
+          className="mb-10 mx-auto text-center w-full max-w-[743px]"
+          style={{
+            color: "#1E1E1E",
+            fontFamily: "Inter, sans-serif",
+            fontSize: "16px",
+            fontStyle: "normal",
+            fontWeight: 400,
+            lineHeight: "150%",
+          }}
         >
           {description}
         </p>
@@ -94,8 +104,17 @@ export default async function RecipesIndexPage() {
         <div className="mt-10">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 font-medium text-[var(--brand-navy)] hover:underline"
-            style={{ fontFamily: "Inter, sans-serif", fontSize: "16px" }}
+            className="inline-flex items-center justify-center no-underline font-medium transition-opacity hover:opacity-90"
+            style={{
+              width: 158,
+              height: 45,
+              padding: "11px 42px",
+              borderRadius: 20,
+              background: "var(--Blue-Inactive-Button, rgba(73, 140, 203, 0.25))",
+              color: "var(--brand-navy, #1e3a5f)",
+              fontFamily: "Inter, sans-serif",
+              fontSize: "16px",
+            }}
           >
             ← Back to home
           </Link>

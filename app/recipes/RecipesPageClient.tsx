@@ -15,7 +15,14 @@ const DEFAULT_CATEGORY_FILTERS = [
 ];
 
 const FILTER_BUTTON_BASE =
-  "rounded-full px-5 py-2.5 text-sm font-semibold transition-colors whitespace-nowrap border-none cursor-pointer";
+  "text-sm font-semibold transition-colors border-none cursor-pointer inline-flex items-center justify-center";
+const FILTER_BUTTON_LAYOUT = {
+  width: 158,
+  height: 45,
+  padding: "11px 42px",
+  borderRadius: 20,
+};
+const FILTER_BUTTON_INACTIVE_BG = "var(--Blue-Inactive-Button, rgba(73, 140, 203, 0.25))";
 
 type RecipeItem = {
   _id: string;
@@ -55,7 +62,8 @@ export function RecipesPageClient({
           onClick={() => setSelectedCategory(null)}
           className={FILTER_BUTTON_BASE}
           style={{
-            backgroundColor: selectedCategory === null ? "#1e3a5f" : "rgba(212, 242, 255, 0.9)",
+            ...FILTER_BUTTON_LAYOUT,
+            backgroundColor: selectedCategory === null ? "#1e3a5f" : FILTER_BUTTON_INACTIVE_BG,
             color: selectedCategory === null ? "#fff" : "#1e3a5f",
             fontFamily: "Inter, var(--font-inter), sans-serif",
           }}
@@ -71,7 +79,8 @@ export function RecipesPageClient({
               onClick={() => setSelectedCategory(value)}
               className={FILTER_BUTTON_BASE}
               style={{
-                backgroundColor: isSelected ? "#1e3a5f" : "rgba(212, 242, 255, 0.9)",
+                ...FILTER_BUTTON_LAYOUT,
+                backgroundColor: isSelected ? "#1e3a5f" : FILTER_BUTTON_INACTIVE_BG,
                 color: isSelected ? "#fff" : "#1e3a5f",
                 fontFamily: "Inter, var(--font-inter), sans-serif",
               }}
