@@ -166,11 +166,10 @@ export function CatchOfTheDayGrid({
                   <div
                     key={i}
                     className="w-[387px] max-w-full flex flex-col rounded-xl overflow-hidden animate-pulse"
-                    style={{ minHeight: 320 }}
                   >
                     <div
-                      className="aspect-[331/190] w-full rounded-[10px] bg-white/10"
-                      style={{ borderRadius: 10 }}
+                      className="w-full shrink-0 bg-white/10"
+                      style={{ height: 320, borderRadius: 10 }}
                     />
                     <div
                       className="flex flex-1 flex-col px-4 py-3 gap-2"

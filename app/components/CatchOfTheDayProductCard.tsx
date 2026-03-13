@@ -108,14 +108,16 @@ export function CatchOfTheDayProductCard({
   return (
     <>
       <div className="group relative flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md">
-        {/* Image area: border-radius 10px, background position/size per spec */}
+        {/* Image area: same as recipe cards — height 320px, border-radius 10px, cover */}
         <div
-          className="relative aspect-[331/190] min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+          className="relative min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
           style={{
+            height: 320,
+            alignSelf: "stretch",
             borderRadius: 10,
             background: product.imageUrl
-              ? `url(${product.imageUrl}) lightgray 0px -82px / 100% 174.208% no-repeat`
-              : "lightgray no-repeat",
+              ? `url(${product.imageUrl}) lightgray 50% / cover no-repeat`
+              : "lightgray",
           }}
           role={product.imageUrl ? "img" : undefined}
           aria-label={product.imageUrl ? product.title : undefined}
