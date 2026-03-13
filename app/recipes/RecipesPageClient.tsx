@@ -112,10 +112,15 @@ export function RecipesPageClient({
             } catch {
               // ignore
             }
-            const cardBackground =
-              imageUrl != null && imageUrl !== ""
-                ? { background: `url(${imageUrl}) center / cover no-repeat` }
-                : undefined;
+            const imageStyle = {
+              height: 320,
+              alignSelf: "stretch" as const,
+              borderRadius: 10,
+              background:
+                imageUrl != null && imageUrl !== ""
+                  ? `url(${imageUrl}) lightgray 50% / cover no-repeat`
+                  : "lightgray",
+            };
             return (
               <Link
                 key={r._id}
@@ -123,8 +128,8 @@ export function RecipesPageClient({
                 className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
               >
                 <div
-                  className="h-48 w-full shrink-0 bg-slate-200"
-                  style={cardBackground}
+                  className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+                  style={imageStyle}
                 />
                 <div className="flex flex-1 flex-col p-4">
                   <h2 className="font-semibold text-slate-900">
