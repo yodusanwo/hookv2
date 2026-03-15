@@ -98,10 +98,7 @@ export function RecipesPageClient({
             : "No recipes yet. Check back soon."}
         </p>
       ) : (
-        <div
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
-        >
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {filteredRecipes.map((r) => {
             const slug = r.slug ?? "";
             const href = slug ? `/recipes/${slug}` : "#";
@@ -113,7 +110,7 @@ export function RecipesPageClient({
               // ignore
             }
             const imageStyle = {
-              height: 320,
+              height: "320px",
               alignSelf: "stretch" as const,
               borderRadius: 10,
               background:

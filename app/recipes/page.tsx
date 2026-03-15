@@ -78,11 +78,12 @@ export default async function RecipesIndexPage() {
   const bgColor = (pageContent?.backgroundColor ?? "").trim() || LIGHT_BG;
 
   return (
-    <main className="pt-[140px] pb-14 sm:pt-[170px] md:pt-[230px]">
-      <div
-        className="px-4 pb-10 mx-auto max-w-6xl"
+    <main
+        className="pt-[140px] pb-14 sm:pt-[170px] md:pt-[230px]"
         style={{ backgroundColor: bgColor }}
       >
+      <div className="w-full pb-10" style={{ backgroundColor: bgColor }}>
+        <div className="mx-auto w-full max-w-[1200px] px-4">
         <h1
           className="mb-2 text-center"
           style={{
@@ -128,6 +129,7 @@ export default async function RecipesIndexPage() {
           >
             ← Back to home
           </Link>
+        </div>
         </div>
       </div>
       {restSections.length > 0 && (
