@@ -115,9 +115,14 @@ export default async function Story() {
     ) {
       const sheetEvents = await getEventsFromSheet();
       const sectionsWithEvents = sanityPage.sections.map((section: unknown) => {
-        const s = section as { _type?: string; [key: string]: unknown };
+        const s = section as { _type?: string; showAllUrl?: string; [key: string]: unknown };
         if (s._type === "upcomingEventsBlock") {
-          return { ...s, events: sheetEvents };
+          return {
+            ...s,
+            events: sheetEvents,
+            eventsLimit: 3,
+            showAllUrl: (s.showAllUrl && String(s.showAllUrl).trim()) || "/calendar",
+          };
         }
         return section;
       });
@@ -132,6 +137,7 @@ export default async function Story() {
             promoBanner={null}
             hideExploreProductsWave
             hideLocalFoodsCoopsWave
+            localFoodsCoopsBottomPaddingClass="pb-[60px]"
             hideOurStoryTitle
             hideOurStoryCta
             ourStoryVariant="story-page"

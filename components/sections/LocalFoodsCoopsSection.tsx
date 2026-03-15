@@ -40,10 +40,13 @@ type LocalFoodsCoopsBlock = {
 export function LocalFoodsCoopsSection({
   block,
   hideWave = false,
+  bottomPaddingClass,
 }: {
   block: LocalFoodsCoopsBlock;
   /** When true, the wave below the section is hidden (e.g. on /story page only). */
   hideWave?: boolean;
+  /** Optional Tailwind bottom padding class (e.g. pb-10) for page-specific spacing (e.g. /story). */
+  bottomPaddingClass?: string;
 }) {
   const title = block.title ?? "LOCAL FOODS CO-OPS";
   const description = block.description ?? "";
@@ -51,7 +54,7 @@ export function LocalFoodsCoopsSection({
 
   return (
     <section
-      className="relative z-20 flex min-h-0 flex-col justify-center pt-[60px] pb-0 border-2 border-red-500"
+      className={`relative z-20 flex min-h-0 flex-col justify-center pt-[60px] pb-0 border-2 border-red-500 ${bottomPaddingClass ?? ""}`.trim()}
       style={{ backgroundColor: block.backgroundColor ?? "#FAFAFC" }}
     >
       <div

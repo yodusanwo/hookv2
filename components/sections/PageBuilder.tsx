@@ -61,6 +61,7 @@ export function PageBuilder({
   hideExploreProductsWave,
   showExploreProductsTopWave,
   hideLocalFoodsCoopsWave,
+  localFoodsCoopsBottomPaddingClass,
   hideOurStoryTitle,
   hideOurStoryCta,
   hideOurStoryWave,
@@ -77,6 +78,8 @@ export function PageBuilder({
   showExploreProductsTopWave?: boolean;
   /** When true, the wave below the Local Foods Co-ops section is hidden (e.g. on /story page only). */
   hideLocalFoodsCoopsWave?: boolean;
+  /** Optional bottom padding class for Featured Local Stores section (e.g. pb-10 on /story). */
+  localFoodsCoopsBottomPaddingClass?: string;
   /** When true, the Our Story section heading is hidden (e.g. on /story page only). */
   hideOurStoryTitle?: boolean;
   /** When true, the Our Story section CTA is hidden (e.g. on /story page only). */
@@ -289,6 +292,7 @@ export function PageBuilder({
                   block as Parameters<typeof LocalFoodsCoopsSection>[0]["block"]
                 }
                 hideWave={hideLocalFoodsCoopsWave}
+                bottomPaddingClass={localFoodsCoopsBottomPaddingClass}
               />
             );
           case "faqBlock":
