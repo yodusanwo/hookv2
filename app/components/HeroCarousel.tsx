@@ -66,7 +66,8 @@ export function HeroCarousel({
                   }
                 : {
                     ...IMAGE_LAYER_STYLE,
-                    objectPosition: "center 38%",
+                    objectPosition: "center 100%",
+                    transform: "translateY(12%)",
                   }
             }
           />
@@ -100,12 +101,12 @@ export function HeroCarousel({
         <div
           className={
             variant === "story"
-              ? "absolute z-20 flex flex-col gap-[29px] left-4 right-4 sm:left-8 md:left-[100px] lg:left-[164px] top-[55%] -translate-y-1/2 md:top-[462px] md:translate-y-0 max-w-[740px] text-left items-start"
-              : "absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[920px] text-left items-start px-6 py-5 sm:px-8 sm:py-6 rounded-xl bg-gradient-to-br from-black/30 via-black/15 to-transparent backdrop-blur-[2px]"
+              ? "absolute z-20 flex flex-col gap-[29px] left-4 right-4 sm:left-8 md:left-[100px] lg:left-[164px] top-[calc(55%+120px)] -translate-y-1/2 md:top-[582px] md:translate-y-0 max-w-[740px] text-left items-start"
+              : "absolute z-20 flex flex-col top-[calc(50%+120px)] -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[1040px] text-left items-start px-6 py-5 sm:px-8 sm:py-6 rounded-xl bg-gradient-to-br from-black/30 via-black/15 to-transparent backdrop-blur-[2px]"
           }
         >
           <h1
-            className={`${FONT_INTER} max-w-full`}
+            className={`${FONT_INTER} max-w-full ${variant === "default" ? "md:whitespace-nowrap" : ""}`}
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
               fontSize:

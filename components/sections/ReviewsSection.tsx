@@ -34,10 +34,24 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
       <div className="mx-auto max-w-6xl px-4">
         <SectionHeading
           title={title}
-          description={description || undefined}
           variant="display"
           theme="light"
         />
+        {description ? (
+          <p
+            className="mt-4 w-full max-w-[770px] mx-auto text-center"
+            style={{
+              color: "#1E1E1E",
+              fontFamily: "var(--font-inter), Inter, sans-serif",
+              fontSize: 16,
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "150%",
+            }}
+          >
+            {description}
+          </p>
+        ) : null}
         <div className="mt-10 flex flex-wrap justify-center gap-6">
           {reviews.map((r, idx) => (
             <div

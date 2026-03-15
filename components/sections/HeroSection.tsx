@@ -12,7 +12,7 @@ type HeroBlock = {
 };
 
 function normalizeHeadline(raw: string | undefined): { line1: string; line2: string } {
-  const fallback = { line1: "Alaska's Fresh Catch Awaits\u00A0—", line2: "Taste the Adventure" };
+  const fallback = { line1: "From Alaska's Waters to Your Table", line2: "" };
   if (!raw || typeof raw !== "string") return fallback;
   const trimmed = raw.trim();
   if (!trimmed) return fallback;

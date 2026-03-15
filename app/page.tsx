@@ -160,8 +160,8 @@ export default async function Home() {
     return (
       <main className="bg-white">
         <HeroCarousel
-          headlineLine1={"Alaska's Fresh Catch Awaits —"}
-          headlineLine2={"Taste the Adventure"}
+          headlineLine1={"From Alaska's Waters to Your Table"}
+          headlineLine2={""}
           subline={"Wild-caught  •  Family-run  •  Sustainably sourced"}
           ctaLabel={"Get Fresh Fish"}
           ctaHref={"#shop"}

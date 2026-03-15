@@ -138,11 +138,11 @@ export function CategorySectionBlock({
           />
           {description && (
             <p
-              className="mx-auto w-full max-w-[933px] text-center mt-4"
+              className="mx-auto w-full max-w-[770px] text-center mt-4"
               style={{
-                color: "var(--Text-Color, #1E1E1E)",
-                fontFamily: "Inter, var(--font-inter), sans-serif",
-                fontSize: "20px",
+                color: "#1E1E1E",
+                fontFamily: "var(--font-inter), Inter, sans-serif",
+                fontSize: 16,
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "150%",

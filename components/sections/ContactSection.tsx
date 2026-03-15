@@ -39,8 +39,15 @@ export function ContactSection({ block }: { block: ContactBlock }) {
         )}
         {description && (
           <p
-            className="mx-auto mt-6 max-w-[426px] text-center text-[16px] font-normal leading-[1.5] text-[#1e1e1e]"
-            style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
+            className="mx-auto mt-6 w-full max-w-[770px] text-center"
+            style={{
+              color: "#1E1E1E",
+              fontFamily: "var(--font-inter), Inter, sans-serif",
+              fontSize: 16,
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "150%",
+            }}
           >
             {description}
           </p>

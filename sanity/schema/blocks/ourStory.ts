@@ -16,6 +16,12 @@ export const ourStoryBlock = defineType({
     }),
     defineField({ name: "title", type: "string", title: "Title" }),
     defineField({
+      name: "description",
+      type: "text",
+      title: "Description",
+      description: "Optional short description shown underneath the title.",
+    }),
+    defineField({
       name: "body",
       type: "array",
       title: "Body",

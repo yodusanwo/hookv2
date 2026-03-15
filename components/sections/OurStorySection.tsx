@@ -7,6 +7,7 @@ import { safeHref } from "@/lib/urlValidation";
 type OurStoryBlock = {
   backgroundColor?: string;
   title?: string;
+  description?: string;
   body?: unknown[];
   image?: { asset?: { _ref?: string } };
   subheading?: string;
@@ -20,6 +21,16 @@ const BODY_STYLE = {
   fontWeight: 400,
   lineHeight: "150%",
   color: "#1E1E1E",
+} as const;
+
+/** Description text under title: same typography everywhere, color by background (light #1E1E1E, dark #FFFFFF) */
+const DESCRIPTION_TYPOGRAPHY = {
+  fontFamily: "var(--font-inter), Inter, sans-serif",
+  fontSize: 16,
+  fontStyle: "normal" as const,
+  fontWeight: 400,
+  lineHeight: "150%",
+  textAlign: "center" as const,
 } as const;
 
 /** Story page only: right-column copy styling */
@@ -101,12 +112,25 @@ export function OurStorySection({
         style={{ maxWidth: 1440 }}
       >
         {!hideTitle && (
-          <SectionHeading
-            title={title}
-            variant="display"
-            theme={isStoryPage ? "dark" : "light"}
-            titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
-          />
+          <>
+            <SectionHeading
+              title={title}
+              variant="display"
+              theme={isStoryPage ? "dark" : "light"}
+              titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
+            />
+            {block.description ? (
+              <p
+                className="mt-4 w-full max-w-[770px] mx-auto text-center"
+                style={{
+                  ...DESCRIPTION_TYPOGRAPHY,
+                  color: isStoryPage ? "#FFFFFF" : "#1E1E1E",
+                }}
+              >
+                {block.description}
+              </p>
+            ) : null}
+          </>
         )}
         <div className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${isStoryPage ? "pt-8 md:pt-[6.25rem]" : ""} ${!hideTitle ? "mt-10" : ""}`}>
           <div

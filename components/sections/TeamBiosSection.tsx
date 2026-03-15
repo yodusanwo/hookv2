@@ -63,10 +63,14 @@ export function TeamBiosSection({
           )}
           {description && (
             <p
-              className="mt-6 font-normal leading-[1.5] text-[#1e1e1e]"
+              className="mt-6 w-full max-w-[770px] mx-auto text-center"
               style={{
+                color: "#1E1E1E",
                 fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: "20px",
+                fontSize: 16,
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "150%",
               }}
             >
               {description}

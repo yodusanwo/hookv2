@@ -59,7 +59,15 @@ export function SectionHeading({
         {description && (
           <p
             className={`section-description ${descriptionAsLead ? "section-description--lead" : ""}`.trim()}
-            style={{ color: resolvedDescColor }}
+            style={{
+              color: resolvedDescColor,
+              fontFamily: "var(--font-inter), Inter, sans-serif",
+              fontSize: 16,
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "150%",
+              textAlign: "center",
+            }}
           >
             {description}
           </p>
@@ -77,6 +85,12 @@ export function SectionHeading({
           className="section-description"
           style={{
             color: descriptionColor ?? (isDark ? "var(--section-heading-dark)" : "#1E1E1E"),
+            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontSize: 16,
+            fontStyle: "normal",
+            fontWeight: 400,
+            lineHeight: "150%",
+            textAlign: "center",
           }}
         >
           {description}

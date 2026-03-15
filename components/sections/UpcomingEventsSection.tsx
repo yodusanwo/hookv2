@@ -147,7 +147,17 @@ export function UpcomingEventsSection({
                           />
                           <span>{e.time ?? "—"}</span>
                         </div>
-                        <div>{e.eventType ?? e.name ?? "—"}</div>
+                        <div className="flex items-center gap-2">
+                          <img
+                            src="/Locationicon.svg"
+                            alt=""
+                            aria-hidden
+                            width={19}
+                            height={19}
+                            style={{ flexShrink: 0 }}
+                          />
+                          <span>{e.eventType ?? e.name ?? "—"}</span>
+                        </div>
                         <div>
                           {(() => {
                             const raw = (e.address ?? e.location ?? "").trim() || "—";

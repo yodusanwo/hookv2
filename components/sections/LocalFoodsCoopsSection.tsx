@@ -51,8 +51,8 @@ export function LocalFoodsCoopsSection({
 
   return (
     <section
-      className="relative z-20 flex min-h-[374px] flex-col justify-center py-14"
-      style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF", minHeight: 374 }}
+      className="relative z-20 flex min-h-0 flex-col justify-center pt-[60px] pb-0 border-2 border-red-500"
+      style={{ backgroundColor: block.backgroundColor ?? "#FAFAFC" }}
     >
       <div
         className="mx-auto w-full px-4 text-center"
@@ -66,7 +66,7 @@ export function LocalFoodsCoopsSection({
           titleColor="#111827"
           descriptionColor="#1E1E1E"
         />
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-8">
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
           {items.map((item, idx) => {
             const logoImg = urlFor(item.logo);
             const safeUrl = safeHref(item.url);
@@ -114,7 +114,7 @@ export function LocalFoodsCoopsSection({
       </div>
       {!hideWave && (
         <div
-          className="relative top-[100px] -mt-8 w-full shrink-0"
+          className="relative top-[100px] pb-0 -mb-2.5 w-full shrink-0 border-2 border-purple-500"
           style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
         >
           <WaveDivider

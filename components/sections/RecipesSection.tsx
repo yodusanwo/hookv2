@@ -129,7 +129,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
         </div>
       </div>
       <div
-        className="relative top-[100px] -mt-8 w-full shrink-0"
+        className="relative top-[100px] -mt-8 -mb-2 w-full shrink-0"
         style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
       >
         <WaveDivider
