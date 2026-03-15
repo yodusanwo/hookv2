@@ -25,7 +25,11 @@ type PageSection =
   | { _type: "exploreProductsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "ourStoryBlock"; _key?: string; [key: string]: unknown }
   | { _type: "ourStoryExtendedBlock"; _key?: string; [key: string]: unknown }
-  | { _type: "ourStoryExtendedReversedBlock"; _key?: string; [key: string]: unknown }
+  | {
+      _type: "ourStoryExtendedReversedBlock";
+      _key?: string;
+      [key: string]: unknown;
+    }
   | { _type: "photoGalleryBlock"; _key?: string; [key: string]: unknown }
   | { _type: "teamBiosBlock"; _key?: string; [key: string]: unknown }
   | { _type: "contactBlock"; _key?: string; [key: string]: unknown }
@@ -43,6 +47,7 @@ export function PageBuilder({
   promoBanner,
   pageSlug,
   hideExploreProductsWave,
+  showExploreProductsTopWave,
   hideLocalFoodsCoopsWave,
   hideOurStoryTitle,
   hideOurStoryCta,
@@ -55,6 +60,8 @@ export function PageBuilder({
   pageSlug?: string | null;
   /** When true, the wave under the Explore Products / Product Carousel section is hidden (e.g. on Collection pages). */
   hideExploreProductsWave?: boolean;
+  /** When true, show the top wave above the Explore Our Products section (e.g. on /story to match Our Crew → Explore transition). */
+  showExploreProductsTopWave?: boolean;
   /** When true, the wave below the Local Foods Co-ops section is hidden (e.g. on /story page only). */
   hideLocalFoodsCoopsWave?: boolean;
   /** When true, the Our Story section heading is hidden (e.g. on /story page only). */
@@ -101,7 +108,11 @@ export function PageBuilder({
                     <div className="relative mt-4 sm:mt-6 lg:mt-8 flex items-center justify-center">
                       <div className="animate-pulse flex gap-6">
                         {[1, 2, 3].map((i) => (
-                          <div key={i} className="w-[280px] h-[280px] max-w-full rounded-xl bg-white/10" style={{ minHeight: 280 }} />
+                          <div
+                            key={i}
+                            className="w-[280px] h-[280px] max-w-full rounded-xl bg-white/10"
+                            style={{ minHeight: 280 }}
+                          />
                         ))}
                       </div>
                     </div>
@@ -109,18 +120,27 @@ export function PageBuilder({
                 }
               >
                 <CatchOfTheDaySection
-                  block={block as Parameters<typeof CatchOfTheDaySection>[0]["block"]}
+                  block={
+                    block as Parameters<typeof CatchOfTheDaySection>[0]["block"]
+                  }
                 />
               </Suspense>
             );
-          case "exploreProductsBlock":
+          case "exploreProductsBlock": {
+            const prevBlock = idx > 0 ? items[idx - 1] : null;
+            const prevIsTeamBios = prevBlock?._type === "teamBiosBlock";
             return (
               <ExploreProductsSection
                 key={key}
-                block={block as Parameters<typeof ExploreProductsSection>[0]["block"]}
+                block={
+                  block as Parameters<typeof ExploreProductsSection>[0]["block"]
+                }
                 hideExploreProductsWave={hideExploreProductsWave}
+                showTopWave={showExploreProductsTopWave}
+                hasWaveAbove={!!prevIsTeamBios}
               />
             );
+          }
           case "ourStoryBlock":
             return (
               <OurStorySection
@@ -136,14 +156,22 @@ export function PageBuilder({
             return (
               <OurStoryExtendedSection
                 key={key}
-                block={block as Parameters<typeof OurStoryExtendedSection>[0]["block"]}
+                block={
+                  block as Parameters<
+                    typeof OurStoryExtendedSection
+                  >[0]["block"]
+                }
               />
             );
           case "ourStoryExtendedReversedBlock":
             return (
               <OurStoryExtendedReversedSection
                 key={key}
-                block={block as Parameters<typeof OurStoryExtendedReversedSection>[0]["block"]}
+                block={
+                  block as Parameters<
+                    typeof OurStoryExtendedReversedSection
+                  >[0]["block"]
+                }
               />
             );
           case "photoGalleryBlock": {
@@ -156,7 +184,9 @@ export function PageBuilder({
               <Fragment key={key}>
                 {prevIsOurStoryExtended && <ShopSectionWave />}
                 <PhotoGallerySection
-                  block={block as Parameters<typeof PhotoGallerySection>[0]["block"]}
+                  block={
+                    block as Parameters<typeof PhotoGallerySection>[0]["block"]
+                  }
                   hasWaveAbove={!!prevIsOurStoryExtended}
                 />
               </Fragment>
@@ -169,8 +199,11 @@ export function PageBuilder({
               <Fragment key={key}>
                 {prevIsPhotoGallery && <ShopSectionWave />}
                 <TeamBiosSection
-                  block={block as Parameters<typeof TeamBiosSection>[0]["block"]}
+                  block={
+                    block as Parameters<typeof TeamBiosSection>[0]["block"]
+                  }
                   hasWaveAbove={!!prevIsPhotoGallery}
+                  showBottomWave={ourStoryVariant === "story-page"}
                 />
               </Fragment>
             );
@@ -187,20 +220,41 @@ export function PageBuilder({
               <DealPromotionsSection
                 key={key}
                 sectionId="deals"
-                block={block as Parameters<typeof DealPromotionsSection>[0]["block"]}
+                block={
+                  block as Parameters<typeof DealPromotionsSection>[0]["block"]
+                }
               />
             );
           case "reviewsBlock":
-            return <ReviewsSection key={key} block={block as Parameters<typeof ReviewsSection>[0]["block"]} />;
+            return (
+              <ReviewsSection
+                key={key}
+                block={block as Parameters<typeof ReviewsSection>[0]["block"]}
+              />
+            );
           case "recipesBlock":
-            return <RecipesSection key={key} block={block as Parameters<typeof RecipesSection>[0]["block"]} />;
+            return (
+              <RecipesSection
+                key={key}
+                block={block as Parameters<typeof RecipesSection>[0]["block"]}
+              />
+            );
           case "docksideMarketsBlock":
-            return <DocksideMarketsSection key={key} block={block as Parameters<typeof DocksideMarketsSection>[0]["block"]} />;
+            return (
+              <DocksideMarketsSection
+                key={key}
+                block={
+                  block as Parameters<typeof DocksideMarketsSection>[0]["block"]
+                }
+              />
+            );
           case "upcomingEventsBlock":
             return (
               <UpcomingEventsSection
                 key={key}
-                block={block as Parameters<typeof UpcomingEventsSection>[0]["block"]}
+                block={
+                  block as Parameters<typeof UpcomingEventsSection>[0]["block"]
+                }
                 pageSlug={pageSlug ?? undefined}
               />
             );
@@ -208,17 +262,26 @@ export function PageBuilder({
             return (
               <LocalFoodsCoopsSection
                 key={key}
-                block={block as Parameters<typeof LocalFoodsCoopsSection>[0]["block"]}
+                block={
+                  block as Parameters<typeof LocalFoodsCoopsSection>[0]["block"]
+                }
                 hideWave={hideLocalFoodsCoopsWave}
               />
             );
           case "faqBlock":
-            return <FaqSection key={key} block={block as Parameters<typeof FaqSection>[0]["block"]} />;
+            return (
+              <FaqSection
+                key={key}
+                block={block as Parameters<typeof FaqSection>[0]["block"]}
+              />
+            );
           case "whyWildMattersBlock":
             return (
               <WhyWildMattersSection
                 key={key}
-                block={block as Parameters<typeof WhyWildMattersSection>[0]["block"]}
+                block={
+                  block as Parameters<typeof WhyWildMattersSection>[0]["block"]
+                }
               />
             );
           default:

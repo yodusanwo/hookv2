@@ -97,14 +97,18 @@ export default async function Story() {
         sanityPage = await client.fetch<{ sections?: unknown[] } | null>(
           STORY_PAGE_QUERY,
           {},
-          { next: { revalidate: 60 } }
+          { next: { revalidate: 60 } },
         );
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
     }
 
-    if (sanityPage?.sections && Array.isArray(sanityPage.sections) && sanityPage.sections.length > 0) {
+    if (
+      sanityPage?.sections &&
+      Array.isArray(sanityPage.sections) &&
+      sanityPage.sections.length > 0
+    ) {
       const sheetEvents = await getEventsFromSheet();
       const sectionsWithEvents = sanityPage.sections.map((section: unknown) => {
         const s = section as { _type?: string; [key: string]: unknown };
@@ -116,12 +120,17 @@ export default async function Story() {
       return (
         <main className="bg-white">
           <PageBuilder
-            sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
+            sections={
+              sectionsWithEvents as Parameters<
+                typeof PageBuilder
+              >[0]["sections"]
+            }
             promoBanner={null}
             hideExploreProductsWave
             hideLocalFoodsCoopsWave
             hideOurStoryTitle
             hideOurStoryCta
+            hideOurStoryWave
             ourStoryVariant="story-page"
           />
         </main>
@@ -170,7 +179,11 @@ export default async function Story() {
 
         <section id="about" className="bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">
-            <SectionHeading title="We are Hook Point" variant="display" theme="light" />
+            <SectionHeading
+              title="We are Hook Point"
+              variant="display"
+              theme="light"
+            />
             <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-center">
               <div className="overflow-hidden rounded-xl bg-slate-200">
                 <img
@@ -182,10 +195,10 @@ export default async function Story() {
               </div>
               <div className="max-w-xl">
                 <p className="text-sm leading-6 text-slate-700">
-                  At Hook Point Fisheries, fishing isn&apos;t just a job—it&apos;s our
-                  way of life. Every summer we carefully fish the waters off
-                  Kodiak Island, hand-harvesting wild Alaskan salmon and other
-                  seafood for folks like you.
+                  At Hook Point Fisheries, fishing isn&apos;t just a
+                  job—it&apos;s our way of life. Every summer we carefully fish
+                  the waters off Kodiak Island, hand-harvesting wild Alaskan
+                  salmon and other seafood for folks like you.
                 </p>
                 <p className="mt-4 text-sm leading-6 text-slate-700">
                   We believe the real food brings people together, and when you
@@ -210,7 +223,10 @@ export default async function Story() {
               theme="light"
             />
             <div className="mt-6">
-              <Carousel items={carouselItems.slice(0, 10)} ariaLabel="Featured seafood" />
+              <Carousel
+                items={carouselItems.slice(0, 10)}
+                ariaLabel="Featured seafood"
+              />
             </div>
             <div className="mt-6 flex justify-center">
               <a href="#shop" className="btn-primary">
@@ -220,7 +236,11 @@ export default async function Story() {
           </div>
         </section>
 
-        <section id="shop" className="py-14" style={{ backgroundColor: "var(--brand-navy)" }}>
+        <section
+          id="shop"
+          className="py-14"
+          style={{ backgroundColor: "var(--brand-navy)" }}
+        >
           <div className="mx-auto max-w-6xl px-4">
             <div className="flex items-end justify-between gap-4">
               <div>
@@ -279,7 +299,12 @@ export default async function Story() {
                           )}
                         </div>
                         <div className="mt-2 text-sm text-slate-700">
-                          ${Math.round(parseFloat(product.priceRange.minVariantPrice.amount)).toString()}{" "}
+                          $
+                          {Math.round(
+                            parseFloat(
+                              product.priceRange.minVariantPrice.amount,
+                            ),
+                          ).toString()}{" "}
                           {product.priceRange.minVariantPrice.currencyCode}
                         </div>
                       </div>
@@ -291,7 +316,10 @@ export default async function Story() {
           </div>
         </section>
 
-        <section id="markets" className="border-y border-black/5 bg-white py-14">
+        <section
+          id="markets"
+          className="border-y border-black/5 bg-white py-14"
+        >
           <div className="mx-auto max-w-6xl px-4">
             <SectionHeading
               title="Find us at these Chicagoland Farmers Markets"

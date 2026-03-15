@@ -19,15 +19,23 @@ export function ShopPageClient({
   productCarouselInitialProducts = [],
 }: {
   promoBanner: string | null;
-  filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }>;
+  filterOptions: Array<{
+    value: string;
+    label: string;
+    insertAfterCategory?: string;
+  }>;
   collectionSections: CategorySectionBlockData[];
   /** Catch of the Day carousel block (from home page config). Rendered at bottom of shop page. */
   productCarouselBlock?: ShopProductCarouselBlock | null;
   /** Pre-fetched products for the carousel's first collection. */
   productCarouselInitialProducts?: ApiProductForCarousel[];
 }) {
-  const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>([]);
-  const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<string[]>([]);
+  const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>(
+    [],
+  );
+  const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<
+    string[]
+  >([]);
 
   const categoryOptions = collectionSections.map((s) => ({
     value: s.collectionHandle,
@@ -50,10 +58,11 @@ export function ShopPageClient({
     selectedCategoryHandles.length === 0
       ? collectionSections
       : collectionSections.filter((s) =>
-          selectedCategoryHandles.includes(s.collectionHandle)
+          selectedCategoryHandles.includes(s.collectionHandle),
         );
 
-  const hasSelection = selectedFilterValues.length > 0 || selectedCategoryHandles.length > 0;
+  const hasSelection =
+    selectedFilterValues.length > 0 || selectedCategoryHandles.length > 0;
   const clearAll = () => {
     setSelectedFilterValues([]);
     setSelectedCategoryHandles([]);

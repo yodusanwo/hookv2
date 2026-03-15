@@ -3,6 +3,7 @@
  * with circular photos, names, and roles. Layout: 5 per row (2 rows for 10 members).
  */
 import { urlFor } from "@/lib/sanityImage";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 
 type TeamMember = {
   _key?: string;
@@ -24,10 +25,13 @@ const WAVE_CLEARANCE_PADDING = "clamp(8rem, 16vw, 12rem)";
 export function TeamBiosSection({
   block,
   hasWaveAbove = false,
+  showBottomWave = false,
 }: {
   block: TeamBiosBlock;
   /** When true, adds top padding so the wave above isn't covered. */
   hasWaveAbove?: boolean;
+  /** When true, show VectorWavyNavyOurStory.svg wave at bottom (e.g. on /story page). */
+  showBottomWave?: boolean;
 }) {
   const title = (block.title ?? "OUR CREW").trim();
   const description = (block.description ?? "").trim();
@@ -36,7 +40,7 @@ export function TeamBiosSection({
   return (
     <section
       id="team-bios"
-      className="relative z-10 overflow-hidden py-14 md:py-16"
+      className={`relative z-10 overflow-hidden pt-14 md:pt-16 ${showBottomWave ? "pb-0" : "pb-14 md:pb-16"}`}
       style={{
         backgroundColor: block.backgroundColor ?? "#d4f2ff",
         ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
@@ -143,6 +147,17 @@ export function TeamBiosSection({
           </div>
         )}
       </div>
+
+      {showBottomWave && (
+        <div className="mt-auto w-full shrink-0 overflow-visible" style={{ marginTop: 60 }}>
+          <div className="wave-full-bleed mt-auto shrink-0">
+            <WaveDivider
+              navySrc="/VectorWavyNavyOurStory.svg"
+              navyOutline="top"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

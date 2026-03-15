@@ -239,11 +239,6 @@ export function PhotoGallerySection({
           </div>
           </>
         )}
-        {images.length > 9 && (
-          <p className="mt-4 text-center text-sm text-slate-500">
-            +{images.length - 9} more images (max 9 shown in grid)
-          </p>
-        )}
       </div>
     </section>
   );

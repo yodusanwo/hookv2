@@ -39,10 +39,16 @@ const LIGHT_TEXT_COLOR = "#1E1E1E";
 export function ExploreProductsSection({
   block,
   hideExploreProductsWave = false,
+  showTopWave = false,
+  hasWaveAbove = false,
 }: {
   block: ExploreProductsBlock;
   /** When true, the wave under this section is hidden (e.g. page-level override). */
   hideExploreProductsWave?: boolean;
+  /** When true, show the top wave above this section (e.g. on /story to match Our Crew → Explore transition). */
+  showTopWave?: boolean;
+  /** When true, section has no top padding so it sits right under the wave above (e.g. after Our Team with bottom wave). */
+  hasWaveAbove?: boolean;
 }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -81,12 +87,23 @@ export function ExploreProductsSection({
     };
   });
 
+  const noTopPadding = showTopWave || hasWaveAbove;
   return (
     <section
       id="shop"
-      className="relative z-20 overflow-visible pt-14 pb-0"
+      className={`relative z-20 overflow-visible pb-0 ${noTopPadding ? "pt-0" : "pt-14"}`}
       style={{ backgroundColor: block.backgroundColor ?? "#171730" }}
     >
+      {showTopWave && (
+        <div className="w-full shrink-0 overflow-visible">
+          <div className="wave-full-bleed shrink-0" style={{ transform: "scaleY(-1)" }}>
+            <WaveDivider
+              navySrc="/VectorWavyNavy.svg"
+              wrapperClassName="-mb-px [transform:scaleX(-1)] bg-[#D4F2FF]"
+            />
+          </div>
+        </div>
+      )}
       <div className="mx-auto w-full max-w-[1100px] px-4">
         <SectionHeading
           title={title}
