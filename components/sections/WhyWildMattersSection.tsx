@@ -88,7 +88,7 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
             )}
           </div>
 
-          {/* Right: points */}
+          {/* Right: points + Learn More CTA */}
           <div className="flex flex-col gap-8">
             {points.map((point, idx) => {
               let iconUrl: string | null = null;
@@ -139,30 +139,29 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
                 </div>
               );
             })}
+            {block.cta?.label && block.cta?.href && (
+              <div className="flex justify-start">
+                <a
+                  href={safeHref(block.cta.href) ?? "#"}
+                  className="inline-flex items-center gap-2 hover:underline"
+                  style={{
+                    color: "#498CCB",
+                    fontFamily: "var(--font-inter), Inter, sans-serif",
+                    fontSize: 16,
+                    fontStyle: "normal",
+                    fontWeight: 500,
+                    lineHeight: "normal",
+                  }}
+                >
+                  {block.cta.label}
+                  <span className="text-base leading-none" aria-hidden>
+                    →
+                  </span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
-
-        {block.cta?.label && block.cta?.href && (
-          <div className="mt-10 flex justify-center">
-            <a
-              href={safeHref(block.cta.href) ?? "#"}
-              className="inline-flex items-center gap-2 hover:underline"
-              style={{
-                color: "#498CCB",
-                fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: "20px",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "150%",
-              }}
-            >
-              {block.cta.label}
-              <span className="text-xl leading-none" aria-hidden>
-                →
-              </span>
-            </a>
-          </div>
-        )}
       </div>
     </section>
   );

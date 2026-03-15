@@ -44,6 +44,7 @@ type CartLine = {
 type Cart = {
   id: string;
   checkoutUrl: string;
+  note?: string | null;
   lines: { edges: Array<{ node: CartLine }> };
   cost: { totalAmount: { amount: string; currencyCode: string } };
 };
@@ -55,6 +56,13 @@ export function CartPopup() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [updatingIds, setUpdatingIds] = React.useState<Set<string>>(new Set());
+  const [discountInput, setDiscountInput] = React.useState("");
+  const [discountLoading, setDiscountLoading] = React.useState(false);
+  const [discountError, setDiscountError] = React.useState<string | null>(null);
+  const [discountSuccess, setDiscountSuccess] = React.useState(false);
+  const [orderNote, setOrderNote] = React.useState("");
+  const [noteSaving, setNoteSaving] = React.useState(false);
+  const noteSyncedFromCart = React.useRef(false);
 
   const fetchCart = React.useCallback(async (id: string) => {
     const res = await fetch(`/api/cart?cartId=${encodeURIComponent(id)}`);
@@ -76,7 +84,21 @@ export function CartPopup() {
     const data = await res.json();
     setCart(data);
     setError(null);
+    setDiscountError(null);
+    setDiscountSuccess(false);
+    if (data.note != null) {
+      setOrderNote(data.note);
+      noteSyncedFromCart.current = true;
+    }
   }, []);
+
+  React.useEffect(() => {
+    if (cart?.note != null && !noteSyncedFromCart.current) {
+      setOrderNote(cart.note);
+      noteSyncedFromCart.current = true;
+    }
+    if (!cart) noteSyncedFromCart.current = false;
+  }, [cart?.note, cart]);
 
   React.useEffect(() => {
     const handler = () => {
@@ -190,6 +212,59 @@ export function CartPopup() {
 
   const lines = cart?.lines?.edges?.map((e) => e.node) ?? [];
 
+  const applyDiscount = React.useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      const code = discountInput.trim();
+      if (!code || !cartId || !cart) return;
+      setDiscountError(null);
+      setDiscountSuccess(false);
+      setDiscountLoading(true);
+      try {
+        const res = await fetch("/api/cart/discount", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cartId, discountCodes: [code] }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          setDiscountError(data?.error ?? "Could not apply code.");
+          return;
+        }
+        if (data.cart) {
+          setCart(data.cart);
+          setDiscountSuccess(true);
+          setDiscountInput("");
+          window.dispatchEvent(new CustomEvent("cart-updated"));
+        }
+      } catch {
+        setDiscountError("Network error. Please try again.");
+      } finally {
+        setDiscountLoading(false);
+      }
+    },
+    [cartId, cart, discountInput]
+  );
+
+  const saveNote = React.useCallback(
+    async (noteValue: string) => {
+      if (!cartId) return;
+      setNoteSaving(true);
+      try {
+        const res = await fetch("/api/cart/note", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cartId, note: noteValue }),
+        });
+        if (!res.ok) return;
+        window.dispatchEvent(new CustomEvent("cart-updated"));
+      } finally {
+        setNoteSaving(false);
+      }
+    },
+    [cartId]
+  );
+
   if (!isOpen) return null;
 
   return (
@@ -253,9 +328,11 @@ export function CartPopup() {
                 </p>
               )}
               {/* Table headers */}
-              <div className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-slate-200 pb-3 text-xs font-medium uppercase tracking-wide text-slate-500 max-sm:sr-only">
+              <div className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-slate-200 pb-3 text-xs font-medium uppercase tracking-wide text-slate-500 max-sm:sr-only overflow-visible">
                 <div>Product</div>
-                <div className="text-center">Quantity</div>
+                <div className="text-left" style={{ transform: "translateX(-90px)" }}>
+                  Quantity
+                </div>
                 <div className="text-right">Total</div>
               </div>
               {/* Line items */}
@@ -359,15 +436,69 @@ export function CartPopup() {
 
               {/* Summary + Check out */}
               {cart && (
-              <div className="mt-6 flex flex-col items-end border-t border-slate-200 pt-6">
+              <div className="mt-6 flex flex-col border-t border-slate-200 pt-6">
+                {/* Order special instructions */}
+                <div className="mb-4 w-full">
+                  <label
+                    htmlFor="cart-order-instructions"
+                    className="block text-left text-sm font-medium text-slate-900"
+                  >
+                    Order special instructions
+                  </label>
+                  <textarea
+                    id="cart-order-instructions"
+                    value={orderNote}
+                    onChange={(e) => setOrderNote(e.target.value)}
+                    onBlur={(e) => saveNote(e.target.value)}
+                    placeholder=""
+                    rows={3}
+                    disabled={noteSaving}
+                    className="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60"
+                    aria-label="Order special instructions"
+                  />
+                </div>
+                {/* Discount code / gift card — half width */}
+                <form
+                  onSubmit={applyDiscount}
+                  className="mb-4 flex w-full max-w-[50%] flex-wrap items-center gap-2 sm:flex-nowrap"
+                >
+                  <input
+                    type="text"
+                    value={discountInput}
+                    onChange={(e) => {
+                      setDiscountInput(e.target.value);
+                      setDiscountError(null);
+                    }}
+                    placeholder="Discount Code or Gift Card"
+                    disabled={discountLoading}
+                    className="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60"
+                    aria-label="Discount code or gift card"
+                  />
+                  <button
+                    type="submit"
+                    disabled={discountLoading || !discountInput.trim()}
+                    className="shrink-0 rounded-md px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                    style={{ background: "#069400" }}
+                  >
+                    {discountLoading ? "Applying…" : "Apply"}
+                  </button>
+                </form>
+                {discountError && (
+                  <p className="mb-2 text-sm text-red-600" role="alert">
+                    {discountError}
+                  </p>
+                )}
+                {discountSuccess && (
+                  <p className="mb-2 text-sm text-green-700" role="status">
+                    Discount applied.
+                  </p>
+                )}
+                <div className="flex flex-col items-end">
                 <p className="text-sm text-slate-600">Estimated total</p>
                 <p className="mt-1 text-lg font-semibold text-slate-900">
                   $
                   {parseFloat(cart.cost.totalAmount.amount).toFixed(2)}{" "}
                   {cart.cost.totalAmount.currencyCode}
-                </p>
-                <p className="mt-2 text-sm text-slate-500">
-                  Taxes, discounts and shipping calculated at checkout.
                 </p>
                 <a
                   href={cart.checkoutUrl}
@@ -382,6 +513,7 @@ export function CartPopup() {
                 >
                   Check Out
                 </a>
+                </div>
               </div>
               )}
             </>

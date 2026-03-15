@@ -25,6 +25,7 @@ type CartGetResponse = {
   cart: {
     id: string;
     checkoutUrl: string;
+    note: string | null;
     totalQuantity: number;
     lines: {
       edges: Array<{
@@ -59,6 +60,7 @@ const CART_QUERY = `
     cart(id: $cartId) {
       id
       checkoutUrl
+      note
       totalQuantity
       lines(first: 100) {
         edges {

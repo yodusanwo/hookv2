@@ -254,9 +254,11 @@ export default function CartPage() {
         )}
 
         {/* Table headers */}
-        <div className="mt-10 grid grid-cols-[1fr_auto_auto] gap-4 border-b border-slate-200 pb-3 text-xs font-medium uppercase tracking-wide text-slate-500 max-sm:sr-only">
+        <div className="mt-10 grid grid-cols-[1fr_auto_auto] gap-4 border-b border-slate-200 pb-3 text-xs font-medium uppercase tracking-wide text-slate-500 max-sm:sr-only overflow-visible">
           <div>Product</div>
-          <div className="text-center">Quantity</div>
+          <div className="text-left" style={{ transform: "translateX(-90px)" }}>
+            Quantity
+          </div>
           <div className="text-right">Total</div>
         </div>
 
@@ -373,9 +375,6 @@ export default function CartPage() {
             $
             {parseFloat(cart.cost.totalAmount.amount).toFixed(2)}{" "}
             {cart.cost.totalAmount.currencyCode}
-          </p>
-          <p className="mt-2 text-sm text-slate-500">
-            Taxes, discounts and shipping calculated at checkout.
           </p>
           <a
             href={cart.checkoutUrl}

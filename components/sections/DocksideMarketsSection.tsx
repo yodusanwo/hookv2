@@ -52,7 +52,7 @@ export function DocksideMarketsSection({
         paddingTop: "clamp(9rem, 18vw, 13.5rem)",
       }}
     >
-      <div className="mx-auto flex w-full flex-col px-4">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col px-4">
         <SectionHeading
           title={title}
           description={description || undefined}

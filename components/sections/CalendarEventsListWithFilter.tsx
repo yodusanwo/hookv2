@@ -65,7 +65,7 @@ export function CalendarEventsListWithFilter({
         {showAllUrl && (
           <Link
             href={safeHref(showAllUrl) ?? "#"}
-            className="mt-8 inline-flex items-center gap-1.5 font-medium hover:opacity-90"
+            className="mt-8 ml-4 inline-flex items-center gap-1.5 font-medium hover:opacity-90"
             style={{
               color: "#498CCB",
               fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -191,7 +191,7 @@ export function CalendarEventsListWithFilter({
       {showAllUrl && (
         <Link
           href={safeHref(showAllUrl) ?? "#"}
-          className="mt-8 inline-flex items-center gap-1.5 font-medium hover:opacity-90"
+          className="mt-8 ml-4 inline-flex items-center gap-1.5 font-medium hover:opacity-90"
           style={{
             color: "#498CCB",
             fontFamily: "Inter, var(--font-inter), sans-serif",

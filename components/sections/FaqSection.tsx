@@ -57,6 +57,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
 
   const groups = groupFaqsByCategory(faqs);
   const bgColor = block.backgroundColor ?? "#f2f2f5";
+  const totalFaqCount = faqs.length;
   let flatIdx = 0;
 
   return (
@@ -86,21 +87,54 @@ export function FaqSection({ block }: { block: FaqBlock }) {
                 {group.items.map((faq) => {
                   const idx = flatIdx++;
                   const isOpen = openIdx === idx;
+                  const isLastFaq = idx === totalFaqCount - 1;
                   return (
                     <div
                       key={idx}
-                      className="rounded-xl border border-black/5 bg-white overflow-hidden"
+                      className="overflow-hidden max-w-[607px]"
+                      style={{
+                        backgroundColor: bgColor,
+                        borderTop: "1px solid #D1D5DB",
+                        ...(isLastFaq ? { borderBottom: "1px solid #D1D5DB" } : {}),
+                      }}
                     >
                       <button
                         type="button"
                         onClick={() => setOpenIdx(isOpen ? null : idx)}
-                        className="w-full px-6 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 flex justify-between items-center"
+                        className="w-full px-6 py-4 text-left hover:opacity-90 flex justify-between items-center"
+                        style={{
+                          color: "#1E1E1E",
+                          fontFamily: "var(--font-inter), Inter, sans-serif",
+                          fontSize: 16,
+                          fontStyle: "normal",
+                          fontWeight: 400,
+                          lineHeight: "normal",
+                        }}
                       >
                         {faq.question}
-                        <span className="text-slate-400">{isOpen ? "−" : "+"}</span>
+                        {isOpen ? (
+                          <span className="text-slate-400">−</span>
+                        ) : (
+                          <img
+                            src="/plus.svg"
+                            alt=""
+                            aria-hidden
+                            className="h-5 w-5 shrink-0 text-slate-400"
+                          />
+                        )}
                       </button>
                       {isOpen && faq.answer && (
-                        <div className="border-t border-black/5 px-6 py-4 text-sm text-slate-700">
+                        <div
+                          className="border-t border-black/5 px-6 py-4"
+                          style={{
+                            color: "#1E1E1E",
+                            fontFamily: "var(--font-inter), Inter, sans-serif",
+                            fontSize: 16,
+                            fontStyle: "normal",
+                            fontWeight: 400,
+                            lineHeight: "normal",
+                          }}
+                        >
                           {faq.answer}
                         </div>
                       )}
@@ -126,7 +160,12 @@ export function FaqSection({ block }: { block: FaqBlock }) {
               }}
             >
               Show More
-              <span className="text-xl leading-none" aria-hidden>›</span>
+              <img
+                src="/trending_flat_50dp_000000_FILL0_wght200_GRAD0_opsz48%201.svg"
+                alt=""
+                aria-hidden
+                className="h-5 w-auto shrink-0"
+              />
             </a>
           </div>
         )}
