@@ -150,6 +150,12 @@ export const siteSettings = defineType({
               title: "Value",
               description: "Must match Shopify product type (e.g. Salmon, Seafood). Case-sensitive unless you normalize in code.",
             },
+            {
+              name: "insertAfterCategory",
+              type: "string",
+              title: "Show next to category",
+              description: "Optional. Enter a collection handle (e.g. pet-treats) to show this filter pill immediately after that category pill. Leave blank to show with other filters at the start.",
+            },
           ],
           preview: {
             select: { label: "label" },

@@ -38,12 +38,16 @@ function mapApiProductToCard(
 
 function matchesProductTypeFilter(
   productType: string | null | undefined,
-  selectedValues: string[]
+  selectedValues: string[],
+  commaSeparated: boolean
 ): boolean {
   if (selectedValues.length === 0) return true;
   if (!productType || typeof productType !== "string") return false;
-  const normalized = productType.trim().toLowerCase();
-  return selectedValues.some((v) => v.trim().toLowerCase() === normalized);
+  const values = commaSeparated
+    ? productType.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)
+    : [productType.trim().toLowerCase()];
+  const selected = selectedValues.map((v) => v.trim().toLowerCase());
+  return values.some((v) => selected.includes(v));
 }
 
 export function CatchOfTheDayGrid({
@@ -51,6 +55,7 @@ export function CatchOfTheDayGrid({
   initialProducts = [],
   selectedProductTypeFilter = [],
   hideCollectionTabs = false,
+  matchProductTypesAsCommaSeparated = false,
 }: {
   filterCollections: FilterItem[];
   /** Pre-fetched products for the first collection (avoids "Loading products…" on hard refresh). */
@@ -59,6 +64,8 @@ export function CatchOfTheDayGrid({
   selectedProductTypeFilter?: string[];
   /** When true, hide the Seafood / Subscription Box / etc. tabs and only show the first collection (e.g. on /shop page). */
   hideCollectionTabs?: boolean;
+  /** When true (shop page only), product type / filterValue is treated as comma-separated (e.g. "Boxes, Salmon, Sablefish"). */
+  matchProductTypesAsCommaSeparated?: boolean;
 }) {
   const collections = filterCollections ?? [];
   const effectiveCollections = hideCollectionTabs && collections.length > 0
@@ -150,7 +157,11 @@ export function CatchOfTheDayGrid({
     if (!raw?.length) return products;
     const filtered = raw
       .filter((p) =>
-        matchesProductTypeFilter(p.filterValue ?? p.productType, selectedProductTypeFilter)
+        matchesProductTypeFilter(
+          p.filterValue ?? p.productType,
+          selectedProductTypeFilter,
+          matchProductTypesAsCommaSeparated
+        )
       )
       .map(mapApiProductToCard);
     return filtered;

@@ -22,7 +22,7 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   promoBanner,
   navLinks[] { label, href },
   shopPageCollectionSections[] { title, description, collectionHandle, layout, blendWhiteWithBackground },
-  shopFilterOptions[] { label, value },
+  shopFilterOptions[] { label, value, insertAfterCategory },
   freeShippingMessage,
   estimatedDeliveryProcessingDays,
   estimatedDeliveryTransitDays,

@@ -29,8 +29,11 @@ const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
 
 export async function CatchOfTheDaySection({
   block,
+  hideCollectionTabs = false,
 }: {
   block: CatchOfTheDayBlock;
+  /** When true, hide the Seafood / Subscription Box / etc. tabs (e.g. on /shop page). */
+  hideCollectionTabs?: boolean;
 }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -71,6 +74,7 @@ export async function CatchOfTheDaySection({
       <CatchOfTheDayGrid
         filterCollections={filterCollections}
         initialProducts={initialProducts}
+        hideCollectionTabs={hideCollectionTabs}
       />
     </section>
   );

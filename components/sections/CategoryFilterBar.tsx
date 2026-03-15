@@ -13,20 +13,67 @@ const INACTIVE_BG = "var(--Blue-Inactive-Button, rgba(73, 140, 203, 0.25))";
 const CLEAR_LINK_COLOR = "#498CCB";
 const SECTION_ID_PREFIX = "shop-section-";
 
+type PillItem =
+  | { type: "filter"; value: string; label: string }
+  | { type: "category"; value: string; label: string };
+
+function buildPillOrder(
+  filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }>,
+  categoryOptions: Array<{ value: string; label: string }>
+): PillItem[] {
+  const defaultFilters = filterOptions.filter((f) => !(f.insertAfterCategory ?? "").trim());
+  const positionedFilters = filterOptions.filter((f) => (f.insertAfterCategory ?? "").trim());
+  const result: PillItem[] = [];
+  for (const f of defaultFilters) {
+    result.push({ type: "filter", value: f.value, label: f.label });
+  }
+  const placedFilterValues = new Set<string>();
+  for (const cat of categoryOptions) {
+    result.push({ type: "category", value: cat.value, label: cat.label });
+    for (const f of positionedFilters) {
+      if ((f.insertAfterCategory ?? "").trim().toLowerCase() === cat.value.toLowerCase()) {
+        result.push({ type: "filter", value: f.value, label: f.label });
+        placedFilterValues.add(f.value);
+      }
+    }
+  }
+  for (const f of positionedFilters) {
+    if (!placedFilterValues.has(f.value)) {
+      result.push({ type: "filter", value: f.value, label: f.label });
+    }
+  }
+  return result;
+}
+
 export function CategoryFilterBar({
   filterOptions,
   selectedValues,
   onChange,
   categoryOptions = [],
+  selectedCategoryHandles = [],
+  onCategoryClick,
+  hasSelection,
+  onClearAll,
 }: {
-  filterOptions: Array<{ value: string; label: string }>;
+  filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }>;
   /** Multiple selection: array of selected productType values. Empty = no filter. */
   selectedValues: string[];
   onChange: (values: string[]) => void;
-  /** Category/section pills (e.g. Seafood, Subscription Box). Click scrolls to that section. */
+  /** Category/section pills (e.g. Seafood, Subscription Box). Click scrolls + filters to that section. */
   categoryOptions?: Array<{ value: string; label: string }>;
+  /** Which categories are selected (limits visible sections). Empty = show all. */
+  selectedCategoryHandles?: string[];
+  /** Called when a category pill is clicked (scroll + toggle section filter). */
+  onCategoryClick?: (handle: string) => void;
+  /** Whether any filter or category is selected. When false, onClearAll not used. */
+  hasSelection?: boolean;
+  /** Called when Clear all is clicked. */
+  onClearAll?: () => void;
 }) {
-  const hasSelection = selectedValues.length > 0;
+  const showClear =
+    (hasSelection ?? (selectedValues.length > 0 || selectedCategoryHandles.length > 0)) &&
+    Boolean(onClearAll);
+  const pills = buildPillOrder(filterOptions, categoryOptions);
 
   const toggle = (value: string) => {
     if (selectedValues.includes(value)) {
@@ -36,9 +83,13 @@ export function CategoryFilterBar({
     }
   };
 
-  const scrollToSection = (value: string) => {
-    const el = document.getElementById(`${SECTION_ID_PREFIX}${value}`);
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const handleCategoryClick = (value: string) => {
+    if (onCategoryClick) {
+      onCategoryClick(value);
+    } else {
+      const el = document.getElementById(`${SECTION_ID_PREFIX}${value}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
@@ -59,10 +110,10 @@ export function CategoryFilterBar({
           >
             Filter by category
           </h2>
-          {hasSelection && (
+          {showClear && (
             <button
               type="button"
-              onClick={() => onChange([])}
+              onClick={onClearAll ?? (() => onChange([]))}
               className="bg-transparent border-none cursor-pointer p-0 text-base font-medium underline underline-offset-2 hover:no-underline text-left self-start"
               style={{
                 color: CLEAR_LINK_COLOR,
@@ -74,43 +125,41 @@ export function CategoryFilterBar({
           )}
         </div>
 
-        {/* Right: All pills (product types + categories) */}
+        {/* Right: All pills (product types + categories, interleaved by insertAfterCategory) */}
         <div className="flex flex-wrap gap-2 flex-1">
-          {filterOptions.map(({ value, label }) => {
-            const isSelected = selectedValues.includes(value);
-            return (
+          {pills.map((item) =>
+            item.type === "filter" ? (
               <button
-                key={`filter-${value}`}
+                key={`filter-${item.value}`}
                 type="button"
-                onClick={() => toggle(value)}
+                onClick={() => toggle(item.value)}
                 className={FILTER_BUTTON_BASE}
                 style={{
                   ...FILTER_BUTTON_LAYOUT,
-                  backgroundColor: isSelected ? ACTIVE_BG : INACTIVE_BG,
-                  color: isSelected ? "#fff" : "#1e3a5f",
+                  backgroundColor: selectedValues.includes(item.value) ? ACTIVE_BG : INACTIVE_BG,
+                  color: selectedValues.includes(item.value) ? "#fff" : "#1e3a5f",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
                 }}
               >
-                {label}
+                {item.label}
               </button>
-            );
-          })}
-          {categoryOptions.map(({ value, label }) => (
-            <button
-              key={`cat-${value}`}
-              type="button"
-              onClick={() => scrollToSection(value)}
-              className={FILTER_BUTTON_BASE}
-              style={{
-                ...FILTER_BUTTON_LAYOUT,
-                backgroundColor: INACTIVE_BG,
-                color: "#1e3a5f",
-                fontFamily: "Inter, var(--font-inter), sans-serif",
-              }}
-            >
-              {label}
-            </button>
-          ))}
+            ) : (
+              <button
+                key={`cat-${item.value}`}
+                type="button"
+                onClick={() => handleCategoryClick(item.value)}
+                className={FILTER_BUTTON_BASE}
+                style={{
+                  ...FILTER_BUTTON_LAYOUT,
+                  backgroundColor: selectedCategoryHandles.includes(item.value) ? ACTIVE_BG : INACTIVE_BG,
+                  color: selectedCategoryHandles.includes(item.value) ? "#fff" : "#1e3a5f",
+                  fontFamily: "Inter, var(--font-inter), sans-serif",
+                }}
+              >
+                {item.label}
+              </button>
+            )
+          )}
         </div>
       </div>
     </section>

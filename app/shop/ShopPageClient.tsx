@@ -10,12 +10,42 @@ export function ShopPageClient({
   promoBanner,
   filterOptions,
   collectionSections,
+  productCarousel,
 }: {
   promoBanner: string | null;
-  filterOptions: Array<{ value: string; label: string }>;
+  filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }>;
   collectionSections: CategorySectionBlockData[];
+  /** Product Carousel (Catch of the Day) - rendered between filter bar and promo banner. */
+  productCarousel?: React.ReactNode;
 }) {
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>([]);
+  const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<string[]>([]);
+
+  const categoryOptions = collectionSections.map((s) => ({
+    value: s.collectionHandle,
+    label: s.title.replace(/\s+/g, " ").trim() || s.collectionHandle,
+  }));
+
+  const toggleCategory = (handle: string) => {
+    setSelectedCategoryHandles((prev) =>
+      prev.includes(handle) ? prev.filter((h) => h !== handle) : [...prev, handle]
+    );
+    const el = document.getElementById(`shop-section-${handle}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const visibleSections =
+    selectedCategoryHandles.length === 0
+      ? collectionSections
+      : collectionSections.filter((s) =>
+          selectedCategoryHandles.includes(s.collectionHandle)
+        );
+
+  const hasSelection = selectedFilterValues.length > 0 || selectedCategoryHandles.length > 0;
+  const clearAll = () => {
+    setSelectedFilterValues([]);
+    setSelectedCategoryHandles([]);
+  };
 
   return (
     <main
@@ -26,15 +56,18 @@ export function ShopPageClient({
         filterOptions={filterOptions}
         selectedValues={selectedFilterValues}
         onChange={setSelectedFilterValues}
-        categoryOptions={collectionSections.map((s) => ({
-          value: s.collectionHandle,
-          label: s.title.replace(/\s+/g, " ").trim() || s.collectionHandle,
-        }))}
+        categoryOptions={categoryOptions}
+        selectedCategoryHandles={selectedCategoryHandles}
+        onCategoryClick={toggleCategory}
+        hasSelection={hasSelection}
+        onClearAll={clearAll}
       />
+
+      {productCarousel}
 
       {promoBanner ? <PromoBanner text={promoBanner} /> : null}
 
-      {collectionSections.map((block, idx) => (
+      {visibleSections.map((block, idx) => (
         <CategorySectionBlock
           key={`${block.collectionHandle}-${idx}`}
           block={block}

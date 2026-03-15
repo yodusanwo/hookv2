@@ -36,8 +36,12 @@ function mapApiToCard(p: ApiProductForCarousel): CatchOfTheDayProductCardProduct
 function matchesFilter(productType: string | null | undefined, selectedValues: string[]): boolean {
   if (selectedValues.length === 0) return true;
   if (!productType || typeof productType !== "string") return false;
-  const normalized = productType.trim().toLowerCase();
-  return selectedValues.some((v) => v.trim().toLowerCase() === normalized);
+  const values = productType
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  const selected = selectedValues.map((v) => v.trim().toLowerCase());
+  return values.some((v) => selected.includes(v));
 }
 
 export type CategorySectionBlockData = {
