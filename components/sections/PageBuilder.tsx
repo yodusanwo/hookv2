@@ -129,6 +129,7 @@ export function PageBuilder({
           case "exploreProductsBlock": {
             const prevBlock = idx > 0 ? items[idx - 1] : null;
             const prevIsTeamBios = prevBlock?._type === "teamBiosBlock";
+            const teamBiosShowsBottomWave = ourStoryVariant === "story-page";
             return (
               <ExploreProductsSection
                 key={key}
@@ -137,7 +138,7 @@ export function PageBuilder({
                 }
                 hideExploreProductsWave={hideExploreProductsWave}
                 showTopWave={showExploreProductsTopWave}
-                hasWaveAbove={!!prevIsTeamBios}
+                hasWaveAbove={!!(prevIsTeamBios && teamBiosShowsBottomWave)}
               />
             );
           }

@@ -59,6 +59,7 @@ export const contactBlock = defineType({
         title: "Contact",
         subtitle: blockTitle ? `${blockTitle}${email ? ` · ${email}` : ""}` : undefined,
         blockDescription,
+        email,
       };
     },
   },
