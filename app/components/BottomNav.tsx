@@ -7,7 +7,7 @@ import { safeHref } from "@/lib/urlValidation";
 
 const FALLBACK_NAV = [
   { href: "/", label: "Home" },
-  { href: "#shop", label: "Shop" },
+  { href: "/shop", label: "Shop" },
   { href: "#calendar", label: "Calendar" },
   { href: "#contact", label: "Contact" },
 ];
@@ -21,7 +21,7 @@ export function BottomNav({
 
   const items = [
     { href: safeHref(nav[0]?.href) || "/", label: nav[0]?.label ?? "Home", icon: "home" as const },
-    { href: safeHref(nav[1]?.href) || "#shop", label: nav[1]?.label ?? "Shop", icon: "search" as const },
+    { href: safeHref(nav[1]?.href) || "/shop", label: nav[1]?.label ?? "Shop", icon: "search" as const },
     { href: "/cart", label: "Cart", icon: "cart" as const },
     { href: safeHref(nav[3]?.href) || "#contact", label: nav[3]?.label ?? "Account", icon: "user" as const },
   ];

@@ -8,6 +8,13 @@ export const recipe = defineType({
   fields: [
     defineField({ name: "title", type: "string", title: "Recipe title", validation: (Rule) => Rule.required() }),
     defineField({
+      name: "sortOrder",
+      type: "number",
+      title: "Sort order",
+      description: "Order on the /recipes page. Lower numbers appear first. Leave empty to sort by title.",
+      initialValue: 0,
+    }),
+    defineField({
       name: "slug",
       type: "slug",
       title: "Slug",

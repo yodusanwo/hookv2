@@ -2,7 +2,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PromoBanner } from "@/components/PromoBanner";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { getEventsFromSheet } from "@/lib/googleSheets";
-import { client, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity";
+import { client, HOMEPAGE_QUERY, SITE_SETTINGS_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
 import { shopifyFetch } from "@/lib/shopify";
 import Link from "next/link";
 import { Carousel } from "./components/Carousel";
@@ -88,15 +88,20 @@ export default async function Home() {
 
     let sanityPage: { sections?: unknown[] } | null = null;
     let promoBanner: string | null = null;
+    let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
 
     if (hasSanity) {
       try {
-        [sanityPage, promoBanner] = await Promise.all([
+        const [homePage, settings, canonicalExplore] = await Promise.all([
           client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
           client
             .fetch<{ promoBanner?: string } | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } })
             .then((s) => s?.promoBanner ?? null),
+          client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
         ]);
+        sanityPage = homePage;
+        promoBanner = settings;
+        canonicalExploreProductsBlock = canonicalExplore ?? null;
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
@@ -116,6 +121,7 @@ export default async function Home() {
           <PageBuilder
             sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
             promoBanner={promoBanner}
+            canonicalExploreProductsBlock={canonicalExploreProductsBlock}
           />
         </main>
       );

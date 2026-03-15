@@ -42,6 +42,18 @@ type PageSection =
   | { _type: "faqBlock"; _key?: string; [key: string]: unknown }
   | { _type: "whyWildMattersBlock"; _key?: string; [key: string]: unknown };
 
+/** Home page Explore Products block shape; when provided, any exploreProductsBlock on this page uses this content (title, description, categories, images, links) so only the home page needs to be edited in Sanity. */
+export type CanonicalExploreProductsBlock = {
+  _type?: string;
+  _key?: string;
+  title?: string | null;
+  description?: string | null;
+  backgroundColor?: string | null;
+  hideWave?: boolean | null;
+  filterCollections?: Array<{ label?: string | null; collectionHandle?: string | null; image?: { _ref?: string; asset?: { _ref?: string } } }> | null;
+  [key: string]: unknown;
+};
+
 export function PageBuilder({
   sections,
   promoBanner,
@@ -53,6 +65,7 @@ export function PageBuilder({
   hideOurStoryCta,
   hideOurStoryWave,
   ourStoryVariant,
+  canonicalExploreProductsBlock,
 }: {
   sections?: PageSection[];
   promoBanner?: string | null;
@@ -72,6 +85,8 @@ export function PageBuilder({
   hideOurStoryWave?: boolean;
   /** "story-page" = dark bg + white text on /story only. */
   ourStoryVariant?: "default" | "story-page";
+  /** When set, any Explore Our Products block on this page uses this content (from home page) so description, categories, images and /shop links match the home page. Page-level block can still override backgroundColor and hideWave. */
+  canonicalExploreProductsBlock?: CanonicalExploreProductsBlock | null;
 }) {
   const items = sections ?? [];
 
@@ -130,12 +145,19 @@ export function PageBuilder({
             const prevBlock = idx > 0 ? items[idx - 1] : null;
             const prevIsTeamBios = prevBlock?._type === "teamBiosBlock";
             const teamBiosShowsBottomWave = ourStoryVariant === "story-page";
+            // Use home page content (description, categories, images, /shop links) when provided; page block can override backgroundColor and hideWave.
+            const pageBlock = block as { backgroundColor?: string; hideWave?: boolean; [key: string]: unknown };
+            const exploreBlock = canonicalExploreProductsBlock
+              ? {
+                  ...canonicalExploreProductsBlock,
+                  backgroundColor: pageBlock.backgroundColor ?? canonicalExploreProductsBlock.backgroundColor,
+                  hideWave: pageBlock.hideWave ?? canonicalExploreProductsBlock.hideWave,
+                }
+              : pageBlock;
             return (
               <ExploreProductsSection
                 key={key}
-                block={
-                  block as Parameters<typeof ExploreProductsSection>[0]["block"]
-                }
+                block={exploreBlock as Parameters<typeof ExploreProductsSection>[0]["block"]}
                 hideExploreProductsWave={hideExploreProductsWave}
                 showTopWave={showExploreProductsTopWave}
                 hasWaveAbove={!!(prevIsTeamBios && teamBiosShowsBottomWave)}

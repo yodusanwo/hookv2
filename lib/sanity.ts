@@ -141,8 +141,8 @@ export const RECIPES_PAGE_CONTENT_QUERY = `*[_type == "page" && slug.current == 
   backgroundColor
 }`;
 
-/** GROQ query for all recipes (for index page). Includes ingredient category slugs for filter (from filterCategory reference). */
-export const RECIPES_LIST_QUERY = `*[_type == "recipe"] | order(title asc) {
+/** GROQ query for all recipes (for index page). Ordered by sortOrder then title. Includes ingredient category slugs for filter. */
+export const RECIPES_LIST_QUERY = `*[_type == "recipe"] | order(coalesce(sortOrder, 9999) asc, title asc) {
   _id,
   title,
   "slug": slug.current,

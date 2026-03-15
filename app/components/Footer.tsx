@@ -38,10 +38,12 @@ export function Footer({
   const waveBg =
     footerWaveBackgroundColor ??
     (pathname === "/shop" ? SHOP_PAGE_WAVE_BG : pathname === "/contact" ? CONTACT_PAGE_FOOTER_BG : undefined);
+  const isRecipesPage = pathname === "/recipes" || pathname?.startsWith("/recipes/");
+  const waveStripPadding = isRecipesPage ? "pt-0" : "pt-6 sm:pt-8";
   return (
     <footer id="contact" className="relative overflow-visible" style={{ backgroundColor: "var(--footer-bg)" }}>
-      {/* Wave above footer content — pt for drop-shadow clearance on mobile; color from Sanity or /contact fallback */}
-      <div className="w-full pt-6 sm:pt-8 section-bg-light" aria-hidden style={waveBg ? { backgroundColor: waveBg } : undefined}>
+      {/* Wave above footer content — pt for drop-shadow clearance on mobile; minimal on /recipes to avoid gap */}
+      <div className={`w-full section-bg-light ${waveStripPadding}`} aria-hidden style={waveBg ? { backgroundColor: waveBg } : undefined}>
         <img
           src="/wavefooter.png"
           alt=""
@@ -107,7 +109,7 @@ export function Footer({
           <div className="">
             <ul className="flex flex-col gap-2">
               <li>
-                <a href="#shop" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="/shop" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Shop
                 </a>
               </li>

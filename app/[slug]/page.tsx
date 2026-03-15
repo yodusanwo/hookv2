@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { getEventsFromSheet } from "@/lib/googleSheets";
-import { client, PAGE_BY_SLUG_QUERY } from "@/lib/sanity";
+import { client, PAGE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
 
 /** Slugs that are reserved by other app routes (e.g. /contact, /story) or reserved for future use. */
 const RESERVED_SLUGS = new Set([
@@ -62,12 +62,16 @@ export default async function DynamicPage({
   }
 
   let page: { title?: string; sections?: unknown[] } | null = null;
+  let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
   try {
-    page = await client.fetch<{ title?: string; sections?: unknown[] } | null>(
-      PAGE_BY_SLUG_QUERY,
-      { slug },
-      { next: { revalidate: 60 } }
-    );
+    [page, canonicalExploreProductsBlock] = await Promise.all([
+      client.fetch<{ title?: string; sections?: unknown[] } | null>(
+        PAGE_BY_SLUG_QUERY,
+        { slug },
+        { next: { revalidate: 60 } }
+      ),
+      client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+    ]);
   } catch {
     notFound();
   }
@@ -112,6 +116,7 @@ export default async function DynamicPage({
         sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
         promoBanner={null}
         pageSlug={slug}
+        canonicalExploreProductsBlock={canonicalExploreProductsBlock}
       />
     </main>
   );

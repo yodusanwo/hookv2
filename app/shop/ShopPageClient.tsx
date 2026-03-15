@@ -17,6 +17,7 @@ export function ShopPageClient({
   collectionSections,
   productCarouselBlock,
   productCarouselInitialProducts = [],
+  initialCategoryFromUrl = null,
 }: {
   promoBanner: string | null;
   filterOptions: Array<{
@@ -29,18 +30,25 @@ export function ShopPageClient({
   productCarouselBlock?: ShopProductCarouselBlock | null;
   /** Pre-fetched products for the carousel's first collection. */
   productCarouselInitialProducts?: ApiProductForCarousel[];
+  /** When set (e.g. from /shop?category=seafood), preselect this category so only that section is shown. */
+  initialCategoryFromUrl?: string | null;
 }) {
+  const categoryOptions = collectionSections.map((s) => ({
+    value: s.collectionHandle,
+    label: s.title.replace(/\s+/g, " ").trim() || s.collectionHandle,
+  }));
+  const validCategoryHandles = new Set(categoryOptions.map((o) => o.value));
+  const initialCategory =
+    initialCategoryFromUrl && validCategoryHandles.has(initialCategoryFromUrl)
+      ? initialCategoryFromUrl
+      : null;
+
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>(
     [],
   );
   const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<
     string[]
-  >([]);
-
-  const categoryOptions = collectionSections.map((s) => ({
-    value: s.collectionHandle,
-    label: s.title.replace(/\s+/g, " ").trim() || s.collectionHandle,
-  }));
+  >(initialCategory ? [initialCategory] : []);
 
   const handleFilterChange = (values: string[]) => {
     setSelectedFilterValues(values);

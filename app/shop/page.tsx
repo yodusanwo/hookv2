@@ -36,7 +36,14 @@ const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
-export default async function ShopPage() {
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string }> | { category?: string };
+}) {
+  const params = searchParams instanceof Promise ? await searchParams : searchParams ?? {};
+  const initialCategory = typeof params.category === "string" ? params.category.trim() : null;
+
   let promoBanner: string | null = null;
   let filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }> = [];
   let collectionSections: CategorySectionBlockData[] = [];
@@ -100,6 +107,7 @@ export default async function ShopPage() {
       collectionSections={collectionSections}
       productCarouselBlock={productCarouselBlock}
       productCarouselInitialProducts={productCarouselInitialProducts}
+      initialCategoryFromUrl={initialCategory}
     />
   );
 }

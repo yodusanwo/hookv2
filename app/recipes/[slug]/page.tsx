@@ -243,23 +243,67 @@ export default async function RecipePage({
             >
               Directions
             </h2>
-            <ol className="list-decimal list-inside space-y-4 pl-0">
-              {directions.map((d, idx) => (
-                <li
-                  key={idx}
-                  className="pl-2"
-                  style={{
-                    color: "var(--Text-Color, #1E1E1E)",
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: "16px",
-                    fontWeight: 400,
-                    lineHeight: "150%",
-                  }}
-                >
-                  {(d.step ?? "").trim() || "—"}
-                </li>
-              ))}
-            </ol>
+            {directions.length > 5 ? (() => {
+              const leftCount = Math.ceil(directions.length / 2);
+              const leftSteps = directions.slice(0, leftCount);
+              const rightSteps = directions.slice(leftCount);
+              return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <ol className="list-decimal list-inside space-y-4 pl-0" start={1}>
+                  {leftSteps.map((d, idx) => (
+                    <li
+                      key={idx}
+                      className="pl-2"
+                      style={{
+                        color: "var(--Text-Color, #1E1E1E)",
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "16px",
+                        fontWeight: 400,
+                        lineHeight: "150%",
+                      }}
+                    >
+                      {(d.step ?? "").trim() || "—"}
+                    </li>
+                  ))}
+                </ol>
+                <ol className="list-decimal list-inside space-y-4 pl-0" start={leftCount + 1}>
+                  {rightSteps.map((d, idx) => (
+                    <li
+                      key={idx}
+                      className="pl-2"
+                      style={{
+                        color: "var(--Text-Color, #1E1E1E)",
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "16px",
+                        fontWeight: 400,
+                        lineHeight: "150%",
+                      }}
+                    >
+                      {(d.step ?? "").trim() || "—"}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              );
+            })() : (
+              <ol className="list-decimal list-inside space-y-4 pl-0">
+                {directions.map((d, idx) => (
+                  <li
+                    key={idx}
+                    className="pl-2"
+                    style={{
+                      color: "var(--Text-Color, #1E1E1E)",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "16px",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                    }}
+                  >
+                    {(d.step ?? "").trim() || "—"}
+                  </li>
+                ))}
+              </ol>
+            )}
           </div>
         </section>
       )}

@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { client, RECIPES_LIST_QUERY, RECIPES_PAGE_CONTENT_QUERY, RECIPE_CATEGORIES_QUERY, PAGE_BY_SLUG_QUERY } from "@/lib/sanity";
+import { client, RECIPES_LIST_QUERY, RECIPES_PAGE_CONTENT_QUERY, RECIPE_CATEGORIES_QUERY, PAGE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { RecipesPageClient } from "./RecipesPageClient";
 
@@ -39,13 +38,15 @@ export default async function RecipesIndexPage() {
   let pageContent: RecipesPageContent = null;
   let categoryOptions: RecipeCategoryOption[] = [];
   let sanityPage: { sections?: unknown[] } | null = null;
+  let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
   if (client) {
     try {
-      [recipesRaw, pageContent, categoryOptions, sanityPage] = await Promise.all([
+      [recipesRaw, pageContent, categoryOptions, sanityPage, canonicalExploreProductsBlock] = await Promise.all([
         client.fetch<RecipeFromSanity[]>(RECIPES_LIST_QUERY),
         client.fetch<RecipesPageContent>(RECIPES_PAGE_CONTENT_QUERY),
         client.fetch<RecipeCategoryOption[]>(RECIPE_CATEGORIES_QUERY).then((list) => list ?? []),
         client.fetch<{ sections?: unknown[] } | null>(PAGE_BY_SLUG_QUERY, { slug: "recipes" }).then((p) => p ?? null),
+        client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
       ]);
     } catch {
       recipesRaw = [];
@@ -79,7 +80,7 @@ export default async function RecipesIndexPage() {
 
   return (
     <main
-        className="pt-[140px] pb-14 sm:pt-[170px] md:pt-[230px]"
+        className={`pt-[140px] sm:pt-[170px] md:pt-[230px] ${restSections.length > 0 ? "pb-0" : "pb-14"}`}
         style={{ backgroundColor: bgColor }}
       >
       <div className="w-full pb-10" style={{ backgroundColor: bgColor }}>
@@ -112,30 +113,13 @@ export default async function RecipesIndexPage() {
           {description}
         </p>
         <RecipesPageClient recipes={recipes} bgColor={bgColor} categoryOptions={categoryOptions} />
-        <div className="mt-10">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center no-underline font-medium transition-opacity hover:opacity-90"
-            style={{
-              width: 158,
-              height: 45,
-              padding: "11px 42px",
-              borderRadius: 20,
-              background: "var(--Blue-Inactive-Button, rgba(73, 140, 203, 0.25))",
-              color: "var(--brand-navy, #1e3a5f)",
-              fontFamily: "Inter, sans-serif",
-              fontSize: "16px",
-            }}
-          >
-            ← Back to home
-          </Link>
-        </div>
         </div>
       </div>
       {restSections.length > 0 && (
         <PageBuilder
           sections={restSections as Parameters<typeof PageBuilder>[0]["sections"]}
           promoBanner={null}
+          canonicalExploreProductsBlock={canonicalExploreProductsBlock}
         />
       )}
     </main>

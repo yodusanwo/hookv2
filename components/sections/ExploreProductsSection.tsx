@@ -30,7 +30,7 @@ const DEFAULT_DESCRIPTION =
   "Wild Alaskan seafood boxes, fillets, and specialty cuts ranging from sockeye and sablefish to halibut, cod, scallops, and even salmon heads are offered as premium, wild-caught options. All wild. All the time.";
 const DEFAULT_FILTER_COLLECTIONS: FilterCollection[] = [
   { label: "Seafood", collectionHandle: "seafood" },
-  { label: "Subscription Box", collectionHandle: "subscription-box" },
+  { label: "Smoked & Specialty", collectionHandle: "smoked-specialty" },
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
@@ -69,9 +69,10 @@ export function ExploreProductsSection({
         : DEFAULT_FILTER_COLLECTIONS;
 
   const categories = filterCollections.map((f) => {
-    const href = f.collectionHandle?.trim()
-      ? `/collections/${f.collectionHandle.trim()}`
-      : "#shop";
+    const handle = f.collectionHandle?.trim();
+    const href = handle
+      ? `/shop?category=${encodeURIComponent(handle)}`
+      : "/shop";
     let imageUrl: string | null = null;
     try {
       const img = urlFor(f.image);
