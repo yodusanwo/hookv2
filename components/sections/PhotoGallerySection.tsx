@@ -43,33 +43,43 @@ const CAROUSEL_SLIDES: [number, number][] = [
   [7, 2],
 ];
 
-export function PhotoGallerySection({ block }: { block: PhotoGalleryBlock }) {
+const WAVE_CLEARANCE_PADDING = "clamp(8rem, 16vw, 12rem)";
+
+export function PhotoGallerySection({
+  block,
+  hasWaveAbove = false,
+}: {
+  block: PhotoGalleryBlock;
+  /** When true, adds top padding so the wave above isn't covered. */
+  hasWaveAbove?: boolean;
+}) {
   const images = block.galleryImages ?? [];
-  const title = (block.title ?? "").trim();
+  const title = (block.title ?? "").trim() || "Gallery";
   const gridImages = images.slice(0, 9);
 
   return (
     <section
       id="photo-gallery"
       className="relative z-10 overflow-hidden py-12 md:py-14"
-      style={{ backgroundColor: block.backgroundColor ?? "#E6F7FF" }}
+      style={{
+        backgroundColor: block.backgroundColor ?? "#E6F7FF",
+        ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
+      }}
     >
       <div className="mx-auto w-full max-w-6xl px-4">
-        {title && (
-          <h2
-            className="text-center capitalize"
-            style={{
-              color: "var(--Text-Color, #1E1E1E)",
-              fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "48px",
-              fontStyle: "normal",
-              fontWeight: 300,
-              lineHeight: "normal",
-            }}
-          >
-            {title}
-          </h2>
-        )}
+        <h2
+          className="text-center capitalize"
+          style={{
+            color: "var(--Text-Color, #1E1E1E)",
+            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontSize: "48px",
+            fontStyle: "normal",
+            fontWeight: 300,
+            lineHeight: "normal",
+          }}
+        >
+          {title}
+        </h2>
         {gridImages.length > 0 && (
           <>
             {/* Mobile: carousel with stacked pairs */}

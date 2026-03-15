@@ -19,8 +19,16 @@ type TeamBiosBlock = {
 };
 
 const AVATAR_SIZE = 211; // Figma: 210.671px
+const WAVE_CLEARANCE_PADDING = "clamp(8rem, 16vw, 12rem)";
 
-export function TeamBiosSection({ block }: { block: TeamBiosBlock }) {
+export function TeamBiosSection({
+  block,
+  hasWaveAbove = false,
+}: {
+  block: TeamBiosBlock;
+  /** When true, adds top padding so the wave above isn't covered. */
+  hasWaveAbove?: boolean;
+}) {
   const title = (block.title ?? "OUR CREW").trim();
   const description = (block.description ?? "").trim();
   const members = block.teamMembers ?? [];
@@ -29,7 +37,10 @@ export function TeamBiosSection({ block }: { block: TeamBiosBlock }) {
     <section
       id="team-bios"
       className="relative z-10 overflow-hidden py-14 md:py-16"
-      style={{ backgroundColor: block.backgroundColor ?? "#d4f2ff" }}
+      style={{
+        backgroundColor: block.backgroundColor ?? "#d4f2ff",
+        ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
+      }}
     >
       <div className="mx-auto w-full max-w-6xl px-4">
         {/* Heading */}

@@ -626,10 +626,16 @@ export default async function ProductPage({
         </div>
       </section>
 
+      {/* Wave between You Might Also Like and Recipes */}
+      <ShopSectionWave />
+
       {/* Wild Flavor Starts Here — recipes promo, light blue */}
       <section
         className="px-4 py-12 md:py-16"
-        style={{ backgroundColor: LIGHT_BG }}
+        style={{
+          backgroundColor: LIGHT_BG,
+          paddingTop: "clamp(8rem, 16vw, 12rem)",
+        }}
       >
         <div className="mx-auto max-w-6xl">
           <h2 className="text-center text-xl font-semibold uppercase tracking-wide text-slate-900">

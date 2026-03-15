@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
+import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
 import { HeroSection } from "./HeroSection";
 import { CatchOfTheDaySection } from "./CatchOfTheDaySection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
@@ -145,20 +146,35 @@ export function PageBuilder({
                 block={block as Parameters<typeof OurStoryExtendedReversedSection>[0]["block"]}
               />
             );
-          case "photoGalleryBlock":
+          case "photoGalleryBlock": {
+            const prevBlock = idx > 0 ? items[idx - 1] : null;
+            const prevIsOurStoryExtended =
+              prevBlock &&
+              (prevBlock._type === "ourStoryExtendedBlock" ||
+                prevBlock._type === "ourStoryExtendedReversedBlock");
             return (
-              <PhotoGallerySection
-                key={key}
-                block={block as Parameters<typeof PhotoGallerySection>[0]["block"]}
-              />
+              <Fragment key={key}>
+                {prevIsOurStoryExtended && <ShopSectionWave />}
+                <PhotoGallerySection
+                  block={block as Parameters<typeof PhotoGallerySection>[0]["block"]}
+                  hasWaveAbove={!!prevIsOurStoryExtended}
+                />
+              </Fragment>
             );
-          case "teamBiosBlock":
+          }
+          case "teamBiosBlock": {
+            const prevBlock = idx > 0 ? items[idx - 1] : null;
+            const prevIsPhotoGallery = prevBlock?._type === "photoGalleryBlock";
             return (
-              <TeamBiosSection
-                key={key}
-                block={block as Parameters<typeof TeamBiosSection>[0]["block"]}
-              />
+              <Fragment key={key}>
+                {prevIsPhotoGallery && <ShopSectionWave />}
+                <TeamBiosSection
+                  block={block as Parameters<typeof TeamBiosSection>[0]["block"]}
+                  hasWaveAbove={!!prevIsPhotoGallery}
+                />
+              </Fragment>
             );
+          }
           case "contactBlock":
             return (
               <ContactSection
