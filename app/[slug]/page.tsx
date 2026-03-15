@@ -10,6 +10,7 @@ const RESERVED_SLUGS = new Set([
   "home",
   "shop",
   "recipes",
+  "basics",
   "collections",
   "cart",
   "products",

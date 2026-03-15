@@ -41,6 +41,7 @@ export function ExploreProductsSection({
   hideExploreProductsWave = false,
   showTopWave = false,
   hasWaveAbove = false,
+  bottomPadding,
 }: {
   block: ExploreProductsBlock;
   /** When true, the wave under this section is hidden (e.g. page-level override). */
@@ -49,6 +50,8 @@ export function ExploreProductsSection({
   showTopWave?: boolean;
   /** When true, section has no top padding so it sits right under the wave above (e.g. after Our Team with bottom wave). */
   hasWaveAbove?: boolean;
+  /** Optional bottom padding CSS value (e.g. to match Chicagoland Farmers Markets on /story). */
+  bottomPadding?: string;
 }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -92,8 +95,11 @@ export function ExploreProductsSection({
   return (
     <section
       id="shop"
-      className={`relative z-20 overflow-visible pb-0 ${noTopPadding ? "pt-0" : "pt-14"}`}
-      style={{ backgroundColor: block.backgroundColor ?? "#171730" }}
+      className={`relative z-20 overflow-visible ${noTopPadding ? "pt-0" : "pt-14"}`}
+      style={{
+        backgroundColor: block.backgroundColor ?? "#171730",
+        ...(bottomPadding ? { paddingBottom: bottomPadding } : {}),
+      }}
     >
       {showTopWave && (
         <div className="w-full shrink-0 overflow-visible">

@@ -53,8 +53,7 @@ export const PAGE_BY_SLUG_QUERY = `*[_type == "page" && slug.current == $slug][0
     image { asset-> },
     body,
     "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
-    "filterCollections": filterCollections[] { label, collectionHandle, image },
-    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
+    "filterCollections": filterCollections[] { label, collectionHandle, image }
   }
 }`;
 
@@ -86,8 +85,7 @@ export const STORY_PAGE_QUERY = `*[_type == "page" && slug.current == "story"][0
     image { asset-> },
     body,
     "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
-    "filterCollections": filterCollections[] { label, collectionHandle, image },
-    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
+    "filterCollections": filterCollections[] { label, collectionHandle, image }
   }
 }`;
 
@@ -107,8 +105,7 @@ export const HOMEPAGE_QUERY = `*[_type == "page" && slug.current == "home"][0] {
     image { asset-> },
     body,
     "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
-    "filterCollections": filterCollections[] { label, collectionHandle, image },
-    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
+    "filterCollections": filterCollections[] { label, collectionHandle, image }
   }
 }`;
 
@@ -139,6 +136,21 @@ export const RECIPES_PAGE_CONTENT_QUERY = `*[_type == "page" && slug.current == 
   title,
   description,
   backgroundColor
+}`;
+
+/** Title and description from the Sanity "Basics" page (first basicsBlock). Use for /basics page heading. */
+export const BASICS_PAGE_CONTENT_QUERY = `*[_type == "page" && slug.current == "basics"][0].sections[_type == "basicsBlock"][0] {
+  title,
+  description,
+  backgroundColor
+}`;
+
+/** All basics for the /basics index page. Ordered by sortOrder then title. */
+export const BASICS_LIST_QUERY = `*[_type == "basic"] | order(coalesce(sortOrder, 9999) asc, title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  "mainImage": image { asset-> }
 }`;
 
 /** GROQ query for all recipes (for index page). Ordered by sortOrder then title. Includes ingredient category slugs for filter. */
@@ -183,7 +195,6 @@ export const COLLECTION_PAGE_QUERY = `*[_type == "collectionPage" && collectionH
     image { asset-> },
     body,
     "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
-    "filterCollections": filterCollections[] { label, collectionHandle, image },
-    "items": items[] { label, url, logo { asset-> }, logoWidth, logoHeight, logoAspectRatio, logoScalePercent }
+    "filterCollections": filterCollections[] { label, collectionHandle, image }
   }
 }`;

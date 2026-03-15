@@ -136,6 +136,10 @@ export default async function Story() {
             }
             promoBanner={null}
             hideExploreProductsWave
+            exploreProductsBottomPadding="clamp(4.5rem, 9vw, 6.75rem)"
+            docksideMarketsTopPadding="clamp(4.5rem, 9vw, 6.75rem)"
+            docksideMarketsBottomPadding="clamp(4.5rem, 9vw, 6.75rem)"
+            docksideMarketsMinHeight={331}
             hideLocalFoodsCoopsWave
             localFoodsCoopsBottomPaddingClass="pb-[60px]"
             hideOurStoryTitle

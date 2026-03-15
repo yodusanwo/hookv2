@@ -20,6 +20,8 @@ import { upcomingEventsBlock } from "./blocks/upcomingEvents";
 import { localFoodsCoopsBlock } from "./blocks/localFoodsCoops";
 import { faqBlock } from "./blocks/faq";
 import { whyWildMattersBlock } from "./blocks/whyWildMatters";
+import { theBasicsSectionBlock } from "./blocks/theBasicsSection";
+import { basicsBlock } from "./blocks/basicsPage";
 import { categorySectionBlock } from "./blocks/categorySection";
 
 import { page } from "./documents/page";
@@ -27,6 +29,7 @@ import { collectionPage } from "./documents/collectionPage";
 import { siteSettings } from "./documents/siteSettings";
 import { recipe } from "./documents/recipe";
 import { recipeCategory } from "./documents/recipeCategory";
+import { basic } from "./documents/basic";
 
 export const schemaTypes = [
   seo,
@@ -51,9 +54,12 @@ export const schemaTypes = [
   faqBlock,
   whyWildMattersBlock,
   categorySectionBlock,
+  theBasicsSectionBlock,
+  basicsBlock,
   page,
   collectionPage,
   siteSettings,
   recipe,
   recipeCategory,
+  basic,
 ];

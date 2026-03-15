@@ -49,6 +49,8 @@ export const page = defineType({
         { type: "localFoodsCoopsBlock" },
         { type: "faqBlock" },
         { type: "whyWildMattersBlock" },
+        { type: "theBasicsSectionBlock" },
+        { type: "basicsBlock" },
         { type: "categorySectionBlock" },
       ],
     }),

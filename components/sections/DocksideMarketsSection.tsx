@@ -23,10 +23,22 @@ type DocksideMarketsBlock = {
   items?: MarketItem[];
 };
 
+const DEFAULT_TOP_PADDING = "clamp(9rem, 18vw, 13.5rem)";
+const DEFAULT_MIN_HEIGHT = 662;
+
 export function DocksideMarketsSection({
   block,
+  topPadding,
+  bottomPadding,
+  minHeight,
 }: {
   block: DocksideMarketsBlock;
+  /** Optional top padding CSS value (e.g. reduced on /story page). */
+  topPadding?: string;
+  /** Optional bottom padding CSS value (e.g. reduced on /story page). */
+  bottomPadding?: string;
+  /** Optional min-height in px (e.g. half = 331 on /story to reduce bottom space). */
+  minHeight?: number;
 }) {
   const title = block.title ?? "Find us at these Chicagoland Farmers Markets";
   const description = block.description ?? "";
@@ -48,8 +60,9 @@ export function DocksideMarketsSection({
       style={{
         backgroundColor: bgColor,
         width: "100%",
-        minHeight: 662,
-        paddingTop: "clamp(9rem, 18vw, 13.5rem)",
+        minHeight: minHeight ?? DEFAULT_MIN_HEIGHT,
+        paddingTop: topPadding ?? DEFAULT_TOP_PADDING,
+        ...(bottomPadding ? { paddingBottom: bottomPadding } : {}),
       }}
     >
       <div className="mx-auto flex w-full max-w-[1280px] flex-col px-4">

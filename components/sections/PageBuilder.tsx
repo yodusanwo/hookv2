@@ -18,6 +18,7 @@ import { UpcomingEventsSection } from "./UpcomingEventsSection";
 import { LocalFoodsCoopsSection } from "./LocalFoodsCoopsSection";
 import { FaqSection } from "./FaqSection";
 import { WhyWildMattersSection } from "./WhyWildMattersSection";
+import { TheBasicsSection } from "./TheBasicsSection";
 
 type PageSection =
   | { _type: "heroBlock"; _key?: string; [key: string]: unknown }
@@ -40,7 +41,8 @@ type PageSection =
   | { _type: "upcomingEventsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "localFoodsCoopsBlock"; _key?: string; [key: string]: unknown }
   | { _type: "faqBlock"; _key?: string; [key: string]: unknown }
-  | { _type: "whyWildMattersBlock"; _key?: string; [key: string]: unknown };
+  | { _type: "whyWildMattersBlock"; _key?: string; [key: string]: unknown }
+  | { _type: "theBasicsSectionBlock"; _key?: string; [key: string]: unknown };
 
 /** Home page Explore Products block shape; when provided, any exploreProductsBlock on this page uses this content (title, description, categories, images, links) so only the home page needs to be edited in Sanity. */
 export type CanonicalExploreProductsBlock = {
@@ -60,6 +62,10 @@ export function PageBuilder({
   pageSlug,
   hideExploreProductsWave,
   showExploreProductsTopWave,
+  exploreProductsBottomPadding,
+  docksideMarketsTopPadding,
+  docksideMarketsBottomPadding,
+  docksideMarketsMinHeight,
   hideLocalFoodsCoopsWave,
   localFoodsCoopsBottomPaddingClass,
   hideOurStoryTitle,
@@ -76,6 +82,14 @@ export function PageBuilder({
   hideExploreProductsWave?: boolean;
   /** When true, show the top wave above the Explore Our Products section (e.g. on /story to match Our Crew → Explore transition). */
   showExploreProductsTopWave?: boolean;
+  /** Optional bottom padding CSS value for Explore Our Products (e.g. to match Chicagoland Farmers Markets on /story). */
+  exploreProductsBottomPadding?: string;
+  /** Optional top padding CSS value for Chicagoland Farmers Markets (e.g. reduced on /story). */
+  docksideMarketsTopPadding?: string;
+  /** Optional bottom padding CSS value for Chicagoland Farmers Markets (e.g. reduced on /story). */
+  docksideMarketsBottomPadding?: string;
+  /** Optional min-height in px for Chicagoland Farmers Markets (e.g. 331 on /story to reduce bottom space by half). */
+  docksideMarketsMinHeight?: number;
   /** When true, the wave below the Local Foods Co-ops section is hidden (e.g. on /story page only). */
   hideLocalFoodsCoopsWave?: boolean;
   /** Optional bottom padding class for Featured Local Stores section (e.g. pb-10 on /story). */
@@ -164,6 +178,7 @@ export function PageBuilder({
                 hideExploreProductsWave={hideExploreProductsWave}
                 showTopWave={showExploreProductsTopWave}
                 hasWaveAbove={!!(prevIsTeamBios && teamBiosShowsBottomWave)}
+                bottomPadding={exploreProductsBottomPadding}
               />
             );
           }
@@ -272,6 +287,9 @@ export function PageBuilder({
                 block={
                   block as Parameters<typeof DocksideMarketsSection>[0]["block"]
                 }
+                topPadding={docksideMarketsTopPadding}
+                bottomPadding={docksideMarketsBottomPadding}
+                minHeight={docksideMarketsMinHeight}
               />
             );
           case "upcomingEventsBlock":
@@ -308,6 +326,15 @@ export function PageBuilder({
                 key={key}
                 block={
                   block as Parameters<typeof WhyWildMattersSection>[0]["block"]
+                }
+              />
+            );
+          case "theBasicsSectionBlock":
+            return (
+              <TheBasicsSection
+                key={key}
+                block={
+                  block as Parameters<typeof TheBasicsSection>[0]["block"]
                 }
               />
             );
