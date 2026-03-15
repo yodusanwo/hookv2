@@ -77,9 +77,9 @@ export function CategoryFilterBar({
 
   const toggle = (value: string) => {
     if (selectedValues.includes(value)) {
-      onChange(selectedValues.filter((v) => v !== value));
+      onChange([]);
     } else {
-      onChange([...selectedValues, value]);
+      onChange([value]);
     }
   };
 

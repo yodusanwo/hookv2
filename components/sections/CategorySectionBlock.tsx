@@ -109,6 +109,11 @@ export function CategorySectionBlock({
     carouselPage * CAROUSEL_PAGE_SIZE + CAROUSEL_PAGE_SIZE
   );
 
+  // Hide section when a product-type filter is active and no products match
+  if (selectedFilterValues.length > 0 && !loading && cards.length === 0) {
+    return null;
+  }
+
   return (
     <section
         id={collectionHandle ? `shop-section-${collectionHandle}` : undefined}

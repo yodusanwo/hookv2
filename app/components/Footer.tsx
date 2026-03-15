@@ -36,7 +36,7 @@ export function Footer({
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
   const waveBg =
     footerWaveBackgroundColor ??
-    (pathname === "/contact" ? CONTACT_PAGE_FOOTER_BG : undefined);
+    (pathname === "/contact" || pathname === "/shop" ? CONTACT_PAGE_FOOTER_BG : undefined);
   return (
     <footer id="contact" className="relative overflow-visible" style={{ backgroundColor: "var(--footer-bg)" }}>
       {/* Wave above footer content — pt for drop-shadow clearance on mobile; color from Sanity or /contact fallback */}

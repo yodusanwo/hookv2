@@ -4,25 +4,25 @@ import { useState } from "react";
 import { PromoBanner } from "@/components/PromoBanner";
 import { CategoryFilterBar } from "@/components/sections/CategoryFilterBar";
 import { CategorySectionBlock } from "@/components/sections/CategorySectionBlock";
-import { ShopProductCarousel } from "./ShopProductCarousel";
+// Product Carousel (commented out – may restore later)
+// import { ShopProductCarousel } from "./ShopProductCarousel";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
-import type { ApiProductForCarousel } from "@/lib/types";
-import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
+// import type { ApiProductForCarousel } from "@/lib/types";
+// import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
 
 export function ShopPageClient({
   promoBanner,
   filterOptions,
   collectionSections,
-  productCarouselBlock,
-  productCarouselInitialProducts = [],
+  // productCarouselBlock,
+  // productCarouselInitialProducts = [],
 }: {
   promoBanner: string | null;
   filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }>;
   collectionSections: CategorySectionBlockData[];
-  /** Product Carousel block data (from home page config). Rendered between filter bar and promo banner. */
-  productCarouselBlock?: ShopProductCarouselBlock | null;
-  /** Pre-fetched products for the carousel's first collection. */
-  productCarouselInitialProducts?: ApiProductForCarousel[];
+  /** Product Carousel (commented out – may restore later) */
+  // productCarouselBlock?: ShopProductCarouselBlock | null;
+  // productCarouselInitialProducts?: ApiProductForCarousel[];
 }) {
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>([]);
   const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<string[]>([]);
@@ -32,12 +32,16 @@ export function ShopPageClient({
     label: s.title.replace(/\s+/g, " ").trim() || s.collectionHandle,
   }));
 
+  const handleFilterChange = (values: string[]) => {
+    setSelectedFilterValues(values);
+    setSelectedCategoryHandles([]);
+  };
+
   const toggleCategory = (handle: string) => {
-    setSelectedCategoryHandles((prev) =>
-      prev.includes(handle) ? prev.filter((h) => h !== handle) : [...prev, handle]
-    );
-    const el = document.getElementById(`shop-section-${handle}`);
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const next = selectedCategoryHandles.includes(handle) ? [] : [handle];
+    setSelectedCategoryHandles(next);
+    setSelectedFilterValues([]);
+    // No scroll — filter-only behavior so selection consistently filters visible content
   };
 
   const visibleSections =
@@ -61,7 +65,7 @@ export function ShopPageClient({
       <CategoryFilterBar
         filterOptions={filterOptions}
         selectedValues={selectedFilterValues}
-        onChange={setSelectedFilterValues}
+        onChange={handleFilterChange}
         categoryOptions={categoryOptions}
         selectedCategoryHandles={selectedCategoryHandles}
         onCategoryClick={toggleCategory}
@@ -69,6 +73,7 @@ export function ShopPageClient({
         onClearAll={clearAll}
       />
 
+      {/* Product Carousel (commented out – may restore later)
       {productCarouselBlock ? (
         <ShopProductCarousel
           block={productCarouselBlock}
@@ -76,6 +81,7 @@ export function ShopPageClient({
           selectedFilterValues={selectedFilterValues}
         />
       ) : null}
+      */}
 
       {promoBanner ? <PromoBanner text={promoBanner} /> : null}
 

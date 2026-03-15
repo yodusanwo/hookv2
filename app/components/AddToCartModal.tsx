@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { openCartPopup } from "./CartPopup";
 
 export function AddToCartModal({
   isOpen,
@@ -55,8 +56,12 @@ export function AddToCartModal({
           <p className="mt-2 text-slate-700">Would you like to check out?</p>
 
           <div className="mt-6 flex flex-wrap justify-center items-center gap-3">
-          <a
-            href={checkoutUrl ?? "#"}
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              openCartPopup();
+            }}
             className="inline-flex shrink-0 items-center justify-center text-sm font-semibold text-white hover:opacity-90 transition-opacity"
             style={{
               width: 163.777,
@@ -68,7 +73,7 @@ export function AddToCartModal({
             }}
           >
             Check Out
-          </a>
+          </button>
           <button
             type="button"
             onClick={onClose}

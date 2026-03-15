@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Header } from "./Header";
 import { HeaderWave } from "./HeaderWave";
 import { Footer } from "./Footer";
+import { CartPopup } from "./CartPopup";
 
 type SiteLayoutProps = {
   children: React.ReactNode;
@@ -81,6 +82,7 @@ export function SiteLayout({
         pathname={pathname ?? undefined}
         footerWaveBackgroundColor={footerWaveColor}
       />
+      <CartPopup />
     </>
   );
 }
