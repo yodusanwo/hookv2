@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { FooterWaveOverrideProvider } from "@/app/context/FooterWaveOverride";
 import { Header } from "./Header";
 import { HeaderWave } from "./HeaderWave";
@@ -16,10 +16,10 @@ type SiteLayoutProps = {
 };
 
 /**
- * Wraps the main site in Header, wave, and Footer.
- * For /studio routes, renders only children so Sanity Studio has the full page.
+ * Inner layout that uses useSearchParams. Must be wrapped in Suspense so static
+ * pages (e.g. 404) can prerender without access to search params.
  */
-export function SiteLayout({
+function SiteLayoutInner({
   children,
   headerLogoUrl,
   navLinks,
@@ -30,11 +30,10 @@ export function SiteLayout({
   const [footerWaveColor, setFooterWaveColor] = useState<string | null>(null);
   const [footerWaveOverride, setFooterWaveOverride] = useState<string | null>(null);
   const [hideHeaderWave, setHideHeaderWave] = useState(false);
-  const isStudio = pathname?.startsWith("/studio");
   const setOverride = useCallback((color: string | null) => setFooterWaveOverride(color), []);
 
   useEffect(() => {
-    if (!pathname || isStudio) {
+    if (!pathname) {
       setFooterWaveColor(null);
       setHideHeaderWave(false);
       return;
@@ -65,11 +64,7 @@ export function SiteLayout({
     return () => {
       cancelled = true;
     };
-  }, [pathname, searchParams, isStudio]);
-
-  if (isStudio) {
-    return <>{children}</>;
-  }
+  }, [pathname, searchParams]);
 
   const effectiveWaveColor = footerWaveOverride ?? footerWaveColor;
 
@@ -94,5 +89,54 @@ export function SiteLayout({
       />
       <CartPopup />
     </FooterWaveOverrideProvider>
+  );
+}
+
+/**
+ * Fallback when Suspense is loading (e.g. during 404 prerender). Same layout with default footer wave color.
+ */
+function SiteLayoutFallback({
+  children,
+  headerLogoUrl,
+  navLinks,
+  headerBackgroundColor,
+}: SiteLayoutProps) {
+  const pathname = usePathname();
+  return (
+    <>
+      <Header
+        logoUrl={headerLogoUrl}
+        navLinks={navLinks}
+        backgroundColor={headerBackgroundColor}
+      />
+      <div className="h-[80px] sm:h-[107px] shrink-0" aria-hidden />
+      <HeaderWave />
+      <div className="relative z-0 -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">{children}</div>
+      <Footer
+        logoUrl={headerLogoUrl}
+        pathname={pathname ?? undefined}
+        footerWaveBackgroundColor={null}
+      />
+      <CartPopup />
+    </>
+  );
+}
+
+/**
+ * Wraps the main site in Header, wave, and Footer.
+ * For /studio routes, renders only children so Sanity Studio has the full page.
+ */
+export function SiteLayout(props: SiteLayoutProps) {
+  const pathname = usePathname();
+  const isStudio = pathname?.startsWith("/studio");
+
+  if (isStudio) {
+    return <>{props.children}</>;
+  }
+
+  return (
+    <Suspense fallback={<SiteLayoutFallback {...props} />}>
+      <SiteLayoutInner {...props} />
+    </Suspense>
   );
 }
