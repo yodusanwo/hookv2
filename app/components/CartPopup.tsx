@@ -358,6 +358,7 @@ export function CartPopup() {
               </ul>
 
               {/* Summary + Check out */}
+              {cart && (
               <div className="mt-6 flex flex-col items-end border-t border-slate-200 pt-6">
                 <p className="text-sm text-slate-600">Estimated total</p>
                 <p className="mt-1 text-lg font-semibold text-slate-900">
@@ -382,6 +383,7 @@ export function CartPopup() {
                   Check Out
                 </a>
               </div>
+              )}
             </>
           )}
         </div>
