@@ -17,6 +17,12 @@ type SectionHeadingProps = {
   titleLetterSpacingClass?: string;
   /** Override font family for the title (e.g. var(--font-zamenhof)) */
   titleFontFamily?: string;
+  /** Override font size for the title (e.g. 48) */
+  titleFontSize?: number;
+  /** Override font weight for the title (e.g. 600) */
+  titleFontWeight?: number;
+  /** Override line height for the title (e.g. "normal") */
+  titleLineHeight?: string | number;
 };
 
 export function SectionHeading({
@@ -30,6 +36,9 @@ export function SectionHeading({
   descriptionColor,
   titleLetterSpacingClass,
   titleFontFamily,
+  titleFontSize,
+  titleFontWeight,
+  titleLineHeight,
 }: SectionHeadingProps) {
   const isDark = theme === "dark";
   const resolvedTitleColor = titleColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
@@ -48,9 +57,10 @@ export function SectionHeading({
           className={`text-center uppercase tracking-[0.04em] md:tracking-[0.05em] lg:tracking-[0.06em] ${titleLetterSpacingClass ?? ""}`.trim()}
           style={{
             fontFamily: titleFontFamily ?? "var(--font-inter), Inter, sans-serif",
-            fontSize: "var(--section-heading-display-size)",
-            fontWeight: "var(--section-heading-display-weight)",
-            lineHeight: "var(--section-heading-display-line-height)",
+            fontSize: titleFontSize != null ? titleFontSize : "var(--section-heading-display-size)",
+            fontStyle: "normal",
+            fontWeight: titleFontWeight != null ? titleFontWeight : "var(--section-heading-display-weight)",
+            lineHeight: titleLineHeight ?? "var(--section-heading-display-line-height)",
             color: resolvedTitleColor,
           }}
         >

@@ -23,7 +23,11 @@ type RecipeListItem = {
 type RecipesPageContent = {
   title?: string | null;
   description?: string | null;
-  backgroundColor?: string | null;
+  block?: {
+    title?: string | null;
+    description?: string | null;
+    backgroundColor?: string | null;
+  } | null;
 } | null;
 
 type RecipeCategoryOption = { value: string; label: string };
@@ -74,9 +78,16 @@ export default async function RecipesIndexPage() {
     };
   });
 
-  const title = (pageContent?.title ?? "").trim() || "Recipes";
-  const description = (pageContent?.description ?? "").trim() || "Wild-caught seafood recipes from our kitchen to yours.";
-  const bgColor = (pageContent?.backgroundColor ?? "").trim() || LIGHT_BG;
+  const title =
+    (pageContent?.title ?? "").trim() ||
+    (pageContent?.block?.title ?? "").trim() ||
+    "Recipes";
+  const description =
+    (pageContent?.description ?? "").trim() ||
+    (pageContent?.block?.description ?? "").trim() ||
+    "Wild-caught seafood recipes from our kitchen to yours.";
+  const bgColor =
+    (pageContent?.block?.backgroundColor ?? "").trim() || LIGHT_BG;
 
   return (
     <main
@@ -119,6 +130,7 @@ export default async function RecipesIndexPage() {
         <PageBuilder
           sections={restSections as Parameters<typeof PageBuilder>[0]["sections"]}
           promoBanner={null}
+          pageSlug="recipes"
           canonicalExploreProductsBlock={canonicalExploreProductsBlock}
         />
       )}

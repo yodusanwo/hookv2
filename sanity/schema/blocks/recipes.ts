@@ -14,8 +14,18 @@ export const recipesBlock = defineType({
       options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
       initialValue: "#D4F2FF",
     }),
-    defineField({ name: "title", type: "string", title: "Title" }),
-    defineField({ name: "description", type: "text", title: "Description" }),
+    defineField({
+      name: "title",
+      type: "string",
+      title: "Title",
+      description: "Heading above the recipe cards. Also used as the page title on /recipes if the Page’s Title is empty.",
+    }),
+    defineField({
+      name: "description",
+      type: "text",
+      title: "Description",
+      description: "Intro text above the category filters on /recipes. Also used if the Page’s Description is empty.",
+    }),
     defineField({
       name: "recipes",
       type: "array",

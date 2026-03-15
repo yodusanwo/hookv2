@@ -17,7 +17,14 @@ type TheBasicsSectionBlock = {
   items?: TheBasicsItem[];
 };
 
-export function TheBasicsSection({ block }: { block: TheBasicsSectionBlock }) {
+export function TheBasicsSection({
+  block,
+  topPadding,
+}: {
+  block: TheBasicsSectionBlock;
+  /** Optional top padding in px (e.g. 60 on /recipes page). */
+  topPadding?: number;
+}) {
   const title = block.title ?? "THE BASICS";
   const description = block.description ?? "";
   const items = block.items ?? [];
@@ -26,18 +33,31 @@ export function TheBasicsSection({ block }: { block: TheBasicsSectionBlock }) {
   return (
     <section
       className="relative z-20 py-14"
-      style={{ backgroundColor: bgColor }}
+      style={{
+        backgroundColor: bgColor,
+        ...(topPadding != null ? { paddingTop: topPadding } : {}),
+      }}
     >
-      <div className="mx-auto w-full max-w-6xl px-4">
+      <div className="mx-auto w-full max-w-full px-4">
         <SectionHeading
           title={title}
           description={description || undefined}
           variant="display"
           theme="light"
           titleColor="#111827"
+          titleFontFamily="Inter, sans-serif"
+          titleFontSize={48}
+          titleFontWeight={600}
+          titleLineHeight="normal"
           descriptionColor="#1E1E1E"
         />
-        <div className="mt-10 flex flex-wrap items-stretch justify-center gap-8">
+        <div
+          className="mt-16 grid gap-x-[13px] gap-y-[13px]"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 387px))",
+            justifyContent: "center",
+          }}
+        >
           {items.map((item, idx) => {
             let imageUrl: string | null = null;
             try {
@@ -52,28 +72,22 @@ export function TheBasicsSection({ block }: { block: TheBasicsSectionBlock }) {
               <Link
                 key={idx}
                 href={href}
-                className="group flex w-[320px] max-w-full shrink-0 flex-col rounded-[10px] overflow-hidden bg-transparent transition-transform hover:scale-[1.02] md:w-[280px]"
+                className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md"
+                style={{ backgroundColor: bgColor }}
               >
-                {/* Mobile: 320×320px with specified background position/size */}
                 <div
-                  className="relative h-[320px] w-[320px] max-w-full overflow-hidden rounded-[10px] bg-slate-200 md:hidden"
-                  style={
-                    imageUrl
-                      ? {
-                          background: `url(${imageUrl}) lightgray -7.919px -6.209px / 103.325% 103.47% no-repeat`,
-                          borderRadius: 10,
-                        }
-                      : { borderRadius: 10 }
-                  }
+                  className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+                  style={{
+                    height: 320,
+                    alignSelf: "stretch",
+                    borderRadius: 10,
+                    background: imageUrl
+                      ? `url(${imageUrl}) lightgray 50% / cover no-repeat`
+                      : "lightgray",
+                  }}
+                  role={imageUrl ? undefined : "img"}
+                  aria-label={imageUrl ? undefined : (item.label ?? "Basic")}
                 >
-                  {imageUrl && (
-                    <img
-                      src={imageUrl}
-                      alt={item.label ?? ""}
-                      className="sr-only"
-                      loading="lazy"
-                    />
-                  )}
                   {!imageUrl && (
                     <div className="flex h-full w-full items-center justify-center text-slate-400">
                       <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -82,42 +96,20 @@ export function TheBasicsSection({ block }: { block: TheBasicsSectionBlock }) {
                     </div>
                   )}
                 </div>
-                {/* Desktop: match recipe card dimensions */}
                 <div
-                  className="relative hidden w-full min-w-0 overflow-hidden rounded-[10px] bg-slate-200 md:block"
-                  style={{
-                    height: "320px",
-                    alignSelf: "stretch",
-                    borderRadius: 10,
-                  }}
+                  className="px-4 py-3"
+                  style={{ backgroundColor: bgColor }}
                 >
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={item.label ?? ""}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-slate-400">
-                      <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
-                        <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-                <div className="mt-3 text-center">
-                  <span
-                    className="font-medium"
+                  <h3
+                    className="font-semibold text-slate-900"
                     style={{
-                      color: "#1E1E1E",
                       fontFamily: "var(--font-inter), Inter, sans-serif",
                       fontSize: 16,
                       lineHeight: "normal",
                     }}
                   >
                     {item.label ?? "Basic"}
-                  </span>
+                  </h3>
                 </div>
               </Link>
             );

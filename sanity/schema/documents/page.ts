@@ -8,6 +8,12 @@ export const page = defineType({
   fields: [
     defineField({ name: "title", type: "string", title: "Title" }),
     defineField({
+      name: "description",
+      type: "text",
+      title: "Description",
+      description: "Optional intro text. On the Recipes page this appears above the category filters.",
+    }),
+    defineField({
       name: "slug",
       type: "slug",
       title: "Slug",

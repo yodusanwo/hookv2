@@ -131,11 +131,15 @@ export const CATCH_OF_THE_DAY_BLOCK_QUERY = `*[_type == "page" && slug.current =
   cta { label, href }
 }`;
 
-/** Title and description from the Sanity "Recipes" page (first recipesBlock). Use for /recipes page heading. */
-export const RECIPES_PAGE_CONTENT_QUERY = `*[_type == "page" && slug.current == "recipes"][0].sections[_type == "recipesBlock"][0] {
+/** Page-level title/description and first recipesBlock for /recipes. Page fields override block when set. */
+export const RECIPES_PAGE_CONTENT_QUERY = `*[_type == "page" && slug.current == "recipes"][0] {
   title,
   description,
-  backgroundColor
+  "block": sections[_type == "recipesBlock"][0] {
+    title,
+    description,
+    backgroundColor
+  }
 }`;
 
 /** Title and description from the Sanity "Basics" page (first basicsBlock). Use for /basics page heading. */

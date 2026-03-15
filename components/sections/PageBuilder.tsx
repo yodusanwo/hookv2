@@ -371,6 +371,7 @@ export function PageBuilder({
                 block={
                   block as Parameters<typeof TheBasicsSection>[0]["block"]
                 }
+                topPadding={pageSlug === "recipes" ? 120 : undefined}
               />
             );
           default:
