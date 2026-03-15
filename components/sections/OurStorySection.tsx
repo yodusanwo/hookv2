@@ -97,7 +97,7 @@ export function OurStorySection({
       }}
     >
       <div
-        className={`mx-auto w-full px-4 pb-12 pt-10 ${isStoryPage ? "pl-[2.25rem]" : ""}`}
+        className={`mx-auto w-full px-4 pb-12 pt-10 ${isStoryPage ? "md:pl-[2.25rem]" : ""}`}
         style={{ maxWidth: 1440 }}
       >
         {!hideTitle && (
@@ -108,9 +108,9 @@ export function OurStorySection({
             titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
           />
         )}
-        <div className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${isStoryPage ? "pt-[6.25rem]" : ""} ${!hideTitle ? "mt-10" : ""}`}>
+        <div className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${isStoryPage ? "pt-8 md:pt-[6.25rem]" : ""} ${!hideTitle ? "mt-10" : ""}`}>
           <div
-            className={`overflow-hidden rounded-xl bg-slate-200 ${isStoryPage ? "w-[86.625%] h-[259.875px] md:h-[363.825px] ml-[4.5625rem]" : ""}`}
+            className={`overflow-hidden rounded-xl bg-slate-200 ${isStoryPage ? "w-full h-[259.875px] md:w-[86.625%] md:h-[363.825px] md:ml-[4.5625rem]" : ""}`}
           >
             {img ? (
               <img
