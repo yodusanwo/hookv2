@@ -2,6 +2,7 @@ import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
 import { ProductImageGallery } from "./ProductImageGallery";
+import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
 import {
   getKlaviyoReviewsForProduct,
   getKlaviyoReviews,
@@ -505,10 +506,16 @@ export default async function ProductPage({
         </div>
       </section>
 
+      {/* Wave between product content and reviews — same as shop page collection dividers */}
+      <ShopSectionWave />
+
       {/* Reviews — light gray; product-specific from Klaviyo, fallback to last 3 global */}
       <section
         className="px-4 py-12 md:py-16"
-        style={{ backgroundColor: "var(--section-bg-light)" }}
+        style={{
+          backgroundColor: "var(--section-bg-light)",
+          paddingTop: "clamp(8rem, 16vw, 12rem)",
+        }}
       >
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-xl font-semibold uppercase tracking-wide text-slate-900">
