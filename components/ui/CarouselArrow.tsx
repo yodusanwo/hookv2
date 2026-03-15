@@ -40,6 +40,7 @@ export function CarouselArrow({
   theme = "dark",
   inset = false,
   insetNoBackground = false,
+  arrowColor,
 }: {
   direction: "prev" | "next";
   disabled: boolean;
@@ -51,6 +52,8 @@ export function CarouselArrow({
   inset?: boolean;
   /** When true with inset, no background/shadow behind the arrow (transparent button) */
   insetNoBackground?: boolean;
+  /** Override arrow color (e.g. #FFFFFF). When set, uses mask for exact color. */
+  arrowColor?: string;
 }) {
   const isPrev = direction === "prev";
   const isLight = theme === "light";
@@ -80,7 +83,25 @@ export function CarouselArrow({
       }}
       aria-label={ariaLabel}
     >
-      {isLight ? (
+      {arrowColor != null ? (
+        <span
+          className={`block ${isPrev ? "rotate-180" : ""}`}
+          style={{
+            width: ARROW_SIZE_PX,
+            height: ARROW_SIZE_PX,
+            backgroundColor: arrowColor,
+            WebkitMaskImage: `url(${ARROW_FORWARD_SRC})`,
+            maskImage: `url(${ARROW_FORWARD_SRC})`,
+            WebkitMaskSize: "contain",
+            maskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskPosition: "center",
+          }}
+          aria-hidden
+        />
+      ) : isLight ? (
         <span
           className={`block ${isPrev ? "rotate-180" : ""}`}
           style={arrowStyleLight}

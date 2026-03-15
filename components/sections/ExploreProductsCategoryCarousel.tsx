@@ -109,9 +109,15 @@ export function ExploreProductsCategoryCarousel({
               </div>
               <div className="py-3 text-center">
                 <span
-                  className="text-sm font-medium tracking-wide"
+                  className="capitalize"
                   style={{
-                    color: labelColor ?? (textTheme === "light" ? "#1E1E1E" : "#ffffff"),
+                    color: labelColor ?? "#FFF",
+                    fontFamily: "var(--font-inter), Inter, sans-serif",
+                    fontSize: 20,
+                    fontStyle: "normal",
+                    fontWeight: 500,
+                    lineHeight: "normal",
+                    textTransform: "capitalize",
                   }}
                 >
                   {cat.label ?? "Shop"}
@@ -128,6 +134,7 @@ export function ExploreProductsCategoryCarousel({
         onClick={() => scroll(-1)}
         ariaLabel="Scroll left"
         theme={textTheme}
+        arrowColor="#FFFFFF"
       />
       <CarouselArrow
         direction="next"
@@ -135,6 +142,7 @@ export function ExploreProductsCategoryCarousel({
         onClick={() => scroll(1)}
         ariaLabel="Scroll right"
         theme={textTheme}
+        arrowColor="#FFFFFF"
       />
     </div>
   );
