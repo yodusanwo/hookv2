@@ -42,9 +42,15 @@ export function HeroCarousel({
   const active = safeItems[idx]!;
 
   return (
-    <section className="relative -mt-[100px] w-full min-w-0 max-w-full overflow-visible">
-      {/* Hero image area: full width × 666px */}
-      <div className="relative w-full overflow-hidden" style={{ height: 666 }}>
+    <section className="relative -mt-[40px] w-full min-w-0 max-w-full overflow-visible">
+      {/* Hero image area: responsive height, 760px on desktop; story variant taller */}
+      <div
+        className={
+          variant === "story"
+            ? "relative w-full overflow-hidden h-[min(62vh,440px)] sm:h-[min(68vh,560px)] md:h-[840px]"
+            : "relative w-full overflow-hidden h-[min(60vh,420px)] sm:h-[min(65vh,520px)] md:h-[760px]"
+        }
+      >
         {active.src ? (
           <img
             key={active.src}
@@ -55,9 +61,13 @@ export function HeroCarousel({
               variant === "story"
                 ? {
                     ...IMAGE_LAYER_STYLE,
-                    objectPosition: "center calc(50% + 75px)",
+                    objectPosition: "center 100%",
+                    transform: "translateY(12%)",
                   }
-                : IMAGE_LAYER_STYLE
+                : {
+                    ...IMAGE_LAYER_STYLE,
+                    objectPosition: "center 38%",
+                  }
             }
           />
         ) : (
@@ -90,7 +100,7 @@ export function HeroCarousel({
         <div
           className={
             variant === "story"
-              ? "absolute z-20 flex flex-col gap-[29px] left-4 right-4 sm:left-8 md:left-[100px] lg:left-[164px] top-[369px] max-w-[740px] text-left items-start"
+              ? "absolute z-20 flex flex-col gap-[29px] left-4 right-4 sm:left-8 md:left-[100px] lg:left-[164px] top-[55%] -translate-y-1/2 md:top-[462px] md:translate-y-0 max-w-[740px] text-left items-start"
               : "absolute z-20 flex flex-col top-1/2 -translate-y-1/2 left-4 right-4 sm:left-8 sm:right-8 md:left-12 md:right-auto lg:left-[245px] max-w-[920px] text-left items-start px-6 py-5 sm:px-8 sm:py-6 rounded-xl bg-gradient-to-br from-black/30 via-black/15 to-transparent backdrop-blur-[2px]"
           }
         >

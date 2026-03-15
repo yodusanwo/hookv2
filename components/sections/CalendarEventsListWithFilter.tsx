@@ -128,7 +128,17 @@ export function CalendarEventsListWithFilter({
                     />
                     <span>{e.date ?? "—"}</span>
                   </div>
-                  <div>{e.time ?? "—"}</div>
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="/timeicon.svg"
+                      alt=""
+                      aria-hidden
+                      width={19}
+                      height={19}
+                      style={{ flexShrink: 0 }}
+                    />
+                    <span>{e.time ?? "—"}</span>
+                  </div>
                   <div>{e.eventType ?? e.name ?? "—"}</div>
                   <div>
                     {(() => {

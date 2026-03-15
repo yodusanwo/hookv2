@@ -115,7 +115,7 @@ export function CatchOfTheDayProductCard({
 
   return (
     <>
-      <div className="group relative flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl shadow-none">
+      <div className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl shadow-none w-full">
         {/* Image area: same as recipe cards — height 320px, border-radius 10px, cover */}
         <div
           className="relative min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"

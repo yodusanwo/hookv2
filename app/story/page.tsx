@@ -130,7 +130,6 @@ export default async function Story() {
             hideLocalFoodsCoopsWave
             hideOurStoryTitle
             hideOurStoryCta
-            hideOurStoryWave
             ourStoryVariant="story-page"
           />
         </main>

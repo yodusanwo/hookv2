@@ -42,7 +42,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
           {reviews.map((r, idx) => (
             <div
               key={idx}
-              className="flex h-[273px] w-[355px] flex-col justify-center rounded-xl border border-black/5 bg-[#FFF] p-6 text-center"
+              className="flex h-[273px] w-[355px] max-w-full flex-col justify-center rounded-xl border border-black/5 bg-[#FFF] p-6 text-center"
             >
               {r.stars != null && (
                 <div

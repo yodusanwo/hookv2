@@ -260,7 +260,7 @@ export function CatchOfTheDayGrid({
                 style={{ gap: "6px" }}
               >
                 {currentPageProducts.map((product) => (
-                  <div key={product.id} className="w-[387px] max-w-full">
+                  <div key={product.id} className="min-w-0 w-[387px] max-w-full">
                     <CatchOfTheDayProductCard product={product} darkSection={darkSection} />
                   </div>
                 ))}
