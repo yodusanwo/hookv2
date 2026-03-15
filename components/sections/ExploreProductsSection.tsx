@@ -42,6 +42,8 @@ export function ExploreProductsSection({
   showTopWave = false,
   hasWaveAbove = false,
   bottomPadding,
+  doubleTopPadding = false,
+  tripleTitleTopMargin = false,
 }: {
   block: ExploreProductsBlock;
   /** When true, the wave under this section is hidden (e.g. page-level override). */
@@ -52,6 +54,10 @@ export function ExploreProductsSection({
   hasWaveAbove?: boolean;
   /** Optional bottom padding CSS value (e.g. to match Chicagoland Farmers Markets on /story). */
   bottomPadding?: string;
+  /** When true, use double the default top padding (e.g. on /wild). */
+  doubleTopPadding?: boolean;
+  /** When true, use triple the top padding above the title (e.g. on /wild). */
+  tripleTitleTopMargin?: boolean;
 }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -92,10 +98,11 @@ export function ExploreProductsSection({
   });
 
   const noTopPadding = showTopWave || hasWaveAbove;
+  const topPaddingClass = noTopPadding ? "pt-0" : doubleTopPadding ? "pt-28" : "pt-14";
   return (
     <section
       id="shop"
-      className={`relative z-20 overflow-visible ${noTopPadding ? "pt-0" : "pt-14"}`}
+      className={`relative z-20 overflow-visible ${topPaddingClass}`}
       style={{
         backgroundColor: block.backgroundColor ?? "#171730",
         ...(bottomPadding ? { paddingBottom: bottomPadding } : {}),
@@ -111,7 +118,7 @@ export function ExploreProductsSection({
           </div>
         </div>
       )}
-      <div className="mx-auto w-full max-w-[1100px] px-4">
+      <div className={`mx-auto w-full max-w-[1100px] px-4 ${hasWaveAbove ? (tripleTitleTopMargin ? "pt-[248px]" : "pt-8") : ""}`}>
         <SectionHeading
           title={title}
           description={description}

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Fragment, Suspense } from "react";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { HeroSection } from "./HeroSection";
 import { CatchOfTheDaySection } from "./CatchOfTheDaySection";
 import { ExploreProductsSection } from "./ExploreProductsSection";
@@ -161,7 +162,20 @@ export function PageBuilder({
           case "exploreProductsBlock": {
             const prevBlock = idx > 0 ? items[idx - 1] : null;
             const prevIsTeamBios = prevBlock?._type === "teamBiosBlock";
+            const prevIsOurStoryExtended =
+              prevBlock &&
+              (prevBlock._type === "ourStoryExtendedBlock" ||
+                prevBlock._type === "ourStoryExtendedReversedBlock");
+            const prevIsSecondOurStoryExtended =
+              pageSlug === "wild" &&
+              prevBlock?._type === "ourStoryExtendedBlock" &&
+              items.slice(0, idx).filter((b) => b._type === "ourStoryExtendedBlock").length === 2;
             const teamBiosShowsBottomWave = ourStoryVariant === "story-page";
+            const ourStoryExtendedShowsWave = false;
+            const hasWaveAbove =
+              (prevIsTeamBios && teamBiosShowsBottomWave) ||
+              (!!prevIsOurStoryExtended && ourStoryExtendedShowsWave) ||
+              prevIsSecondOurStoryExtended;
             // Use home page content (description, categories, images, /shop links) when provided; page block can override backgroundColor and hideWave.
             const pageBlock = block as { backgroundColor?: string; hideWave?: boolean; [key: string]: unknown };
             const exploreBlock = canonicalExploreProductsBlock
@@ -171,15 +185,36 @@ export function PageBuilder({
                   hideWave: pageBlock.hideWave ?? canonicalExploreProductsBlock.hideWave,
                 }
               : pageBlock;
+            const wildWave = prevIsSecondOurStoryExtended ? (
+              <div
+                className="relative z-30 top-[100px] -mt-8 -mb-2 w-full shrink-0"
+                style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
+              >
+                <WaveDivider
+                  navySrc="/VectorWavyNavyOurStory.svg"
+                  wrapperClassName="mt-3 -mb-px [background-color:transparent]"
+                  navyOutline="top"
+                />
+                <WaveDivider
+                  navySrc="/VectorWavyNavy.svg"
+                  wrapperClassName="-mt-px [background-color:transparent]"
+                  navyOutline="bottom"
+                />
+              </div>
+            ) : null;
             return (
-              <ExploreProductsSection
-                key={key}
-                block={exploreBlock as Parameters<typeof ExploreProductsSection>[0]["block"]}
-                hideExploreProductsWave={hideExploreProductsWave}
-                showTopWave={showExploreProductsTopWave}
-                hasWaveAbove={!!(prevIsTeamBios && teamBiosShowsBottomWave)}
-                bottomPadding={exploreProductsBottomPadding}
-              />
+              <Fragment key={key}>
+                {wildWave}
+                <ExploreProductsSection
+                  block={exploreBlock as Parameters<typeof ExploreProductsSection>[0]["block"]}
+                  hideExploreProductsWave={hideExploreProductsWave}
+                  showTopWave={showExploreProductsTopWave}
+                  hasWaveAbove={hasWaveAbove}
+                  bottomPadding={exploreProductsBottomPadding}
+                  doubleTopPadding={pageSlug === "wild"}
+                  tripleTitleTopMargin={pageSlug === "wild"}
+                />
+              </Fragment>
             );
           }
           case "ourStoryBlock":
@@ -189,7 +224,7 @@ export function PageBuilder({
                 block={block as Parameters<typeof OurStorySection>[0]["block"]}
                 hideTitle={hideOurStoryTitle}
                 hideCta={hideOurStoryCta}
-                hideWave={hideOurStoryWave}
+                hideWave={hideOurStoryWave || pageSlug === "wild"}
                 variant={ourStoryVariant}
               />
             );

@@ -1,7 +1,10 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { WaveDivider } from "@/components/ui/WaveDivider";
 import { PortableText } from "next-sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
+
+const SECTION_TOP_PADDING_PX = 56;
 
 type OurStoryExtendedBlock = {
   backgroundColor?: string;
@@ -44,7 +47,14 @@ function isLoremIpsum(body: unknown[] | undefined): boolean {
   );
 }
 
-export function OurStoryExtendedSection({ block }: { block: OurStoryExtendedBlock }) {
+export function OurStoryExtendedSection({
+  block,
+  showBottomWave = false,
+}: {
+  block: OurStoryExtendedBlock;
+  /** When true, show the wave at the bottom of this section (e.g. /wild page only). */
+  showBottomWave?: boolean;
+}) {
   const subheading = block.subheading ?? "Who We Are";
   const img = urlFor(block.image);
   const rawCtaLabel = block.cta?.label ?? "Meet your fishermen";
@@ -62,12 +72,15 @@ export function OurStoryExtendedSection({ block }: { block: OurStoryExtendedBloc
   return (
     <section
       id="our-story-extended"
-      className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
-      style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF" }}
+      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start overflow-visible pb-0"
+      style={{
+        backgroundColor: block.backgroundColor ?? "#D4F2FF",
+        width: "100%",
+      }}
     >
       <div
-        className="mx-auto w-full px-4 pb-12 pt-10 pl-[2.25rem]"
-        style={{ maxWidth: 1440 }}
+        className="mx-auto w-full px-4 pb-12 pl-[2.25rem]"
+        style={{ maxWidth: 1440, paddingTop: SECTION_TOP_PADDING_PX }}
       >
         {(block.title ?? "").trim() && (
           <SectionHeading
@@ -192,6 +205,23 @@ export function OurStoryExtendedSection({ block }: { block: OurStoryExtendedBloc
           </div>
         </div>
       </div>
+      {showBottomWave && (
+        <div
+          className="relative z-30 top-[100px] -mt-8 -mb-2 w-full shrink-0"
+          style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
+        >
+          <WaveDivider
+            navySrc="/VectorWavyNavyOurStory.svg"
+            wrapperClassName="mt-3 -mb-px [background-color:transparent]"
+            navyOutline="top"
+          />
+          <WaveDivider
+            navySrc="/VectorWavyNavy.svg"
+            wrapperClassName="-mt-px [background-color:transparent]"
+            navyOutline="bottom"
+          />
+        </div>
+      )}
     </section>
   );
 }

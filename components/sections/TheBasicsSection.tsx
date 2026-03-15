@@ -52,11 +52,44 @@ export function TheBasicsSection({ block }: { block: TheBasicsSectionBlock }) {
               <Link
                 key={idx}
                 href={href}
-                className="group flex flex-col rounded-[10px] overflow-hidden bg-transparent transition-transform hover:scale-[1.02]"
+                className="group flex w-[320px] max-w-full shrink-0 flex-col rounded-[10px] overflow-hidden bg-transparent transition-transform hover:scale-[1.02] md:w-[280px]"
               >
+                {/* Mobile: 320×320px with specified background position/size */}
                 <div
-                  className="relative w-[280px] max-w-full overflow-hidden rounded-[10px] bg-slate-200"
-                  style={{ aspectRatio: "4 / 3" }}
+                  className="relative h-[320px] w-[320px] max-w-full overflow-hidden rounded-[10px] bg-slate-200 md:hidden"
+                  style={
+                    imageUrl
+                      ? {
+                          background: `url(${imageUrl}) lightgray -7.919px -6.209px / 103.325% 103.47% no-repeat`,
+                          borderRadius: 10,
+                        }
+                      : { borderRadius: 10 }
+                  }
+                >
+                  {imageUrl && (
+                    <img
+                      src={imageUrl}
+                      alt={item.label ?? ""}
+                      className="sr-only"
+                      loading="lazy"
+                    />
+                  )}
+                  {!imageUrl && (
+                    <div className="flex h-full w-full items-center justify-center text-slate-400">
+                      <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                {/* Desktop: match recipe card dimensions */}
+                <div
+                  className="relative hidden w-full min-w-0 overflow-hidden rounded-[10px] bg-slate-200 md:block"
+                  style={{
+                    height: "320px",
+                    alignSelf: "stretch",
+                    borderRadius: 10,
+                  }}
                 >
                   {imageUrl ? (
                     <img
