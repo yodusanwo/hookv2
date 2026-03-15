@@ -75,6 +75,7 @@ export async function CatchOfTheDaySection({
         filterCollections={filterCollections}
         initialProducts={initialProducts}
         hideCollectionTabs={hideCollectionTabs}
+        darkSection={!isLightBg}
       />
     </section>
   );

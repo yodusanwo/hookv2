@@ -1,7 +1,8 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { FooterWaveOverrideProvider } from "@/app/context/FooterWaveOverride";
 import { Header } from "./Header";
 import { HeaderWave } from "./HeaderWave";
 import { Footer } from "./Footer";
@@ -25,9 +26,12 @@ export function SiteLayout({
   headerBackgroundColor,
 }: SiteLayoutProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [footerWaveColor, setFooterWaveColor] = useState<string | null>(null);
+  const [footerWaveOverride, setFooterWaveOverride] = useState<string | null>(null);
   const [hideHeaderWave, setHideHeaderWave] = useState(false);
   const isStudio = pathname?.startsWith("/studio");
+  const setOverride = useCallback((color: string | null) => setFooterWaveOverride(color), []);
 
   useEffect(() => {
     if (!pathname || isStudio) {
@@ -37,7 +41,11 @@ export function SiteLayout({
     }
     let cancelled = false;
     const path = pathname === "/" ? "/" : pathname;
-    fetch(`/api/footer-wave-color?path=${encodeURIComponent(path)}`)
+    const isShopSearch =
+      pathname === "/shop" &&
+      (searchParams.has("q") || searchParams.has("search") || searchParams.has("s"));
+    const url = `/api/footer-wave-color?path=${encodeURIComponent(path)}${isShopSearch ? "&search=1" : ""}`;
+    fetch(url)
       .then((res) => res.json())
       .then((data: { color?: string | null; hideHeaderWave?: boolean }) => {
         if (cancelled) return;
@@ -57,14 +65,16 @@ export function SiteLayout({
     return () => {
       cancelled = true;
     };
-  }, [pathname, isStudio]);
+  }, [pathname, searchParams, isStudio]);
 
   if (isStudio) {
     return <>{children}</>;
   }
 
+  const effectiveWaveColor = footerWaveOverride ?? footerWaveColor;
+
   return (
-    <>
+    <FooterWaveOverrideProvider value={{ setOverride }}>
       <Header
         logoUrl={headerLogoUrl}
         navLinks={navLinks}
@@ -80,9 +90,9 @@ export function SiteLayout({
       <Footer
         logoUrl={headerLogoUrl}
         pathname={pathname ?? undefined}
-        footerWaveBackgroundColor={footerWaveColor}
+        footerWaveBackgroundColor={effectiveWaveColor}
       />
       <CartPopup />
-    </>
+    </FooterWaveOverrideProvider>
   );
 }

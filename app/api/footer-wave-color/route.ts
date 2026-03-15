@@ -11,20 +11,31 @@ type PageLayoutSettings = { color?: string | null; hideHeaderWave?: boolean };
  * Returns { color: string | null, hideHeaderWave: boolean } for the page.
  * color = area above the footer (wave strip); hideHeaderWave = hide the top wave below the header.
  */
+const SHOP_PAGE_STRIP_BG = "#F2F2F5"; // grey when no search
+const SHOP_PAGE_SEARCH_STRIP_BG = "#D4F2FF"; // light blue when search is active
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const path = searchParams.get("path") ?? "";
-  const slug = path.replace(/^\//, "").trim() || "home";
+  const search = searchParams.get("search") === "1" || searchParams.get("search") === "true";
+  const slug = path.replace(/^\//, "").trim().split("?")[0] || "home";
 
   if (!client) {
     return NextResponse.json({ color: null, hideHeaderWave: false });
   }
 
   try {
-    const data = await client.fetch<PageLayoutSettings | null>(PAGE_LAYOUT_SETTINGS_QUERY, {
-      slug,
-    });
-    const color = data?.color ?? null;
+    const data = await client.fetch<PageLayoutSettings | null>(
+      PAGE_LAYOUT_SETTINGS_QUERY,
+      {
+        slug,
+      },
+    );
+    // /shop: strip is grey when no search; light blue when search params (q, search, or s) are present
+    const color =
+      slug === "shop"
+        ? (search ? SHOP_PAGE_SEARCH_STRIP_BG : SHOP_PAGE_STRIP_BG)
+        : (data?.color ?? null);
     const hideHeaderWave = data?.hideHeaderWave === true;
     return NextResponse.json({ color, hideHeaderWave });
   } catch (e) {

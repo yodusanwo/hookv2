@@ -1,28 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useFooterWaveOverride } from "@/app/context/FooterWaveOverride";
 import { PromoBanner } from "@/components/PromoBanner";
 import { CategoryFilterBar } from "@/components/sections/CategoryFilterBar";
 import { CategorySectionBlock } from "@/components/sections/CategorySectionBlock";
-// Product Carousel (commented out – may restore later)
-// import { ShopProductCarousel } from "./ShopProductCarousel";
+import { ShopProductCarousel } from "./ShopProductCarousel";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
-// import type { ApiProductForCarousel } from "@/lib/types";
-// import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
+import type { ApiProductForCarousel } from "@/lib/types";
+import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
 
 export function ShopPageClient({
   promoBanner,
   filterOptions,
   collectionSections,
-  // productCarouselBlock,
-  // productCarouselInitialProducts = [],
+  productCarouselBlock,
+  productCarouselInitialProducts = [],
 }: {
   promoBanner: string | null;
   filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }>;
   collectionSections: CategorySectionBlockData[];
-  /** Product Carousel (commented out – may restore later) */
-  // productCarouselBlock?: ShopProductCarouselBlock | null;
-  // productCarouselInitialProducts?: ApiProductForCarousel[];
+  /** Catch of the Day carousel block (from home page config). Rendered at bottom of shop page. */
+  productCarouselBlock?: ShopProductCarouselBlock | null;
+  /** Pre-fetched products for the carousel's first collection. */
+  productCarouselInitialProducts?: ApiProductForCarousel[];
 }) {
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>([]);
   const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<string[]>([]);
@@ -57,9 +58,20 @@ export function ShopPageClient({
     setSelectedCategoryHandles([]);
   };
 
+  const setFooterWaveOverride = useFooterWaveOverride();
+  useEffect(() => {
+    if (!setFooterWaveOverride) return;
+    if (hasSelection) {
+      setFooterWaveOverride.setOverride("#D4F2FF");
+    } else {
+      setFooterWaveOverride.setOverride(null);
+    }
+    return () => setFooterWaveOverride.setOverride(null);
+  }, [hasSelection, setFooterWaveOverride]);
+
   return (
     <main
-      className="pt-[140px] pb-14 sm:pt-[170px] md:pt-[230px]"
+      className="pt-[140px] pb-0 sm:pt-[170px] md:pt-[230px]"
       style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
     >
       <CategoryFilterBar
@@ -73,16 +85,6 @@ export function ShopPageClient({
         onClearAll={clearAll}
       />
 
-      {/* Product Carousel (commented out – may restore later)
-      {productCarouselBlock ? (
-        <ShopProductCarousel
-          block={productCarouselBlock}
-          initialProducts={productCarouselInitialProducts}
-          selectedFilterValues={selectedFilterValues}
-        />
-      ) : null}
-      */}
-
       {promoBanner ? <PromoBanner text={promoBanner} /> : null}
 
       {visibleSections.map((block, idx) => (
@@ -92,6 +94,15 @@ export function ShopPageClient({
           selectedFilterValues={selectedFilterValues}
         />
       ))}
+
+      {productCarouselBlock && !hasSelection ? (
+        <ShopProductCarousel
+          block={productCarouselBlock}
+          initialProducts={productCarouselInitialProducts}
+          selectedFilterValues={selectedFilterValues}
+          backgroundColorOverride="#F2F2F5"
+        />
+      ) : null}
     </main>
   );
 }

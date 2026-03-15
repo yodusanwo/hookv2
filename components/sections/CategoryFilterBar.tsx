@@ -95,7 +95,12 @@ export function CategoryFilterBar({
   return (
     <section
       className="px-4 py-6"
-      style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+      style={{
+        backgroundColor: "var(--brand-light-blue-bg)",
+        border: "2px solid red",
+        marginTop: -30,
+        marginBottom: 60,
+      }}
       aria-label="Filters"
     >
       <div className="mx-auto max-w-6xl flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">

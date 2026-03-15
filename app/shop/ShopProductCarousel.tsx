@@ -23,10 +23,13 @@ export function ShopProductCarousel({
   block,
   initialProducts = [],
   selectedFilterValues = [],
+  backgroundColorOverride,
 }: {
   block: ShopProductCarouselBlock;
   initialProducts?: ApiProductForCarousel[];
   selectedFilterValues?: string[];
+  /** When set (e.g. on /shop page), section uses this background and light text #1E1E1E. */
+  backgroundColorOverride?: string;
 }) {
   const filterCollections =
     block.filterCollections && block.filterCollections.length > 0
@@ -39,14 +42,15 @@ export function ShopProductCarousel({
 
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
-  const isLightBg = isLightBackgroundColor(block.backgroundColor);
+  const sectionBg = backgroundColorOverride ?? block.backgroundColor ?? "#171730";
+  const isLightBg = Boolean(backgroundColorOverride) || isLightBackgroundColor(block.backgroundColor);
   const textTheme = isLightBg ? "light" : "dark";
 
   return (
     <section
       id="catch-of-the-day"
       className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
-      style={{ backgroundColor: block.backgroundColor ?? "#171730" }}
+      style={{ backgroundColor: sectionBg }}
     >
       <div className="mx-auto w-full max-w-[1100px] px-4">
         <SectionHeading
@@ -67,6 +71,7 @@ export function ShopProductCarousel({
         hideCollectionTabs
         selectedProductTypeFilter={selectedFilterValues}
         matchProductTypesAsCommaSeparated
+        darkSection={!isLightBg}
       />
     </section>
   );

@@ -21,6 +21,7 @@ const footerNavLinkStyle = {
 };
 
 const CONTACT_PAGE_FOOTER_BG = "#D4F2FF";
+const SHOP_PAGE_WAVE_BG = "#F2F2F5"; // grey when no search; API overrides when search=1
 
 export function Footer({
   logoUrl,
@@ -30,13 +31,13 @@ export function Footer({
   logoUrl?: string | null;
   /** When pathname is /contact and no footerWaveBackgroundColor, use light blue. */
   pathname?: string | null;
-  /** Background color for the area above the footer (wave strip). Set per page in Sanity. */
+  /** Background color for the area above the footer (wave strip). Set per page in Sanity or API. */
   footerWaveBackgroundColor?: string | null;
 }) {
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
   const waveBg =
     footerWaveBackgroundColor ??
-    (pathname === "/contact" || pathname === "/shop" ? CONTACT_PAGE_FOOTER_BG : undefined);
+    (pathname === "/shop" ? SHOP_PAGE_WAVE_BG : pathname === "/contact" ? CONTACT_PAGE_FOOTER_BG : undefined);
   return (
     <footer id="contact" className="relative overflow-visible" style={{ backgroundColor: "var(--footer-bg)" }}>
       {/* Wave above footer content — pt for drop-shadow clearance on mobile; color from Sanity or /contact fallback */}

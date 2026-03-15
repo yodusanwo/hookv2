@@ -1,10 +1,9 @@
-import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
-// import { CATCH_OF_THE_DAY_BLOCK_QUERY } from "@/lib/sanity";
-// import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsForCarousel";
+import { client, SITE_SETTINGS_QUERY, CATCH_OF_THE_DAY_BLOCK_QUERY } from "@/lib/sanity";
+import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsForCarousel";
 import { ShopPageClient } from "./ShopPageClient";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
-// import type { FilterItem } from "@/lib/types";
-// import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
+import type { FilterItem } from "@/lib/types";
+import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
 
 export const metadata = {
   title: "Shop | Hook Point",
@@ -23,54 +22,52 @@ type SiteSettings = {
   }> | null;
 };
 
-// Product Carousel (commented out – may restore later)
-// type CatchOfTheDayBlockRaw = {
-//   backgroundColor?: string | null;
-//   title?: string | null;
-//   description?: string | null;
-//   filterCollections?: FilterItem[];
-//   cta?: { label?: string; href?: string } | null;
-// };
-// const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
-//   { label: "Seafood", collectionHandle: "seafood" },
-//   { label: "Subscription Box", collectionHandle: "subscription-box" },
-//   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
-// ];
+type CatchOfTheDayBlockRaw = {
+  backgroundColor?: string | null;
+  title?: string | null;
+  description?: string | null;
+  filterCollections?: FilterItem[];
+  cta?: { label?: string; href?: string } | null;
+};
+
+const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
+  { label: "Seafood", collectionHandle: "seafood" },
+  { label: "Subscription Box", collectionHandle: "subscription-box" },
+  { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
+];
 
 export default async function ShopPage() {
   let promoBanner: string | null = null;
   let filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }> = [];
   let collectionSections: CategorySectionBlockData[] = [];
-  // let productCarouselBlock: ShopProductCarouselBlock | null = null;
-  // let productCarouselInitialProducts: Awaited<ReturnType<typeof getCollectionProductsForCarousel>> = [];
+  let productCarouselBlock: ShopProductCarouselBlock | null = null;
+  let productCarouselInitialProducts: Awaited<ReturnType<typeof getCollectionProductsForCarousel>> = [];
 
   if (client) {
     try {
-      const settings = await client.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } });
-      // const [settings, catchData] = await Promise.all([
-      //   client.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } }),
-      //   client.fetch<CatchOfTheDayBlockRaw | null>(CATCH_OF_THE_DAY_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-      // ]);
+      const [settings, catchData] = await Promise.all([
+        client.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } }),
+        client.fetch<CatchOfTheDayBlockRaw | null>(CATCH_OF_THE_DAY_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+      ]);
 
       promoBanner = settings?.promoBanner ?? null;
 
-      // Product Carousel fetch (commented out – may restore later)
-      // if (catchData) {
-      //   const filterCollections =
-      //     catchData.filterCollections && catchData.filterCollections.length > 0
-      //       ? catchData.filterCollections.filter((f) => f.label || f.collectionHandle)
-      //       : DEFAULT_FILTER_COLLECTIONS;
-      //   const firstHandle = filterCollections[0]?.collectionHandle?.trim() ?? "";
-      //   productCarouselBlock = {
-      //     backgroundColor: catchData.backgroundColor ?? undefined,
-      //     title: catchData.title ?? undefined,
-      //     description: catchData.description ?? undefined,
-      //     filterCollections,
-      //   };
-      //   if (firstHandle) {
-      //     productCarouselInitialProducts = await getCollectionProductsForCarousel(firstHandle);
-      //   }
-      // }
+      if (catchData) {
+        const filterCollections =
+          catchData.filterCollections && catchData.filterCollections.length > 0
+            ? catchData.filterCollections.filter((f) => f.label || f.collectionHandle)
+            : DEFAULT_FILTER_COLLECTIONS;
+        const firstHandle = filterCollections[0]?.collectionHandle?.trim() ?? "";
+        productCarouselBlock = {
+          backgroundColor: catchData.backgroundColor ?? undefined,
+          title: catchData.title ?? undefined,
+          description: catchData.description ?? undefined,
+          filterCollections,
+        };
+        if (firstHandle) {
+          productCarouselInitialProducts = await getCollectionProductsForCarousel(firstHandle);
+        }
+      }
 
       const rawFilters = settings?.shopFilterOptions ?? [];
       filterOptions = rawFilters
@@ -101,8 +98,8 @@ export default async function ShopPage() {
       promoBanner={promoBanner}
       filterOptions={filterOptions}
       collectionSections={collectionSections}
-      // productCarouselBlock={productCarouselBlock}
-      // productCarouselInitialProducts={productCarouselInitialProducts}
+      productCarouselBlock={productCarouselBlock}
+      productCarouselInitialProducts={productCarouselInitialProducts}
     />
   );
 }

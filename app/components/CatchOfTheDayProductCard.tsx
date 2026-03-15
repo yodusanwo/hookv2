@@ -37,10 +37,13 @@ const SECTION_BG = "var(--brand-light-blue-bg)";
 export function CatchOfTheDayProductCard({
   product,
   blendWhiteWithSectionBackground = false,
+  darkSection = false,
 }: {
   product: CatchOfTheDayProductCardProduct;
   /** When true, white areas in the image blend with the section background (for product images on white). */
   blendWhiteWithSectionBackground?: boolean;
+  /** When true, card is on a dark/navy section; footer gets a light background so dark text remains readable. */
+  darkSection?: boolean;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
@@ -179,29 +182,48 @@ export function CatchOfTheDayProductCard({
           </button>
         </div>
 
-        <div
-          className="flex flex-1 flex-col px-4 py-3"
-          style={{ backgroundColor: "var(--brand-navy)" }}
-        >
+        <div className="flex flex-1 flex-col px-4 py-3">
           <h3
-            className="font-semibold text-white"
-            style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "18px" }}
+            style={{
+              color: darkSection ? "rgba(255,255,255,0.95)" : "var(--Text-Color, #1E1E1E)",
+              fontFamily: "Inter, var(--font-inter), sans-serif",
+              fontSize: "20px",
+              fontStyle: "normal",
+              fontWeight: 600,
+              lineHeight: "150%",
+              textTransform: "capitalize",
+            }}
           >
-            <Link href={productHref} className="hover:underline text-white">
+            <Link href={productHref} className="hover:underline" style={{ color: "inherit" }}>
               {displayTitle}
             </Link>
           </h3>
           {subtitle && (
             <p
-              className="mt-1 text-sm text-slate-300"
-              style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
+              className="mt-1"
+              style={{
+                color: darkSection ? "rgba(255,255,255,0.85)" : "var(--Text-Color, #1E1E1E)",
+                fontFamily: "Inter, var(--font-inter), sans-serif",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "150%",
+              }}
             >
               {subtitle}
             </p>
           )}
           <Link
             href={productHref}
-            className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-slate-300 hover:text-white hover:underline"
+            className="mt-2 inline-flex items-center gap-1 hover:underline"
+            style={{
+              color: darkSection ? "rgba(255,255,255,0.85)" : "var(--Text-Color, #1E1E1E)",
+              fontFamily: "Inter, var(--font-inter), sans-serif",
+              fontSize: "16px",
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "150%",
+            }}
           >
             <span className="text-lg leading-none">+</span>
             Show more

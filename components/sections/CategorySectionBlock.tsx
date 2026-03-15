@@ -123,12 +123,25 @@ export function CategorySectionBlock({
         <div className="mx-auto w-full max-w-[1200px] px-4">
           <SectionHeading
             title={title}
-            description={description ?? undefined}
             variant="display"
             theme="light"
             titleColor="#1E1E1E"
-            descriptionColor="#1E1E1E"
           />
+          {description && (
+            <p
+              className="mx-auto w-full max-w-[933px] text-center mt-4"
+              style={{
+                color: "var(--Text-Color, #1E1E1E)",
+                fontFamily: "Inter, var(--font-inter), sans-serif",
+                fontSize: "20px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "150%",
+              }}
+            >
+              {description}
+            </p>
+          )}
           {loading ? (
             <div
               className="grid gap-6 mt-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
