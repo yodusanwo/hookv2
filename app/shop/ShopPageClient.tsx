@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useFooterWaveOverride } from "@/app/context/FooterWaveOverride";
 import { PromoBanner } from "@/components/PromoBanner";
 import { CategoryFilterBar } from "@/components/sections/CategoryFilterBar";
 import { CategorySectionBlock } from "@/components/sections/CategorySectionBlock";
 import { ShopProductCarousel } from "./ShopProductCarousel";
+import { ShopSectionWave } from "./ShopSectionWave";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
 import type { ApiProductForCarousel } from "@/lib/types";
 import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
@@ -88,11 +89,16 @@ export function ShopPageClient({
       {promoBanner ? <PromoBanner text={promoBanner} /> : null}
 
       {visibleSections.map((block, idx) => (
-        <CategorySectionBlock
-          key={`${block.collectionHandle}-${idx}`}
-          block={block}
-          selectedFilterValues={selectedFilterValues}
-        />
+        <Fragment key={`${block.collectionHandle}-${idx}`}>
+          <CategorySectionBlock
+            block={block}
+            selectedFilterValues={selectedFilterValues}
+            hasWaveAbove={!hasSelection && idx > 0}
+          />
+          {!hasSelection && idx < visibleSections.length - 1 ? (
+            <ShopSectionWave />
+          ) : null}
+        </Fragment>
       ))}
 
       {productCarouselBlock && !hasSelection ? (

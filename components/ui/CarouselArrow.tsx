@@ -14,12 +14,21 @@ const arrowStyleWhite = {
   filter: "brightness(0) invert(1)" as const,
 };
 
-/** Dark arrow for light backgrounds – filter keeps icon dark (reliable cross-browser). */
-const arrowStyleDark = {
+/** Dark arrow for light backgrounds – exact #1E1E1E via mask. */
+const LIGHT_ARROW_COLOR = "#1E1E1E";
+const arrowStyleLight = {
   width: ARROW_SIZE_PX,
   height: ARROW_SIZE_PX,
-  filter: "brightness(0)" as const,
-};
+  backgroundColor: LIGHT_ARROW_COLOR,
+  WebkitMaskImage: `url(${ARROW_FORWARD_SRC})`,
+  maskImage: `url(${ARROW_FORWARD_SRC})`,
+  WebkitMaskSize: "contain",
+  maskSize: "contain",
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
+  WebkitMaskPosition: "center",
+  maskPosition: "center",
+} as React.CSSProperties;
 
 export const CAROUSEL_ARROW_OFFSET_PX = ARROW_OFFSET_PX;
 
@@ -71,13 +80,21 @@ export function CarouselArrow({
       }}
       aria-label={ariaLabel}
     >
-      <img
-        src={ARROW_FORWARD_SRC}
-        alt=""
-        aria-hidden
-        className={`max-w-full ${isPrev ? "rotate-180" : ""}`}
-        style={isLight ? arrowStyleDark : arrowStyleWhite}
-      />
+      {isLight ? (
+        <span
+          className={`block ${isPrev ? "rotate-180" : ""}`}
+          style={arrowStyleLight}
+          aria-hidden
+        />
+      ) : (
+        <img
+          src={ARROW_FORWARD_SRC}
+          alt=""
+          aria-hidden
+          className={`max-w-full ${isPrev ? "rotate-180" : ""}`}
+          style={arrowStyleWhite}
+        />
+      )}
     </button>
   );
 }

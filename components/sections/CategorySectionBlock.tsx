@@ -52,12 +52,18 @@ export type CategorySectionBlockData = {
   blendWhiteWithBackground?: boolean;
 };
 
+/** Extra top padding when a wave divider is rendered above this section (so the wave isn't covered). */
+const WAVE_CLEARANCE_PADDING = "clamp(8rem, 16vw, 12rem)";
+
 export function CategorySectionBlock({
   block,
   selectedFilterValues = [],
+  hasWaveAbove = false,
 }: {
   block: CategorySectionBlockData;
   selectedFilterValues?: string[];
+  /** When true, adds top padding so the wave above isn't covered by this section's background. */
+  hasWaveAbove?: boolean;
 }) {
   const { title, description, collectionHandle, layout = "grid", blendWhiteWithBackground = false } = block;
   const [products, setProducts] = React.useState<ApiProductForCarousel[]>([]);
@@ -118,7 +124,10 @@ export function CategorySectionBlock({
     <section
         id={collectionHandle ? `shop-section-${collectionHandle}` : undefined}
         className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
-        style={{ backgroundColor: LIGHT_BG }}
+        style={{
+          backgroundColor: LIGHT_BG,
+          ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
+        }}
       >
         <div className="mx-auto w-full max-w-[1200px] px-4">
           <SectionHeading
@@ -174,6 +183,7 @@ export function CategorySectionBlock({
                 disabled={carouselPageCount <= 1 || carouselPage <= 0}
                 onClick={() => setCarouselPage((p) => Math.max(0, p - 1))}
                 ariaLabel="Previous"
+                theme="light"
               />
               <div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-6 place-items-center"
@@ -192,6 +202,7 @@ export function CategorySectionBlock({
                   setCarouselPage((p) => Math.min(carouselPageCount - 1, p + 1))
                 }
                 ariaLabel="Next"
+                theme="light"
               />
             </div>
             )

@@ -115,7 +115,7 @@ export function CatchOfTheDayProductCard({
 
   return (
     <>
-      <div className="group relative flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md">
+      <div className="group relative flex min-w-[280px] max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl shadow-none">
         {/* Image area: same as recipe cards — height 320px, border-radius 10px, cover */}
         <div
           className="relative min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
@@ -126,8 +126,8 @@ export function CatchOfTheDayProductCard({
             background: product.imageUrl
               ? blendWhiteWithSectionBackground
                 ? `url(${product.imageUrl}) ${SECTION_BG} 50% / cover no-repeat`
-                : `url(${product.imageUrl}) lightgray 50% / cover no-repeat`
-              : "lightgray",
+                : `url(${product.imageUrl}) transparent 50% / cover no-repeat`
+              : "transparent",
             backgroundBlendMode: blendWhiteWithSectionBackground && product.imageUrl ? "multiply" : undefined,
           }}
           role={product.imageUrl ? "img" : undefined}
