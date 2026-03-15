@@ -4,19 +4,25 @@ import { useState } from "react";
 import { PromoBanner } from "@/components/PromoBanner";
 import { CategoryFilterBar } from "@/components/sections/CategoryFilterBar";
 import { CategorySectionBlock } from "@/components/sections/CategorySectionBlock";
+import { ShopProductCarousel } from "./ShopProductCarousel";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
+import type { ApiProductForCarousel } from "@/lib/types";
+import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
 
 export function ShopPageClient({
   promoBanner,
   filterOptions,
   collectionSections,
-  productCarousel,
+  productCarouselBlock,
+  productCarouselInitialProducts = [],
 }: {
   promoBanner: string | null;
   filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }>;
   collectionSections: CategorySectionBlockData[];
-  /** Product Carousel (Catch of the Day) - rendered between filter bar and promo banner. */
-  productCarousel?: React.ReactNode;
+  /** Product Carousel block data (from home page config). Rendered between filter bar and promo banner. */
+  productCarouselBlock?: ShopProductCarouselBlock | null;
+  /** Pre-fetched products for the carousel's first collection. */
+  productCarouselInitialProducts?: ApiProductForCarousel[];
 }) {
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>([]);
   const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<string[]>([]);
@@ -63,7 +69,13 @@ export function ShopPageClient({
         onClearAll={clearAll}
       />
 
-      {productCarousel}
+      {productCarouselBlock ? (
+        <ShopProductCarousel
+          block={productCarouselBlock}
+          initialProducts={productCarouselInitialProducts}
+          selectedFilterValues={selectedFilterValues}
+        />
+      ) : null}
 
       {promoBanner ? <PromoBanner text={promoBanner} /> : null}
 
