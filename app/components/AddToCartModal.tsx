@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 
 export function AddToCartModal({
   isOpen,
@@ -28,38 +29,67 @@ export function AddToCartModal({
         aria-label="Close"
       />
 
-      <div className="relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+      <div
+        className="relative z-10 p-6 shadow-xl flex flex-col justify-center items-center"
+        style={{
+          width: 647,
+          height: 288,
+          borderRadius: 10,
+          background: "var(--Grey-Background, #F2F2F5)",
+        }}
+      >
         {/* Close X */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 text-slate-500 hover:text-slate-800"
+          className="absolute right-4 top-4 hover:opacity-80 transition-opacity"
           aria-label="Close"
         >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <Image src="/Exiticon.svg" alt="" width={28} height={28} />
         </button>
 
-        <p id="add-to-cart-modal-title" className="pr-8 text-center text-slate-700">
-          The product has been added to your cart successfully.
-        </p>
-        <p className="mt-2 text-center text-slate-700">Would you like to check out?</p>
+        <div className="flex flex-col items-center justify-center text-center max-w-[calc(100%-3rem)]">
+          <p id="add-to-cart-modal-title" className="text-slate-700">
+            The product has been added to your cart successfully.
+          </p>
+          <p className="mt-2 text-slate-700">Would you like to check out?</p>
 
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-6 flex flex-wrap justify-center items-center gap-3">
           <a
             href={checkoutUrl ?? "#"}
-            className="inline-flex h-11 min-w-[120px] items-center justify-center rounded-lg bg-slate-200 px-5 text-sm font-semibold text-slate-800 hover:bg-slate-300"
+            className="inline-flex shrink-0 items-center justify-center text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+            style={{
+              width: 163.777,
+              height: 45.643,
+              padding: "10.482px 22.929px",
+              borderRadius: 6.551,
+              background: "#069400",
+              aspectRatio: "61/17",
+            }}
           >
             Check Out
           </a>
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-11 min-w-[140px] items-center justify-center rounded-lg border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+            className="inline-flex shrink-0 items-center justify-center bg-white hover:bg-slate-50 transition-colors whitespace-nowrap"
+            style={{
+              width: 165,
+              height: 46,
+              padding: "13px 18px 16px 17px",
+              borderRadius: 6.551,
+              border: "1px solid #069400",
+              color: "var(--Green, #069400)",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 14,
+              fontStyle: "normal",
+              fontWeight: 600,
+              lineHeight: "normal",
+            }}
           >
             Continue Shopping
           </button>
+          </div>
         </div>
       </div>
     </div>
