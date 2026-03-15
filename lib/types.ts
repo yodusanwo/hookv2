@@ -12,6 +12,9 @@ export type ApiProductForCarousel = {
   id: string;
   title: string;
   handle: string;
+  /** Used for /shop filter: metafield value (e.g. Seafood type) when configured, else productType. */
+  productType?: string | null;
+  filterValue?: string | null;
   images?: {
     edges?: Array<{ node?: { url?: string; altText?: string | null } }>;
   };

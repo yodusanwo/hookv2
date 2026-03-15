@@ -1,5 +1,6 @@
 import "server-only";
 import { shopifyFetch } from "@/lib/shopify";
+import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 import type { ApiProductForCarousel } from "@/lib/types";
 
 type VariantNode = {
@@ -14,6 +15,8 @@ type ProductNode = {
   id: string;
   title: string;
   handle: string;
+  productType?: string | null;
+  filterCategory?: { value?: string | null } | null;
   priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
   images: { edges: Array<{ node: { url: string; altText: string | null } }> };
   variants: { edges: Array<{ node: VariantNode }> };
@@ -27,13 +30,19 @@ type CollectionProductsResponse = {
   } | null;
 };
 
-const COLLECTION_PRODUCTS_QUERY = `
+function buildCollectionProductsQuery(): string {
+  const meta = getFilterMetafieldConfigEscaped();
+  const metafieldLine = meta
+    ? `filterCategory: metafield(namespace: "${meta.namespace}", key: "${meta.key}") { value }`
+    : "";
+  return `
   query GetCollectionProducts($handle: String!, $first: Int!) {
     collection(handle: $handle) {
       products(first: $first) {
         edges {
           node {
-            id title handle
+            id title handle productType
+            ${metafieldLine}
             priceRange { minVariantPrice { amount currencyCode } }
             images(first: 1) { edges { node { url altText } } }
             variants(first: 1) {
@@ -53,6 +62,7 @@ const COLLECTION_PRODUCTS_QUERY = `
     }
   }
 `;
+}
 
 const MAX_PRODUCTS = 9;
 
@@ -70,8 +80,9 @@ export async function getCollectionProductsForCarousel(
   }
 
   try {
+    const query = buildCollectionProductsQuery();
     const data = await shopifyFetch<CollectionProductsResponse>({
-      query: COLLECTION_PRODUCTS_QUERY,
+      query,
       variables: { handle: trimmed, first },
     });
 
@@ -85,10 +96,17 @@ export async function getCollectionProductsForCarousel(
         : null;
       const sizeOrDescription =
         variant?.selectedOptions?.map((o) => o.value)?.join(" / ") || null;
+      const productType = node.productType ?? null;
+      const filterValue =
+        (node.filterCategory?.value != null && node.filterCategory.value !== ""
+          ? node.filterCategory.value
+          : null) ?? productType;
       return {
         id: node.id,
         title: node.title,
         handle: node.handle,
+        productType,
+        filterValue: filterValue ?? null,
         images: node.images,
         priceRange: { minVariantPrice: price },
         variantId: variant?.id ?? null,

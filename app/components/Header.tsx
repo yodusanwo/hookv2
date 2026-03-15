@@ -7,9 +7,9 @@ import { CartCount } from "./CartCount";
 import { safeHref } from "@/lib/urlValidation";
 
 const FALLBACK_NAV = [
-  { href: "#shop", label: "Shop" },
+  { href: "/shop", label: "Shop" },
   { href: "#about", label: "Our Story" },
-  { href: "#recipes", label: "Recipes" },
+  { href: "/recipes", label: "Recipes" },
   { href: "#calendar", label: "Calendar" },
   { href: "/contact", label: "Contact Us" },
 ];

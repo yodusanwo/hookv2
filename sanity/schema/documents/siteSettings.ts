@@ -8,6 +8,7 @@ export const siteSettings = defineType({
   groups: [
     { name: "header", title: "Header" },
     { name: "footer", title: "Footer" },
+    { name: "shop", title: "Shop Page" },
     { name: "shipping", title: "Shipping" },
   ],
   fields: [
@@ -78,6 +79,84 @@ export const siteSettings = defineType({
           options: { accept: IMAGE_ACCEPT },
           validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
             Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE) as import("sanity").SchemaValidationValue,
+        },
+      ],
+    }),
+    defineField({
+      name: "shopPageCollectionSections",
+      type: "array",
+      title: "Shop Page Collection Sections",
+      description:
+        "Collections to display on /shop. Each section shows a heading and product grid. Order here is the display order. Use the Shopify collection handle (e.g. seafood, smoked-specialty).",
+      group: "shop",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "title", type: "string", title: "Title", description: "Section heading (e.g. SEAFOOD, SMOKED & SPECIALTY)" },
+            { name: "description", type: "text", title: "Description", description: "Optional description below the heading" },
+            {
+              name: "collectionHandle",
+              type: "string",
+              title: "Collection Handle",
+              description: "Shopify collection URL handle (e.g. seafood, smoked-specialty, subscription-box)",
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "layout",
+              type: "string",
+              title: "Layout",
+              description: "Grid shows all products; carousel shows 3 at a time with arrows.",
+              options: {
+                list: [
+                  { value: "grid", title: "Grid" },
+                  { value: "carousel", title: "Carousel" },
+                ],
+              },
+              initialValue: "grid",
+            },
+            {
+              name: "blendWhiteWithBackground",
+              type: "boolean",
+              title: "Blend white with section background",
+              description: "Use for product images on white. Makes white areas show the section background instead.",
+              initialValue: false,
+            },
+          ],
+          preview: {
+            select: { title: "title", collectionHandle: "collectionHandle" },
+            prepare({ title, collectionHandle }) {
+              return { title: title || collectionHandle || "Collection" };
+            },
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "shopFilterOptions",
+      type: "array",
+      title: "Shop Page Product Type Filters",
+      description:
+        "Filter pills for product type (e.g. Salmon, Sablefish). Value must match the product type set in Shopify. Order here is the display order.",
+      group: "shop",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "label", type: "string", title: "Label", description: "Button text (e.g. Salmon)" },
+            {
+              name: "value",
+              type: "string",
+              title: "Value",
+              description: "Must match Shopify product type (e.g. Salmon, Seafood). Case-sensitive unless you normalize in code.",
+            },
+          ],
+          preview: {
+            select: { label: "label" },
+            prepare({ label }) {
+              return { title: label ?? "Filter" };
+            },
+          },
         },
       ],
     }),

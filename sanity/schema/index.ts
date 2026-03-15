@@ -20,6 +20,7 @@ import { upcomingEventsBlock } from "./blocks/upcomingEvents";
 import { localFoodsCoopsBlock } from "./blocks/localFoodsCoops";
 import { faqBlock } from "./blocks/faq";
 import { whyWildMattersBlock } from "./blocks/whyWildMatters";
+import { categorySectionBlock } from "./blocks/categorySection";
 
 import { page } from "./documents/page";
 import { collectionPage } from "./documents/collectionPage";
@@ -49,6 +50,7 @@ export const schemaTypes = [
   localFoodsCoopsBlock,
   faqBlock,
   whyWildMattersBlock,
+  categorySectionBlock,
   page,
   collectionPage,
   siteSettings,

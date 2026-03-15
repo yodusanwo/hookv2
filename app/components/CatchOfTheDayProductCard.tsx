@@ -32,10 +32,15 @@ export type CatchOfTheDayProductCardProduct = {
   sizeOrDescription?: string | null;
 };
 
+const SECTION_BG = "var(--brand-light-blue-bg)";
+
 export function CatchOfTheDayProductCard({
   product,
+  blendWhiteWithSectionBackground = false,
 }: {
   product: CatchOfTheDayProductCardProduct;
+  /** When true, white areas in the image blend with the section background (for product images on white). */
+  blendWhiteWithSectionBackground?: boolean;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
@@ -116,8 +121,11 @@ export function CatchOfTheDayProductCard({
             alignSelf: "stretch",
             borderRadius: 10,
             background: product.imageUrl
-              ? `url(${product.imageUrl}) lightgray 50% / cover no-repeat`
+              ? blendWhiteWithSectionBackground
+                ? `url(${product.imageUrl}) ${SECTION_BG} 50% / cover no-repeat`
+                : `url(${product.imageUrl}) lightgray 50% / cover no-repeat`
               : "lightgray",
+            backgroundBlendMode: blendWhiteWithSectionBackground && product.imageUrl ? "multiply" : undefined,
           }}
           role={product.imageUrl ? "img" : undefined}
           aria-label={product.imageUrl ? product.title : undefined}

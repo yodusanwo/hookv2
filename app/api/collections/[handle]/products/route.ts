@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { shopifyFetch } from "@/lib/shopify";
+import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 
 type VariantNode = {
   id: string;
@@ -13,6 +14,8 @@ type ProductNode = {
   id: string;
   title: string;
   handle: string;
+  productType?: string | null;
+  filterCategory?: { value?: string | null } | null;
   priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
   images: { edges: Array<{ node: { url: string; altText: string | null } }> };
   variants: { edges: Array<{ node: VariantNode }> };
@@ -26,13 +29,19 @@ type CollectionProductsResponse = {
   } | null;
 };
 
-const COLLECTION_PRODUCTS_QUERY = `
+function buildCollectionProductsQuery(): string {
+  const meta = getFilterMetafieldConfigEscaped();
+  const metafieldLine = meta
+    ? `filterCategory: metafield(namespace: "${meta.namespace}", key: "${meta.key}") { value }`
+    : "";
+  return `
   query GetCollectionProducts($handle: String!, $first: Int!) {
     collection(handle: $handle) {
       products(first: $first) {
         edges {
           node {
-            id title handle
+            id title handle productType
+            ${metafieldLine}
             priceRange { minVariantPrice { amount currencyCode } }
             images(first: 1) { edges { node { url altText } } }
             variants(first: 1) {
@@ -52,9 +61,13 @@ const COLLECTION_PRODUCTS_QUERY = `
     }
   }
 `;
+}
+
+const DEFAULT_FIRST = 9;
+const MAX_FIRST = 100;
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ handle: string }> },
 ) {
   const { handle } = await params;
@@ -69,10 +82,18 @@ export async function GET(
     );
   }
 
+  const url = new URL(req.url);
+  const firstParam = url.searchParams.get("first");
+  const first = Math.min(
+    MAX_FIRST,
+    Math.max(1, firstParam ? parseInt(firstParam, 10) || DEFAULT_FIRST : DEFAULT_FIRST)
+  );
+
   try {
+    const query = buildCollectionProductsQuery();
     const data = await shopifyFetch<CollectionProductsResponse>({
-      query: COLLECTION_PRODUCTS_QUERY,
-      variables: { handle: trimmed, first: 9 },
+      query,
+      variables: { handle: trimmed, first },
     });
 
     const collection = data.collection;
@@ -87,10 +108,17 @@ export async function GET(
         : null;
       const sizeOrDescription =
         variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
+      const productType = node.productType ?? null;
+      const filterValue =
+        (node.filterCategory?.value != null && node.filterCategory.value !== ""
+          ? node.filterCategory.value
+          : null) ?? productType;
       return {
         id: node.id,
         title: node.title,
         handle: node.handle,
+        productType,
+        filterValue: filterValue ?? null,
         images: node.images,
         priceRange: { minVariantPrice: price },
         variantId: variant?.id ?? null,

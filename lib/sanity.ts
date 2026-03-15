@@ -21,6 +21,8 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   headerBackgroundColor,
   promoBanner,
   navLinks[] { label, href },
+  shopPageCollectionSections[] { title, description, collectionHandle, layout, blendWhiteWithBackground },
+  shopFilterOptions[] { label, value },
   freeShippingMessage,
   estimatedDeliveryProcessingDays,
   estimatedDeliveryTransitDays,
@@ -119,6 +121,17 @@ export const EXPLORE_PRODUCTS_BLOCK_QUERY = `*[_type == "page" && slug.current =
   title,
   description,
   "filterCollections": filterCollections[] { label, collectionHandle, image { asset-> } }
+}`;
+
+/** GROQ query for the first Catch of the Day (product carousel) block from the home page. Used on /shop page. */
+export const CATCH_OF_THE_DAY_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "catchOfTheDayBlock"][0] {
+  _type,
+  _key,
+  backgroundColor,
+  title,
+  description,
+  "filterCollections": filterCollections[] { label, collectionHandle },
+  cta { label, href }
 }`;
 
 /** Title and description from the Sanity "Recipes" page (first recipesBlock). Use for /recipes page heading. */

@@ -36,15 +36,34 @@ function mapApiProductToCard(
   };
 }
 
+function matchesProductTypeFilter(
+  productType: string | null | undefined,
+  selectedValues: string[]
+): boolean {
+  if (selectedValues.length === 0) return true;
+  if (!productType || typeof productType !== "string") return false;
+  const normalized = productType.trim().toLowerCase();
+  return selectedValues.some((v) => v.trim().toLowerCase() === normalized);
+}
+
 export function CatchOfTheDayGrid({
   filterCollections,
   initialProducts = [],
+  selectedProductTypeFilter = [],
+  hideCollectionTabs = false,
 }: {
   filterCollections: FilterItem[];
   /** Pre-fetched products for the first collection (avoids "Loading products…" on hard refresh). */
   initialProducts?: ApiProductForCarousel[];
+  /** When set, only products whose productType matches one of these values are shown (e.g. on /shop page). */
+  selectedProductTypeFilter?: string[];
+  /** When true, hide the Seafood / Subscription Box / etc. tabs and only show the first collection (e.g. on /shop page). */
+  hideCollectionTabs?: boolean;
 }) {
   const collections = filterCollections ?? [];
+  const effectiveCollections = hideCollectionTabs && collections.length > 0
+    ? [collections[0]]
+    : collections;
   const firstHandle = collections[0]?.collectionHandle?.trim() ?? "";
   const initialMapped = React.useMemo(
     () => (initialProducts.length > 0 ? initialProducts.map(mapApiProductToCard) : []),
@@ -61,19 +80,21 @@ export function CatchOfTheDayGrid({
   const cacheRef = React.useRef<Map<string, CatchOfTheDayProductCardProduct[]>>(
     new Map(),
   );
+  const rawProductsRef = React.useRef<Map<string, ApiProductForCarousel[]>>(new Map());
 
   if (firstHandle && initialMapped.length > 0 && !cacheRef.current.has(firstHandle)) {
     cacheRef.current.set(firstHandle, initialMapped);
+    if (initialProducts.length > 0) rawProductsRef.current.set(firstHandle, initialProducts);
   }
 
-  const currentCollection = collections[activeIndex];
+  const currentCollection = effectiveCollections[activeIndex];
   const collectionHandle = currentCollection?.collectionHandle?.trim() ?? "";
 
   React.useEffect(() => {
     setActiveIndex((prev) =>
-      Math.min(prev, Math.max(0, collections.length - 1)),
+      Math.min(prev, Math.max(0, effectiveCollections.length - 1)),
     );
-  }, [collections.length]);
+  }, [effectiveCollections.length]);
 
   React.useEffect(() => {
     const cached = cacheRef.current.get(collectionHandle);
@@ -103,6 +124,7 @@ export function CatchOfTheDayGrid({
         const raw = json.products ?? [];
         const mapped = raw.map(mapApiProductToCard);
         if (!controller.signal.aborted) {
+          rawProductsRef.current.set(collectionHandle, raw);
           cacheRef.current.set(collectionHandle, mapped);
           setProducts(mapped);
           setPageIndex(0);
@@ -122,8 +144,24 @@ export function CatchOfTheDayGrid({
     return () => controller.abort();
   }, [collectionHandle]);
 
-  const pageCount = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));
-  const currentPageProducts = products.slice(
+  const displayProducts = React.useMemo(() => {
+    if (selectedProductTypeFilter.length === 0) return products;
+    const raw = rawProductsRef.current.get(collectionHandle);
+    if (!raw?.length) return products;
+    const filtered = raw
+      .filter((p) =>
+        matchesProductTypeFilter(p.filterValue ?? p.productType, selectedProductTypeFilter)
+      )
+      .map(mapApiProductToCard);
+    return filtered;
+  }, [products, collectionHandle, selectedProductTypeFilter]);
+
+  React.useEffect(() => {
+    setPageIndex(0);
+  }, [selectedProductTypeFilter]);
+
+  const pageCount = Math.max(1, Math.ceil(displayProducts.length / ITEMS_PER_PAGE));
+  const currentPageProducts = displayProducts.slice(
     pageIndex * ITEMS_PER_PAGE,
     pageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
   );
@@ -136,8 +174,8 @@ export function CatchOfTheDayGrid({
 
   return (
     <>
-      {/* Filter buttons */}
-      {collections.length > 0 && (
+      {/* Collection tabs (Seafood, Subscription Box, etc.) – hidden on shop page when hideCollectionTabs */}
+      {!hideCollectionTabs && collections.length > 0 && (
         <div className="mt-4 sm:mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 px-4">
           {collections.map((col, idx) => (
             <button
@@ -194,7 +232,7 @@ export function CatchOfTheDayGrid({
             >
               {error}
             </div>
-          ) : products.length > 0 ? (
+          ) : displayProducts.length > 0 ? (
             <div className="relative flex items-center justify-center gap-6">
               <CarouselArrow
                 direction="prev"
@@ -228,8 +266,9 @@ export function CatchOfTheDayGrid({
                 fontSize: "16px",
               }}
             >
-              No products in this collection. Add products in Shopify and assign
-              them to the collection.
+              {selectedProductTypeFilter.length > 0
+                ? "No products match the current filter."
+                : "No products in this collection. Add products in Shopify and assign them to the collection."}
             </p>
           )}
         </div>

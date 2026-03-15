@@ -8,6 +8,8 @@ const RESERVED_SLUGS = new Set([
   "contact",
   "story",
   "home",
+  "shop",
+  "recipes",
   "collections",
   "cart",
   "products",
