@@ -181,7 +181,7 @@ export default async function BasicDetailPage({
   }
   if (!basic) notFound();
 
-  const heroImageUrl = basic.image ? urlFor(basic.image).url() : null;
+  const heroImageUrl = basic.image ? (urlFor(basic.image)?.url() ?? null) : null;
   const sections = basic.sections ?? [];
   const topSections = sections.filter((s) => (s.row ?? "top") === "top");
   const bottomLeftSections = sections.filter((s) => s.row === "bottom" && (s.column ?? "left") === "left");
