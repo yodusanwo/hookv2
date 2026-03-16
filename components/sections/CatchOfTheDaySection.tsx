@@ -70,7 +70,6 @@ export async function CatchOfTheDaySection({
           titleColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
           descriptionColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
           descriptionAsLead
-          titleFontFamily="var(--font-zamenhof-inline), var(--font-inter), Inter, sans-serif"
         />
       </div>
 

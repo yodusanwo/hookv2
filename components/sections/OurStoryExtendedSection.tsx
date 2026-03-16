@@ -86,7 +86,6 @@ export function OurStoryExtendedSection({
             variant="display"
             theme="light"
             titleColor="#1E1E1E"
-            titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
           />
         )}
         {(block.introText ?? "").trim() && (

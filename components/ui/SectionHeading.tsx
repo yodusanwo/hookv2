@@ -70,13 +70,13 @@ export function SectionHeading({
     return (
       <div className={`mx-auto ${containerMaxW}`}>
         <h2
-          className={`text-center uppercase tracking-[0.04em] md:tracking-[0.05em] lg:tracking-[0.06em] ${titleLetterSpacingClass ?? ""}`.trim()}
+          className={`section-heading text-center uppercase ${titleLetterSpacingClass ?? ""}`.trim()}
           style={{
-            fontFamily: titleFontFamily ?? "var(--font-inter), Inter, sans-serif",
-            fontSize: titleFontSize != null ? titleFontSize : "var(--section-heading-display-size)",
-            fontStyle: "normal",
-            fontWeight: titleFontWeight != null ? titleFontWeight : "var(--section-heading-display-weight)",
-            lineHeight: titleLineHeight ?? "var(--section-heading-display-line-height)",
+            fontFamily: titleFontFamily ?? undefined,
+            fontSize: titleFontSize != null ? titleFontSize : undefined,
+            fontWeight: titleFontWeight != null ? titleFontWeight : undefined,
+            lineHeight: titleLineHeight ?? undefined,
+            letterSpacing: titleLetterSpacingClass ? undefined : "0%",
             color: resolvedTitleColor,
           }}
         >
@@ -101,10 +101,14 @@ export function SectionHeading({
     );
   }
 
-  const titleClass = `text-center text-2xl font-semibold tracking-tight ${titleColor ? "" : isDark ? "text-white" : "text-slate-900"}`;
   return (
     <div>
-      <h2 className={titleClass} style={titleColor ? { color: titleColor } : undefined}>{title}</h2>
+      <h2
+        className="section-heading text-center"
+        style={titleColor ? { color: titleColor } : isDark ? { color: "var(--section-heading-dark)" } : undefined}
+      >
+        {title}
+      </h2>
       {description && (
         <p
           className="section-description"

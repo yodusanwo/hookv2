@@ -134,7 +134,6 @@ export function ExploreProductsSection({
           titleColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
           descriptionColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
           descriptionAsLead
-          titleFontFamily="var(--font-zamenhof-inline), var(--font-inter), Inter, sans-serif"
           descriptionClassName="text-left text-xs font-semibold sm:text-center sm:text-base sm:font-normal md:text-xl"
         />
       </div>

@@ -45,7 +45,6 @@ export function TheBasicsSection({
           variant="display"
           theme="light"
           titleColor="#111827"
-          titleFontFamily="Inter, sans-serif"
           titleFontSize={48}
           titleFontWeight={600}
           titleLineHeight="normal"

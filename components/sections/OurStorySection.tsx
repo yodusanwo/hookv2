@@ -131,7 +131,6 @@ export function OurStorySection({
               title={title}
               variant="display"
               theme={isStoryPage ? "dark" : "light"}
-              titleFontFamily="var(--font-zamenhof-inverse), var(--font-inter), Inter, sans-serif"
             />
             {block.description ? (
               <p
