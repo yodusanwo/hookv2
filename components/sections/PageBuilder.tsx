@@ -53,7 +53,11 @@ export type CanonicalExploreProductsBlock = {
   description?: string | null;
   backgroundColor?: string | null;
   hideWave?: boolean | null;
-  filterCollections?: Array<{ label?: string | null; collectionHandle?: string | null; image?: { _ref?: string; asset?: { _ref?: string } } }> | null;
+  filterCollections?: Array<{
+    label?: string | null;
+    collectionHandle?: string | null;
+    image?: { _ref?: string; asset?: { _ref?: string } };
+  }> | null;
   [key: string]: unknown;
 };
 
@@ -169,7 +173,10 @@ export function PageBuilder({
             const prevIsSecondOurStoryExtended =
               pageSlug === "wild" &&
               prevBlock?._type === "ourStoryExtendedBlock" &&
-              items.slice(0, idx).filter((b) => b._type === "ourStoryExtendedBlock").length === 2;
+              items
+                .slice(0, idx)
+                .filter((b) => b._type === "ourStoryExtendedBlock").length ===
+                2;
             const teamBiosShowsBottomWave = ourStoryVariant === "story-page";
             const ourStoryExtendedShowsWave = false;
             const hasWaveAbove =
@@ -177,18 +184,28 @@ export function PageBuilder({
               (!!prevIsOurStoryExtended && ourStoryExtendedShowsWave) ||
               prevIsSecondOurStoryExtended;
             // Use home page content (description, categories, images, /shop links) when provided; page block can override backgroundColor and hideWave.
-            const pageBlock = block as { backgroundColor?: string; hideWave?: boolean; [key: string]: unknown };
+            const pageBlock = block as {
+              backgroundColor?: string;
+              hideWave?: boolean;
+              [key: string]: unknown;
+            };
             const exploreBlock = canonicalExploreProductsBlock
               ? {
                   ...canonicalExploreProductsBlock,
-                  backgroundColor: pageBlock.backgroundColor ?? canonicalExploreProductsBlock.backgroundColor,
-                  hideWave: pageBlock.hideWave ?? canonicalExploreProductsBlock.hideWave,
+                  backgroundColor:
+                    pageBlock.backgroundColor ??
+                    canonicalExploreProductsBlock.backgroundColor,
+                  hideWave:
+                    pageBlock.hideWave ??
+                    canonicalExploreProductsBlock.hideWave,
                 }
               : pageBlock;
             const wildWave = prevIsSecondOurStoryExtended ? (
               <div
                 className="relative z-30 top-[100px] -mt-8 -mb-2 w-full shrink-0"
-                style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
+                style={{
+                  transform: "scaleX(1.10) rotate(-5deg) translateZ(0)",
+                }}
               >
                 <WaveDivider
                   navySrc="/VectorWavyNavyOurStory.svg"
@@ -206,7 +223,11 @@ export function PageBuilder({
               <Fragment key={key}>
                 {wildWave}
                 <ExploreProductsSection
-                  block={exploreBlock as Parameters<typeof ExploreProductsSection>[0]["block"]}
+                  block={
+                    exploreBlock as Parameters<
+                      typeof ExploreProductsSection
+                    >[0]["block"]
+                  }
                   hideExploreProductsWave={hideExploreProductsWave}
                   showTopWave={showExploreProductsTopWave}
                   hasWaveAbove={hasWaveAbove}
@@ -315,18 +336,29 @@ export function PageBuilder({
                 block={block as Parameters<typeof RecipesSection>[0]["block"]}
               />
             );
-          case "docksideMarketsBlock":
+          case "docksideMarketsBlock": {
+            const calendarReduced = "clamp(3rem, 6vw, 5rem)";
+            const docksideTop =
+              docksideMarketsTopPadding ??
+              (pageSlug === "calendar" ? calendarReduced : undefined);
+            const docksideBottom =
+              docksideMarketsBottomPadding ??
+              (pageSlug === "calendar" ? calendarReduced : undefined);
+            const docksideMinHeight =
+              docksideMarketsMinHeight ??
+              (pageSlug === "calendar" ? 331 : undefined);
             return (
               <DocksideMarketsSection
                 key={key}
                 block={
                   block as Parameters<typeof DocksideMarketsSection>[0]["block"]
                 }
-                topPadding={docksideMarketsTopPadding}
-                bottomPadding={docksideMarketsBottomPadding}
-                minHeight={docksideMarketsMinHeight}
+                topPadding={docksideTop}
+                bottomPadding={docksideBottom}
+                minHeight={docksideMinHeight}
               />
             );
+          }
           case "upcomingEventsBlock":
             return (
               <UpcomingEventsSection
@@ -368,9 +400,7 @@ export function PageBuilder({
             return (
               <TheBasicsSection
                 key={key}
-                block={
-                  block as Parameters<typeof TheBasicsSection>[0]["block"]
-                }
+                block={block as Parameters<typeof TheBasicsSection>[0]["block"]}
                 topPadding={pageSlug === "recipes" ? 120 : undefined}
               />
             );

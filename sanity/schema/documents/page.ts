@@ -11,7 +11,8 @@ export const page = defineType({
       name: "description",
       type: "text",
       title: "Description",
-      description: "Optional intro text. On the Recipes page this appears above the category filters.",
+      description:
+        "Optional intro text. On the Recipes page this appears above the category filters.",
     }),
     defineField({
       name: "slug",
@@ -23,14 +24,16 @@ export const page = defineType({
       name: "footerWaveBackgroundColor",
       type: "string",
       title: "Color above footer",
-      description: "Background color of the area above the footer (the wave strip). Leave empty for default.",
+      description:
+        "Background color of the area above the footer (the wave strip). Leave empty for default.",
       options: { list: [...SECTION_BACKGROUND_COLOR_LIST] },
     }),
     defineField({
       name: "hideHeaderWave",
       type: "boolean",
       title: "Hide top wave",
-      description: "When on, the wave graphic below the header is hidden on this page (e.g. for Our Story Extended).",
+      description:
+        "When on, the wave graphic below the header is hidden on this page (e.g. for Our Story Extended).",
       initialValue: false,
     }),
     defineField({

@@ -66,7 +66,14 @@ export function TheBasicsSection({
             } catch {
               imageUrl = null;
             }
-            const slug = (item.slug ?? "").trim();
+            let slug = (item.slug ?? "").trim();
+            if (!slug && (item.label ?? "").trim()) {
+              slug = (item.label ?? "")
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-z0-9-]/g, "");
+            }
             const href = slug ? `/basics/${encodeURIComponent(slug)}` : "/basics";
             return (
               <Link
