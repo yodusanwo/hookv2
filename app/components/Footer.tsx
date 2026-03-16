@@ -60,14 +60,26 @@ export function Footer({
               className="block border-0 outline-none ring-0"
               aria-label="Hook Point home"
               style={{
-                width: "180.495px",
-                height: "175.983px",
+                width: "198.54px",
+                height: "193.58px",
                 aspectRatio: "40/39",
                 background: `url(${logoSrc}) var(--footer-bg) 50% / cover no-repeat`,
               }}
             />
             <p className="mt-4" style={footerTextStyle}>
               © 2026 All Rights Reserved
+            </p>
+            <p className="mt-1" style={footerTextStyle}>
+              Website design by{" "}
+              <a
+                href="https://www.zora.digital/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+                style={footerTextStyle}
+              >
+                Zora Digital
+              </a>
             </p>
           </div>
 
@@ -105,9 +117,9 @@ export function Footer({
             </form>
           </div>
 
-          {/* Column 3: Navigation links — 44px min tap height on mobile */}
-          <div className="">
-            <ul className="flex flex-col gap-2">
+          {/* Column 3: Navigation links — 44px min tap height on mobile; -mt-5 aligns top slightly below contact form content */}
+          <div className="md:-mt-5">
+            <ul className="flex flex-col list-none m-0 p-0 [&>li]:m-0 [&>li]:p-0" style={{ gap: "1px" }}>
               <li>
                 <a href="/shop" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Shop
@@ -162,25 +174,25 @@ export function Footer({
                 src="/SalmonState.png"
                 alt="SalmonState"
                 className="rounded object-contain"
-                style={{ width: "81.722px", height: "81.722px", aspectRatio: "1/1" }}
+                style={{ width: "89.89px", height: "89.89px", aspectRatio: "1/1" }}
               />
               <img
                 src="/local_catch.png"
                 alt="Local Catch Network"
                 className="rounded object-contain"
-                style={{ width: "65.434px", height: "65.434px", aspectRatio: "1/1" }}
+                style={{ width: "71.98px", height: "71.98px", aspectRatio: "1/1" }}
               />
               <img
                 src="/NWSA_transparent%201%20(1).png"
                 alt="Northwest Salmon Association"
                 className="rounded object-contain"
-                style={{ width: "94px", height: "94px", aspectRatio: "1/1" }}
+                style={{ width: "103.4px", height: "103.4px", aspectRatio: "1/1" }}
               />
               <img
                 src="/Hatch%201.png"
                 alt="The Hatchery"
                 className="rounded object-contain"
-                style={{ width: "94px", height: "94px", aspectRatio: "1/1" }}
+                style={{ width: "103.4px", height: "103.4px", aspectRatio: "1/1" }}
               />
             </div>
             <div className="flex gap-3">
@@ -192,7 +204,7 @@ export function Footer({
                 style={{ background: "#EEF1F6" }}
                 aria-label="Facebook"
               >
-                <img src="/Facebook.svg" alt="" className="h-5 w-5 object-contain" aria-hidden />
+                <img src="/Facebook.svg" alt="" className="h-[22px] w-[22px] object-contain" aria-hidden />
               </a>
               <a
                 href="https://instagram.com"
@@ -202,7 +214,7 @@ export function Footer({
                 style={{ background: "#EEF1F6" }}
                 aria-label="Instagram"
               >
-                <img src="/Instagram.svg" alt="" className="h-5 w-5 object-contain" aria-hidden />
+                <img src="/Instagram.svg" alt="" className="h-[22px] w-[22px] object-contain" aria-hidden />
               </a>
             </div>
           </div>

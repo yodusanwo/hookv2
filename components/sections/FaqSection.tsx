@@ -75,7 +75,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
             <div key={groupIdx} className="space-y-2">
               {group.categoryTitle && (
                 <h3
-                  className="text-left text-lg font-semibold text-slate-900"
+                  className="text-center text-lg font-semibold text-slate-900"
                   style={{
                     fontFamily: "var(--font-inter), Inter, sans-serif",
                   }}
@@ -91,7 +91,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
                   return (
                     <div
                       key={idx}
-                      className="overflow-hidden max-w-[607px]"
+                      className="overflow-hidden max-w-[607px] mx-auto"
                       style={{
                         backgroundColor: bgColor,
                         borderTop: "1px solid #D1D5DB",
@@ -125,7 +125,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
                       </button>
                       {isOpen && faq.answer && (
                         <div
-                          className="border-t border-black/5 px-6 py-4"
+                          className="border-t border-black/5 px-6 py-4 text-left"
                           style={{
                             color: "#1E1E1E",
                             fontFamily: "var(--font-inter), Inter, sans-serif",
@@ -146,7 +146,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
           ))}
         </div>
         {showMoreUrl && (
-          <div className="mx-auto mt-8 max-w-3xl">
+          <div className="mx-auto mt-8 max-w-3xl text-center">
             <a
               href={safeHref(showMoreUrl)}
               className="inline-flex items-center gap-2 hover:underline"
