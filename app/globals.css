@@ -144,6 +144,16 @@ h2.section-title,
   text-transform: uppercase;
 }
 
+/* H2 on mobile only: 24px, Inter, Semi Bold, line-height auto, letter-spacing 0% */
+@media (max-width: 767px) {
+  h2.section-title,
+  h2.section-heading,
+  .section-heading,
+  .section-title {
+    font-size: 24px;
+  }
+}
+
 /* Section description – below section heading */
 .section-description-block {
   font-family: var(--font-inter), Inter, sans-serif;

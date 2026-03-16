@@ -75,7 +75,7 @@ function SiteLayoutInner({
         navLinks={navLinks}
         backgroundColor={headerBackgroundColor}
       />
-      <div className="h-[56px] sm:h-[107px] shrink-0" aria-hidden />
+      <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       {!hideHeaderWave && <HeaderWave />}
       <div
         className={`relative z-0 overflow-x-hidden ${hideHeaderWave ? "-mt-0" : "-mt-[96px] sm:-mt-[150px] lg:-mt-[206px]"}`}
@@ -109,7 +109,7 @@ function SiteLayoutFallback({
         navLinks={navLinks}
         backgroundColor={headerBackgroundColor}
       />
-      <div className="h-[56px] sm:h-[107px] shrink-0" aria-hidden />
+      <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       <HeaderWave />
       <div className="relative z-0 overflow-x-hidden -mt-[96px] sm:-mt-[150px] lg:-mt-[206px]">{children}</div>
       <Footer
