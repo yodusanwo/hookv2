@@ -41,6 +41,7 @@ export function CarouselArrow({
   inset = false,
   insetNoBackground = false,
   arrowColor,
+  showOnMobile = false,
 }: {
   direction: "prev" | "next";
   disabled: boolean;
@@ -54,6 +55,8 @@ export function CarouselArrow({
   insetNoBackground?: boolean;
   /** Override arrow color (e.g. #FFFFFF). When set, uses mask for exact color. */
   arrowColor?: string;
+  /** When true, arrows are visible on mobile (default hidden on small screens) */
+  showOnMobile?: boolean;
 }) {
   const isPrev = direction === "prev";
   const isLight = theme === "light";
@@ -71,7 +74,7 @@ export function CarouselArrow({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`absolute top-1/2 z-10 -translate-y-1/2 hidden shrink-0 items-center justify-center disabled:opacity-30 disabled:pointer-events-none md:flex ${
+      className={`absolute top-1/2 z-10 -translate-y-1/2 shrink-0 items-center justify-center disabled:opacity-30 disabled:pointer-events-none ${showOnMobile ? "flex" : "hidden md:flex"} ${
         showInsetBackground
           ? "rounded-full bg-white/95 shadow-md hover:bg-white hover:shadow-lg"
           : "bg-transparent hover:opacity-90"

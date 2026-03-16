@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
 import { urlFor } from "@/lib/sanityImage";
@@ -44,6 +44,14 @@ export function DocksideMarketsSection({
   const description = block.description ?? "";
   const items = block.items ?? [];
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [mobilePage, setMobilePage] = useState(0);
+  const bgColor = block.backgroundColor ?? "#FAFAFC";
+
+  const ITEMS_PER_MOBILE_PAGE = 4;
+  const mobileTotalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_MOBILE_PAGE));
+  const mobilePageItems = items.length > 0
+    ? items.slice(mobilePage * ITEMS_PER_MOBILE_PAGE, mobilePage * ITEMS_PER_MOBILE_PAGE + ITEMS_PER_MOBILE_PAGE)
+    : [];
 
   function scrollByDir(dir: -1 | 1) {
     const el = scrollRef.current;
@@ -52,7 +60,61 @@ export function DocksideMarketsSection({
     el.scrollBy({ left: dir * step, behavior: "smooth" });
   }
 
-  const bgColor = block.backgroundColor ?? "#FAFAFC";
+  function renderMarketCell(item: MarketItem, idx: number, cellClassExtra = "") {
+    const img = urlFor(item.logo);
+    const logoW = item.logoWidth ?? 115;
+    const logoH = item.logoHeight ?? 115;
+    const logoAspect = item.logoAspectRatio ?? "1/1";
+    const hasCustomSize = item.logoWidth != null || item.logoHeight != null;
+    const maxLogoW = 700;
+    const maxLogoH = hasCustomSize ? 200 : 75;
+    const scale = Math.max(25, Math.min(200, item.logoScalePercent ?? 100)) / 100;
+    const w = Math.min(logoW * scale, maxLogoW);
+    const h = Math.min(logoH * scale, maxLogoH);
+    const content = img ? (
+      <div
+        role="img"
+        aria-label={item.label ?? ""}
+        className="max-w-full shrink-0 rounded-none flex items-center justify-center"
+        style={{
+          width: w,
+          height: h,
+          maxWidth: "100%",
+          aspectRatio: logoAspect,
+          backgroundColor: "transparent",
+        }}
+      >
+        <img
+          src={img.url()}
+          alt=""
+          className="max-w-full max-h-full w-auto h-auto object-contain"
+          style={{ display: "block" }}
+        />
+      </div>
+    ) : (
+      <span className="text-xs font-semibold text-slate-700">{item.label}</span>
+    );
+    const safeUrl = safeHref(item.url);
+    const cellClass = `flex shrink-0 items-center justify-center p-0 ${cellClassExtra}`.trim();
+    const cellStyle = { backgroundColor: img ? bgColor : "#FAFAFC" };
+    return safeUrl !== "#" ? (
+      <a
+        key={idx}
+        href={safeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${cellClass} hover:opacity-80 transition-opacity`}
+        style={cellStyle}
+      >
+        {content}
+      </a>
+    ) : (
+      <div key={idx} className={cellClass} style={cellStyle}>
+        {content}
+      </div>
+    );
+  }
+
   const sectionPt = topPadding ?? DEFAULT_TOP_PADDING;
   const sectionPb = bottomPadding ?? "0";
   return (
@@ -82,7 +144,65 @@ export function DocksideMarketsSection({
           wideTitleOnDesktop
         />
         <div className="relative mt-8 pb-0">
-          <div className="relative flex items-center justify-center">
+          {/* Mobile: 2x2 grid with arrows and dot pagination */}
+          <div className="relative md:hidden">
+            <div className="grid grid-cols-2 gap-3 px-10 min-h-[200px]">
+              {items.length > 0
+                ? mobilePageItems.map((item, idx) => (
+                    <div key={mobilePage * ITEMS_PER_MOBILE_PAGE + idx} className="aspect-square flex items-center justify-center p-2 rounded-none">
+                      {renderMarketCell(item, mobilePage * ITEMS_PER_MOBILE_PAGE + idx, "w-full h-full")}
+                    </div>
+                  ))
+                : ["Lincoln Park", "Uptown", "Lakeview", "South Loop"].map((name) => (
+                    <div
+                      key={name}
+                      className="aspect-square flex items-center justify-center bg-[#FAFAFC] p-4 text-xs font-semibold text-slate-700 rounded-none"
+                    >
+                      {name}
+                    </div>
+                  ))}
+            </div>
+            <div className="absolute inset-y-0 left-0 right-0 flex pointer-events-none [&_button]:pointer-events-auto">
+              <CarouselArrow
+                direction="prev"
+                onClick={() => setMobilePage((p) => Math.max(0, p - 1))}
+                disabled={mobilePage <= 0}
+                ariaLabel="Previous markets"
+                theme="light"
+                inset
+                insetNoBackground
+                showOnMobile
+              />
+              <CarouselArrow
+                direction="next"
+                onClick={() => setMobilePage((p) => Math.min(mobileTotalPages - 1, p + 1))}
+                disabled={mobilePage >= mobileTotalPages - 1}
+                ariaLabel="Next markets"
+                theme="light"
+                inset
+                insetNoBackground
+                showOnMobile
+              />
+            </div>
+            {/* Dot pagination */}
+            <div className="flex justify-center gap-1.5 mt-4 flex-wrap">
+              {Array.from({ length: mobileTotalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setMobilePage(i)}
+                  aria-label={`Go to page ${i + 1}`}
+                  aria-current={i === mobilePage ? "true" : undefined}
+                  className={`h-2 rounded-full transition-colors ${
+                    i === mobilePage ? "bg-gray-800 w-5" : "bg-gray-300 w-2 hover:bg-gray-400"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: horizontal scroll carousel */}
+          <div className="hidden md:block relative flex items-center justify-center">
             <div className="mx-auto w-full max-w-[1363px]">
               <div
                 ref={scrollRef}
