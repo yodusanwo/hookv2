@@ -47,8 +47,8 @@ export function HeroCarousel({
       <div
         className={
           variant === "story"
-            ? "relative w-full overflow-hidden h-[min(62vh,440px)] sm:h-[min(68vh,560px)] md:h-[840px]"
-            : "relative w-full overflow-hidden h-[min(60vh,420px)] sm:h-[min(65vh,520px)] md:h-[760px]"
+            ? "relative w-full overflow-hidden h-[min(75vh,520px)] sm:h-[min(68vh,560px)] md:h-[840px]"
+            : "relative w-full overflow-hidden h-[min(75vh,560px)] sm:h-[min(70vh,580px)] md:h-[760px]"
         }
       >
         {active.src ? (
@@ -128,15 +128,13 @@ export function HeroCarousel({
           <p
             className={
               variant === "story"
-                ? `${FONT_INTER} max-w-[740px]`
-                : `${FONT_INTER} mt-3 sm:mt-6 max-w-[920px]`
+                ? `${FONT_INTER} max-w-[740px] text-xs font-semibold sm:text-2xl sm:font-medium`
+                : `${FONT_INTER} mt-3 sm:mt-6 max-w-[920px] text-xs font-semibold sm:text-2xl sm:font-medium`
             }
             style={{
               color: "#FFF",
               fontFamily: "Inter, var(--font-inter), sans-serif",
-              fontSize: "24px",
               fontStyle: "normal",
-              fontWeight: 500,
               lineHeight: "normal",
             }}
           >

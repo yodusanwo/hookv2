@@ -2,11 +2,13 @@
  * First "Catch of the day" section (appears after Home/Hero).
  * Shows category cards (image + label) with carousel arrows. Independent of Product Carousel section.
  */
+import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 import { ExploreProductsCategoryCarousel } from "./ExploreProductsCategoryCarousel";
 import { isLightBackgroundColor } from "@/lib/theme";
 import { urlFor } from "@/lib/sanityImage";
+import { safeHref } from "@/lib/urlValidation";
 import type { FilterItem } from "@/lib/types";
 
 /** Explore Products filter item with optional Sanity image reference. */
@@ -128,6 +130,7 @@ export function ExploreProductsSection({
           descriptionColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
           descriptionAsLead
           titleFontFamily="var(--font-zamenhof-inline), var(--font-inter), Inter, sans-serif"
+          descriptionClassName="text-left text-xs font-semibold sm:text-center sm:text-base sm:font-normal md:text-xl"
         />
       </div>
 
@@ -136,6 +139,29 @@ export function ExploreProductsSection({
         textTheme={textTheme}
         labelColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
       />
+
+      <div className="mt-8 flex justify-center">
+        <Link
+          href={safeHref("/shop") ?? "#"}
+          className="inline-flex items-center gap-1.5 font-semibold hover:opacity-90"
+          style={{
+            color: isLightBg ? LIGHT_TEXT_COLOR : "#FFF",
+            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontSize: "16px",
+            lineHeight: "normal",
+          }}
+        >
+          Show more categories
+          <img
+            src="/Vector.svg"
+            alt=""
+            aria-hidden
+            width={28.333}
+            height={12.307}
+            className="shrink-0 max-w-full h-auto"
+          />
+        </Link>
+      </div>
 
       {showWave && (
         <div className="w-full shrink-0 overflow-visible">

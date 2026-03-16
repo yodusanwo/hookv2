@@ -23,6 +23,8 @@ type SectionHeadingProps = {
   titleFontWeight?: number;
   /** Override line height for the title (e.g. "normal") */
   titleLineHeight?: string | number;
+  /** Optional extra class names for the description (e.g. mobile text-left text-xs font-semibold sm:text-center) */
+  descriptionClassName?: string;
 };
 
 export function SectionHeading({
@@ -39,6 +41,7 @@ export function SectionHeading({
   titleFontSize,
   titleFontWeight,
   titleLineHeight,
+  descriptionClassName,
 }: SectionHeadingProps) {
   const isDark = theme === "dark";
   const resolvedTitleColor = titleColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
@@ -68,15 +71,14 @@ export function SectionHeading({
         </h2>
         {description && (
           <p
-            className={`section-description ${descriptionAsLead ? "section-description--lead" : ""}`.trim()}
+            className={`section-description ${descriptionAsLead ? "section-description--lead" : ""} ${descriptionClassName ?? ""}`.trim()}
             style={{
               color: resolvedDescColor,
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: 16,
               fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "150%",
-              textAlign: "center",
+              ...(descriptionClassName
+                ? { lineHeight: "normal" }
+                : { fontSize: 16, fontWeight: 400, lineHeight: "150%", textAlign: "center" as const }),
             }}
           >
             {description}

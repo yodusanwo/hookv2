@@ -192,7 +192,7 @@ export default async function BasicDetailPage({
   return (
     <main className="bg-white">
       <section
-        className="px-4 pt-[140px] pb-10 sm:pt-[170px] md:py-14 lg:pt-[230px]"
+        className="px-4 pt-[280px] pb-14 sm:pt-[240px] sm:pb-12 md:pt-[200px] md:pb-12 lg:pt-[170px] lg:pb-10 xl:pt-[140px]"
         style={{ backgroundColor: BG_COLOR }}
       >
         <div className="mx-auto max-w-6xl">
