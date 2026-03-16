@@ -130,7 +130,7 @@ export function CategoryFilterBar({
         </div>
 
         {/* Right: All pills (product types + categories, interleaved by insertAfterCategory) */}
-        <div className="flex flex-wrap gap-2 flex-1">
+        <div className="flex flex-wrap justify-center gap-2 flex-1">
           {pills.map((item) =>
             item.type === "filter" ? (
               <button

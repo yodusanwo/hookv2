@@ -53,7 +53,7 @@ export function RecipesPageClient({
   return (
     <>
       <div
-        className="mb-8 flex flex-wrap gap-2"
+        className="mb-8 flex flex-wrap justify-center gap-2"
         role="group"
         aria-label="Filter recipes by category"
       >

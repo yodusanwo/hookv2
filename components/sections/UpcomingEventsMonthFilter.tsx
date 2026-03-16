@@ -56,7 +56,7 @@ export function UpcomingEventsMonthFilter({
 }) {
   return (
     <div
-      className="flex flex-wrap gap-x-6 gap-y-4 items-start"
+      className="flex flex-wrap justify-center gap-x-6 gap-y-4 items-start"
       style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
       role="group"
       aria-label="Filter by year and month"

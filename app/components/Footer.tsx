@@ -50,14 +50,14 @@ export function Footer({
           className="w-full h-auto block align-bottom navy-wave-outline-top"
         />
       </div>
-      {/* Main footer content — 4 columns */}
+      {/* Main footer content — mobile: single column centered, logo/copyright at bottom; desktop: 4 columns */}
       <div className="mx-auto max-w-6xl px-4 py-12 pb-16 md:pb-12" style={{ backgroundColor: "var(--footer-bg)" }}>
-        <div className="grid grid-cols-1 gap-12 md:[grid-template-columns:1fr_1.15fr_0.5fr_3fr]">
-          {/* Column 1: Logo + copyright */}
-          <div className="">
+        <div className="flex flex-col gap-0 md:grid md:gap-12 md:[grid-template-columns:1fr_1.15fr_0.5fr_3fr]">
+          {/* Column 1: Logo + copyright — on mobile order-last so it appears at bottom */}
+          <div className="order-last flex flex-col items-center text-center md:order-none md:items-start md:text-left">
             <Link
               href="/"
-              className="block border-0 outline-none ring-0"
+              className="block border-0 outline-none ring-0 shrink-0"
               aria-label="Hook Point home"
               style={{
                 width: "198.54px",
@@ -83,14 +83,14 @@ export function Footer({
             </p>
           </div>
 
-          {/* Column 2: Newsletter — News, deals & drops */}
-          <div className="">
+          {/* Column 2: Newsletter — on mobile first, centered */}
+          <div className="order-first flex flex-col items-center border-b border-white/20 pb-6 mb-6 md:border-0 md:pb-0 md:mb-0 md:order-none md:items-stretch">
             <form
-              className="rounded-xl p-6 flex flex-col gap-3"
+              className="rounded-xl p-6 flex flex-col gap-3 w-full max-w-md md:max-w-none"
               style={{ backgroundColor: "#D4F2FF" }}
             >
               <h3
-                className="mb-0 whitespace-nowrap"
+                className="mb-0 whitespace-nowrap text-left"
                 style={{ ...footerTextStyle, fontSize: "1rem", fontWeight: 600, color: "#171717" }}
               >
                 News, deals & drops
@@ -117,46 +117,50 @@ export function Footer({
             </form>
           </div>
 
-          {/* Column 3: Navigation links — 44px min tap height on mobile; -mt-5 aligns top slightly below contact form content */}
-          <div className="md:-mt-5">
-            <ul className="flex flex-col list-none m-0 p-0 [&>li]:m-0 [&>li]:p-0" style={{ gap: "1px" }}>
-              <li>
-                <a href="/shop" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
-                  Shop
-                </a>
-              </li>
-              <li>
-                <a href="#about" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
-                  Our Story
-                </a>
-              </li>
-              <li>
-                <a href="#recipes" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
-                  Recipes
-                </a>
-              </li>
-              <li>
-                <a href="#calendar" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
-                  Calendar
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a href="/contact" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
-                  Contact
-                </a>
-              </li>
-            </ul>
+          {/* Column 3: Navigation links — on mobile two columns (Shop/Our Story/Recipes | Calendar/FAQ/Contact), centered */}
+          <div className="order-3 flex flex-col items-center border-b border-white/20 pb-6 mb-6 md:border-0 md:pb-0 md:mb-0 md:order-none md:-mt-5 md:items-stretch">
+            <div className="flex flex-row gap-8 justify-center md:contents">
+              <ul className="flex flex-col list-none m-0 p-0 [&>li]:m-0 [&>li]:p-0" style={{ gap: "1px" }}>
+                <li>
+                  <a href="/shop" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                    Shop
+                  </a>
+                </li>
+                <li>
+                  <a href="#about" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                    Our Story
+                  </a>
+                </li>
+                <li>
+                  <a href="#recipes" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                    Recipes
+                  </a>
+                </li>
+              </ul>
+              <ul className="flex flex-col list-none m-0 p-0 [&>li]:m-0 [&>li]:p-0" style={{ gap: "1px" }}>
+                <li>
+                  <a href="#calendar" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                    Calendar
+                  </a>
+                </li>
+                <li>
+                  <a href="#faq" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                    FAQ
+                  </a>
+                </li>
+                <li>
+                  <a href="/contact" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          {/* Column 4: Proud member + org logos + social */}
-          <div className="">
+          {/* Column 4: Proud member + org logos + social — on mobile order-2 (after newsletter), centered, org logos 2x2 */}
+          <div className="order-2 flex flex-col items-center border-b border-white/20 pb-6 mb-6 md:border-0 md:pb-0 md:mb-0 md:order-none md:items-stretch">
             <h3
-              className="mb-4 whitespace-nowrap"
+              className="mb-4 whitespace-nowrap text-center md:text-left w-full"
               style={{
                 color: "#FFF",
                 fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -168,8 +172,7 @@ export function Footer({
             >
               Proud Member of the following organizations
             </h3>
-            <div className="flex flex-wrap gap-4 items-center mb-6">
-              {/* Org logo placeholders — replace src with actual logo URLs */}
+            <div className="grid grid-cols-2 gap-4 items-center justify-items-center mb-6 w-full max-w-xs md:max-w-none md:justify-items-start xl:grid-cols-4">
               <img
                 src="/SalmonState.png"
                 alt="SalmonState"
@@ -195,7 +198,7 @@ export function Footer({
                 style={{ width: "103.4px", height: "103.4px", aspectRatio: "1/1" }}
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 justify-center md:justify-start">
               <a
                 href="https://facebook.com"
                 target="_blank"

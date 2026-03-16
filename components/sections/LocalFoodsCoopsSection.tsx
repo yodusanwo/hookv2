@@ -69,7 +69,7 @@ export function LocalFoodsCoopsSection({
           titleColor="#111827"
           descriptionColor="#1E1E1E"
         />
-        <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-2 grid grid-cols-2 gap-3 md:flex md:flex-wrap items-center justify-center">
           {items.map((item, idx) => {
             const logoImg = urlFor(item.logo);
             const safeUrl = safeHref(item.url);
