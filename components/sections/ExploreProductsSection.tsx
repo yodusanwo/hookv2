@@ -100,18 +100,17 @@ export function ExploreProductsSection({
   });
 
   const noTopPadding = showTopWave || hasWaveAbove;
-  const topPaddingClass = noTopPadding ? "pt-0" : doubleTopPadding ? "pt-28" : "pt-14";
   return (
     <section
       id="shop"
-      className={`relative z-20 overflow-visible ${topPaddingClass}`}
+      className={`relative z-20 overflow-visible pt-12 pb-0 ${noTopPadding ? "md:pt-0" : doubleTopPadding ? "md:pt-28" : "md:pt-14"}`}
       style={{
         backgroundColor: block.backgroundColor ?? "#171730",
         ...(bottomPadding ? { paddingBottom: bottomPadding } : {}),
       }}
     >
       {showTopWave && (
-        <div className="w-full shrink-0 overflow-visible">
+        <div className="-mb-8 w-full shrink-0 overflow-visible md:-mb-0">
           <div className="wave-full-bleed shrink-0" style={{ transform: "scaleY(-1)" }}>
             <WaveDivider
               navySrc="/VectorWavyNavy.svg"
@@ -140,18 +139,18 @@ export function ExploreProductsSection({
         labelColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
       />
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex w-full justify-center pb-10 md:hidden">
         <Link
           href={safeHref("/shop") ?? "#"}
-          className="inline-flex items-center gap-1.5 font-semibold hover:opacity-90"
+          className="inline-flex min-h-[44px] items-center justify-center gap-1.5 font-semibold hover:opacity-90"
           style={{
-            color: isLightBg ? LIGHT_TEXT_COLOR : "#FFF",
+            color: isLightBg ? LIGHT_TEXT_COLOR : "#498CCB",
             fontFamily: "var(--font-inter), Inter, sans-serif",
             fontSize: "16px",
             lineHeight: "normal",
           }}
         >
-          Show more categories
+          See more categories
           <img
             src="/Vector.svg"
             alt=""
@@ -164,7 +163,7 @@ export function ExploreProductsSection({
       </div>
 
       {showWave && (
-        <div className="w-full shrink-0 overflow-visible">
+        <div className="-mt-0 w-full shrink-0 overflow-visible">
           <div className="wave-full-bleed shrink-0">
             <WaveDivider
               navySrc="/VectorWavyNavy.svg"

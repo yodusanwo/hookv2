@@ -79,7 +79,7 @@ export function OurStoryExtendedReversedSection({
       style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF" }}
     >
       <div
-        className="mx-auto w-full max-w-6xl px-6 md:px-4 pb-12 pt-10 md:pl-[2.25rem]"
+        className="mx-auto w-full max-w-6xl px-6 md:px-4 pt-12 pb-12 md:pt-10 md:pb-12 md:pl-[2.25rem]"
       >
         {(block.title ?? "").trim() && (
           <SectionHeading
@@ -161,7 +161,7 @@ export function OurStoryExtendedReversedSection({
                 </div>
               )}
               {hasCtaFromSanity && (
-                <div className="mt-6">
+                <div className="mt-6 flex w-full justify-center md:justify-start">
                   <a
                     href={ctaHref}
                     className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case !text-[#1E1E1E]"

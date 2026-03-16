@@ -41,14 +41,11 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   return (
     <section
       id="recipes"
-      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start pb-0"
+      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start pb-12 md:pb-0"
       style={{ backgroundColor: bgColor, width: "100%", minHeight: 433 }}
     >
       <div
-        className="mx-auto w-full max-w-6xl px-6 md:px-4"
-        style={{
-          paddingTop: RECIPES_TOP_PADDING_PX,
-        }}
+        className="mx-auto w-full max-w-6xl px-6 md:px-4 pt-12 md:pt-[56px]"
       >
         <SectionHeading
           title={title}
@@ -111,11 +108,12 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             );
           })}
           </div>
-        <Link
-          href={safeHref(showMoreUrl) || "#"}
-          className="mt-10 mb-10 inline-flex items-center gap-1.5 hover:opacity-90 w-fit md:col-start-1 md:row-start-2"
-          style={SHOW_MORE_LINK_STYLE}
-        >
+        <div className="mt-10 mb-10 flex w-full justify-center md:col-start-1 md:row-start-2 md:justify-start">
+          <Link
+            href={safeHref(showMoreUrl) || "#"}
+            className="inline-flex items-center gap-1.5 hover:opacity-90 w-fit"
+            style={SHOW_MORE_LINK_STYLE}
+          >
           Show more recipes
           <img
             src="/Vector.svg"
@@ -125,11 +123,12 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             height={12.307}
             className="shrink-0 max-w-full h-auto"
           />
-        </Link>
+          </Link>
+        </div>
         </div>
       </div>
       <div
-        className="relative top-[100px] -mt-8 -mb-2 w-full shrink-0"
+        className="relative top-[60px] -mt-12 -mb-2 w-full shrink-0 md:top-[100px] md:-mt-8"
         style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
       >
         <WaveDivider

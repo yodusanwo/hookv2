@@ -32,7 +32,7 @@ export function TheBasicsSection({
 
   return (
     <section
-      className="relative z-20 py-14"
+      className="relative z-20 py-12 md:py-14"
       style={{
         backgroundColor: bgColor,
         ...(topPadding != null ? { paddingTop: topPadding } : {}),

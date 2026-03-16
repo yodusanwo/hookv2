@@ -40,7 +40,7 @@ export function TeamBiosSection({
   return (
     <section
       id="team-bios"
-      className={`relative z-10 overflow-hidden pt-14 md:pt-16 ${showBottomWave ? "pb-0" : "pb-14 md:pb-16"}`}
+      className={`relative z-10 overflow-hidden pt-12 pb-12 md:pt-16 ${showBottomWave ? "md:pb-0" : "md:pb-16"}`}
       style={{
         backgroundColor: block.backgroundColor ?? "#d4f2ff",
         ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
@@ -153,7 +153,7 @@ export function TeamBiosSection({
       </div>
 
       {showBottomWave && (
-        <div className="mt-auto w-full shrink-0 overflow-visible" style={{ marginTop: 60 }}>
+        <div className="-mt-8 mt-auto w-full shrink-0 overflow-visible md:-mt-0" style={{ marginTop: 60 }}>
           <div className="wave-full-bleed mt-auto shrink-0">
             <WaveDivider
               navySrc="/VectorWavyNavyOurStory.svg"

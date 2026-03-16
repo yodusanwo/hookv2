@@ -23,7 +23,7 @@ export function WaveDivider({
           : "";
   return (
     <div
-      className={`relative z-10 w-full leading-[0] ${wrapperClassName}`.trim()}
+      className={`relative z-10 w-full leading-[0] border-2 border-black ${wrapperClassName}`.trim()}
       aria-hidden
     >
       <img

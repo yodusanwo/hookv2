@@ -135,7 +135,7 @@ export function PageBuilder({
                 fallback={
                   <section
                     id="catch-of-the-day"
-                    className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
+                    className="relative z-20 overflow-visible py-12 sm:py-10 lg:py-12"
                     style={{ backgroundColor: "var(--brand-navy)" }}
                   >
                     <div className="mx-auto w-full max-w-6xl px-6 md:px-4">
@@ -205,7 +205,7 @@ export function PageBuilder({
               : pageBlock;
             const wildWave = prevIsSecondOurStoryExtended ? (
               <div
-                className="relative z-30 top-[100px] -mt-8 -mb-2 w-full shrink-0"
+                className="relative z-30 top-[60px] -mt-12 -mb-2 w-full shrink-0 md:top-[100px] md:-mt-8"
                 style={{
                   transform: "scaleX(1.10) rotate(-5deg) translateZ(0)",
                 }}

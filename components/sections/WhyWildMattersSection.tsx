@@ -57,10 +57,10 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
 
   return (
     <section
-      className="relative z-10 overflow-visible -mt-1 pt-24 pb-14"
+      className="relative z-10 overflow-visible -mt-1 pt-12 pb-12 md:pt-24 md:pb-14"
       style={{ backgroundColor: block.backgroundColor ?? "#d4f2ff" }}
     >
-      <div className="mx-auto w-full max-w-7xl px-6 md:px-4 pt-24">
+      <div className="mx-auto w-full max-w-7xl px-6 md:px-4 pt-0 md:pt-24">
         <SectionHeading
           title={title}
           description={description}
@@ -140,7 +140,7 @@ export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock })
               );
             })}
             {block.cta?.label && block.cta?.href && (
-              <div className="flex justify-start">
+              <div className="flex justify-center md:justify-start">
                 <a
                   href={safeHref(block.cta.href) ?? "#"}
                   className="inline-flex items-center gap-2 hover:underline"

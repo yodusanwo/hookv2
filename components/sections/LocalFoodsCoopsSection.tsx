@@ -54,7 +54,7 @@ export function LocalFoodsCoopsSection({
 
   return (
     <section
-      className={`relative z-20 flex min-h-0 flex-col justify-center pt-[60px] pb-0 border-2 border-red-500 ${bottomPaddingClass ?? ""}`.trim()}
+      className={`relative z-20 flex min-h-0 flex-col justify-center pt-12 pb-12 md:pt-[60px] md:pb-0 ${bottomPaddingClass ?? ""}`.trim()}
       style={{ backgroundColor: block.backgroundColor ?? "#FAFAFC" }}
     >
       <div
@@ -117,7 +117,7 @@ export function LocalFoodsCoopsSection({
       </div>
       {!hideWave && (
         <div
-          className="relative top-[100px] pb-0 -mb-2.5 w-full shrink-0 border-2 border-purple-500"
+          className="relative top-[60px] -mt-12 pb-0 -mb-2.5 w-full shrink-0 md:top-[100px] md:-mt-0"
           style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
         >
           <WaveDivider

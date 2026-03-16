@@ -123,7 +123,7 @@ export function CategorySectionBlock({
   return (
     <section
         id={collectionHandle ? `shop-section-${collectionHandle}` : undefined}
-        className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
+        className="relative z-20 overflow-visible py-12 sm:py-10 lg:py-12"
         style={{
           backgroundColor: LIGHT_BG,
           ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),

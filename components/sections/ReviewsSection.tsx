@@ -28,7 +28,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   const bgColor = block.backgroundColor ?? "#F8F8F8";
   return (
     <section
-      className="flex min-h-0 flex-col justify-center py-14"
+      className="flex min-h-0 flex-col justify-center py-12 md:py-14"
       style={{ backgroundColor: bgColor }}
     >
       <div className="mx-auto max-w-6xl px-6 md:px-4">

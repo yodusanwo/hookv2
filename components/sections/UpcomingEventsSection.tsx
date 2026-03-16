@@ -51,12 +51,9 @@ export function UpcomingEventsSection({
   return (
     <section
       id="events"
-      className="pb-14"
+      className="pt-12 pb-12 md:pt-[104px] md:pb-14"
       style={{
         backgroundColor: bgColor,
-        // Matches WAVE_HALF from RecipesSection — the other 80px of the wave
-        // that hangs into this section. Extra 24px gives breathing room.
-        paddingTop: "104px",
       }}
     >
       <div className="mx-auto max-w-6xl px-6 md:px-4">
@@ -68,26 +65,50 @@ export function UpcomingEventsSection({
         />
 
         {images.length > 0 && (
-          <div className="mt-10 flex justify-center gap-6">
-            {images.slice(0, 2).map((imgRef, idx) => {
-              const img = urlFor(imgRef);
-              if (!img) return null;
-              return (
-                <div
-                  key={idx}
-                  className="aspect-[4/3] w-full max-w-[320px] overflow-hidden rounded-lg"
-                  style={{ backgroundColor: bgColor }}
-                >
-                  <img
-                    src={img.url()}
-                    alt=""
-                    className="h-full w-full max-w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-              );
-            })}
-          </div>
+          <>
+            {/* Mobile: one image only */}
+            <div className="mt-10 flex justify-center gap-6 md:hidden">
+              {images.slice(0, 1).map((imgRef, idx) => {
+                const img = urlFor(imgRef);
+                if (!img) return null;
+                return (
+                  <div
+                    key={idx}
+                    className="aspect-[4/3] w-full max-w-[320px] overflow-hidden rounded-lg"
+                    style={{ backgroundColor: bgColor }}
+                  >
+                    <img
+                      src={img.url()}
+                      alt=""
+                      className="h-full w-full max-w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            {/* Desktop: up to two images */}
+            <div className="mt-10 hidden justify-center gap-6 md:flex">
+              {images.slice(0, 2).map((imgRef, idx) => {
+                const img = urlFor(imgRef);
+                if (!img) return null;
+                return (
+                  <div
+                    key={idx}
+                    className="aspect-[4/3] w-full max-w-[320px] overflow-hidden rounded-lg"
+                    style={{ backgroundColor: bgColor }}
+                  >
+                    <img
+                      src={img.url()}
+                      alt=""
+                      className="h-full w-full max-w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {isCalendarPage ? (
@@ -187,9 +208,10 @@ export function UpcomingEventsSection({
             )}
 
             {showAllUrl && (
+              <div className="mt-8 flex w-full justify-center md:justify-start md:ml-4">
               <Link
                 href={safeHref(showAllUrl) ?? "#"}
-                className="mt-8 ml-4 inline-flex items-center gap-1.5 font-medium hover:opacity-90"
+                className="inline-flex items-center gap-1.5 font-medium hover:opacity-90"
                 style={{
                   color: "#498CCB",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -204,9 +226,10 @@ export function UpcomingEventsSection({
                   aria-hidden
                   width={28.333}
                   height={12.307}
-                  className="shrink-0 max-w-full h-auto"
-                />
+                className="shrink-0 max-w-full h-auto"
+              />
               </Link>
+              </div>
             )}
           </>
         )}

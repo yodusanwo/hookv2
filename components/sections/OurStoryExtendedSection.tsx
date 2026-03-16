@@ -79,8 +79,7 @@ export function OurStoryExtendedSection({
       }}
     >
       <div
-        className="mx-auto w-full max-w-6xl px-6 md:px-4 pb-12 md:pl-[2.25rem]"
-        style={{ paddingTop: SECTION_TOP_PADDING_PX }}
+        className="mx-auto w-full max-w-6xl px-6 md:px-4 pt-12 pb-12 md:pt-[56px] md:pb-12 md:pl-[2.25rem]"
       >
         {(block.title ?? "").trim() && (
           <SectionHeading
@@ -177,7 +176,7 @@ export function OurStoryExtendedSection({
                   </div>
                 )}
                 {hasCtaFromSanity && (
-                  <div className="mt-6">
+                  <div className="mt-6 flex w-full justify-center md:justify-start">
                     <a
                       href={ctaHref}
                       className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case !text-[#1E1E1E]"
@@ -207,7 +206,7 @@ export function OurStoryExtendedSection({
       </div>
       {showBottomWave && (
         <div
-          className="relative z-30 top-[100px] -mt-8 -mb-2 w-full shrink-0"
+          className="relative z-30 top-[60px] -mt-12 -mb-2 w-full shrink-0 md:top-[100px] md:-mt-8"
           style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
         >
           <WaveDivider

@@ -84,9 +84,10 @@ export function CalendarEventsListWithFilter({
           />
         </div>
         {showAllUrl && (
+          <div className="mt-8 flex w-full justify-center md:justify-start md:ml-4">
           <Link
             href={safeHref(showAllUrl) ?? "#"}
-            className="mt-8 ml-4 inline-flex items-center gap-1.5 font-medium hover:opacity-90"
+            className="inline-flex items-center gap-1.5 font-medium hover:opacity-90"
             style={{
               color: "#498CCB",
               fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -104,6 +105,7 @@ export function CalendarEventsListWithFilter({
               className="shrink-0 max-w-full h-auto"
             />
           </Link>
+          </div>
         )}
       </>
     );
@@ -210,26 +212,28 @@ export function CalendarEventsListWithFilter({
       </div>
 
       {showAllUrl && (
-        <Link
-          href={safeHref(showAllUrl) ?? "#"}
-          className="mt-8 ml-4 inline-flex items-center gap-1.5 font-medium hover:opacity-90"
-          style={{
-            color: "#498CCB",
-            fontFamily: "Inter, var(--font-inter), sans-serif",
-            fontSize: "16px",
-            lineHeight: "normal",
-          }}
-        >
-          Show all events
-          <img
-            src="/Vector.svg"
-            alt=""
-            aria-hidden
-            width={28.333}
-            height={12.307}
-            className="shrink-0 max-w-full h-auto"
-          />
-        </Link>
+        <div className="mt-8 flex w-full justify-center md:justify-start md:ml-4">
+          <Link
+            href={safeHref(showAllUrl) ?? "#"}
+            className="inline-flex items-center gap-1.5 font-medium hover:opacity-90"
+            style={{
+              color: "#498CCB",
+              fontFamily: "Inter, var(--font-inter), sans-serif",
+              fontSize: "16px",
+              lineHeight: "normal",
+            }}
+          >
+            Show all events
+            <img
+              src="/Vector.svg"
+              alt=""
+              aria-hidden
+              width={28.333}
+              height={12.307}
+              className="shrink-0 max-w-full h-auto"
+            />
+          </Link>
+        </div>
       )}
     </>
   );

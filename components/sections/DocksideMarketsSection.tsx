@@ -53,18 +53,26 @@ export function DocksideMarketsSection({
   }
 
   const bgColor = block.backgroundColor ?? "#FAFAFC";
+  const sectionPt = topPadding ?? DEFAULT_TOP_PADDING;
+  const sectionPb = bottomPadding ?? "0";
   return (
-    <section
-      id="markets"
-      className="relative z-0 -mt-1 mx-auto flex flex-col justify-start"
-      style={{
-        backgroundColor: bgColor,
-        width: "100%",
-        minHeight: minHeight ?? DEFAULT_MIN_HEIGHT,
-        paddingTop: topPadding ?? DEFAULT_TOP_PADDING,
-        ...(bottomPadding ? { paddingBottom: bottomPadding } : {}),
-      }}
-    >
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `@media (max-width: 767px) { #markets { --dockside-pt: 48px; --dockside-pb: 48px; } } @media (min-width: 768px) { #markets { --dockside-pt: ${sectionPt}; --dockside-pb: ${sectionPb}; } }`,
+        }}
+      />
+      <section
+        id="markets"
+        className="relative z-0 -mt-1 mx-auto flex flex-col justify-start"
+        style={{
+          backgroundColor: bgColor,
+          width: "100%",
+          minHeight: minHeight ?? DEFAULT_MIN_HEIGHT,
+          paddingTop: "var(--dockside-pt)",
+          paddingBottom: "var(--dockside-pb)",
+        }}
+      >
       <div className="mx-auto flex w-full max-w-[1280px] flex-col px-6 md:px-4">
         <SectionHeading
           title={title}
@@ -181,5 +189,6 @@ export function DocksideMarketsSection({
         </div>
       </div>
     </section>
+    </>
   );
 }

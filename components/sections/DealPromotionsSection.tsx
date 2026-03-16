@@ -132,7 +132,7 @@ export async function DealPromotionsSection({
   const isLightBg =
     backgroundColor.toLowerCase() === "#ffffff" || backgroundColor.toLowerCase() === "white";
   return (
-    <section id={sectionId} className="relative z-10 py-14" style={{ backgroundColor }}>
+    <section id={sectionId} className="relative z-10 py-12 md:py-14" style={{ backgroundColor }}>
       <div className="mx-auto max-w-6xl px-6 md:px-4">
         <SectionHeading
           title={title}
