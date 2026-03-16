@@ -100,7 +100,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                   className="px-4 py-3"
                   style={{ backgroundColor: bgColor }}
                 >
-                  <h3 className="font-semibold text-slate-900">
+                  <h3 className="recipe-card-title">
                     {r.title ?? "Recipe"}
                   </h3>
                 </div>

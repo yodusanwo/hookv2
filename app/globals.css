@@ -166,6 +166,77 @@ body {
   box-shadow: var(--section-card-shadow-hover);
 }
 
+/* Product card price + cart badge – match design: white price box (sharp corners), add-to-cart circle #069400 */
+.product-card-price-overlay {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0;
+  background-color: #fff;
+  font-family: var(--font-inter), Inter, sans-serif;
+}
+.product-card-price-compare {
+  font-weight: 700;
+  font-size: 18px;
+  color: #000;
+  text-decoration: line-through;
+  text-decoration-color: #e53e3e;
+}
+.product-card-price-current {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  background-color: #e84d3c;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+}
+.product-card-price-overlay .product-card-price-single {
+  font-weight: 700;
+  font-size: 18px;
+  color: #000;
+}
+.product-card-cart-badge {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background-color: #069400;
+  color: white;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+.product-card-cart-badge:hover {
+  background-color: #057a00;
+}
+.product-card-cart-badge img {
+  width: 1.25rem;
+  height: 1.25rem;
+  object-fit: contain;
+}
+
+/* Recipe card title – /recipes, product page Wild Flavor, home Recipes section */
+.recipe-card-title {
+  color: var(--Text-Color, #1e1e1e);
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
 /* Our Story body typography */
 .our-story-body,
 .our-story-body p,

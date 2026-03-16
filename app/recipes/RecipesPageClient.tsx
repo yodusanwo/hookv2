@@ -133,7 +133,7 @@ export function RecipesPageClient({
                   className="flex flex-1 flex-col p-4"
                   style={{ backgroundColor: "var(--section-bg)" }}
                 >
-                  <h2 className="font-semibold text-slate-900">
+                  <h2 className="recipe-card-title">
                     {r.title ?? "Recipe"}
                   </h2>
                 </div>

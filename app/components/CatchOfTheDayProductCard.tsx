@@ -146,27 +146,24 @@ export function CatchOfTheDayProductCard({
             </div>
           )}
 
-          {/* Price overlay bottom-left */}
-          <div
-            className="absolute bottom-2 left-2 z-10 flex items-baseline gap-2 rounded px-2 py-1"
-            style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
-          >
-            <span className="font-bold text-white" style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "18px" }}>
-              ${Math.round(parseFloat(product.price)).toString()}
-            </span>
+          {/* Price overlay bottom-left – white box, compare-at (black + red strikethrough), current (white on orange-red) */}
+          <div className="product-card-price-overlay">
             {showCompareAt && (
-              <span className="text-sm text-slate-300 line-through" style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}>
+              <span className="product-card-price-compare">
                 ${Math.round(parseFloat(product.compareAtPrice!)).toString()}
               </span>
             )}
+            <span className={showCompareAt ? "product-card-price-current" : "product-card-price-single"}>
+              ${Math.round(parseFloat(product.price)).toString()}
+            </span>
           </div>
 
-          {/* Green circular add-to-cart button bottom-right */}
+          {/* Green circular add-to-cart button bottom-right – matches globals .product-card-cart-badge */}
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={!product.availableForSale || adding || !product.variantId}
-            className="absolute bottom-2 right-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm hover:bg-emerald-600 disabled:opacity-50 disabled:pointer-events-none"
+            className="product-card-cart-badge disabled:opacity-50 disabled:pointer-events-none transition-colors"
             aria-label="Add to cart"
           >
             {adding ? (

@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { IconCart } from "@/app/components/Icons";
 
 const CART_ID_KEY = "shopify_cart_id";
 
@@ -644,12 +643,15 @@ export default function CartPage() {
                           ) : (
                             <div className="h-full w-full bg-slate-200" />
                           )}
-                          <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded bg-white px-2.5 py-1.5 shadow">
-                            <span className="text-sm font-semibold text-black">
-                              ${parseFloat(product.price).toFixed(2)}
-                            </span>
-                            <IconCart className="h-4 w-4 text-slate-600" />
+                          <div className="product-card-price-overlay">
+                            <span className="product-card-price-single">${Math.round(parseFloat(product.price)).toString()}</span>
                           </div>
+                          <span className="product-card-cart-badge" aria-hidden>
+                            <img
+                              src="/add_shopping_cart_100dp_111827_FILL0_wght400_GRAD0_opsz48%201.svg"
+                              alt=""
+                            />
+                          </span>
                         </div>
                         <div className="p-4" style={{ backgroundColor: "var(--section-bg)" }}>
                           <h3 className="font-semibold text-black">

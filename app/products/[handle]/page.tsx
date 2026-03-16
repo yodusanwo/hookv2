@@ -1,7 +1,6 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
-import { IconCart } from "@/app/components/Icons";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
 import { ReviewsCarousel } from "@/components/sections/ReviewsCarousel";
@@ -11,7 +10,12 @@ import {
   getKlaviyoReviews,
   getKlaviyoReviewCountForProduct,
 } from "@/lib/klaviyoReviews";
-import { client, SITE_SETTINGS_QUERY, RECIPES_BY_PRODUCT_HANDLE_QUERY, RECIPES_LIST_QUERY } from "@/lib/sanity";
+import {
+  client,
+  SITE_SETTINGS_QUERY,
+  RECIPES_BY_PRODUCT_HANDLE_QUERY,
+  RECIPES_LIST_QUERY,
+} from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { renderShopifyRichText } from "@/lib/shopifyRichText";
 import Link from "next/link";
@@ -134,9 +138,15 @@ const LIGHT_BG = "var(--brand-light-blue-bg)";
 const NAVY = "var(--brand-navy)";
 
 /** Returns hero teaser: second paragraph if present, else first, else full description. */
-function heroTeaserFromDescription(description: string | null | undefined): string | null {
+function heroTeaserFromDescription(
+  description: string | null | undefined,
+): string | null {
   if (!description?.trim()) return null;
-  const paragraphs = description.trim().split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
+  const paragraphs = description
+    .trim()
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
   if (paragraphs.length >= 2) return paragraphs[1]!;
   if (paragraphs.length === 1) return paragraphs[0]!;
   return description.trim();
@@ -176,7 +186,9 @@ export default async function ProductPage({
       handle: string;
       productType: string;
       priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
-      images: { edges: Array<{ node: { url: string; altText: string | null } }> };
+      images: {
+        edges: Array<{ node: { url: string; altText: string | null } }>;
+      };
       variants: {
         edges: Array<{
           node: {
@@ -223,8 +235,12 @@ export default async function ProductPage({
               title: string;
               handle: string;
               productType?: string;
-              priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
-              images: { edges: Array<{ node: { url: string; altText: string | null } }> };
+              priceRange: {
+                minVariantPrice: { amount: string; currencyCode: string };
+              };
+              images: {
+                edges: Array<{ node: { url: string; altText: string | null } }>;
+              };
               variants: {
                 edges: Array<{
                   node: {
@@ -317,11 +333,7 @@ export default async function ProductPage({
             estimatedDeliveryCutoffTime?: string | null;
             estimatedDeliveryFrozenProcessingDays?: number | null;
             estimatedDeliveryFrozenTransitDays?: string | null;
-          }>(
-            SITE_SETTINGS_QUERY,
-            {},
-            { next: { revalidate: 60 } },
-          )
+          }>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } })
         : Promise.resolve(null),
     ]);
   const freeShippingMessage =
@@ -341,16 +353,32 @@ export default async function ProductPage({
     : (siteSettings?.estimatedDeliveryTransitDays?.trim() ?? "2-4");
 
   const transitMatch = transitStr.match(/^(\d+)\s*-\s*(\d+)$/);
-  const transitDaysMin = transitMatch ? parseInt(transitMatch[1]!, 10) : isFrozen ? 1 : 2;
-  const transitDaysMax = transitMatch ? parseInt(transitMatch[2]!, 10) : isFrozen ? 2 : 4;
+  const transitDaysMin = transitMatch
+    ? parseInt(transitMatch[1]!, 10)
+    : isFrozen
+      ? 1
+      : 2;
+  const transitDaysMax = transitMatch
+    ? parseInt(transitMatch[2]!, 10)
+    : isFrozen
+      ? 2
+      : 4;
 
-  type RecipeCard = { _id: string; title?: string; slug?: string; mainImage?: { asset?: { _ref?: string } } };
+  type RecipeCard = {
+    _id: string;
+    title?: string;
+    slug?: string;
+    mainImage?: { asset?: { _ref?: string } };
+  };
   let recipesToShow: RecipeCard[] = [];
   if (client) {
     try {
-      recipesToShow = await client.fetch<RecipeCard[]>(RECIPES_BY_PRODUCT_HANDLE_QUERY, {
-        productHandle: handle,
-      });
+      recipesToShow = await client.fetch<RecipeCard[]>(
+        RECIPES_BY_PRODUCT_HANDLE_QUERY,
+        {
+          productHandle: handle,
+        },
+      );
       if (recipesToShow.length === 0) {
         const all = await client.fetch<RecipeCard[]>(RECIPES_LIST_QUERY);
         recipesToShow = all.slice(0, 3);
@@ -361,10 +389,10 @@ export default async function ProductPage({
   }
 
   const productSet = new Set(
-    productReviews.map((r) => `${r.name}|${r.date}|${r.text}`)
+    productReviews.map((r) => `${r.name}|${r.date}|${r.text}`),
   );
   const fallbacks = globalReviews.filter(
-    (r) => !productSet.has(`${r.name}|${r.date}|${r.text}`)
+    (r) => !productSet.has(`${r.name}|${r.date}|${r.text}`),
   );
   const needFallbacks = Math.max(0, 3 - productReviews.length);
   const reviewsToShow =
@@ -411,9 +439,7 @@ export default async function ProductPage({
                 {subtitle}
               </p>
 
-              <div
-                className="mt-3 mb-[3.3125rem] flex items-center gap-2 text-sm text-slate-600"
-              >
+              <div className="mt-3 mb-[3.3125rem] flex items-center gap-2 text-sm text-slate-600">
                 <span
                   className="flex justify-center items-center gap-0.5"
                   style={{ color: "#FFA100" }}
@@ -440,7 +466,7 @@ export default async function ProductPage({
               </div>
 
               {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
-              {(product.summary?.value?.trim() || heroTeaser) ? (
+              {product.summary?.value?.trim() || heroTeaser ? (
                 <p
                   className="mt-4 mb-[3.75rem] w-full max-w-full line-clamp-3"
                   style={{
@@ -532,7 +558,9 @@ export default async function ProductPage({
                       fontWeight: 400,
                       lineHeight: "160%",
                     }}
-                    dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                    dangerouslySetInnerHTML={{
+                      __html: product.descriptionHtml,
+                    }}
                   />
                 ) : (
                   <p
@@ -546,7 +574,8 @@ export default async function ProductPage({
                       lineHeight: "160%",
                     }}
                   >
-                    Wild-caught, sustainably sourced. Perfect for grilling, pan-searing, or baking.
+                    Wild-caught, sustainably sourced. Perfect for grilling,
+                    pan-searing, or baking.
                   </p>
                 )}
               </div>
@@ -567,7 +596,9 @@ export default async function ProductPage({
               <div style={{ width: "90%" }}>
                 {product.whatYouGet?.value?.trim() ? (
                   (() => {
-                    const html = renderShopifyRichText(product.whatYouGet!.value);
+                    const html = renderShopifyRichText(
+                      product.whatYouGet!.value,
+                    );
                     if (html) {
                       return (
                         <div
@@ -646,7 +677,8 @@ export default async function ProductPage({
             <ReviewsCarousel reviews={reviewsToShow} />
           ) : (
             <p className="mt-10 text-center section-description-block">
-              No reviews yet for this product. Be the first to leave a review after your purchase.
+              No reviews yet for this product. Be the first to leave a review
+              after your purchase.
             </p>
           )}
         </div>
@@ -655,7 +687,10 @@ export default async function ProductPage({
       {/* You Might Also Like — light blue, product carousel */}
       <section
         className="px-4 py-12 md:py-16"
-        style={{ backgroundColor: LIGHT_BG, ["--section-bg" as string]: LIGHT_BG }}
+        style={{
+          backgroundColor: LIGHT_BG,
+          ["--section-bg" as string]: LIGHT_BG,
+        }}
       >
         <div className="mx-auto max-w-6xl px-6 md:px-4">
           <SectionHeading
@@ -684,20 +719,27 @@ export default async function ProductPage({
                       ) : (
                         <div className="h-full w-full bg-slate-200" />
                       )}
-                      <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded bg-white px-2.5 py-1.5 shadow">
-                        <span className="text-sm font-semibold text-black">
-                          ${parseFloat(p.price).toFixed(2)}
-                        </span>
-                        <IconCart className="h-4 w-4 text-slate-600" />
+                      <div className="product-card-price-overlay">
+                        <span className="product-card-price-single">${Math.round(parseFloat(p.price)).toString()}</span>
                       </div>
+                      <span className="product-card-cart-badge" aria-hidden>
+                        <img
+                          src="/add_shopping_cart_100dp_111827_FILL0_wght400_GRAD0_opsz48%201.svg"
+                          alt=""
+                        />
+                      </span>
                     </div>
                     <div
                       className="p-4"
                       style={{ backgroundColor: "var(--section-bg)" }}
                     >
-                      <h3 className="font-semibold text-slate-900">{p.title}</h3>
+                      <h3 className="font-semibold text-slate-900">
+                        {p.title}
+                      </h3>
                       {subtitle ? (
-                        <p className="mt-0.5 text-sm text-slate-600">{subtitle}</p>
+                        <p className="mt-0.5 text-sm text-slate-600">
+                          {subtitle}
+                        </p>
                       ) : null}
                       <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-[#498CCB] hover:underline">
                         Show more
@@ -719,12 +761,13 @@ export default async function ProductPage({
       {/* Wave between You Might Also Like and Recipes */}
       <ShopSectionWave />
 
-      {/* Wild Flavor Starts Here — recipes promo, light blue */}
+      {/* Wild Flavor Starts Here — recipes promo, light blue; extra bottom padding fills area above footer wave */}
       <section
         className="px-4 py-12 md:py-16"
         style={{
           backgroundColor: LIGHT_BG,
           paddingTop: "clamp(8rem, 16vw, 12rem)",
+          paddingBottom: "clamp(6rem, 14vw, 10rem)",
           ["--section-bg" as string]: LIGHT_BG,
         }}
       >
@@ -758,7 +801,7 @@ export default async function ProductPage({
                       )}
                     </div>
                     <p
-                      className="p-3 text-center text-sm font-medium text-slate-900"
+                      className="recipe-card-title p-3 text-center"
                       style={{ backgroundColor: "var(--section-bg)" }}
                     >
                       {r.title ?? "Recipe"}
@@ -774,10 +817,21 @@ export default async function ProductPage({
           )}
           <p className="mt-6 text-center">
             <Link
-              href="/#recipes"
-              className="text-sm font-semibold text-sky-700 hover:underline"
+              href="/recipes"
+              className="inline-flex items-center justify-center gap-1.5 hover:underline"
+              style={{
+                color: "#498CCB",
+                fontFamily: "var(--font-inter), Inter, sans-serif",
+                fontSize: 16,
+                fontStyle: "normal",
+                fontWeight: 500,
+                lineHeight: "normal",
+              }}
             >
-              Show more delicious recipes →
+              Show more recipes
+              <svg width="29" height="13" viewBox="0 0 29 13" fill="#498CCB" xmlns="http://www.w3.org/2000/svg" aria-hidden className="shrink-0">
+                <path d="M22.0383 12.3065L21.1121 11.4128L25.8492 6.76284H0V5.51281H25.8908L21.1217 0.89375L22.0063 0L28.3333 6.13762L22.0383 12.3065Z" />
+              </svg>
             </Link>
           </p>
         </div>

@@ -13,6 +13,7 @@ type PageLayoutSettings = { color?: string | null; hideHeaderWave?: boolean };
  */
 const SHOP_PAGE_STRIP_BG = "#F2F2F5"; // grey when no search
 const SHOP_PAGE_SEARCH_STRIP_BG = "#D4F2FF"; // light blue when search is active
+const PRODUCT_PAGE_STRIP_BG = "#D4F2FF"; // light blue to match Wild Flavor section above footer wave
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -32,10 +33,13 @@ export async function GET(request: Request) {
       },
     );
     // /shop: strip is grey when no search; light blue when search params (q, search, or s) are present
+    // /products/[handle]: strip is light blue to match Wild Flavor section (no white gap above wave)
     const color =
       slug === "shop"
         ? (search ? SHOP_PAGE_SEARCH_STRIP_BG : SHOP_PAGE_STRIP_BG)
-        : (data?.color ?? null);
+        : slug.startsWith("products/")
+          ? PRODUCT_PAGE_STRIP_BG
+          : (data?.color ?? null);
     const hideHeaderWave = data?.hideHeaderWave === true;
     return NextResponse.json({ color, hideHeaderWave });
   } catch (e) {
