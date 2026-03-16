@@ -43,6 +43,19 @@ const STORY_PAGE_COPY_STYLE = {
   lineHeight: "normal",
 };
 
+/** Desktop design: subheadings (Who We Are, From Our Family to Yours) in body */
+const OUR_STORY_SUBHEADING_STYLE = {
+  color: "#1E1E1E",
+  fontFamily: "var(--font-inter), Inter, sans-serif",
+  fontSize: "20px",
+  fontStyle: "normal" as const,
+  fontWeight: 500,
+  lineHeight: "normal",
+} as const;
+
+/** Vertical spacing between body blocks (subheading, paragraph, next subheading, etc.) */
+const OUR_STORY_BLOCK_SPACING_PX = 29;
+
 const HOOK_POINT_BODY = (
   <>
     <p style={BODY_STYLE}>
@@ -163,22 +176,40 @@ export function OurStorySection({
                   className="-mt-[2.8125rem] h-16 w-10 shrink-0 object-contain sm:h-20 sm:w-12 lg:h-24 lg:w-14"
                 />
                 <div
-                  className="min-w-0 flex-1"
+                  className="min-w-0 flex-1 pl-5 pr-6"
                   style={STORY_PAGE_COPY_STYLE}
                 >
-                  <h3 className="mb-4 text-left font-light !text-white">
-                    {subheading}
-                  </h3>
+                  {!(block.body && block.body.length > 0 && !useFallbackBody) && (
+                    <h3 className="mb-4 text-left font-light !text-white">
+                      {subheading}
+                    </h3>
+                  )}
                   {block.body && block.body.length > 0 && !useFallbackBody ? (
                     <>
                       <div
-                        className="our-story-body max-w-none [&_p]:mt-4 first:[&_p]:mt-0 [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white"
+                        className="our-story-body max-w-none [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white [&>*]:mt-[29px] [&>*:first-child]:mt-0"
                         style={{ fontWeight: 300, fontSize: "24px", lineHeight: "normal", color: "#FFF" }}
                       >
                         <PortableText
                           value={
                             block.body as import("@portabletext/types").PortableTextBlock[]
                           }
+                          components={{
+                            block: {
+                              h2: ({ children }) => (
+                                <h2 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h2>
+                              ),
+                              h3: ({ children }) => (
+                                <h3 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h3>
+                              ),
+                              h4: ({ children }) => (
+                                <h4 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h4>
+                              ),
+                              h5: ({ children }) => (
+                                <h5 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h5>
+                              ),
+                            },
+                          }}
                         />
                       </div>
                       <>
@@ -253,32 +284,50 @@ export function OurStorySection({
               </div>
             ) : (
               <>
-                <h3
-                  className="mb-4 text-left font-bold"
-                  style={{
-                    fontFamily: "var(--font-inter), Inter, sans-serif",
-                    fontSize: "24px",
-                    color: "#171717",
-                  }}
-                >
-                  {subheading}
-                </h3>
+                {!(block.body && block.body.length > 0 && !useFallbackBody) && (
+                  <h3
+                    className="mb-4 text-left font-bold"
+                    style={{
+                      fontFamily: "var(--font-inter), Inter, sans-serif",
+                      fontSize: "24px",
+                      color: "#171717",
+                    }}
+                  >
+                    {subheading}
+                  </h3>
+                )}
                 {block.body && block.body.length > 0 && !useFallbackBody ? (
                   <div
-                    className="our-story-body prose prose-slate max-w-none [&_p]:mt-4 first:[&_p]:mt-0"
+                    className="our-story-body our-story-body--desktop max-w-none pl-5 pr-6 [&>*]:mt-[29px] [&>*:first-child]:mt-0"
                     style={BODY_STYLE}
                   >
                     <PortableText
                       value={
                         block.body as import("@portabletext/types").PortableTextBlock[]
                       }
+                      components={{
+                        block: {
+                          h2: ({ children }) => (
+                            <h2 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h2>
+                          ),
+                          h3: ({ children }) => (
+                            <h3 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h3>
+                          ),
+                          h4: ({ children }) => (
+                            <h4 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h4>
+                          ),
+                          h5: ({ children }) => (
+                            <h5 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h5>
+                          ),
+                        },
+                      }}
                     />
                   </div>
                 ) : (
                   HOOK_POINT_BODY
                 )}
                 {!hideCta && hasCtaFromSanity && (
-                  <div className="mt-6">
+                  <div className="mt-[29px]">
                     <a
                       href={ctaHref}
                       className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"

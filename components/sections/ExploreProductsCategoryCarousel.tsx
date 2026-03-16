@@ -118,7 +118,7 @@ export function ExploreProductsCategoryCarousel({
   );
 
   return (
-    <div className="relative mx-auto w-full max-w-6xl mt-10 px-2">
+    <div className="relative mx-auto w-full max-w-6xl mt-10 px-4 md:px-2">
       {/* Mobile: single column stack; md+: horizontal carousel */}
       <div
         ref={ref}

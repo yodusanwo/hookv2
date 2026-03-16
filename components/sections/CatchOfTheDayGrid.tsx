@@ -205,7 +205,7 @@ export function CatchOfTheDayGrid({
       )}
 
       {/* Product carousel - 3 centered columns */}
-      <div className="relative mt-4 sm:mt-6 lg:mt-8">
+      <div className="relative mt-4 sm:mt-6 lg:mt-8 px-4 md:px-2">
         <div className="mx-auto w-full max-w-[1200px]">
           {loading && products.length === 0 ? (
             <div className="relative flex items-center justify-center gap-6">

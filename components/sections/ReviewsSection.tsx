@@ -1,5 +1,5 @@
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
+import { ReviewsCarousel } from "./ReviewsCarousel";
 
 type Review = { stars?: number; text?: string; name?: string; date?: string };
 
@@ -11,7 +11,7 @@ type ReviewsBlock = {
 };
 
 export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
-  const title = block.title ?? "Customer Reviews";
+  const title = block.title ?? "REVIEWS";
   const description = block.description ?? "";
   const sanityReviews = block.reviews ?? [];
 
@@ -25,106 +25,41 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
 
   if (reviews.length === 0) return null;
 
-  const bgColor = block.backgroundColor ?? "#f2f2f5";
+  const bgColor = block.backgroundColor ?? "#F8F8F8";
   return (
     <section
       className="flex min-h-0 flex-col justify-center py-14"
       style={{ backgroundColor: bgColor }}
     >
       <div className="mx-auto max-w-6xl px-4">
-        <SectionHeading
-          title={title}
-          variant="display"
-          theme="light"
-        />
+        <h2
+          className="text-center uppercase tracking-wide"
+          style={{
+            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontSize: "clamp(28px, 6vw, 48px)",
+            fontWeight: 700,
+            lineHeight: "normal",
+            color: "#333333",
+          }}
+        >
+          {title}
+        </h2>
         {description ? (
           <p
             className="mt-4 w-full max-w-[770px] mx-auto text-center"
             style={{
-              color: "#1E1E1E",
+              color: "#333333",
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: 16,
+              fontSize: 17,
               fontStyle: "normal",
               fontWeight: 400,
-              lineHeight: "150%",
+              lineHeight: 1.5,
             }}
           >
             {description}
           </p>
         ) : null}
-        <div className="mt-10 flex flex-wrap justify-center gap-6">
-          {reviews.map((r, idx) => (
-            <div
-              key={idx}
-              className="flex h-[273px] w-[355px] max-w-full flex-col justify-center rounded-xl border border-black/5 bg-[#FFF] p-6 text-center"
-            >
-              {r.stars != null && (
-                <div
-                  className="flex justify-center items-center gap-0.5"
-                  style={{ color: "#FFA100" }}
-                  aria-hidden
-                >
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span
-                      key={i}
-                      className="flex items-center justify-center"
-                      style={{
-                        width: 24,
-                        height: 24,
-                        fontSize: 24,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {i < Math.min(5, r.stars ?? 0) ? "★" : "☆"}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <p
-                className="mt-4 min-h-0 overflow-y-auto mx-auto"
-                style={{
-                  width: 220,
-                  color: "#1E1E1E",
-                  fontFamily: "var(--font-inter), Inter, sans-serif",
-                  fontSize: 16,
-                  fontStyle: "normal",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                }}
-              >
-                {r.text}
-              </p>
-              <p
-                className="mt-4 text-sm font-semibold"
-                style={{
-                  color: "#1E1E1E",
-                  fontFamily: "var(--font-inter), Inter, sans-serif",
-                  fontSize: 14,
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  lineHeight: "normal",
-                }}
-              >
-                {r.name}
-              </p>
-              {r.date && (
-                <p
-                  className="mt-1"
-                  style={{
-                    color: "#1E1E1E",
-                    fontFamily: "var(--font-inter), Inter, sans-serif",
-                    fontSize: 12,
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "normal",
-                  }}
-                >
-                  {r.date}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+        <ReviewsCarousel reviews={reviews} />
       </div>
     </section>
   );
