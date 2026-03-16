@@ -338,9 +338,10 @@ export function PageBuilder({
             );
           case "docksideMarketsBlock": {
             const calendarReduced = "clamp(3rem, 6vw, 5rem)";
+            const calendarTop = "calc(clamp(3rem, 6vw, 5rem) - 90px)";
             const docksideTop =
               docksideMarketsTopPadding ??
-              (pageSlug === "calendar" ? calendarReduced : undefined);
+              (pageSlug === "calendar" ? calendarTop : undefined);
             const docksideBottom =
               docksideMarketsBottomPadding ??
               (pageSlug === "calendar" ? calendarReduced : undefined);
