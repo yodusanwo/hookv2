@@ -31,7 +31,7 @@ const BUTTON_BASE_STYLE: React.CSSProperties = {
   borderRadius: 20,
   fontFamily: "var(--font-inter), Inter, sans-serif",
   fontWeight: 600,
-  fontSize: "14.54px",
+  fontSize: "0.909rem",
   lineHeight: "normal",
   color: "white",
   whiteSpace: "nowrap",

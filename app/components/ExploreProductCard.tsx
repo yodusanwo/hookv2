@@ -95,7 +95,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
           className="font-normal text-[#FFF]"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "18px",
+            fontSize: "1.125rem",
           }}
         >
           {product.title}
@@ -105,7 +105,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
             className="font-semibold text-[#FFF]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "20px",
+              fontSize: "1.25rem",
             }}
           >
             ${Math.round(parseFloat(product.price)).toString()}
@@ -119,7 +119,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
             className="text-[#FFF]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "14px",
+              fontSize: "0.875rem",
             }}
           >
             {rating.toFixed(1)}

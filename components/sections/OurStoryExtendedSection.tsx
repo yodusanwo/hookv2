@@ -21,7 +21,7 @@ const TEXT_COLOR = "#1E1E1E";
 const COPY_STYLE = {
   color: TEXT_COLOR,
   fontFamily: "var(--font-mulish), Mulish, sans-serif",
-  fontSize: "24px",
+  fontSize: "1.5rem",
   fontStyle: "normal" as const,
   fontWeight: 300,
   lineHeight: "normal",
@@ -94,7 +94,7 @@ export function OurStoryExtendedSection({
             style={{
               color: "#1E1E1E",
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "20px",
+              fontSize: "1.25rem",
               fontStyle: "normal",
               fontWeight: 400,
               lineHeight: "150%",
@@ -135,7 +135,7 @@ export function OurStoryExtendedSection({
                 style={{
                   color: "#1E1E1E",
                   fontFamily: "var(--font-inter), Inter, sans-serif",
-                  fontSize: "24px",
+                  fontSize: "1.5rem",
                   fontStyle: "normal",
                   fontWeight: 500,
                   lineHeight: "150%",
@@ -181,7 +181,7 @@ export function OurStoryExtendedSection({
                     className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case !text-[#1E1E1E]"
                     style={{
                       fontFamily: "Inter, var(--font-inter), sans-serif",
-                      fontSize: "16px",
+                      fontSize: "1rem",
                       fontStyle: "normal",
                       fontWeight: 500,
                       lineHeight: "normal",

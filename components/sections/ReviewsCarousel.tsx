@@ -28,7 +28,7 @@ function ReviewCard({ r }: { r: ReviewItem }) {
               style={{
                 width: 24,
                 height: 24,
-                fontSize: 24,
+                fontSize: "1.5rem",
                 lineHeight: 1,
               }}
             >
@@ -43,7 +43,7 @@ function ReviewCard({ r }: { r: ReviewItem }) {
           maxWidth: "100%",
           color: "#333333",
           fontFamily: "var(--font-inter), Inter, sans-serif",
-          fontSize: 15,
+          fontSize: "0.9375rem",
           fontStyle: "normal",
           fontWeight: 400,
           lineHeight: 1.5,
@@ -56,7 +56,7 @@ function ReviewCard({ r }: { r: ReviewItem }) {
         style={{
           color: "#333333",
           fontFamily: "var(--font-inter), Inter, sans-serif",
-          fontSize: 16,
+          fontSize: "1rem",
           fontStyle: "normal",
           fontWeight: 600,
           lineHeight: "normal",
@@ -70,7 +70,7 @@ function ReviewCard({ r }: { r: ReviewItem }) {
           style={{
             color: "#666666",
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: 12,
+            fontSize: "0.75rem",
             fontStyle: "normal",
             fontWeight: 400,
             lineHeight: "normal",

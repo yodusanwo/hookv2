@@ -110,7 +110,7 @@ export function HeroCarousel({
             className={`${FONT_INTER} max-w-full ${variant === "default" ? "md:whitespace-nowrap" : ""}`}
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: variant === "story" ? "clamp(1.75rem, 4.5vw, 48px)" : "48px",
+              fontSize: variant === "story" ? "clamp(1.75rem, 4.5vw, 3rem)" : "3rem",
               fontWeight: 600,
               lineHeight: variant === "story" ? 1.3 : "auto",
               letterSpacing: "0%",

@@ -5,7 +5,7 @@ const FALLBACK_LOGO = "/Hook_Point_Shirt_White_Letters_042acd76-dff8-4246-874a-1
 const footerTextStyle = {
   color: "#FFF",
   fontFamily: "Inter, sans-serif",
-  fontSize: "13px",
+  fontSize: "0.8125rem",
   fontStyle: "normal" as const,
   fontWeight: 400,
   lineHeight: "normal",
@@ -14,7 +14,7 @@ const footerTextStyle = {
 const footerNavLinkStyle = {
   color: "#FFF",
   fontFamily: "Inter, var(--font-inter), sans-serif",
-  fontSize: "16px",
+  fontSize: "1rem",
   fontStyle: "normal" as const,
   fontWeight: 400,
   lineHeight: "normal",
@@ -79,7 +79,7 @@ export function Footer({
             >
               <h3
                 className="mb-0 whitespace-nowrap"
-                style={{ ...footerTextStyle, fontSize: "16px", fontWeight: 600, color: "#171717" }}
+                style={{ ...footerTextStyle, fontSize: "1rem", fontWeight: 600, color: "#171717" }}
               >
                 News, deals & drops
               </h3>
@@ -148,7 +148,7 @@ export function Footer({
               style={{
                 color: "#FFF",
                 fontFamily: "Inter, var(--font-inter), sans-serif",
-                fontSize: "16px",
+                fontSize: "1rem",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "normal",

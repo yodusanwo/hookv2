@@ -176,7 +176,7 @@ export function EstimatedDeliveryDisplay({
         style={{
           color: "#374151",
           fontFamily: "Inter, var(--font-inter), sans-serif",
-          fontSize: "16px",
+          fontSize: "1rem",
           fontStyle: "normal",
           fontWeight: 400,
           lineHeight: "150%",

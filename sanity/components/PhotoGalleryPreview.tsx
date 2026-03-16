@@ -46,7 +46,7 @@ export function PhotoGalleryPreview(props: PhotoGalleryPreviewProps) {
       style={{
         padding: 12,
         fontFamily: "Inter, system-ui, sans-serif",
-        fontSize: 12,
+        fontSize: "0.75rem",
         color: "#1E1E1E",
         backgroundColor: "#E6F7FF",
         borderRadius: 8,
@@ -57,7 +57,7 @@ export function PhotoGalleryPreview(props: PhotoGalleryPreviewProps) {
           style={{
             textAlign: "center",
             fontWeight: 300,
-            fontSize: 14,
+            fontSize: "0.875rem",
             marginBottom: 8,
             color: "#1E1E1E",
           }}
@@ -96,7 +96,7 @@ export function PhotoGalleryPreview(props: PhotoGalleryPreviewProps) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 10,
+                fontSize: "0.625rem",
                 color: "#6B7280",
               }}
             >

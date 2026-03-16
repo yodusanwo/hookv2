@@ -186,7 +186,7 @@ export function CatchOfTheDayProductCard({
             style={{
               color: darkSection ? "rgba(255,255,255,0.95)" : "var(--Text-Color, #1E1E1E)",
               fontFamily: "Inter, var(--font-inter), sans-serif",
-              fontSize: "20px",
+              fontSize: "1.25rem",
               fontStyle: "normal",
               fontWeight: 600,
               lineHeight: "150%",
@@ -203,7 +203,7 @@ export function CatchOfTheDayProductCard({
               style={{
                 color: darkSection ? "rgba(255,255,255,0.85)" : "var(--Text-Color, #1E1E1E)",
                 fontFamily: "Inter, var(--font-inter), sans-serif",
-                fontSize: "16px",
+                fontSize: "1rem",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "150%",
@@ -218,7 +218,7 @@ export function CatchOfTheDayProductCard({
             style={{
               color: darkSection ? "rgba(255,255,255,0.85)" : "var(--Text-Color, #1E1E1E)",
               fontFamily: "Inter, var(--font-inter), sans-serif",
-              fontSize: "16px",
+              fontSize: "1rem",
               fontStyle: "normal",
               fontWeight: 400,
               lineHeight: "150%",

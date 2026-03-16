@@ -58,7 +58,7 @@ export default async function ContactPage() {
             className="font-semibold uppercase leading-normal text-[#111827]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "48px",
+              fontSize: "3rem",
               lineHeight: 1,
             }}
           >

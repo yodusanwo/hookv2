@@ -30,7 +30,7 @@ export function ContactSection({ block }: { block: ContactBlock }) {
             className="font-semibold uppercase leading-normal text-[#111827]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "48px",
+              fontSize: "3rem",
               lineHeight: 1,
             }}
           >
@@ -43,7 +43,7 @@ export function ContactSection({ block }: { block: ContactBlock }) {
             style={{
               color: "#1E1E1E",
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: 16,
+              fontSize: "1rem",
               fontStyle: "normal",
               fontWeight: 400,
               lineHeight: "150%",

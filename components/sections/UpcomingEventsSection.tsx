@@ -74,7 +74,7 @@ export function UpcomingEventsSection({
                 return (
                   <div
                     key={idx}
-                    className="aspect-[4/3] w-full max-w-[320px] overflow-hidden rounded-lg"
+                    className="aspect-[4/3] w-full max-w-[352px] overflow-hidden rounded-lg"
                     style={{ backgroundColor: bgColor }}
                   >
                     <img
@@ -95,7 +95,7 @@ export function UpcomingEventsSection({
                 return (
                   <div
                     key={idx}
-                    className="aspect-[4/3] w-full max-w-[320px] overflow-hidden rounded-lg"
+                    className="aspect-[4/3] w-full max-w-[352px] overflow-hidden rounded-lg"
                     style={{ backgroundColor: bgColor }}
                   >
                     <img
@@ -140,7 +140,7 @@ export function UpcomingEventsSection({
                         style={{
                           color: "#1E1E1E",
                           fontFamily: "var(--font-inter), Inter, sans-serif",
-                          fontSize: "16px",
+                          fontSize: "1rem",
                           fontStyle: "normal",
                           fontWeight: 400,
                           lineHeight: "normal",
@@ -215,7 +215,7 @@ export function UpcomingEventsSection({
                 style={{
                   color: "#498CCB",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
-                  fontSize: "16px",
+                  fontSize: "1rem",
                   lineHeight: "normal",
                 }}
               >

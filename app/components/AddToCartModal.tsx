@@ -86,7 +86,7 @@ export function AddToCartModal({
               border: "1px solid #069400",
               color: "var(--Green, #069400)",
               fontFamily: "Inter, sans-serif",
-              fontSize: 14,
+              fontSize: "0.875rem",
               fontStyle: "normal",
               fontWeight: 600,
               lineHeight: "normal",

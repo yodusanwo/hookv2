@@ -54,7 +54,7 @@ export function TeamBiosSection({
               className="font-semibold uppercase leading-normal tracking-normal text-[#1e1e1e]"
               style={{
                 fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: "48px",
+                fontSize: "3rem",
                 lineHeight: 1,
               }}
             >
@@ -67,7 +67,7 @@ export function TeamBiosSection({
               style={{
                 color: "#1E1E1E",
                 fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: 16,
+                fontSize: "1rem",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "150%",
@@ -118,7 +118,7 @@ export function TeamBiosSection({
                         className="flex h-full w-full items-center justify-center text-[#6b7280]"
                         style={{
                           fontFamily: "var(--font-inter), Inter, sans-serif",
-                          fontSize: "18px",
+                          fontSize: "1.125rem",
                         }}
                       >
                         {name.charAt(0)}
@@ -129,7 +129,7 @@ export function TeamBiosSection({
                     className="mt-4 font-normal leading-normal text-[#111827]"
                     style={{
                       fontFamily: "var(--font-inter), Inter, sans-serif",
-                      fontSize: "20px",
+                      fontSize: "1.25rem",
                     }}
                   >
                     {name}
@@ -139,7 +139,7 @@ export function TeamBiosSection({
                       className="mt-1 font-normal leading-normal text-[#6b7280]"
                       style={{
                         fontFamily: "var(--font-inter), Inter, sans-serif",
-                        fontSize: "16px",
+                        fontSize: "1rem",
                       }}
                     >
                       {role}

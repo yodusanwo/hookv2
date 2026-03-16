@@ -22,7 +22,7 @@ export function ContactBlockPreview(props: ContactBlockPreviewProps) {
       style={{
         padding: 12,
         fontFamily: "Inter, system-ui, sans-serif",
-        fontSize: 12,
+        fontSize: "0.75rem",
         color: "#1E1E1E",
         backgroundColor: "#d4f2ff",
         borderRadius: 8,
@@ -32,7 +32,7 @@ export function ContactBlockPreview(props: ContactBlockPreviewProps) {
         <div
           style={{
             fontWeight: 600,
-            fontSize: 14,
+            fontSize: "0.875rem",
             marginBottom: 4,
             color: "#111827",
             textTransform: "uppercase",
@@ -56,7 +56,7 @@ export function ContactBlockPreview(props: ContactBlockPreviewProps) {
           {blockDescription.length > 60 ? "…" : ""}
         </div>
       )}
-      <div style={{ color: "#6b7280", fontSize: 11 }}>
+      <div style={{ color: "#6b7280", fontSize: "0.6875rem" }}>
         Form: Full Name, Email, Message · {email || "(no email)"}
       </div>
     </div>

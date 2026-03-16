@@ -91,7 +91,7 @@ export function CalendarEventsListWithFilter({
             style={{
               color: "#498CCB",
               fontFamily: "Inter, var(--font-inter), sans-serif",
-              fontSize: "16px",
+              fontSize: "1rem",
               lineHeight: "normal",
             }}
           >
@@ -134,7 +134,7 @@ export function CalendarEventsListWithFilter({
                   style={{
                     color: "#1E1E1E",
                     fontFamily: "var(--font-inter), Inter, sans-serif",
-                    fontSize: "16px",
+                    fontSize: "1rem",
                     fontStyle: "normal",
                     fontWeight: 400,
                     lineHeight: "normal",
@@ -219,7 +219,7 @@ export function CalendarEventsListWithFilter({
             style={{
               color: "#498CCB",
               fontFamily: "Inter, var(--font-inter), sans-serif",
-              fontSize: "16px",
+              fontSize: "1rem",
               lineHeight: "normal",
             }}
           >

@@ -33,7 +33,7 @@ export function ExploreFilters({
             key={idx}
             type="button"
             onClick={() => handleClick(idx)}
-            className="rounded-lg px-5 py-2.5 text-base font-normal transition-colors"
+            className="filter-pill-btn rounded-lg px-5 py-2.5 text-base font-normal transition-colors"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
               ...(isActive

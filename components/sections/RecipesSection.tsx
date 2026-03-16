@@ -9,7 +9,7 @@ const RECIPES_BG = "#D4F2FF";
 const SHOW_MORE_LINK_STYLE = {
   color: "#498CCB",
   fontFamily: "Inter, var(--font-inter), sans-serif",
-  fontSize: "16px",
+  fontSize: "1rem",
   fontStyle: "normal" as const,
   fontWeight: 500,
   lineHeight: "normal",

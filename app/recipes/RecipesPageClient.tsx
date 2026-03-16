@@ -15,7 +15,7 @@ const DEFAULT_CATEGORY_FILTERS = [
 ];
 
 const FILTER_BUTTON_BASE =
-  "text-sm font-semibold transition-colors border-none cursor-pointer inline-flex items-center justify-center";
+  "filter-pill-btn text-sm font-semibold transition-colors border-none cursor-pointer inline-flex items-center justify-center";
 const FILTER_BUTTON_LAYOUT = {
   width: 158,
   height: 45,

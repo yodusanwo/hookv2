@@ -1,7 +1,7 @@
 "use client";
 
 const FILTER_BUTTON_BASE =
-  "text-sm font-semibold transition-colors border-none cursor-pointer inline-flex items-center justify-center flex-shrink-0";
+  "filter-pill-btn text-sm font-semibold transition-colors border-none cursor-pointer inline-flex items-center justify-center flex-shrink-0";
 const FILTER_BUTTON_LAYOUT = {
   width: 158,
   height: 45,

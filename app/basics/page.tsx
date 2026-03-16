@@ -63,7 +63,7 @@ export default async function BasicsIndexPage() {
             style={{
               color: "#111827",
               fontFamily: "Inter, sans-serif",
-              fontSize: "48px",
+              fontSize: "3rem",
               fontStyle: "normal",
               fontWeight: 600,
               lineHeight: "normal",
@@ -77,7 +77,7 @@ export default async function BasicsIndexPage() {
             style={{
               color: "#1E1E1E",
               fontFamily: "Inter, sans-serif",
-              fontSize: "16px",
+              fontSize: "1rem",
               fontStyle: "normal",
               fontWeight: 400,
               lineHeight: "150%",

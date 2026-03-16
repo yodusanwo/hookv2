@@ -72,7 +72,7 @@ export function PhotoGallerySection({
           style={{
             color: "var(--Text-Color, #1E1E1E)",
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "48px",
+            fontSize: "3rem",
             fontStyle: "normal",
             fontWeight: 300,
             lineHeight: "normal",

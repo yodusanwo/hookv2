@@ -91,7 +91,7 @@ function BasicSectionBlock({
           className="mb-1 capitalize"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "24px",
+            fontSize: "1.5rem",
             fontWeight: 600,
             lineHeight: 1.5,
             color: TEXT_COLOR,
@@ -105,7 +105,7 @@ function BasicSectionBlock({
           className="mb-3 italic"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "16px",
+            fontSize: "1rem",
             fontWeight: 300,
             color: SUBTITLE_COLOR,
           }}
@@ -118,7 +118,7 @@ function BasicSectionBlock({
           className="list-disc pl-6 mb-4"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "16px",
+            fontSize: "1rem",
             color: bodyColor,
             lineHeight: 2,
           }}
@@ -135,7 +135,7 @@ function BasicSectionBlock({
           className="basic-section-body [&_p]:mt-4 [&_p]:first:mt-0 [&_p]:whitespace-pre-wrap"
           style={{
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "16px",
+            fontSize: "1rem",
             lineHeight: 1.6,
             color: bodyColor,
           }}
@@ -225,7 +225,7 @@ export default async function BasicDetailPage({
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
                   fontFamily: "Inter, sans-serif",
-                  fontSize: "40px",
+                  fontSize: "2.5rem",
                   fontStyle: "normal",
                   fontWeight: 500,
                   lineHeight: "normal",

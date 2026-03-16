@@ -151,7 +151,7 @@ export function ExploreProductsSection({
           style={{
             color: isLightBg ? LIGHT_TEXT_COLOR : "#498CCB",
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "16px",
+            fontSize: "1rem",
             lineHeight: "normal",
           }}
         >

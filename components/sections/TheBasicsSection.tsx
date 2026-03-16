@@ -110,7 +110,7 @@ export function TheBasicsSection({
                     className="font-semibold text-slate-900"
                     style={{
                       fontFamily: "var(--font-inter), Inter, sans-serif",
-                      fontSize: 16,
+                      fontSize: "1rem",
                       lineHeight: "normal",
                     }}
                   >

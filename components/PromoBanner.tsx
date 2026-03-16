@@ -14,7 +14,7 @@ export function PromoBanner({ text, href }: { text: string; href?: string | null
       style={{ backgroundColor: "var(--brand-green)", fontFamily: "var(--font-inter), Inter, sans-serif" }}
     >
       <Link href={resolvedHref} className="flex w-full flex-col items-center justify-center gap-2 md:flex-row md:gap-3 outline-none hover:opacity-95">
-        <div className="text-center text-white md:flex md:items-center md:gap-3" style={{ fontSize: "clamp(18px, 3vw, 24px)", fontWeight: 300, lineHeight: 1.3 }}>
+        <div className="text-center text-white md:flex md:items-center md:gap-3" style={{ fontSize: "clamp(1.125rem, 3vw, 1.5rem)", fontWeight: 300, lineHeight: 1.3 }}>
           <span>{headline}</span>
           <img
             src="/Icon%20arrow%20right.svg"

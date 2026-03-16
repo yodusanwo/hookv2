@@ -241,7 +241,7 @@ export function CatchOfTheDayGrid({
               style={{
                 fontFamily: "var(--font-inter), Inter, sans-serif",
                 color: "#F2F6EF",
-                fontSize: "16px",
+                fontSize: "1rem",
               }}
             >
               {error}
@@ -277,7 +277,7 @@ export function CatchOfTheDayGrid({
               className="py-12 text-center text-white"
               style={{
                 fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: "16px",
+                fontSize: "1rem",
               }}
             >
               {selectedProductTypeFilter.length > 0

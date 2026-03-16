@@ -82,7 +82,7 @@ export function DocksideMarketsSection({
           wideTitleOnDesktop
         />
         <div className="relative mt-8 pb-0">
-          <div className="relative flex items-center justify-center border border-black">
+          <div className="relative flex items-center justify-center">
             <div className="mx-auto w-full max-w-[1363px]">
               <div
                 ref={scrollRef}

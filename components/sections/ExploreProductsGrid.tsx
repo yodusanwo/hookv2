@@ -93,7 +93,7 @@ export function ExploreProductsGrid({
           ) : (
             <p
               className="text-center py-12 text-white"
-              style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "16px" }}
+              style={{ fontFamily: "var(--font-inter), Inter, sans-serif", fontSize: "1rem" }}
             >
               No products in this collection. Add products in Shopify and assign them to the collection.
             </p>

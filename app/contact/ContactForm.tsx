@@ -90,7 +90,7 @@ export function ContactForm({
           style={{
             backgroundColor: "var(--brand-green)",
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "14px",
+            fontSize: "0.875rem",
           }}
         >
           {status === "sending" ? "Sending…" : submitLabel}

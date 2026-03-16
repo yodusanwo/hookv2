@@ -91,7 +91,7 @@ export function SectionHeading({
               fontStyle: "normal",
               ...(descriptionClassName
                 ? { lineHeight: "normal" }
-                : { fontSize: 16, fontWeight: 400, lineHeight: "150%", textAlign: "center" as const }),
+                : { fontSize: "1rem", fontWeight: 400, lineHeight: "150%", textAlign: "center" as const }),
             }}
           >
             {description}
@@ -115,7 +115,7 @@ export function SectionHeading({
           style={{
             color: descriptionColor ?? (isDark ? "var(--section-heading-dark)" : "#1E1E1E"),
             fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: 16,
+            fontSize: "1rem",
             fontStyle: "normal",
             fontWeight: 400,
             lineHeight: "150%",

@@ -105,7 +105,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
                         style={{
                           color: "#1E1E1E",
                           fontFamily: "var(--font-inter), Inter, sans-serif",
-                          fontSize: 16,
+                          fontSize: "1rem",
                           fontStyle: "normal",
                           fontWeight: 400,
                           lineHeight: "normal",
@@ -129,7 +129,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
                           style={{
                             color: "#1E1E1E",
                             fontFamily: "var(--font-inter), Inter, sans-serif",
-                            fontSize: 16,
+                            fontSize: "1rem",
                             fontStyle: "normal",
                             fontWeight: 400,
                             lineHeight: "normal",
@@ -153,7 +153,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
               style={{
                 color: "#498CCB",
                 fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: "16px",
+                fontSize: "1rem",
                 fontStyle: "normal",
                 fontWeight: 500,
                 lineHeight: "normal",

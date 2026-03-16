@@ -103,7 +103,7 @@ export function ExploreProductsCategoryCarousel({
             style={{
               color: labelColor ?? "#FFF",
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: 20,
+              fontSize: "1.25rem",
               fontStyle: "normal",
               fontWeight: 500,
               lineHeight: "normal",

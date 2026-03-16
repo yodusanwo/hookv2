@@ -16,7 +16,7 @@ type OurStoryBlock = {
 
 const BODY_STYLE = {
   fontFamily: "var(--font-inter), Inter, sans-serif",
-  fontSize: "16px",
+  fontSize: "1rem",
   fontStyle: "normal",
   fontWeight: 400,
   lineHeight: "150%",
@@ -26,7 +26,7 @@ const BODY_STYLE = {
 /** Description text under title: same typography everywhere, color by background (light #1E1E1E, dark #FFFFFF) */
 const DESCRIPTION_TYPOGRAPHY = {
   fontFamily: "var(--font-inter), Inter, sans-serif",
-  fontSize: 16,
+  fontSize: "1rem",
   fontStyle: "normal" as const,
   fontWeight: 400,
   lineHeight: "150%",
@@ -37,7 +37,7 @@ const DESCRIPTION_TYPOGRAPHY = {
 const STORY_PAGE_COPY_STYLE = {
   color: "var(--White, #FFF)",
   fontFamily: "var(--font-mulish), Mulish, sans-serif",
-  fontSize: "24px",
+  fontSize: "1.5rem",
   fontStyle: "normal" as const,
   fontWeight: 300,
   lineHeight: "normal",
@@ -47,7 +47,7 @@ const STORY_PAGE_COPY_STYLE = {
 const OUR_STORY_SUBHEADING_STYLE = {
   color: "#1E1E1E",
   fontFamily: "var(--font-inter), Inter, sans-serif",
-  fontSize: "20px",
+  fontSize: "1.25rem",
   fontStyle: "normal" as const,
   fontWeight: 500,
   lineHeight: "normal",
@@ -208,7 +208,7 @@ export function OurStorySection({
                         className="our-story-body max-w-none [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white [&>*]:mt-[29px] [&>*:first-child]:mt-0"
                         style={{
                           fontWeight: 300,
-                          fontSize: "24px",
+                          fontSize: "1.5rem",
                           lineHeight: "normal",
                           color: "#FFF",
                         }}
@@ -222,7 +222,7 @@ export function OurStorySection({
                               h2: ({ children }) => (
                                 <h2
                                   className="!text-white font-medium"
-                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                  style={{ fontSize: "1.25rem", fontWeight: 500 }}
                                 >
                                   {children}
                                 </h2>
@@ -230,7 +230,7 @@ export function OurStorySection({
                               h3: ({ children }) => (
                                 <h3
                                   className="!text-white font-medium"
-                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                  style={{ fontSize: "1.25rem", fontWeight: 500 }}
                                 >
                                   {children}
                                 </h3>
@@ -238,7 +238,7 @@ export function OurStorySection({
                               h4: ({ children }) => (
                                 <h4
                                   className="!text-white font-medium"
-                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                  style={{ fontSize: "1.25rem", fontWeight: 500 }}
                                 >
                                   {children}
                                 </h4>
@@ -246,7 +246,7 @@ export function OurStorySection({
                               h5: ({ children }) => (
                                 <h5
                                   className="!text-white font-medium"
-                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                  style={{ fontSize: "1.25rem", fontWeight: 500 }}
                                 >
                                   {children}
                                 </h5>
@@ -262,7 +262,7 @@ export function OurStorySection({
                             color: "var(--White, #FFF)",
                             fontFamily:
                               "var(--font-mulish), Mulish, sans-serif",
-                            fontSize: "24px",
+                            fontSize: "1.5rem",
                             fontStyle: "normal",
                             fontWeight: 800,
                             lineHeight: "normal",
@@ -292,7 +292,7 @@ export function OurStorySection({
                         style={{
                           color: "var(--White, #FFF)",
                           fontFamily: "var(--font-mulish), Mulish, sans-serif",
-                          fontSize: "24px",
+                          fontSize: "1.5rem",
                           fontStyle: "normal",
                           fontWeight: 800,
                           lineHeight: "normal",
@@ -312,7 +312,7 @@ export function OurStorySection({
                         className="min-h-[44px] inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case text-white"
                         style={{
                           fontFamily: "Inter, var(--font-inter), sans-serif",
-                          fontSize: "16px",
+                          fontSize: "1rem",
                           fontStyle: "normal",
                           fontWeight: 500,
                           lineHeight: "normal",
@@ -338,7 +338,7 @@ export function OurStorySection({
                     className="mb-4 text-left font-bold"
                     style={{
                       fontFamily: "var(--font-inter), Inter, sans-serif",
-                      fontSize: "24px",
+                      fontSize: "1.5rem",
                       color: "#171717",
                     }}
                   >
@@ -391,7 +391,7 @@ export function OurStorySection({
                       style={{
                         color: "#498CCB",
                         fontFamily: "Inter, var(--font-inter), sans-serif",
-                        fontSize: "16px",
+                        fontSize: "1rem",
                         fontStyle: "normal",
                         fontWeight: 500,
                         lineHeight: "normal",

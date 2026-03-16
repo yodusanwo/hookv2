@@ -43,7 +43,7 @@ export function TeamBiosPreview(props: TeamBiosPreviewProps) {
       style={{
         padding: 12,
         fontFamily: "Inter, system-ui, sans-serif",
-        fontSize: 12,
+        fontSize: "0.75rem",
         color: "#1E1E1E",
         backgroundColor: "#d4f2ff",
         borderRadius: 8,
@@ -54,7 +54,7 @@ export function TeamBiosPreview(props: TeamBiosPreviewProps) {
           style={{
             textAlign: "center",
             fontWeight: 600,
-            fontSize: 14,
+            fontSize: "0.875rem",
             marginBottom: 4,
             color: "#1E1E1E",
             textTransform: "uppercase",
@@ -93,7 +93,7 @@ export function TeamBiosPreview(props: TeamBiosPreviewProps) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 10,
+                fontSize: "0.625rem",
                 color: "#fff",
               }}
             >
@@ -113,7 +113,7 @@ export function TeamBiosPreview(props: TeamBiosPreviewProps) {
             </div>
             <span
               style={{
-                fontSize: 9,
+                fontSize: "0.5625rem",
                 color: "#111827",
                 fontWeight: 500,
                 textAlign: "center",

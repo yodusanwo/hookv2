@@ -416,7 +416,7 @@ export default async function ProductPage({
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
                   fontFamily: "Inter, sans-serif",
-                  fontSize: "40px",
+                  fontSize: "2.5rem",
                   fontStyle: "normal",
                   fontWeight: 500,
                   lineHeight: "normal",
@@ -430,7 +430,7 @@ export default async function ProductPage({
                   marginBottom: 27,
                   color: "#374151",
                   fontFamily: "Inter, sans-serif",
-                  fontSize: "24px",
+                  fontSize: "1.5rem",
                   fontStyle: "normal",
                   fontWeight: 300,
                   lineHeight: "normal",
@@ -452,7 +452,7 @@ export default async function ProductPage({
                       style={{
                         width: 24,
                         height: 24,
-                        fontSize: 24,
+                        fontSize: "1.5rem",
                         lineHeight: 1,
                       }}
                     >
@@ -495,7 +495,7 @@ export default async function ProductPage({
                   style={{
                     color: "#374151",
                     fontFamily: "Inter, var(--font-inter), sans-serif",
-                    fontSize: "16px",
+                    fontSize: "1rem",
                     fontStyle: "normal",
                     fontWeight: 400,
                     lineHeight: "150%",
@@ -538,7 +538,7 @@ export default async function ProductPage({
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
                   fontFamily: "Inter",
-                  fontSize: "24px",
+                  fontSize: "1.5rem",
                   fontStyle: "normal",
                   fontWeight: 600,
                   lineHeight: "150%",
@@ -553,7 +553,7 @@ export default async function ProductPage({
                     style={{
                       color: "var(--Text-Color, #1E1E1E)",
                       fontFamily: "Inter",
-                      fontSize: "16px",
+                      fontSize: "1rem",
                       fontStyle: "normal",
                       fontWeight: 400,
                       lineHeight: "160%",
@@ -568,7 +568,7 @@ export default async function ProductPage({
                     style={{
                       color: "var(--Text-Color, #1E1E1E)",
                       fontFamily: "Inter",
-                      fontSize: "16px",
+                      fontSize: "1rem",
                       fontStyle: "normal",
                       fontWeight: 400,
                       lineHeight: "160%",
@@ -585,7 +585,7 @@ export default async function ProductPage({
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
                   fontFamily: "Inter",
-                  fontSize: "24px",
+                  fontSize: "1.5rem",
                   fontStyle: "normal",
                   fontWeight: 600,
                   lineHeight: "150%",
@@ -606,7 +606,7 @@ export default async function ProductPage({
                           style={{
                             color: "var(--Text-Color, #1E1E1E)",
                             fontFamily: "Inter",
-                            fontSize: "16px",
+                            fontSize: "1rem",
                             fontStyle: "normal",
                             fontWeight: 400,
                             lineHeight: "160%",
@@ -621,7 +621,7 @@ export default async function ProductPage({
                         style={{
                           color: "var(--Text-Color, #1E1E1E)",
                           fontFamily: "Inter",
-                          fontSize: "16px",
+                          fontSize: "1rem",
                           fontStyle: "normal",
                           fontWeight: 400,
                           lineHeight: "160%",
@@ -637,7 +637,7 @@ export default async function ProductPage({
                     style={{
                       color: "var(--Text-Color, #1E1E1E)",
                       fontFamily: "Inter",
-                      fontSize: "16px",
+                      fontSize: "1rem",
                       fontStyle: "normal",
                       fontWeight: 400,
                       lineHeight: "160%",
@@ -822,7 +822,7 @@ export default async function ProductPage({
               style={{
                 color: "#498CCB",
                 fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: 16,
+                fontSize: "1rem",
                 fontStyle: "normal",
                 fontWeight: 500,
                 lineHeight: "normal",

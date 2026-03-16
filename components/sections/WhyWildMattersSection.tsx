@@ -105,7 +105,7 @@ export function WhyWildMattersSection({
               return (
                 <div
                   key={idx}
-                  className="flex w-full items-center gap-6 rounded-lg border border-slate-300 p-4"
+                  className="flex w-full items-center gap-6 rounded-lg p-4"
                 >
                   <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center">
                     {iconUrl ? (
@@ -128,7 +128,7 @@ export function WhyWildMattersSection({
                       style={{
                         color: "#1E1E1E",
                         fontFamily: "Inter, var(--font-inter), sans-serif",
-                        fontSize: "20px",
+                        fontSize: "1.25rem",
                         fontStyle: "normal",
                         fontWeight: 500,
                         lineHeight: "135%",
@@ -151,7 +151,7 @@ export function WhyWildMattersSection({
                   style={{
                     color: "#498CCB",
                     fontFamily: "var(--font-inter), Inter, sans-serif",
-                    fontSize: 16,
+                    fontSize: "1rem",
                     fontStyle: "normal",
                     fontWeight: 500,
                     lineHeight: "normal",

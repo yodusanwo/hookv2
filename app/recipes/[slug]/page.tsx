@@ -164,7 +164,7 @@ export default async function RecipePage({
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
                   fontFamily: "Inter, sans-serif",
-                  fontSize: "40px",
+                  fontSize: "2.5rem",
                   fontStyle: "normal",
                   fontWeight: 500,
                   lineHeight: "normal",
@@ -178,7 +178,7 @@ export default async function RecipePage({
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
                   fontFamily: "Inter, sans-serif",
-                  fontSize: "24px",
+                  fontSize: "1.5rem",
                   fontStyle: "normal",
                   fontWeight: 600,
                   lineHeight: "150%",
@@ -201,7 +201,7 @@ export default async function RecipePage({
                       style={{
                         color: "var(--Text-Color, #1E1E1E)",
                         fontFamily: "Inter, sans-serif",
-                        fontSize: "16px",
+                        fontSize: "1rem",
                         fontWeight: 400,
                         lineHeight: "150%",
                       }}
@@ -235,7 +235,7 @@ export default async function RecipePage({
               style={{
                 color: "var(--Text-Color, #1E1E1E)",
                 fontFamily: "Inter, sans-serif",
-                fontSize: "24px",
+                fontSize: "1.5rem",
                 fontStyle: "normal",
                 fontWeight: 600,
                 lineHeight: "150%",
@@ -257,7 +257,7 @@ export default async function RecipePage({
                       style={{
                         color: "var(--Text-Color, #1E1E1E)",
                         fontFamily: "Inter, sans-serif",
-                        fontSize: "16px",
+                        fontSize: "1rem",
                         fontWeight: 400,
                         lineHeight: "150%",
                       }}
@@ -274,7 +274,7 @@ export default async function RecipePage({
                       style={{
                         color: "var(--Text-Color, #1E1E1E)",
                         fontFamily: "Inter, sans-serif",
-                        fontSize: "16px",
+                        fontSize: "1rem",
                         fontWeight: 400,
                         lineHeight: "150%",
                       }}
@@ -294,7 +294,7 @@ export default async function RecipePage({
                     style={{
                       color: "var(--Text-Color, #1E1E1E)",
                       fontFamily: "Inter, sans-serif",
-                      fontSize: "16px",
+                      fontSize: "1rem",
                       fontWeight: 400,
                       lineHeight: "150%",
                     }}
