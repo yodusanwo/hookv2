@@ -128,7 +128,7 @@ export function CalendarEventsListWithFilter({
                 }
               >
                 <div
-                  className="grid grid-cols-1 gap-x-6 gap-y-1 px-4 py-4 sm:grid-cols-4 sm:py-3 sm:items-center sm:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,2.5fr)]"
+                  className="grid grid-cols-1 gap-x-6 gap-y-1 px-6 md:px-4 py-4 sm:grid-cols-4 sm:py-3 sm:items-center sm:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,2.5fr)]"
                   style={{
                     color: "#1E1E1E",
                     fontFamily: "var(--font-inter), Inter, sans-serif",

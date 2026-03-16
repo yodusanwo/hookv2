@@ -79,8 +79,8 @@ export function OurStoryExtendedSection({
       }}
     >
       <div
-        className="mx-auto w-full px-4 pb-12 pl-[2.25rem]"
-        style={{ maxWidth: 1440, paddingTop: SECTION_TOP_PADDING_PX }}
+        className="mx-auto w-full max-w-6xl px-6 md:px-4 pb-12 md:pl-[2.25rem]"
+        style={{ paddingTop: SECTION_TOP_PADDING_PX }}
       >
         {(block.title ?? "").trim() && (
           <SectionHeading

@@ -46,7 +46,7 @@ export function TeamBiosSection({
         ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
       }}
     >
-      <div className="mx-auto w-full max-w-6xl px-4">
+      <div className="mx-auto w-full max-w-6xl px-6 md:px-4">
         {/* Heading */}
         <div className="mx-auto max-w-[926px] text-center">
           {title && (

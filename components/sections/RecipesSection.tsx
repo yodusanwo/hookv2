@@ -45,7 +45,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
       style={{ backgroundColor: bgColor, width: "100%", minHeight: 433 }}
     >
       <div
-        className="mx-auto w-full max-w-full px-4"
+        className="mx-auto w-full max-w-6xl px-6 md:px-4"
         style={{
           paddingTop: RECIPES_TOP_PADDING_PX,
         }}
@@ -57,12 +57,11 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           theme="light"
         />
         <div
-          className="mt-16 grid gap-x-[13px] gap-y-[13px]"
-          style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 387px))",
-            justifyContent: "center",
-          }}
+          className="mt-16 md:grid md:grid-cols-3 md:gap-x-[13px] md:gap-y-[13px]"
         >
+          <div
+            className="flex overflow-x-auto overflow-y-hidden gap-4 snap-x snap-mandatory scroll-smooth scrollbar-hide md:contents"
+          >
           {recipes.map((r, idx) => {
             const img = urlFor(r.image);
             let raw = (r.url ?? "").trim();
@@ -84,7 +83,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
               <Link
                 key={idx}
                 href={href}
-                className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md"
+                className="group flex shrink-0 w-[min(280px,78vw)] snap-center min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md md:shrink-0 md:w-full md:max-w-[387px]"
                 style={{ backgroundColor: bgColor }}
               >
                 <div
@@ -111,21 +110,22 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
               </Link>
             );
           })}
-          <Link
-            href={safeHref(showMoreUrl) || "#"}
-            className="mt-10 mb-10 pl-4 col-start-1 inline-flex items-center gap-1.5 hover:opacity-90 w-fit"
-            style={SHOW_MORE_LINK_STYLE}
-          >
-            Show more recipes
-            <img
-              src="/Vector.svg"
-              alt=""
-              aria-hidden
-              width={28.333}
-              height={12.307}
-              className="shrink-0 max-w-full h-auto"
-            />
-          </Link>
+          </div>
+        <Link
+          href={safeHref(showMoreUrl) || "#"}
+          className="mt-10 mb-10 inline-flex items-center gap-1.5 hover:opacity-90 w-fit md:col-start-1 md:row-start-2"
+          style={SHOW_MORE_LINK_STYLE}
+        >
+          Show more recipes
+          <img
+            src="/Vector.svg"
+            alt=""
+            aria-hidden
+            width={28.333}
+            height={12.307}
+            className="shrink-0 max-w-full h-auto"
+          />
+        </Link>
         </div>
       </div>
       <div

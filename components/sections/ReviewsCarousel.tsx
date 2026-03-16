@@ -91,37 +91,55 @@ export function ReviewsCarousel({ reviews }: { reviews: ReviewItem[] }) {
 
   return (
     <>
-      {/* Mobile: single card with arrows */}
-      <div className="relative mt-10 flex md:hidden items-center justify-center gap-2 px-4">
-        <button
-          type="button"
-          onClick={() => setIndex((i) => Math.max(0, i - 1))}
-          disabled={!canPrev}
-          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
-          aria-label="Previous review"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
-        <div className="min-w-0 flex-1 px-10">
-          {current ? <ReviewCard r={current} /> : null}
+      {/* Mobile: single card with arrows and dot indicators */}
+      <div className="relative mt-10 flex flex-col md:hidden items-center justify-center gap-2 px-6 md:px-4">
+        <div className="relative flex w-full items-center justify-center">
+          <button
+            type="button"
+            onClick={() => setIndex((i) => Math.max(0, i - 1))}
+            disabled={!canPrev}
+            className="absolute left-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
+            aria-label="Previous review"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <div className="min-w-0 flex-1 px-10">
+            {current ? <ReviewCard r={current} /> : null}
+          </div>
+          <button
+            type="button"
+            onClick={() => setIndex((i) => Math.min(reviews.length - 1, i + 1))}
+            disabled={!canNext}
+            className="absolute right-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
+            aria-label="Next review"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => setIndex((i) => Math.min(reviews.length - 1, i + 1))}
-          disabled={!canNext}
-          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
-          aria-label="Next review"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M9 18l6-6-6-6" />
-          </svg>
-        </button>
+        {reviews.length > 1 && (
+          <div className="mt-4 flex items-center justify-center gap-2" role="tablist" aria-label={`Review ${index + 1} of ${reviews.length}`}>
+            {reviews.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={`Go to review ${i + 1} of ${reviews.length}`}
+                aria-current={i === index ? "true" : undefined}
+                className={`h-2 rounded-full transition-opacity hover:opacity-80 ${
+                  i === index ? "w-6 bg-[#333333]" : "w-2 bg-[#333333]/40"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Desktop: three columns in one row */}
-      <div className="mt-10 hidden max-w-6xl mx-auto gap-6 px-4 md:grid md:grid-cols-3 md:justify-items-center">
+      <div className="mt-10 hidden max-w-6xl mx-auto gap-6 px-6 md:px-4 md:grid md:grid-cols-3 md:justify-items-center">
         {reviews.map((r, idx) => (
           <div key={idx} className="w-full max-w-[355px]">
             <ReviewCard r={r} />

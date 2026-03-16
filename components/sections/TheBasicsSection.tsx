@@ -38,7 +38,7 @@ export function TheBasicsSection({
         ...(topPadding != null ? { paddingTop: topPadding } : {}),
       }}
     >
-      <div className="mx-auto w-full max-w-full px-4">
+      <div className="mx-auto w-full max-w-full px-6 md:px-4">
         <SectionHeading
           title={title}
           description={description || undefined}

@@ -87,17 +87,17 @@ export function Footer({
                 type="text"
                 placeholder="Full Name"
                 name="fullName"
-                className="h-11 w-full rounded-md bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
+                className="min-h-[44px] h-11 w-full rounded-md bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
               />
               <input
                 type="email"
                 placeholder="Email"
                 name="email"
-                className="h-11 w-full rounded-md bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
+                className="min-h-[44px] h-11 w-full rounded-md bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
               />
               <button
                 type="submit"
-                className="h-11 w-full rounded-md text-sm font-semibold text-white transition-colors hover:opacity-90 flex items-center justify-center"
+                className="min-h-[44px] h-11 w-full rounded-md text-sm font-semibold text-white transition-colors hover:opacity-90 flex items-center justify-center"
                 style={{ backgroundColor: "#069400" }}
               >
                 Subscribe
@@ -105,36 +105,36 @@ export function Footer({
             </form>
           </div>
 
-          {/* Column 3: Navigation links */}
+          {/* Column 3: Navigation links — 44px min tap height on mobile */}
           <div className="">
             <ul className="flex flex-col gap-2">
               <li>
-                <a href="/shop" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="/shop" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Shop
                 </a>
               </li>
               <li>
-                <a href="#about" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="#about" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Our Story
                 </a>
               </li>
               <li>
-                <a href="#recipes" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="#recipes" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Recipes
                 </a>
               </li>
               <li>
-                <a href="#calendar" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="#calendar" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Calendar
                 </a>
               </li>
               <li>
-                <a href="#faq" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="#faq" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
                   FAQ
                 </a>
               </li>
               <li>
-                <a href="/contact" className="hover:text-white transition-colors" style={footerNavLinkStyle}>
+                <a href="/contact" className="min-h-[44px] flex items-center hover:text-white transition-colors" style={footerNavLinkStyle}>
                   Contact
                 </a>
               </li>
@@ -188,8 +188,8 @@ export function Footer({
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center transition-colors hover:opacity-90"
-                style={{ width: 32, height: 32, borderRadius: 10, background: "#EEF1F6" }}
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center transition-colors hover:opacity-90 rounded-[10px]"
+                style={{ background: "#EEF1F6" }}
                 aria-label="Facebook"
               >
                 <img src="/Facebook.svg" alt="" className="h-5 w-5 object-contain" aria-hidden />
@@ -198,8 +198,8 @@ export function Footer({
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center transition-colors hover:opacity-90"
-                style={{ width: 32, height: 32, borderRadius: 10, background: "#EEF1F6" }}
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center transition-colors hover:opacity-90 rounded-[10px]"
+                style={{ background: "#EEF1F6" }}
                 aria-label="Instagram"
               >
                 <img src="/Instagram.svg" alt="" className="h-5 w-5 object-contain" aria-hidden />

@@ -31,7 +31,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
       className="flex min-h-0 flex-col justify-center py-14"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-6xl px-6 md:px-4">
         <h2
           className="text-center uppercase tracking-wide"
           style={{

@@ -24,7 +24,7 @@ export function ContactSection({ block }: { block: ContactBlock }) {
       className="relative z-10 min-h-[780px] pt-[176px] pb-14 md:pt-[208px] md:pb-20"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="mx-auto max-w-[782px] px-4 text-center">
+      <div className="mx-auto max-w-[782px] px-6 md:px-4 text-center">
         {title && (
           <h1
             className="font-semibold uppercase leading-normal text-[#111827]"
@@ -54,7 +54,7 @@ export function ContactSection({ block }: { block: ContactBlock }) {
         )}
       </div>
 
-      <div className="mx-auto max-w-[1065px] px-4 pt-14">
+      <div className="mx-auto max-w-[1065px] px-6 md:px-4 pt-14">
         <ContactForm
           email={block.email}
           phone={block.phone}

@@ -65,7 +65,7 @@ export function DocksideMarketsSection({
         ...(bottomPadding ? { paddingBottom: bottomPadding } : {}),
       }}
     >
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col px-4">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col px-6 md:px-4">
         <SectionHeading
           title={title}
           description={description || undefined}
@@ -78,7 +78,7 @@ export function DocksideMarketsSection({
             <div className="mx-auto w-full max-w-[1363px]">
               <div
                 ref={scrollRef}
-                className="scrollbar-hide flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-14 pr-14 [-webkit-overflow-scrolling:touch]"
+                className="scrollbar-hide flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-6 pr-6 md:pl-14 md:pr-14 [-webkit-overflow-scrolling:touch]"
               >
               {items.length > 0
                 ? items.map((item, idx) => {

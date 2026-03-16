@@ -58,7 +58,7 @@ export async function CatchOfTheDaySection({
       className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
       style={{ backgroundColor: block.backgroundColor ?? "#171730" }}
     >
-      <div className="mx-auto w-full max-w-[1100px] px-4">
+      <div className="mx-auto w-full max-w-6xl px-6 md:px-4">
         <SectionHeading
           title={title}
           description={description}

@@ -101,7 +101,7 @@ export function ExploreProductsGrid({
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 mt-12 flex justify-center">
+      <div className="mx-auto max-w-6xl px-6 md:px-4 mt-12 flex justify-center">
         <Link href={safeHref(cta?.href) || "#shop"} className="btn-primary">
           {cta?.label ?? "SHOP FULL LINEUP →"}
         </Link>

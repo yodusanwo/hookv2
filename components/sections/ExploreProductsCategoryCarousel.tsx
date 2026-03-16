@@ -69,7 +69,7 @@ export function ExploreProductsCategoryCarousel({
       href={cat.href}
       className="group flex flex-col items-center outline-none focus:outline-none w-full md:w-auto md:shrink-0 md:snap-start"
     >
-      <div className="overflow-hidden rounded-lg w-full md:w-[331px] transition-all shrink-0 hover:shadow-md border-0 border-none shadow-none ring-0 bg-transparent">
+      <div className="overflow-hidden rounded-lg w-full md:w-[331px] transition-all shrink-0 hover:shadow-md active:scale-[0.98] active:opacity-95 border-0 border-none shadow-none ring-0 bg-transparent">
         <div
           className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] rounded-[10px] group-hover:bg-white/15 border-0 border-none ring-0 w-full aspect-[4/3]"
           style={{ maxWidth: "100%" }}
@@ -118,7 +118,7 @@ export function ExploreProductsCategoryCarousel({
   );
 
   return (
-    <div className="relative mx-auto w-full max-w-6xl mt-10 px-4 md:px-2">
+    <div className="relative mx-auto w-full max-w-6xl mt-10 px-6 md:px-2">
       {/* Mobile: single column stack; md+: horizontal carousel */}
       <div
         ref={ref}

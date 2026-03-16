@@ -34,7 +34,7 @@ function normalizeHeadline(raw: string | undefined): { line1: string; line2: str
   return { line1: trimmed, line2: "" };
 }
 
-export function HeroSection({ block, promoBanner }: { block: HeroBlock; promoBanner?: string | null }) {
+export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: HeroBlock; promoBanner?: string | null; promoBannerUrl?: string | null }) {
   const variant = block.variant === "story" ? "story" : "default";
   const headline = normalizeHeadline(block.headline);
   const subline = block.subline ?? (variant === "story" ? "Tradition  •  Quality  •  Respect for the ocean" : "Wild-caught  •  Family-run  •  Sustainably sourced");
@@ -72,7 +72,7 @@ export function HeroSection({ block, promoBanner }: { block: HeroBlock; promoBan
         ctaHref={ctaHref}
         items={carouselItems}
       />
-      {promoBanner && <PromoBanner text={promoBanner} />}
+      {promoBanner && <PromoBanner text={promoBanner} href={promoBannerUrl} />}
     </>
   );
 }

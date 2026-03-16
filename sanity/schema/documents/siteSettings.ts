@@ -46,6 +46,13 @@ export const siteSettings = defineType({
       group: "header",
     }),
     defineField({
+      name: "promoBannerUrl",
+      type: "string",
+      title: "Promo Banner Link",
+      description: 'Where the banner goes when tapped (e.g. /contact). Leave empty to keep banner non-clickable.',
+      group: "header",
+    }),
+    defineField({
       name: "navLinks",
       type: "array",
       title: "Main Nav Links",

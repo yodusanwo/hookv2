@@ -56,6 +56,7 @@ export function HeroCarousel({
             key={active.src}
             src={active.src}
             alt={active.alt}
+            fetchPriority={idx === 0 ? "high" : undefined}
             className={`${IMAGE_LAYER} object-cover`}
             style={
               variant === "story"

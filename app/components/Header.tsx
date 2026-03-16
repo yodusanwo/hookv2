@@ -85,17 +85,17 @@ export function Header({
             type="button"
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
-            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-white/10 md:hidden"
+            className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-white/10 md:hidden"
             onClick={() => setMobileMenuOpen((o) => !o)}
           >
             <span className={`h-0.5 w-6 bg-white transition-transform ${mobileMenuOpen ? "translate-y-2 rotate-45" : ""}`} />
             <span className={`h-0.5 w-6 bg-white transition-opacity ${mobileMenuOpen ? "opacity-0" : ""}`} />
             <span className={`h-0.5 w-6 bg-white transition-transform ${mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
           </button>
-          <button type="button" aria-label="Search" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <button type="button" aria-label="Search" className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 hover:bg-white/10 transition-colors">
             <IconSearch className="h-5 w-5" />
           </button>
-          <button type="button" aria-label="Account" className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <button type="button" aria-label="Account" className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 hover:bg-white/10 transition-colors">
             <IconUser className="h-5 w-5" />
           </button>
           <CartCount />
@@ -108,7 +108,7 @@ export function Header({
           className="border-t border-white/20 bg-[var(--brand-navy)] px-4 py-4 md:hidden"
           style={{ backgroundColor: bgColor }}
         >
-          <nav className="flex flex-col gap-1">
+          <nav className="flex flex-col gap-2">
             {nav.map((item) => {
               const href = safeHref(item.href) || "#";
               const label = item.label ?? "Link";
@@ -116,7 +116,7 @@ export function Header({
                 <Link
                   key={`${href}-${label}`}
                   href={href}
-                  className="py-3 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
+                  className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {label}

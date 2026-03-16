@@ -133,7 +133,7 @@ export async function DealPromotionsSection({
     backgroundColor.toLowerCase() === "#ffffff" || backgroundColor.toLowerCase() === "white";
   return (
     <section id={sectionId} className="relative z-10 py-14" style={{ backgroundColor }}>
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-6xl px-6 md:px-4">
         <SectionHeading
           title={title}
           description={description || undefined}

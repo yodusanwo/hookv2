@@ -121,8 +121,7 @@ export function OurStorySection({
       }}
     >
       <div
-        className={`mx-auto w-full px-4 pb-12 pt-10 ${isStoryPage ? "md:pl-[2.25rem]" : ""}`}
-        style={{ maxWidth: 1440 }}
+        className={`mx-auto w-full max-w-6xl px-6 md:px-4 pb-12 pt-10 ${isStoryPage ? "md:pl-[2.25rem]" : ""}`}
       >
         {!hideTitle && (
           <>
@@ -162,7 +161,7 @@ export function OurStorySection({
             )}
           </div>
           <div
-            className="flex max-w-xl flex-col justify-center rounded-xl -ml-4 pl-0 pr-4 pb-6 pt-0 lg:ml-0 lg:px-6"
+            className="flex max-w-xl flex-col justify-center rounded-xl px-6 pb-6 pt-0 lg:px-6"
             style={{
               backgroundColor: isStoryPage ? "transparent" : (block.backgroundColor ?? "#d4f2ff"),
             }}
@@ -176,7 +175,7 @@ export function OurStorySection({
                   className="-mt-[2.8125rem] h-16 w-10 shrink-0 object-contain sm:h-20 sm:w-12 lg:h-24 lg:w-14"
                 />
                 <div
-                  className="min-w-0 flex-1 pl-0 pr-4 lg:pl-5 lg:pr-6"
+                  className="min-w-0 flex-1 pl-0 pr-0 lg:pl-5 lg:pr-6"
                   style={STORY_PAGE_COPY_STYLE}
                 >
                   {!(block.body && block.body.length > 0 && !useFallbackBody) && (
@@ -260,7 +259,7 @@ export function OurStorySection({
                     <div className="mt-6">
                       <a
                         href={ctaHref}
-                        className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case text-white"
+                        className="min-h-[44px] inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case text-white"
                         style={{
                           fontFamily: "Inter, var(--font-inter), sans-serif",
                           fontSize: "16px",
@@ -298,7 +297,7 @@ export function OurStorySection({
                 )}
                 {block.body && block.body.length > 0 && !useFallbackBody ? (
                   <div
-                    className="our-story-body our-story-body--desktop max-w-none pl-0 pr-4 [&>*]:mt-[29px] [&>*:first-child]:mt-0 lg:pl-5 lg:pr-6"
+                    className="our-story-body our-story-body--desktop max-w-none pl-0 pr-0 [&>*]:mt-[29px] [&>*:first-child]:mt-0 lg:pl-5 lg:pr-6"
                     style={BODY_STYLE}
                   >
                     <PortableText
@@ -330,7 +329,7 @@ export function OurStorySection({
                   <div className="mt-[29px] lg:pl-5">
                     <a
                       href={ctaHref}
-                      className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
+                      className="min-h-[44px] inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
                       style={{
                         color: "#498CCB",
                         fontFamily: "Inter, var(--font-inter), sans-serif",

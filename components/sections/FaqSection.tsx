@@ -62,7 +62,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
 
   return (
     <section id="faq" className="py-14" style={{ backgroundColor: bgColor }}>
-      <div className="mx-auto w-full px-4">
+      <div className="mx-auto w-full px-6 md:px-4">
         <SectionHeading
           title={title}
           description={description || undefined}
@@ -101,7 +101,7 @@ export function FaqSection({ block }: { block: FaqBlock }) {
                       <button
                         type="button"
                         onClick={() => setOpenIdx(isOpen ? null : idx)}
-                        className="w-full px-6 py-4 text-left hover:opacity-90 flex justify-between items-center"
+                        className="min-h-[44px] w-full px-6 py-4 text-left hover:opacity-90 flex justify-between items-center"
                         style={{
                           color: "#1E1E1E",
                           fontFamily: "var(--font-inter), Inter, sans-serif",

@@ -13,6 +13,7 @@ import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
 
 export function ShopPageClient({
   promoBanner,
+  promoBannerUrl,
   filterOptions,
   collectionSections,
   productCarouselBlock,
@@ -20,6 +21,7 @@ export function ShopPageClient({
   initialCategoryFromUrl = null,
 }: {
   promoBanner: string | null;
+  promoBannerUrl?: string | null;
   filterOptions: Array<{
     value: string;
     label: string;
@@ -103,7 +105,7 @@ export function ShopPageClient({
         onClearAll={clearAll}
       />
 
-      {promoBanner ? <PromoBanner text={promoBanner} /> : null}
+      {promoBanner ? <PromoBanner text={promoBanner} href={promoBannerUrl} /> : null}
 
       {visibleSections.map((block, idx) => (
         <Fragment key={`${block.collectionHandle}-${idx}`}>

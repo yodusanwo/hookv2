@@ -79,8 +79,7 @@ export function OurStoryExtendedReversedSection({
       style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF" }}
     >
       <div
-        className="mx-auto w-full px-4 pb-12 pt-10 pl-4 md:pl-[2.25rem]"
-        style={{ maxWidth: 1440 }}
+        className="mx-auto w-full max-w-6xl px-6 md:px-4 pb-12 pt-10 md:pl-[2.25rem]"
       >
         {(block.title ?? "").trim() && (
           <SectionHeading
@@ -111,7 +110,7 @@ export function OurStoryExtendedReversedSection({
         >
           {/* Copy on the left */}
           <div
-            className="flex max-w-xl flex-col justify-start rounded-xl px-4 md:pl-0 md:pr-6 pb-6 pt-0 order-2 lg:order-1 md:ml-[13.75rem]"
+            className="flex max-w-xl flex-col justify-start rounded-xl px-6 md:pl-0 md:pr-6 pb-6 pt-0 order-2 lg:order-1 md:ml-[13.75rem]"
             style={{ backgroundColor: "transparent" }}
           >
             <div className="min-w-0 w-[432px] max-w-full" style={COPY_STYLE}>

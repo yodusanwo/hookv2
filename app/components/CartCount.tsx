@@ -54,7 +54,7 @@ export function CartCount({ variant = "header" }: CartCountProps) {
   const baseClass =
     variant === "bottomNav"
       ? "relative flex flex-col items-center gap-1 text-xs font-medium text-white/90 hover:text-white"
-      : "relative p-2 hover:bg-white/10 rounded-lg transition-colors";
+      : "relative flex min-h-[44px] min-w-[44px] items-center justify-center p-2 hover:bg-white/10 rounded-lg transition-colors";
 
   return (
     <Link

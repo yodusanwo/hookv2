@@ -78,9 +78,11 @@ export function PageBuilder({
   hideOurStoryWave,
   ourStoryVariant,
   canonicalExploreProductsBlock,
+  promoBannerUrl,
 }: {
   sections?: PageSection[];
   promoBanner?: string | null;
+  promoBannerUrl?: string | null;
   /** When "calendar", Upcoming Events section shows month filter (e.g. on /calendar page). */
   pageSlug?: string | null;
   /** When true, the wave under the Explore Products / Product Carousel section is hidden (e.g. on Collection pages). */
@@ -123,6 +125,7 @@ export function PageBuilder({
                 key={key}
                 block={block as Parameters<typeof HeroSection>[0]["block"]}
                 promoBanner={promoBanner}
+                promoBannerUrl={promoBannerUrl}
               />
             );
           case "catchOfTheDayBlock":
@@ -135,7 +138,7 @@ export function PageBuilder({
                     className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
                     style={{ backgroundColor: "var(--brand-navy)" }}
                   >
-                    <div className="mx-auto w-full max-w-[1100px] px-4">
+                    <div className="mx-auto w-full max-w-6xl px-6 md:px-4">
                       <div className="animate-pulse flex flex-col items-center gap-3">
                         <div className="h-8 w-48 max-w-full rounded bg-white/10" />
                         <div className="h-4 w-full max-w-[min(789px,100%)] rounded bg-white/10" />

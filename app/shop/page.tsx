@@ -12,6 +12,7 @@ export const metadata = {
 
 type SiteSettings = {
   promoBanner?: string | null;
+  promoBannerUrl?: string | null;
   shopFilterOptions?: Array<{ label?: string; value?: string; insertAfterCategory?: string | null }> | null;
   shopPageCollectionSections?: Array<{
     title?: string | null;
@@ -45,6 +46,7 @@ export default async function ShopPage({
   const initialCategory = typeof params.category === "string" ? params.category.trim() : null;
 
   let promoBanner: string | null = null;
+  let promoBannerUrl: string | null = null;
   let filterOptions: Array<{ value: string; label: string; insertAfterCategory?: string }> = [];
   let collectionSections: CategorySectionBlockData[] = [];
   let productCarouselBlock: ShopProductCarouselBlock | null = null;
@@ -58,6 +60,7 @@ export default async function ShopPage({
       ]);
 
       promoBanner = settings?.promoBanner ?? null;
+      promoBannerUrl = settings?.promoBannerUrl ?? null;
 
       if (catchData) {
         const filterCollections =
@@ -103,6 +106,7 @@ export default async function ShopPage({
   return (
     <ShopPageClient
       promoBanner={promoBanner}
+      promoBannerUrl={promoBannerUrl}
       filterOptions={filterOptions}
       collectionSections={collectionSections}
       productCarouselBlock={productCarouselBlock}

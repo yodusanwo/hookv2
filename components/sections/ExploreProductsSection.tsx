@@ -120,7 +120,7 @@ export function ExploreProductsSection({
           </div>
         </div>
       )}
-      <div className={`mx-auto w-full max-w-[1100px] px-4 ${hasWaveAbove ? (tripleTitleTopMargin ? "pt-[248px]" : "pt-8") : ""}`}>
+      <div className={`mx-auto w-full max-w-6xl px-6 md:px-4 ${hasWaveAbove ? (tripleTitleTopMargin ? "pt-[248px]" : "pt-8") : ""}`}>
         <SectionHeading
           title={title}
           description={description}

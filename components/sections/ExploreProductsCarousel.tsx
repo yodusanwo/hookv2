@@ -26,7 +26,7 @@ export function ExploreProductsCarousel({
   if (categories.length === 0) return null;
 
   return (
-    <div className="relative mx-auto max-w-6xl px-4">
+    <div className="relative mx-auto max-w-6xl px-6 md:px-4">
       <div
         ref={ref}
         className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"

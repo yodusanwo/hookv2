@@ -66,7 +66,7 @@ export function PhotoGallerySection({
         ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
       }}
     >
-      <div className="mx-auto w-full max-w-6xl px-4">
+      <div className="mx-auto w-full max-w-6xl px-6 md:px-4">
         <h2
           className="text-center capitalize"
           style={{

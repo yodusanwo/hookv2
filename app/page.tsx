@@ -88,19 +88,19 @@ export default async function Home() {
 
     let sanityPage: { sections?: unknown[] } | null = null;
     let promoBanner: string | null = null;
+    let promoBannerUrl: string | null = null;
     let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
 
     if (hasSanity) {
       try {
         const [homePage, settings, canonicalExplore] = await Promise.all([
           client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
-          client
-            .fetch<{ promoBanner?: string } | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } })
-            .then((s) => s?.promoBanner ?? null),
+          client.fetch<{ promoBanner?: string; promoBannerUrl?: string } | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } }),
           client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
         ]);
         sanityPage = homePage;
-        promoBanner = settings;
+        promoBanner = settings?.promoBanner ?? null;
+        promoBannerUrl = settings?.promoBannerUrl ?? null;
         canonicalExploreProductsBlock = canonicalExplore ?? null;
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
@@ -121,6 +121,7 @@ export default async function Home() {
           <PageBuilder
             sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
             promoBanner={promoBanner}
+            promoBannerUrl={promoBannerUrl}
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
           />
         </main>
@@ -135,14 +136,16 @@ export default async function Home() {
     const products = data.products.edges;
 
     let fallbackPromoBanner: string | null = null;
+    let fallbackPromoBannerUrl: string | null = null;
     if (hasSanity) {
       try {
-        const settings = await client.fetch<{ promoBanner?: string } | null>(
+        const settings = await client.fetch<{ promoBanner?: string; promoBannerUrl?: string } | null>(
           SITE_SETTINGS_QUERY,
           {},
           { next: { revalidate: 60 } }
         );
         fallbackPromoBanner = settings?.promoBanner ?? null;
+        fallbackPromoBannerUrl = settings?.promoBannerUrl ?? null;
       } catch {
         // ignore
       }
@@ -180,7 +183,7 @@ export default async function Home() {
             { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
           ]}
         />
-        {fallbackPromoBanner && <PromoBanner text={fallbackPromoBanner} />}
+        {fallbackPromoBanner && <PromoBanner text={fallbackPromoBanner} href={fallbackPromoBannerUrl} />}
 
         <section id="about" className="bg-white py-14">
           <div className="mx-auto max-w-6xl px-4">

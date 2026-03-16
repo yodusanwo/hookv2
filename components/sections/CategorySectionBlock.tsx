@@ -129,7 +129,7 @@ export function CategorySectionBlock({
           ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
         }}
       >
-        <div className="mx-auto w-full max-w-[1200px] px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-6 md:px-4">
           <SectionHeading
             title={title}
             variant="display"
