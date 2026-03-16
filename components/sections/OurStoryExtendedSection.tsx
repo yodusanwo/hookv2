@@ -105,7 +105,7 @@ export function OurStoryExtendedSection({
           </p>
         )}
         <div
-          className={`grid gap-8 lg:grid-cols-[440.8px_1fr] lg:items-start ${(block.title ?? "").trim() || (block.introText ?? "").trim() ? "mt-10 pt-[2.5rem]" : "pt-[2.5rem]"}`}
+          className={`grid gap-8 lg:grid-cols-[440.8px_1fr] lg:items-start ${(block.title ?? "").trim() || (block.introText ?? "").trim() ? "mt-10 pt-[2.5rem]" : "pt-0"}`}
         >
           <div
             className="min-w-0 w-full overflow-hidden shrink-0 aspect-square rounded-[10px] md:min-w-[440.8px] md:w-[440.8px]"

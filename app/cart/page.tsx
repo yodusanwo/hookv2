@@ -412,7 +412,9 @@ export default function CartPage() {
           <div>
             <div className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-slate-200 pb-3 text-xs font-medium uppercase tracking-wide text-slate-500 max-sm:sr-only">
               <div>Product</div>
-              <div className="text-left">Quantity</div>
+              <div className="text-left" style={{ transform: "translateX(-90px)" }}>
+                Quantity
+              </div>
               <div className="text-right">Total</div>
             </div>
 
@@ -578,7 +580,8 @@ export default function CartPage() {
               href={cart.checkoutUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-md bg-[#498CCB] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#3d7ab5]"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+              style={{ backgroundColor: "var(--brand-green)" }}
               aria-label="Secure checkout (opens in new tab)"
             >
               <LockIcon className="h-5 w-5 shrink-0" />
@@ -616,10 +619,11 @@ export default function CartPage() {
 
         {/* You might also like */}
         {(recommendationsLoading || recommendations.length > 0) && (
-          <section className="mt-16 border-t border-slate-200 pt-12">
-            <h2 className="text-lg font-bold uppercase tracking-wide text-black">
-              You might also like
-            </h2>
+          <section
+            className="mt-16 border-t border-slate-200 pt-12"
+            style={{ ["--section-bg" as string]: "#ffffff" }}
+          >
+            <h2 className="section-title">You might also like</h2>
             {recommendationsLoading ? (
               <p className="mt-4 text-sm text-slate-500">Loading…</p>
             ) : (
@@ -629,8 +633,8 @@ export default function CartPage() {
                   const subtitle = product.sizeOrDescription ?? product.productType ?? "";
                   return (
                     <li key={product.id} className="group">
-                      <Link href={`/products/${product.handle}`} className="block">
-                        <div className="relative aspect-square overflow-hidden rounded-lg bg-slate-100">
+                      <Link href={`/products/${product.handle}`} className="section-card block overflow-hidden rounded-xl transition-shadow" style={{ backgroundColor: "var(--section-bg)" }}>
+                        <div className="relative aspect-square overflow-hidden rounded-t-xl bg-slate-100">
                           {img?.url ? (
                             <img
                               src={img.url}
@@ -647,18 +651,20 @@ export default function CartPage() {
                             <IconCart className="h-4 w-4 text-slate-600" />
                           </div>
                         </div>
-                        <h3 className="mt-3 font-semibold text-black">
-                          {product.title}
-                        </h3>
-                        {subtitle && (
-                          <p className="mt-0.5 text-sm text-slate-600">
-                            {subtitle}
-                          </p>
-                        )}
-                        <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-[#498CCB] hover:underline">
-                          Show more
-                          <span aria-hidden>+</span>
-                        </span>
+                        <div className="p-4" style={{ backgroundColor: "var(--section-bg)" }}>
+                          <h3 className="font-semibold text-black">
+                            {product.title}
+                          </h3>
+                          {subtitle && (
+                            <p className="mt-0.5 text-sm text-slate-600">
+                              {subtitle}
+                            </p>
+                          )}
+                          <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-[#498CCB] hover:underline">
+                            Show more
+                            <span aria-hidden>+</span>
+                          </span>
+                        </div>
                       </Link>
                     </li>
                   );

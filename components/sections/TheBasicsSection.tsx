@@ -79,7 +79,7 @@ export function TheBasicsSection({
               <Link
                 key={idx}
                 href={href}
-                className="group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md"
+                className="section-card group flex min-w-0 max-w-[387px] flex-col overflow-hidden rounded-xl transition-shadow"
                 style={{ backgroundColor: bgColor }}
               >
                 <div

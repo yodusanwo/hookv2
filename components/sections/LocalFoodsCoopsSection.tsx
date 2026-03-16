@@ -54,7 +54,7 @@ export function LocalFoodsCoopsSection({
 
   return (
     <section
-      className={`relative z-20 flex min-h-0 flex-col justify-center pt-12 pb-12 md:pt-[60px] md:pb-0 ${bottomPaddingClass ?? ""}`.trim()}
+      className={`relative z-20 flex min-h-0 flex-col justify-center pt-12 pb-12 md:pt-[60px] ${bottomPaddingClass ? bottomPaddingClass : "md:pb-0"}`.trim()}
       style={{ backgroundColor: block.backgroundColor ?? "#FAFAFC" }}
     >
       <div

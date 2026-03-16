@@ -182,7 +182,10 @@ export function CatchOfTheDayProductCard({
           </button>
         </div>
 
-        <div className="flex flex-1 flex-col px-4 py-3">
+        <div
+          className="flex flex-1 flex-col px-4 py-3"
+          style={{ backgroundColor: "var(--section-bg)" }}
+        >
           <h3
             style={{
               color: darkSection ? "rgba(255,255,255,0.95)" : "var(--Text-Color, #1E1E1E)",

@@ -154,7 +154,7 @@ export default async function Story() {
             docksideMarketsBottomPadding="clamp(4.5rem, 9vw, 6.75rem)"
             docksideMarketsMinHeight={331}
             hideLocalFoodsCoopsWave
-            localFoodsCoopsBottomPaddingClass="pb-[60px]"
+            localFoodsCoopsBottomPaddingClass="md:pb-[60px]"
             hideOurStoryTitle
             hideOurStoryCta
             ourStoryVariant="story-page"

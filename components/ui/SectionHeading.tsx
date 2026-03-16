@@ -3,7 +3,7 @@
 type SectionHeadingProps = {
   title: string;
   description?: string;
-  variant: "display" | "standard";
+  variant: "display" | "standard" | "section";
   theme?: "light" | "dark";
   /** When true (display variant only), description uses larger lead style */
   descriptionAsLead?: boolean;
@@ -46,6 +46,19 @@ export function SectionHeading({
   const isDark = theme === "dark";
   const resolvedTitleColor = titleColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
   const resolvedDescColor = descriptionColor ?? (isDark ? "var(--section-heading-dark)" : "var(--section-heading-light)");
+
+  if (variant === "section") {
+    return (
+      <div className="mx-auto">
+        <h2 className="section-title">{title}</h2>
+        {description && (
+          <p className="section-description-block mt-4 w-full px-4">
+            {description}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   if (variant === "display") {
     const containerMaxW =

@@ -52,6 +52,20 @@
   --section-heading-display-spacing: -1.68px;
   --section-heading-display-line-height: 120%;
 
+  /* Section title/description – consistent across Reviews, You Might Also Like, etc. */
+  /* Heading 2: 48px on desktop; responsive via clamp for smaller screens */
+  --section-title-size: clamp(24px, 5vw, 48px);
+  --section-title-weight: 600;
+  --section-title-color: #111827;
+  --section-description-size: 16px;
+  --section-description-color: #1e1e1e;
+  --section-description-max-width: 770px;
+  /* Card title area: sections set --section-bg so card text area matches section background */
+  --section-bg: #ffffff;
+  /* Section cards (recipe, product, reviews, etc.) – no box shadow by default; shadow on hover */
+  --section-card-shadow: none;
+  --section-card-shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
   /* Recipes wave */
   --wave-recipes-translate: 90%;
   --wave-recipes-section-padding: calc(8vw + 32px);
@@ -115,6 +129,41 @@ body {
 #catch-of-the-day h2 {
   font-family:
     var(--font-zamenhof-inline), var(--font-inter), Inter, sans-serif !important;
+}
+
+/* Section title + description – use for Reviews, You Might Also Like, Wild Flavor, etc.
+   Heading 2: #111827, Inter, 48px (responsive), 600, uppercase.
+   Description: #1E1E1E, Inter, 16px, 400, line-height 150%, center, max-width 770px. */
+.section-title {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: var(--section-title-size);
+  font-style: normal;
+  font-weight: var(--section-title-weight);
+  line-height: normal;
+  color: var(--section-title-color);
+  text-align: center;
+  text-transform: uppercase;
+}
+.section-description-block {
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-size: var(--section-description-size);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  color: var(--section-description-color);
+  text-align: center;
+  max-width: var(--section-description-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Section cards – no box shadow by default; shadow on hover */
+.section-card {
+  box-shadow: var(--section-card-shadow);
+  transition: box-shadow 0.2s ease;
+}
+.section-card:hover {
+  box-shadow: var(--section-card-shadow-hover);
 }
 
 /* Our Story body typography */

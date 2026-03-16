@@ -106,6 +106,7 @@ export function ExploreProductsSection({
       className={`relative z-20 overflow-visible pt-12 pb-0 ${noTopPadding ? "md:pt-0" : doubleTopPadding ? "md:pt-28" : "md:pt-14"}`}
       style={{
         backgroundColor: block.backgroundColor ?? "#171730",
+        ["--section-bg" as string]: block.backgroundColor ?? "#171730",
         ...(bottomPadding ? { paddingBottom: bottomPadding } : {}),
       }}
     >

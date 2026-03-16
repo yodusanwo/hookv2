@@ -4,6 +4,8 @@ import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisp
 import { IconCart } from "@/app/components/Icons";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
+import { ReviewsCarousel } from "@/components/sections/ReviewsCarousel";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   getKlaviyoReviewsForProduct,
   getKlaviyoReviews,
@@ -625,57 +627,25 @@ export default async function ProductPage({
       {/* Wave between product content and reviews — same as shop page collection dividers */}
       <ShopSectionWave />
 
-      {/* Reviews — light gray; product-specific from Klaviyo, fallback to last 3 global */}
+      {/* Reviews — same styling as home page; product-specific from Klaviyo, fallback to last 3 global */}
       <section
-        className="px-4 py-12 md:py-16"
+        className="flex min-h-0 flex-col justify-center pb-12 md:pb-14"
         style={{
-          backgroundColor: "var(--section-bg-light)",
-          paddingTop: "clamp(8rem, 16vw, 12rem)",
+          backgroundColor: "#F8F8F8",
+          paddingTop: "clamp(5rem, 12vw, 8rem)",
+          ["--section-bg" as string]: "#F8F8F8",
         }}
       >
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-xl font-semibold uppercase tracking-wide text-slate-900">
-            Reviews
-          </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            What our customers are saying about this product.
-          </p>
+        <div className="mx-auto max-w-6xl px-6 md:px-4">
+          <SectionHeading
+            title="Reviews"
+            description="What our customers are saying about this product."
+            variant="section"
+          />
           {reviewsToShow.length > 0 ? (
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {reviewsToShow.map((r, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl bg-white p-5 shadow-sm text-left"
-                >
-                  <div
-                    className="flex justify-center items-center gap-0.5"
-                    style={{ color: "#FFA100" }}
-                    aria-hidden
-                  >
-                    {[1, 2, 3, 4, 5].map((j) => (
-                      <span
-                        key={j}
-                        className="flex items-center justify-center"
-                        style={{
-                          width: 24,
-                          height: 24,
-                          fontSize: 24,
-                          lineHeight: 1,
-                        }}
-                      >
-                        {j <= r.stars ? "★" : "☆"}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="mt-3 text-sm text-slate-700">{r.text}</p>
-                  <p className="mt-2 text-xs text-slate-500">
-                    {r.name}{r.date ? ` — ${r.date}` : ""}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <ReviewsCarousel reviews={reviewsToShow} />
           ) : (
-            <p className="mt-8 text-sm text-slate-500">
+            <p className="mt-10 text-center section-description-block">
               No reviews yet for this product. Be the first to leave a review after your purchase.
             </p>
           )}
@@ -685,15 +655,14 @@ export default async function ProductPage({
       {/* You Might Also Like — light blue, product carousel */}
       <section
         className="px-4 py-12 md:py-16"
-        style={{ backgroundColor: LIGHT_BG }}
+        style={{ backgroundColor: LIGHT_BG, ["--section-bg" as string]: LIGHT_BG }}
       >
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-center text-xl font-semibold uppercase tracking-wide text-slate-900">
-            You Might Also Like
-          </h2>
-          <p className="mt-2 text-center text-sm text-slate-600">
-            Explore more wild-caught options from our fleet.
-          </p>
+        <div className="mx-auto max-w-6xl px-6 md:px-4">
+          <SectionHeading
+            title="You Might Also Like"
+            description="Explore more wild-caught options from our fleet."
+            variant="section"
+          />
           {otherProducts.length > 0 ? (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {otherProducts.map((p) => {
@@ -702,7 +671,8 @@ export default async function ProductPage({
                   <Link
                     key={p.id}
                     href={`/products/${p.handle}`}
-                    className="group block rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+                    className="section-card group block rounded-xl overflow-hidden transition-shadow"
+                    style={{ backgroundColor: "var(--section-bg)" }}
                   >
                     <div className="relative aspect-square overflow-hidden rounded-t-xl bg-slate-100">
                       {p.image?.url ? (
@@ -721,7 +691,10 @@ export default async function ProductPage({
                         <IconCart className="h-4 w-4 text-slate-600" />
                       </div>
                     </div>
-                    <div className="p-4">
+                    <div
+                      className="p-4"
+                      style={{ backgroundColor: "var(--section-bg)" }}
+                    >
                       <h3 className="font-semibold text-slate-900">{p.title}</h3>
                       {subtitle ? (
                         <p className="mt-0.5 text-sm text-slate-600">{subtitle}</p>
@@ -752,15 +725,15 @@ export default async function ProductPage({
         style={{
           backgroundColor: LIGHT_BG,
           paddingTop: "clamp(8rem, 16vw, 12rem)",
+          ["--section-bg" as string]: LIGHT_BG,
         }}
       >
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-center text-xl font-semibold uppercase tracking-wide text-slate-900">
-            Wild Flavor Starts Here
-          </h2>
-          <p className="mt-2 text-center text-sm text-slate-600 max-w-2xl mx-auto">
-            Get inspired with simple, delicious ways to prepare your catch.
-          </p>
+        <div className="mx-auto max-w-6xl px-6 md:px-4">
+          <SectionHeading
+            title="Wild Flavor Starts Here"
+            description="Get inspired with simple, delicious ways to prepare your catch."
+            variant="section"
+          />
           {recipesToShow.length > 0 ? (
             <div className="mt-8 grid gap-6 sm:grid-cols-3">
               {recipesToShow.map((r) => {
@@ -770,7 +743,8 @@ export default async function ProductPage({
                   <Link
                     key={r._id}
                     href={slug ? `/recipes/${slug}` : "/recipes"}
-                    className="overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+                    className="section-card overflow-hidden rounded-xl transition-shadow"
+                    style={{ backgroundColor: "var(--section-bg)" }}
                   >
                     <div className="aspect-square overflow-hidden bg-slate-100">
                       {img ? (
@@ -783,7 +757,10 @@ export default async function ProductPage({
                         <div className="h-full w-full bg-slate-200" />
                       )}
                     </div>
-                    <p className="p-3 text-center text-sm font-medium text-slate-900">
+                    <p
+                      className="p-3 text-center text-sm font-medium text-slate-900"
+                      style={{ backgroundColor: "var(--section-bg)" }}
+                    >
                       {r.title ?? "Recipe"}
                     </p>
                   </Link>

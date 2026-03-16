@@ -122,13 +122,17 @@ export function RecipesPageClient({
               <Link
                 key={r._id}
                 href={href}
-                className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+                className="section-card group flex flex-col overflow-hidden rounded-xl transition-shadow"
+                style={{ backgroundColor: "var(--section-bg)" }}
               >
                 <div
                   className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
                   style={imageStyle}
                 />
-                <div className="flex flex-1 flex-col p-4">
+                <div
+                  className="flex flex-1 flex-col p-4"
+                  style={{ backgroundColor: "var(--section-bg)" }}
+                >
                   <h2 className="font-semibold text-slate-900">
                     {r.title ?? "Recipe"}
                   </h2>

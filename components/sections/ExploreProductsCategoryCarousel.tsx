@@ -69,7 +69,7 @@ export function ExploreProductsCategoryCarousel({
       href={cat.href}
       className="group flex flex-col items-center outline-none focus:outline-none w-full md:w-auto md:shrink-0 md:snap-start"
     >
-      <div className="overflow-hidden rounded-lg w-full md:w-[331px] transition-all shrink-0 hover:shadow-md active:scale-[0.98] active:opacity-95 border-0 border-none shadow-none ring-0 bg-transparent">
+      <div className="section-card overflow-hidden rounded-lg w-full md:w-[331px] transition-all shrink-0 active:scale-[0.98] active:opacity-95 border-0 border-none ring-0 bg-transparent">
         <div
           className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] rounded-[10px] group-hover:bg-white/15 border-0 border-none ring-0 w-full aspect-[4/3]"
           style={{ maxWidth: "100%" }}
@@ -97,7 +97,7 @@ export function ExploreProductsCategoryCarousel({
             />
           )}
         </div>
-        <div className="py-3 text-center">
+        <div className="py-3 text-center" style={{ backgroundColor: "var(--section-bg)" }}>
           <span
             className="capitalize"
             style={{

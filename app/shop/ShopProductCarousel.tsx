@@ -50,7 +50,7 @@ export function ShopProductCarousel({
     <section
       id="catch-of-the-day"
       className="relative z-20 overflow-visible py-8 sm:py-10 lg:py-12"
-      style={{ backgroundColor: sectionBg }}
+      style={{ backgroundColor: sectionBg, ["--section-bg" as string]: sectionBg }}
     >
       <div className="mx-auto w-full max-w-[1100px] px-4">
         <SectionHeading

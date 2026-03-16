@@ -92,7 +92,7 @@ export default async function RecipesIndexPage() {
   return (
     <main
         className={`pt-[140px] sm:pt-[170px] md:pt-[230px] ${restSections.length > 0 ? "pb-0" : "pb-14"}`}
-        style={{ backgroundColor: bgColor }}
+        style={{ backgroundColor: bgColor, ["--section-bg" as string]: bgColor }}
       >
       <div className="w-full pb-10" style={{ backgroundColor: bgColor }}>
         <div className="mx-auto w-full max-w-[1200px] px-4">

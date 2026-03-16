@@ -106,7 +106,7 @@ export function OurStoryExtendedReversedSection({
         )}
         {/* On desktop: grid width matches intro block so image (right col) aligns with row above */}
         <div
-          className={`grid gap-8 lg:grid-cols-[1fr_440.8px] lg:items-start lg:max-w-[calc((100%+789px)/2)] ${(block.title ?? "").trim() || (block.introText ?? "").trim() ? "mt-10 pt-[2.5rem]" : "pt-[2.5rem]"}`}
+          className={`grid gap-8 lg:grid-cols-[1fr_440.8px] lg:items-start lg:max-w-[calc((100%+789px)/2)] ${(block.title ?? "").trim() || (block.introText ?? "").trim() ? "mt-10 pt-[2.5rem]" : "pt-0"}`}
         >
           {/* Copy on the left */}
           <div
