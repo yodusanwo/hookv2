@@ -14,6 +14,7 @@ type ProductNode = {
   id: string;
   title: string;
   handle: string;
+  productType?: string;
   priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
   images: { edges: Array<{ node: { url: string; altText: string | null } }> };
   variants: { edges: Array<{ node: VariantNode }> };
@@ -28,7 +29,7 @@ const PRODUCTS_QUERY = `
     products(first: $first) {
       edges {
         node {
-          id title handle
+          id title handle productType
           priceRange { minVariantPrice { amount currencyCode } }
           images(first: 1) { edges { node { url altText } } }
           variants(first: 1) {
@@ -72,6 +73,7 @@ export async function GET(req: Request) {
         id: node.id,
         title: node.title,
         handle: node.handle,
+        productType: node.productType ?? null,
         images: node.images,
         priceRange: { minVariantPrice: price },
         variantId: variant?.id ?? null,

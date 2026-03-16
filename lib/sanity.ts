@@ -25,6 +25,7 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   shopPageCollectionSections[] { title, description, collectionHandle, layout, blendWhiteWithBackground },
   shopFilterOptions[] { label, value, insertAfterCategory },
   freeShippingMessage,
+  freeShippingThreshold,
   estimatedDeliveryProcessingDays,
   estimatedDeliveryTransitDays,
   estimatedDeliveryCutoffTime,
@@ -172,6 +173,14 @@ export const RECIPES_LIST_QUERY = `*[_type == "recipe"] | order(coalesce(sortOrd
 export const RECIPE_CATEGORIES_QUERY = `*[_type == "recipeCategory"] | order(title asc) {
   "value": slug.current,
   "label": title
+}`;
+
+/** Recipes that reference a product (any ingredient has matching productHandle). Use with $productHandle. */
+export const RECIPES_BY_PRODUCT_HANDLE_QUERY = `*[_type == "recipe" && $productHandle in ingredients[].productHandle] | order(coalesce(sortOrder, 9999) asc, title asc) [0...3] {
+  _id,
+  title,
+  "slug": slug.current,
+  "mainImage": images[0] { asset-> }
 }`;
 
 /** GROQ query for a single recipe by slug. Use with $slug (e.g. "salmon-piccata"). */

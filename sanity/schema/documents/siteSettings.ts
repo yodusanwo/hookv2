@@ -196,6 +196,13 @@ export const siteSettings = defineType({
       group: "shipping",
     }),
     defineField({
+      name: "freeShippingThreshold",
+      type: "number",
+      title: "Free shipping threshold (USD)",
+      description: "Order subtotal amount in USD to qualify for free shipping (e.g. 50). Used for cart progress bar. Leave empty to hide.",
+      group: "shipping",
+    }),
+    defineField({
       name: "estimatedDeliveryProcessingDays",
       type: "number",
       title: "Estimated Delivery – Processing Days",

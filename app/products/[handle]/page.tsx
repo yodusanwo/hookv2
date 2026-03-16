@@ -1,6 +1,7 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
+import { IconCart } from "@/app/components/Icons";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
 import {
@@ -8,7 +9,8 @@ import {
   getKlaviyoReviews,
   getKlaviyoReviewCountForProduct,
 } from "@/lib/klaviyoReviews";
-import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
+import { client, SITE_SETTINGS_QUERY, RECIPES_BY_PRODUCT_HANDLE_QUERY, RECIPES_LIST_QUERY } from "@/lib/sanity";
+import { urlFor } from "@/lib/sanityImage";
 import { renderShopifyRichText } from "@/lib/shopifyRichText";
 import Link from "next/link";
 
@@ -74,6 +76,28 @@ const PRODUCT_BY_HANDLE_QUERY = `
   }
 `;
 
+const PRODUCT_RECOMMENDATIONS_QUERY = `
+  query ProductRecommendations($productHandle: String!) {
+    productRecommendations(productHandle: $productHandle) {
+      id
+      title
+      handle
+      productType
+      priceRange { minVariantPrice { amount currencyCode } }
+      images(first: 1) { edges { node { url altText } } }
+      variants(first: 1) {
+        edges {
+          node {
+            id
+            price { amount currencyCode }
+            selectedOptions { name value }
+          }
+        }
+      }
+    }
+  }
+`;
+
 const OTHER_PRODUCTS_QUERY = `
   query GetProducts($first: Int!) {
     products(first: $first) {
@@ -82,11 +106,21 @@ const OTHER_PRODUCTS_QUERY = `
           id
           title
           handle
+          productType
           priceRange {
             minVariantPrice { amount currencyCode }
           }
           images(first: 1) {
             edges { node { url altText } }
+          }
+          variants(first: 1) {
+            edges {
+              node {
+                id
+                price { amount currencyCode }
+                selectedOptions { name value }
+              }
+            }
           }
         }
       }
@@ -114,31 +148,89 @@ export default async function ProductPage({
   const { handle } = await params;
 
   let data: ProductByHandleResponse;
-  let otherProducts: Array<{
+  type OtherProduct = {
     id: string;
     title: string;
     handle: string;
     price: string;
     currencyCode: string;
     image: { url: string; altText: string | null } | null;
-  }> = [];
+    productType?: string | null;
+    sizeOrDescription?: string | null;
+  };
+  let otherProducts: OtherProduct[] = [];
 
   try {
-    const [productData, otherData] = await Promise.all([
-      shopifyFetch<ProductByHandleResponse, { handle: string }>({
-        query: PRODUCT_BY_HANDLE_QUERY,
-        variables: { handle },
-        cache: "no-store",
-      }),
-      shopifyFetch<{
+    data = await shopifyFetch<ProductByHandleResponse, { handle: string }>({
+      query: PRODUCT_BY_HANDLE_QUERY,
+      variables: { handle },
+      cache: "no-store",
+    });
+    const currentId = data.productByHandle?.id ?? null;
+
+    type RecNode = {
+      id: string;
+      title: string;
+      handle: string;
+      productType: string;
+      priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+      images: { edges: Array<{ node: { url: string; altText: string | null } }> };
+      variants: {
+        edges: Array<{
+          node: {
+            id: string;
+            price: { amount: string; currencyCode: string };
+            selectedOptions: Array<{ name: string; value: string }>;
+          };
+        }>;
+      };
+    };
+    const recResponse = await shopifyFetch<
+      { productRecommendations: RecNode[] },
+      { productHandle: string }
+    >({
+      query: PRODUCT_RECOMMENDATIONS_QUERY,
+      variables: { productHandle: handle },
+      cache: "no-store",
+    }).catch(() => ({ productRecommendations: [] }));
+
+    const recs = recResponse.productRecommendations ?? [];
+    if (recs.length > 0) {
+      otherProducts = recs.slice(0, 4).map((node) => {
+        const variant = node.variants?.edges?.[0]?.node;
+        const price = variant?.price ?? node.priceRange?.minVariantPrice;
+        const sizeOrDescription =
+          variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
+        return {
+          id: node.id,
+          title: node.title,
+          handle: node.handle,
+          price: price?.amount ?? "0",
+          currencyCode: price?.currencyCode ?? "USD",
+          image: node.images?.edges?.[0]?.node ?? null,
+          productType: node.productType ?? null,
+          sizeOrDescription,
+        };
+      });
+    } else {
+      const otherData = await shopifyFetch<{
         products: {
           edges: Array<{
             node: {
               id: string;
               title: string;
               handle: string;
+              productType?: string;
               priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
               images: { edges: Array<{ node: { url: string; altText: string | null } }> };
+              variants: {
+                edges: Array<{
+                  node: {
+                    price: { amount: string; currencyCode: string };
+                    selectedOptions: Array<{ name: string; value: string }>;
+                  };
+                }>;
+              };
             };
           }>;
         };
@@ -146,21 +238,28 @@ export default async function ProductPage({
         query: OTHER_PRODUCTS_QUERY,
         variables: { first: 8 },
         cache: "no-store",
-      }).catch(() => ({ products: { edges: [] } })),
-    ]);
-    data = productData;
-    const currentId = data.productByHandle?.id ?? null;
-    otherProducts = (otherData.products?.edges ?? [])
-      .filter((e) => currentId == null || e.node.id !== currentId)
-      .slice(0, 4)
-      .map((e) => ({
-        id: e.node.id,
-        title: e.node.title,
-        handle: e.node.handle,
-        price: e.node.priceRange.minVariantPrice.amount,
-        currencyCode: e.node.priceRange.minVariantPrice.currencyCode,
-        image: e.node.images.edges[0]?.node ?? null,
-      }));
+      }).catch(() => ({ products: { edges: [] } }));
+      otherProducts = (otherData.products?.edges ?? [])
+        .filter((e) => currentId == null || e.node.id !== currentId)
+        .slice(0, 4)
+        .map((e) => {
+          const node = e.node;
+          const variant = node.variants?.edges?.[0]?.node;
+          const price = variant?.price ?? node.priceRange?.minVariantPrice;
+          const sizeOrDescription =
+            variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
+          return {
+            id: node.id,
+            title: node.title,
+            handle: node.handle,
+            price: price?.amount ?? "0",
+            currencyCode: price?.currencyCode ?? "USD",
+            image: node.images?.edges?.[0]?.node ?? null,
+            productType: node.productType ?? null,
+            sizeOrDescription,
+          };
+        });
+    }
   } catch (err) {
     console.error("Failed to fetch product:", err);
     return (
@@ -242,6 +341,23 @@ export default async function ProductPage({
   const transitMatch = transitStr.match(/^(\d+)\s*-\s*(\d+)$/);
   const transitDaysMin = transitMatch ? parseInt(transitMatch[1]!, 10) : isFrozen ? 1 : 2;
   const transitDaysMax = transitMatch ? parseInt(transitMatch[2]!, 10) : isFrozen ? 2 : 4;
+
+  type RecipeCard = { _id: string; title?: string; slug?: string; mainImage?: { asset?: { _ref?: string } } };
+  let recipesToShow: RecipeCard[] = [];
+  if (client) {
+    try {
+      recipesToShow = await client.fetch<RecipeCard[]>(RECIPES_BY_PRODUCT_HANDLE_QUERY, {
+        productHandle: handle,
+      });
+      if (recipesToShow.length === 0) {
+        const all = await client.fetch<RecipeCard[]>(RECIPES_LIST_QUERY);
+        recipesToShow = all.slice(0, 3);
+      }
+    } catch {
+      recipesToShow = [];
+    }
+  }
+
   const productSet = new Set(
     productReviews.map((r) => `${r.name}|${r.date}|${r.text}`)
   );
@@ -580,43 +696,44 @@ export default async function ProductPage({
           </p>
           {otherProducts.length > 0 ? (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {otherProducts.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/products/${p.handle}`}
-                  className="group rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-t-xl bg-slate-100">
-                    {p.image?.url ? (
-                      <img
-                        src={p.image.url}
-                        alt={p.image.altText ?? p.title}
-                        className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform"
-                      />
-                    ) : null}
-                    <span
-                      className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-1 text-sm font-semibold text-slate-900"
-                    >
-                      ${Math.round(parseFloat(p.price))}
-                    </span>
-                    <span
-                      className="absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full text-white"
-                      style={{ backgroundColor: "var(--brand-green)" }}
-                      aria-hidden
-                    >
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </span>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-slate-900">{p.title}</h3>
-                    <span className="mt-1 inline-block text-sm text-sky-700 hover:underline">
-                      Quick View
-                    </span>
-                  </div>
-                </Link>
-              ))}
+              {otherProducts.map((p) => {
+                const subtitle = p.sizeOrDescription ?? p.productType ?? "";
+                return (
+                  <Link
+                    key={p.id}
+                    href={`/products/${p.handle}`}
+                    className="group block rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+                  >
+                    <div className="relative aspect-square overflow-hidden rounded-t-xl bg-slate-100">
+                      {p.image?.url ? (
+                        <img
+                          src={p.image.url}
+                          alt={p.image.altText ?? p.title}
+                          className="h-full w-full object-cover transition-transform group-hover:scale-[1.02]"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-slate-200" />
+                      )}
+                      <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded bg-white px-2.5 py-1.5 shadow">
+                        <span className="text-sm font-semibold text-black">
+                          ${parseFloat(p.price).toFixed(2)}
+                        </span>
+                        <IconCart className="h-4 w-4 text-slate-600" />
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-slate-900">{p.title}</h3>
+                      {subtitle ? (
+                        <p className="mt-0.5 text-sm text-slate-600">{subtitle}</p>
+                      ) : null}
+                      <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-[#498CCB] hover:underline">
+                        Show more
+                        <span aria-hidden>+</span>
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <p className="mt-6 text-center text-sm text-slate-600">
@@ -644,26 +761,40 @@ export default async function ProductPage({
           <p className="mt-2 text-center text-sm text-slate-600 max-w-2xl mx-auto">
             Get inspired with simple, delicious ways to prepare your catch.
           </p>
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
-            {[
-              { title: "Simply Grilled Salmon", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80" },
-              { title: "Simply Baked Salmon", img: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80" },
-              { title: "Roasted Salmon", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80" },
-            ].map((r, i) => (
-              <div key={i} className="overflow-hidden rounded-xl bg-white shadow-sm">
-                <div className="aspect-square overflow-hidden bg-slate-100">
-                  <img
-                    src={r.img}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <p className="p-3 text-center text-sm font-medium text-slate-900">
-                  {r.title}
-                </p>
-              </div>
-            ))}
-          </div>
+          {recipesToShow.length > 0 ? (
+            <div className="mt-8 grid gap-6 sm:grid-cols-3">
+              {recipesToShow.map((r) => {
+                const img = urlFor(r.mainImage);
+                const slug = r.slug?.trim();
+                return (
+                  <Link
+                    key={r._id}
+                    href={slug ? `/recipes/${slug}` : "/recipes"}
+                    className="overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md"
+                  >
+                    <div className="aspect-square overflow-hidden bg-slate-100">
+                      {img ? (
+                        <img
+                          src={img.width(400).url()}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-slate-200" />
+                      )}
+                    </div>
+                    <p className="p-3 text-center text-sm font-medium text-slate-900">
+                      {r.title ?? "Recipe"}
+                    </p>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="mt-8 text-center text-sm text-slate-600">
+              Check out our recipes for inspiration.
+            </p>
+          )}
           <p className="mt-6 text-center">
             <Link
               href="/#recipes"
