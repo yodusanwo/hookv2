@@ -162,7 +162,7 @@ export function OurStorySection({
             )}
           </div>
           <div
-            className="flex max-w-xl flex-col justify-center rounded-xl px-6 pb-6 pt-0"
+            className="flex max-w-xl flex-col justify-center rounded-xl -ml-4 pl-0 pr-4 pb-6 pt-0 lg:ml-0 lg:px-6"
             style={{
               backgroundColor: isStoryPage ? "transparent" : (block.backgroundColor ?? "#d4f2ff"),
             }}
@@ -176,7 +176,7 @@ export function OurStorySection({
                   className="-mt-[2.8125rem] h-16 w-10 shrink-0 object-contain sm:h-20 sm:w-12 lg:h-24 lg:w-14"
                 />
                 <div
-                  className="min-w-0 flex-1 pl-5 pr-6"
+                  className="min-w-0 flex-1 pl-0 pr-4 lg:pl-5 lg:pr-6"
                   style={STORY_PAGE_COPY_STYLE}
                 >
                   {!(block.body && block.body.length > 0 && !useFallbackBody) && (
@@ -298,7 +298,7 @@ export function OurStorySection({
                 )}
                 {block.body && block.body.length > 0 && !useFallbackBody ? (
                   <div
-                    className="our-story-body our-story-body--desktop max-w-none pl-5 pr-6 [&>*]:mt-[29px] [&>*:first-child]:mt-0"
+                    className="our-story-body our-story-body--desktop max-w-none pl-0 pr-4 [&>*]:mt-[29px] [&>*:first-child]:mt-0 lg:pl-5 lg:pr-6"
                     style={BODY_STYLE}
                   >
                     <PortableText
@@ -327,7 +327,7 @@ export function OurStorySection({
                   HOOK_POINT_BODY
                 )}
                 {!hideCta && hasCtaFromSanity && (
-                  <div className="mt-[29px]">
+                  <div className="mt-[29px] lg:pl-5">
                     <a
                       href={ctaHref}
                       className="inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity normal-case"
