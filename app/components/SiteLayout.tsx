@@ -75,10 +75,10 @@ function SiteLayoutInner({
         navLinks={navLinks}
         backgroundColor={headerBackgroundColor}
       />
-      <div className="h-[80px] sm:h-[107px] shrink-0" aria-hidden />
+      <div className="h-[56px] sm:h-[107px] shrink-0" aria-hidden />
       {!hideHeaderWave && <HeaderWave />}
       <div
-        className={`relative z-0 overflow-x-hidden ${hideHeaderWave ? "-mt-0" : "-mt-[120px] sm:-mt-[150px] lg:-mt-[206px]"}`}
+        className={`relative z-0 overflow-x-hidden ${hideHeaderWave ? "-mt-0" : "-mt-[96px] sm:-mt-[150px] lg:-mt-[206px]"}`}
       >
         {children}
       </div>
@@ -109,9 +109,9 @@ function SiteLayoutFallback({
         navLinks={navLinks}
         backgroundColor={headerBackgroundColor}
       />
-      <div className="h-[80px] sm:h-[107px] shrink-0" aria-hidden />
+      <div className="h-[56px] sm:h-[107px] shrink-0" aria-hidden />
       <HeaderWave />
-      <div className="relative z-0 overflow-x-hidden -mt-[120px] sm:-mt-[150px] lg:-mt-[206px]">{children}</div>
+      <div className="relative z-0 overflow-x-hidden -mt-[96px] sm:-mt-[150px] lg:-mt-[206px]">{children}</div>
       <Footer
         logoUrl={headerLogoUrl}
         pathname={pathname ?? undefined}

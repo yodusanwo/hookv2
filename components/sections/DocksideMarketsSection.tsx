@@ -78,106 +78,105 @@ export function DocksideMarketsSection({
             <div className="mx-auto w-full max-w-[1363px]">
               <div
                 ref={scrollRef}
-                className="scrollbar-hide flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-6 pr-6 md:pl-14 md:pr-14 [-webkit-overflow-scrolling:touch]"
+                className="scrollbar-hide flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-6 pr-6 md:pl-14 md:pr-14 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               >
-              {items.length > 0
-                ? items.map((item, idx) => {
-                    const img = urlFor(item.logo);
-                    const logoW = item.logoWidth ?? 115;
-                    const logoH = item.logoHeight ?? 115;
-                    const logoAspect = item.logoAspectRatio ?? "1/1";
-                    const hasCustomSize =
-                      item.logoWidth != null || item.logoHeight != null;
-                    const maxLogoW = 700;
-                    const maxLogoH = hasCustomSize ? 200 : 75;
-                    const scale =
-                      Math.max(
-                        25,
-                        Math.min(200, item.logoScalePercent ?? 100),
-                      ) / 100;
-                    const w = Math.min(logoW * scale, maxLogoW);
-                    const h = Math.min(logoH * scale, maxLogoH);
-                    const content = img ? (
+                {items.length > 0
+                  ? items.map((item, idx) => {
+                      const img = urlFor(item.logo);
+                      const logoW = item.logoWidth ?? 115;
+                      const logoH = item.logoHeight ?? 115;
+                      const logoAspect = item.logoAspectRatio ?? "1/1";
+                      const hasCustomSize =
+                        item.logoWidth != null || item.logoHeight != null;
+                      const maxLogoW = 700;
+                      const maxLogoH = hasCustomSize ? 200 : 75;
+                      const scale =
+                        Math.max(25, Math.min(200, item.logoScalePercent ?? 100)) / 100;
+                      const w = Math.min(logoW * scale, maxLogoW);
+                      const h = Math.min(logoH * scale, maxLogoH);
+                      const content = img ? (
+                        <div
+                          role="img"
+                          aria-label={item.label ?? ""}
+                          className="max-w-full shrink-0 rounded-none flex items-center justify-center"
+                          style={{
+                            width: w,
+                            height: h,
+                            maxWidth: "100%",
+                            aspectRatio: logoAspect,
+                            backgroundColor: "transparent",
+                          }}
+                        >
+                          <img
+                            src={img.url()}
+                            alt=""
+                            className="max-w-full max-h-full w-auto h-auto object-contain"
+                            style={{ display: "block" }}
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-xs font-semibold text-slate-700">
+                          {item.label}
+                        </span>
+                      );
+                      const safeUrl = safeHref(item.url);
+                      const cellClass =
+                        "flex shrink-0 items-center justify-center p-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px]";
+                      const cellStyle = { backgroundColor: img ? bgColor : "#FAFAFC" };
+                      return safeUrl !== "#" ? (
+                        <a
+                          key={idx}
+                          href={safeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${cellClass} hover:opacity-80 transition-opacity`}
+                          style={cellStyle}
+                        >
+                          {content}
+                        </a>
+                      ) : (
+                        <div key={idx} className={cellClass} style={cellStyle}>
+                          {content}
+                        </div>
+                      );
+                    })
+                  : [
+                      "Lincoln Park",
+                      "Uptown",
+                      "Lakeview",
+                      "South Loop",
+                      "Logan Square",
+                      "Wicker Park",
+                    ].map((name) => (
                       <div
-                        role="img"
-                        aria-label={item.label ?? ""}
-                        className="max-w-full shrink-0 rounded-none flex items-center justify-center"
-                        style={{
-                          width: w,
-                          height: h,
-                          maxWidth: "100%",
-                          aspectRatio: logoAspect,
-                          backgroundColor: "transparent",
-                        }}
+                        key={name}
+                        className="flex shrink-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px] items-center justify-center bg-[#FAFAFC] p-0 text-xs font-semibold text-slate-700"
                       >
-                        <img
-                          src={img.url()}
-                          alt=""
-                          className="max-w-full max-h-full w-auto h-auto object-contain"
-                          style={{ display: "block" }}
-                        />
+                        {name}
                       </div>
-                    ) : (
-                      <span className="text-xs font-semibold text-slate-700">
-                        {item.label}
-                      </span>
-                    );
-                    const safeUrl = safeHref(item.url);
-                    const cellClass =
-                      "flex shrink-0 items-center justify-center p-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px]";
-                    const cellStyle = { backgroundColor: img ? bgColor : "#FAFAFC" };
-                    return safeUrl !== "#" ? (
-                      <a
-                        key={idx}
-                        href={safeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${cellClass} hover:opacity-80 transition-opacity`}
-                        style={cellStyle}
-                      >
-                        {content}
-                      </a>
-                    ) : (
-                      <div key={idx} className={cellClass} style={cellStyle}>
-                        {content}
-                      </div>
-                    );
-                  })
-                : [
-                    "Lincoln Park",
-                    "Uptown",
-                    "Lakeview",
-                    "South Loop",
-                    "Logan Square",
-                    "Wicker Park",
-                  ].map((name) => (
-                    <div
-                      key={name}
-                      className="flex shrink-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px] items-center justify-center bg-[#FAFAFC] p-0 text-xs font-semibold text-slate-700"
-                    >
-                      {name}
-                    </div>
-                  ))}
+                    ))}
               </div>
             </div>
-            <CarouselArrow
-              direction="prev"
-              onClick={() => scrollByDir(-1)}
-              disabled={false}
-              ariaLabel="Previous"
-              theme="light"
-              inset
-              insetNoBackground
-            />
-            <CarouselArrow
-              direction="next"
-              onClick={() => scrollByDir(1)}
-              disabled={false}
-              ariaLabel="Next"
-              theme="light"
-              inset
-              insetNoBackground
-            />
+            <div className="absolute inset-y-0 left-0 right-0 flex pointer-events-none [&_button]:pointer-events-auto">
+              <CarouselArrow
+                direction="prev"
+                onClick={() => scrollByDir(-1)}
+                disabled={false}
+                ariaLabel="Previous"
+                theme="light"
+                inset
+                insetNoBackground
+              />
+              <CarouselArrow
+                direction="next"
+                onClick={() => scrollByDir(1)}
+                disabled={false}
+                ariaLabel="Next"
+                theme="light"
+                inset
+                insetNoBackground
+              />
+            </div>
           </div>
         </div>
       </div>
