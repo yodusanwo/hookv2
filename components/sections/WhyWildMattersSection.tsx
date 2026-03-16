@@ -43,7 +43,11 @@ const DEFAULT_POINTS: WhyWildMattersPoint[] = [
   },
 ];
 
-export function WhyWildMattersSection({ block }: { block: WhyWildMattersBlock }) {
+export function WhyWildMattersSection({
+  block,
+}: {
+  block: WhyWildMattersBlock;
+}) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
   const points = block.points?.length ? block.points : DEFAULT_POINTS;

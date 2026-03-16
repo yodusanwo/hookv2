@@ -1,7 +1,11 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { getEventsFromSheet } from "@/lib/googleSheets";
-import { client, STORY_PAGE_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
+import {
+  client,
+  STORY_PAGE_QUERY,
+  EXPLORE_PRODUCTS_BLOCK_QUERY,
+} from "@/lib/sanity";
 import { shopifyFetch } from "@/lib/shopify";
 import { Carousel } from "@/app/components/Carousel";
 import { HeroCarousel } from "@/app/components/HeroCarousel";
@@ -92,7 +96,9 @@ export default async function Story() {
 
     let sanityPage: { sections?: unknown[] } | null = null;
 
-    let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
+    let canonicalExploreProductsBlock: Parameters<
+      typeof PageBuilder
+    >[0]["canonicalExploreProductsBlock"] = null;
     if (hasSanity) {
       try {
         [sanityPage, canonicalExploreProductsBlock] = await Promise.all([
@@ -101,7 +107,9 @@ export default async function Story() {
             {},
             { next: { revalidate: 60 } },
           ),
-          client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+          client.fetch<
+            Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
+          >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
         ]);
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
@@ -115,13 +123,18 @@ export default async function Story() {
     ) {
       const sheetEvents = await getEventsFromSheet();
       const sectionsWithEvents = sanityPage.sections.map((section: unknown) => {
-        const s = section as { _type?: string; showAllUrl?: string; [key: string]: unknown };
+        const s = section as {
+          _type?: string;
+          showAllUrl?: string;
+          [key: string]: unknown;
+        };
         if (s._type === "upcomingEventsBlock") {
           return {
             ...s,
             events: sheetEvents,
             eventsLimit: 3,
-            showAllUrl: (s.showAllUrl && String(s.showAllUrl).trim()) || "/calendar",
+            showAllUrl:
+              (s.showAllUrl && String(s.showAllUrl).trim()) || "/calendar",
           };
         }
         return section;

@@ -38,7 +38,8 @@ const FALLBACK_BODY = (
     <p className="!text-[#1E1E1E]">We are Hook Point.</p>
     <p className="mb-0 !text-[#1E1E1E]">&nbsp;</p>
     <p className="mb-0 !text-[#1E1E1E]">
-      Our family fishes the pristine waters of Kodiak, Alaska to bring you the highest quality seafood around.
+      Our family fishes the pristine waters of Kodiak, Alaska to bring you the
+      highest quality seafood around.
     </p>
     <p className="mb-0 !text-[#1E1E1E]">&nbsp;</p>
     <p className="mb-0 !text-[#1E1E1E]">We are proud to be your fisherfolk</p>
@@ -78,9 +79,7 @@ export function OurStoryExtendedReversedSection({
       className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
       style={{ backgroundColor: block.backgroundColor ?? "#D4F2FF" }}
     >
-      <div
-        className="mx-auto w-full max-w-6xl px-6 md:px-4 pt-12 pb-12 md:pt-10 md:pb-12 md:pl-[2.25rem]"
-      >
+      <div className="mx-auto w-full max-w-6xl px-6 md:px-4 pt-12 pb-12 md:pt-10 md:pb-12 md:pl-[2.25rem]">
         {(block.title ?? "").trim() && (
           <SectionHeading
             title={block.title!.trim()}
@@ -105,15 +104,16 @@ export function OurStoryExtendedReversedSection({
             {block.introText!.trim()}
           </p>
         )}
+        {/* On desktop: grid width matches intro block so image (right col) aligns with row above */}
         <div
-          className={`grid gap-8 lg:grid-cols-2 lg:items-start ${(block.title ?? "").trim() || (block.introText ?? "").trim() ? "mt-10 pt-[2.5rem]" : "pt-[2.5rem]"}`}
+          className={`grid gap-8 lg:grid-cols-[1fr_440.8px] lg:items-start lg:max-w-[calc((100%+789px)/2)] ${(block.title ?? "").trim() || (block.introText ?? "").trim() ? "mt-10 pt-[2.5rem]" : "pt-[2.5rem]"}`}
         >
           {/* Copy on the left */}
           <div
-            className="flex max-w-xl flex-col justify-start rounded-xl px-6 md:pl-0 md:pr-6 pb-6 pt-0 order-2 lg:order-1 md:ml-[13.75rem]"
+            className="min-w-0 flex flex-col justify-start rounded-xl px-6 md:pl-0 md:pr-6 pb-6 pt-0 order-2 lg:order-1 lg:max-w-none border-2 border-red-500"
             style={{ backgroundColor: "transparent" }}
           >
-            <div className="min-w-0 w-[432px] max-w-full" style={COPY_STYLE}>
+            <div className="min-w-0 max-w-full lg:w-[432px] lg:max-w-[432px]" style={COPY_STYLE}>
               <h3
                 className="mb-4 text-left whitespace-pre-line"
                 style={{
@@ -129,13 +129,11 @@ export function OurStoryExtendedReversedSection({
               </h3>
               {block.body && block.body.length > 0 && !useFallbackBody ? (
                 <div
-                  className="our-story-body [&_p]:mt-4 [&_p]:whitespace-pre-line first:[&_p]:mt-0 [&_p]:!text-[#1E1E1E] [&_span]:!text-[#1E1E1E] [&_a]:!text-[#1E1E1E]"
+                  className="our-story-body text-2xl font-medium leading-[150%] lg:text-[20px] lg:font-normal [&_p]:mt-4 [&_p]:whitespace-pre-line first:[&_p]:mt-0 [&_p]:!text-[#1E1E1E] [&_span]:!text-[#1E1E1E] [&_a]:!text-[#1E1E1E]"
                   style={{
                     color: "#1E1E1E",
                     fontFamily: "var(--font-inter), Inter, sans-serif",
-                    fontSize: "24px",
                     fontStyle: "normal",
-                    fontWeight: 500,
                     lineHeight: "150%",
                   }}
                 >
@@ -147,13 +145,11 @@ export function OurStoryExtendedReversedSection({
                 </div>
               ) : (
                 <div
-                  className="[&_p]:!text-[#1E1E1E]"
+                  className="[&_p]:!text-[#1E1E1E] text-2xl font-medium leading-[150%] lg:text-[20px] lg:font-normal"
                   style={{
                     color: "#1E1E1E",
                     fontFamily: "var(--font-inter), Inter, sans-serif",
-                    fontSize: "24px",
                     fontStyle: "normal",
-                    fontWeight: 500,
                     lineHeight: "150%",
                   }}
                 >
@@ -189,7 +185,7 @@ export function OurStoryExtendedReversedSection({
           </div>
           {/* Image on the right */}
           <div
-            className="overflow-hidden shrink-0 w-[440.8px] max-w-full aspect-square rounded-[10px] md:mr-[13.75rem] order-1 lg:order-2 lg:justify-self-end"
+            className="min-w-0 w-full overflow-hidden shrink-0 aspect-square rounded-[10px] md:min-w-[440.8px] md:w-[440.8px] order-1 lg:order-2 lg:justify-self-end"
             style={{ background: "lightgray" }}
           >
             {img ? (

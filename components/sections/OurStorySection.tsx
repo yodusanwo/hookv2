@@ -117,7 +117,9 @@ export function OurStorySection({
       id="about"
       className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
       style={{
-        backgroundColor: isStoryPage ? "#171730" : (block.backgroundColor ?? "#d4f2ff"),
+        backgroundColor: isStoryPage
+          ? "#171730"
+          : (block.backgroundColor ?? "#d4f2ff"),
       }}
     >
       <div
@@ -144,26 +146,40 @@ export function OurStorySection({
             ) : null}
           </>
         )}
-        <div className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${isStoryPage ? "pt-8 md:pt-[6.25rem]" : ""} ${!hideTitle ? "mt-10" : ""}`}>
+        <div
+          className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${isStoryPage ? "pt-8 md:pt-[6.25rem]" : ""} ${!hideTitle ? "mt-10" : ""}`}
+        >
           <div
-            className={`overflow-hidden rounded-xl bg-slate-200 ${isStoryPage ? "w-full h-[259.875px] md:w-[86.625%] md:h-[363.825px] md:ml-[4.5625rem]" : ""}`}
+            className={`min-w-0 overflow-hidden rounded-xl bg-slate-200 ${isStoryPage ? "w-full h-[259.875px] md:w-[86.625%] md:h-[363.825px] md:ml-[4.5625rem]" : ""}`}
           >
             {img ? (
               <img
                 src={img.url()}
                 alt={hideTitle ? (block.title ?? "Our story") : title}
-                className={isStoryPage ? "h-[259.875px] w-full max-w-full object-cover md:h-[363.825px]" : "h-[300px] w-full max-w-full object-cover md:h-[420px]"}
+                className={
+                  isStoryPage
+                    ? "h-[259.875px] w-full max-w-full object-cover md:h-[363.825px]"
+                    : "h-[300px] w-full max-w-full object-cover md:h-[420px]"
+                }
                 style={{ objectPosition: "center top" }}
                 loading="lazy"
               />
             ) : (
-              <div className={isStoryPage ? "h-[259.875px] w-full md:h-[363.825px]" : "h-[300px] w-full md:h-[420px]"} />
+              <div
+                className={
+                  isStoryPage
+                    ? "h-[259.875px] w-full md:h-[363.825px]"
+                    : "h-[300px] w-full md:h-[420px]"
+                }
+              />
             )}
           </div>
           <div
-            className="flex max-w-xl flex-col justify-center rounded-xl px-6 pb-6 pt-0 lg:px-6"
+            className="min-w-0 flex max-w-xl flex-col justify-center rounded-xl px-6 pb-6 pt-0 lg:px-6"
             style={{
-              backgroundColor: isStoryPage ? "transparent" : (block.backgroundColor ?? "#d4f2ff"),
+              backgroundColor: isStoryPage
+                ? "transparent"
+                : (block.backgroundColor ?? "#d4f2ff"),
             }}
           >
             {isStoryPage ? (
@@ -178,7 +194,11 @@ export function OurStorySection({
                   className="min-w-0 flex-1 pl-0 pr-0 lg:pl-5 lg:pr-6"
                   style={STORY_PAGE_COPY_STYLE}
                 >
-                  {!(block.body && block.body.length > 0 && !useFallbackBody) && (
+                  {!(
+                    block.body &&
+                    block.body.length > 0 &&
+                    !useFallbackBody
+                  ) && (
                     <h3 className="mb-4 text-left font-light !text-white">
                       {subheading}
                     </h3>
@@ -187,7 +207,12 @@ export function OurStorySection({
                     <>
                       <div
                         className="our-story-body max-w-none [&_p]:!text-white [&_span]:!text-white [&_a]:!text-white [&>*]:mt-[29px] [&>*:first-child]:mt-0"
-                        style={{ fontWeight: 300, fontSize: "24px", lineHeight: "normal", color: "#FFF" }}
+                        style={{
+                          fontWeight: 300,
+                          fontSize: "24px",
+                          lineHeight: "normal",
+                          color: "#FFF",
+                        }}
                       >
                         <PortableText
                           value={
@@ -196,16 +221,36 @@ export function OurStorySection({
                           components={{
                             block: {
                               h2: ({ children }) => (
-                                <h2 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h2>
+                                <h2
+                                  className="!text-white font-medium"
+                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                >
+                                  {children}
+                                </h2>
                               ),
                               h3: ({ children }) => (
-                                <h3 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h3>
+                                <h3
+                                  className="!text-white font-medium"
+                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                >
+                                  {children}
+                                </h3>
                               ),
                               h4: ({ children }) => (
-                                <h4 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h4>
+                                <h4
+                                  className="!text-white font-medium"
+                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                >
+                                  {children}
+                                </h4>
                               ),
                               h5: ({ children }) => (
-                                <h5 className="!text-white font-medium" style={{ fontSize: "20px", fontWeight: 500 }}>{children}</h5>
+                                <h5
+                                  className="!text-white font-medium"
+                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                >
+                                  {children}
+                                </h5>
                               ),
                             },
                           }}
@@ -216,7 +261,8 @@ export function OurStorySection({
                           className="-ml-[1.0625rem] mt-6"
                           style={{
                             color: "var(--White, #FFF)",
-                            fontFamily: "var(--font-mulish), Mulish, sans-serif",
+                            fontFamily:
+                              "var(--font-mulish), Mulish, sans-serif",
                             fontSize: "24px",
                             fontStyle: "normal",
                             fontWeight: 800,
@@ -235,10 +281,13 @@ export function OurStorySection({
                       <p className="!text-white">We are Hook Point.</p>
                       <p className="mb-0 !text-white">&nbsp;</p>
                       <p className="mb-0 !text-white">
-                        Our family fishes the pristine waters of Kodiak, Alaska to bring you the highest quality seafood around.
+                        Our family fishes the pristine waters of Kodiak, Alaska
+                        to bring you the highest quality seafood around.
                       </p>
                       <p className="mb-0 !text-white">&nbsp;</p>
-                      <p className="mb-0 !text-white">We are proud to be your fisherfolk</p>
+                      <p className="mb-0 !text-white">
+                        We are proud to be your fisherfolk
+                      </p>
                       <p
                         className="-ml-[1.0625rem] mt-6"
                         style={{
@@ -252,7 +301,9 @@ export function OurStorySection({
                       >
                         – Riendeau Family,
                       </p>
-                      <p className="mt-1 font-light !text-white">Founder of Hook Point Fisheries</p>
+                      <p className="mt-1 font-light !text-white">
+                        Founder of Hook Point Fisheries
+                      </p>
                     </div>
                   )}
                   {!hideCta && hasCtaFromSanity && (
@@ -307,16 +358,24 @@ export function OurStorySection({
                       components={{
                         block: {
                           h2: ({ children }) => (
-                            <h2 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h2>
+                            <h2 style={OUR_STORY_SUBHEADING_STYLE}>
+                              {children}
+                            </h2>
                           ),
                           h3: ({ children }) => (
-                            <h3 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h3>
+                            <h3 style={OUR_STORY_SUBHEADING_STYLE}>
+                              {children}
+                            </h3>
                           ),
                           h4: ({ children }) => (
-                            <h4 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h4>
+                            <h4 style={OUR_STORY_SUBHEADING_STYLE}>
+                              {children}
+                            </h4>
                           ),
                           h5: ({ children }) => (
-                            <h5 style={OUR_STORY_SUBHEADING_STYLE}>{children}</h5>
+                            <h5 style={OUR_STORY_SUBHEADING_STYLE}>
+                              {children}
+                            </h5>
                           ),
                         },
                       }}

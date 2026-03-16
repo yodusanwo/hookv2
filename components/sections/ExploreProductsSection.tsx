@@ -111,7 +111,10 @@ export function ExploreProductsSection({
     >
       {showTopWave && (
         <div className="-mb-8 w-full shrink-0 overflow-visible md:-mb-0">
-          <div className="wave-full-bleed shrink-0" style={{ transform: "scaleY(-1)" }}>
+          <div
+            className="wave-full-bleed shrink-0"
+            style={{ transform: "scaleY(-1)" }}
+          >
             <WaveDivider
               navySrc="/VectorWavyNavy.svg"
               wrapperClassName="-mb-px [transform:scaleX(-1)] bg-[#D4F2FF]"
@@ -119,7 +122,9 @@ export function ExploreProductsSection({
           </div>
         </div>
       )}
-      <div className={`mx-auto w-full max-w-6xl px-6 md:px-4 ${hasWaveAbove ? (tripleTitleTopMargin ? "pt-[248px]" : "pt-8") : ""}`}>
+      <div
+        className={`mx-auto w-full max-w-6xl px-6 md:px-4 ${hasWaveAbove ? (tripleTitleTopMargin ? "pt-[248px]" : "pt-8") : ""}`}
+      >
         <SectionHeading
           title={title}
           description={description}

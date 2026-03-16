@@ -1,7 +1,11 @@
 import { notFound } from "next/navigation";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { getEventsFromSheet } from "@/lib/googleSheets";
-import { client, PAGE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
+import {
+  client,
+  PAGE_BY_SLUG_QUERY,
+  EXPLORE_PRODUCTS_BLOCK_QUERY,
+} from "@/lib/sanity";
 
 /** Slugs that are reserved by other app routes (e.g. /contact, /story) or reserved for future use. */
 const RESERVED_SLUGS = new Set([
@@ -19,7 +23,11 @@ const RESERVED_SLUGS = new Set([
 
 type PageParams = { slug: string };
 
-export async function generateMetadata({ params }: { params: Promise<PageParams> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<PageParams>;
+}) {
   const { slug } = await params;
   if (RESERVED_SLUGS.has(slug)) return { title: "Hook Point" };
 
@@ -32,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<PageParams>
     const page = await client.fetch<{ title?: string } | null>(
       PAGE_BY_SLUG_QUERY,
       { slug },
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 } },
     );
     if (!page?.title) return { title: "Hook Point" };
     return {
@@ -63,15 +71,19 @@ export default async function DynamicPage({
   }
 
   let page: { title?: string; sections?: unknown[] } | null = null;
-  let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
+  let canonicalExploreProductsBlock: Parameters<
+    typeof PageBuilder
+  >[0]["canonicalExploreProductsBlock"] = null;
   try {
     [page, canonicalExploreProductsBlock] = await Promise.all([
       client.fetch<{ title?: string; sections?: unknown[] } | null>(
         PAGE_BY_SLUG_QUERY,
         { slug },
-        { next: { revalidate: 60 } }
+        { next: { revalidate: 60 } },
       ),
-      client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+      client.fetch<
+        Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
+      >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
     ]);
   } catch {
     notFound();
@@ -104,7 +116,8 @@ export default async function DynamicPage({
     firstSection &&
     typeof firstSection === "object" &&
     "backgroundColor" in firstSection &&
-    typeof (firstSection as { backgroundColor?: string }).backgroundColor === "string"
+    typeof (firstSection as { backgroundColor?: string }).backgroundColor ===
+      "string"
       ? (firstSection as { backgroundColor: string }).backgroundColor
       : "#ffffff";
 
@@ -114,7 +127,9 @@ export default async function DynamicPage({
       style={{ backgroundColor: firstBg }}
     >
       <PageBuilder
-        sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
+        sections={
+          sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]
+        }
         promoBanner={null}
         pageSlug={slug}
         canonicalExploreProductsBlock={canonicalExploreProductsBlock}
