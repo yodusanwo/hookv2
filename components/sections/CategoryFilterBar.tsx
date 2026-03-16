@@ -8,8 +8,8 @@ const FILTER_BUTTON_LAYOUT = {
   padding: "11px 42px",
   borderRadius: 20,
 };
-const ACTIVE_BG = "#498CCB";
-const INACTIVE_BG = "var(--Blue-Inactive-Button, rgba(73, 140, 203, 0.25))";
+const ACTIVE_BG = "var(--filter-pill-active-bg)";
+const INACTIVE_BG = "var(--filter-pill-inactive-bg)";
 const CLEAR_LINK_COLOR = "#498CCB";
 const SECTION_ID_PREFIX = "shop-section-";
 
@@ -141,7 +141,7 @@ export function CategoryFilterBar({
                 style={{
                   ...FILTER_BUTTON_LAYOUT,
                   backgroundColor: selectedValues.includes(item.value) ? ACTIVE_BG : INACTIVE_BG,
-                  color: selectedValues.includes(item.value) ? "#fff" : "#1e3a5f",
+                  color: selectedValues.includes(item.value) ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
                 }}
               >
@@ -156,7 +156,7 @@ export function CategoryFilterBar({
                 style={{
                   ...FILTER_BUTTON_LAYOUT,
                   backgroundColor: selectedCategoryHandles.includes(item.value) ? ACTIVE_BG : INACTIVE_BG,
-                  color: selectedCategoryHandles.includes(item.value) ? "#fff" : "#1e3a5f",
+                  color: selectedCategoryHandles.includes(item.value) ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
                 }}
               >

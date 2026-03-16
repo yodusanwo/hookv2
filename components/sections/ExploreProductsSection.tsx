@@ -46,6 +46,7 @@ export function ExploreProductsSection({
   bottomPadding,
   doubleTopPadding = false,
   tripleTitleTopMargin = false,
+  carouselArrowColor,
 }: {
   block: ExploreProductsBlock;
   /** When true, the wave under this section is hidden (e.g. page-level override). */
@@ -60,6 +61,8 @@ export function ExploreProductsSection({
   doubleTopPadding?: boolean;
   /** When true, use triple the top padding above the title (e.g. on /wild). */
   tripleTitleTopMargin?: boolean;
+  /** Optional carousel arrow color (e.g. #1E1E1E on /calendar page). */
+  carouselArrowColor?: string;
 }) {
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
@@ -103,7 +106,7 @@ export function ExploreProductsSection({
   return (
     <section
       id="shop"
-      className={`relative z-20 overflow-visible pt-12 pb-0 ${noTopPadding ? "md:pt-0" : doubleTopPadding ? "md:pt-28" : "md:pt-14"}`}
+      className={`relative z-20 overflow-visible pb-0 ${hasWaveAbove ? "-mt-px" : ""} ${noTopPadding ? "pt-0 md:pt-0" : doubleTopPadding ? "pt-12 md:pt-28" : "pt-12 md:pt-14"}`}
       style={{
         backgroundColor: block.backgroundColor ?? "#171730",
         ["--section-bg" as string]: block.backgroundColor ?? "#171730",
@@ -111,7 +114,7 @@ export function ExploreProductsSection({
       }}
     >
       {showTopWave && (
-        <div className="-mb-8 w-full shrink-0 overflow-visible md:-mb-0">
+        <div className="-mb-16 w-full shrink-0 overflow-visible md:-mb-8">
           <div
             className="wave-full-bleed shrink-0"
             style={{ transform: "scaleY(-1)" }}
@@ -142,6 +145,7 @@ export function ExploreProductsSection({
         categories={categories}
         textTheme={textTheme}
         labelColor={isLightBg ? LIGHT_TEXT_COLOR : undefined}
+        arrowColor={carouselArrowColor}
       />
 
       <div className="mt-8 flex w-full justify-center pb-10 md:hidden">

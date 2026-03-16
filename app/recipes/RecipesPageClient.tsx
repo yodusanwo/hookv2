@@ -22,7 +22,6 @@ const FILTER_BUTTON_LAYOUT = {
   padding: "11px 42px",
   borderRadius: 20,
 };
-const FILTER_BUTTON_INACTIVE_BG = "var(--Blue-Inactive-Button, rgba(73, 140, 203, 0.25))";
 
 type RecipeItem = {
   _id: string;
@@ -63,8 +62,8 @@ export function RecipesPageClient({
           className={FILTER_BUTTON_BASE}
           style={{
             ...FILTER_BUTTON_LAYOUT,
-            backgroundColor: selectedCategory === null ? "#1e3a5f" : FILTER_BUTTON_INACTIVE_BG,
-            color: selectedCategory === null ? "#fff" : "#1e3a5f",
+            backgroundColor: selectedCategory === null ? "var(--filter-pill-active-bg)" : "var(--filter-pill-inactive-bg)",
+            color: selectedCategory === null ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
             fontFamily: "Inter, var(--font-inter), sans-serif",
           }}
         >
@@ -80,8 +79,8 @@ export function RecipesPageClient({
               className={FILTER_BUTTON_BASE}
               style={{
                 ...FILTER_BUTTON_LAYOUT,
-                backgroundColor: isSelected ? "#1e3a5f" : FILTER_BUTTON_INACTIVE_BG,
-                color: isSelected ? "#fff" : "#1e3a5f",
+                backgroundColor: isSelected ? "var(--filter-pill-active-bg)" : "var(--filter-pill-inactive-bg)",
+                color: isSelected ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
                 fontFamily: "Inter, var(--font-inter), sans-serif",
               }}
             >

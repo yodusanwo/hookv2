@@ -19,7 +19,7 @@ type TeamBiosBlock = {
   teamMembers?: TeamMember[];
 };
 
-const AVATAR_SIZE = 211; // Figma: 210.671px
+const AVATAR_SIZE = 211; // Figma: 210.671px (desktop); mobile uses smaller size via Tailwind
 const WAVE_CLEARANCE_PADDING = "clamp(8rem, 16vw, 12rem)";
 
 export function TeamBiosSection({
@@ -40,7 +40,7 @@ export function TeamBiosSection({
   return (
     <section
       id="team-bios"
-      className={`relative z-10 overflow-hidden pt-12 pb-12 md:pt-16 ${showBottomWave ? "md:pb-0" : "md:pb-16"}`}
+      className={`relative z-10 overflow-hidden pt-12 md:pt-16 ${showBottomWave ? "pb-0" : "pb-12 md:pb-16"}`}
       style={{
         backgroundColor: block.backgroundColor ?? "#d4f2ff",
         ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
@@ -78,10 +78,10 @@ export function TeamBiosSection({
           )}
         </div>
 
-        {/* Team grid: 5 per row, second row directly below the first */}
+        {/* Team grid: 2 cols mobile, 3 cols sm/md (820–1024), 5 cols xl+ */}
         {members.length > 0 && (
           <div
-            className="mt-14 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 md:grid-cols-5 md:gap-x-8 md:gap-y-16"
+            className="mt-14 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 md:grid-cols-3 md:gap-x-8 md:gap-y-16 xl:grid-cols-5"
             style={{ justifyItems: "center" }}
           >
             {members.map((member, idx) => {
@@ -96,13 +96,8 @@ export function TeamBiosSection({
                   className="flex flex-col items-center text-center"
                 >
                   <div
-                    className="overflow-hidden rounded-full bg-gray-300"
-                    style={{
-                      width: AVATAR_SIZE,
-                      height: AVATAR_SIZE,
-                      maxWidth: "min(100%, 211px)",
-                      aspectRatio: "1",
-                    }}
+                    className="h-[160px] w-[160px] overflow-hidden rounded-full bg-gray-300 md:h-[211px] md:w-[211px]"
+                    style={{ aspectRatio: "1" }}
                   >
                     {img ? (
                       <img

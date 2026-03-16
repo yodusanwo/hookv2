@@ -237,6 +237,7 @@ export function PageBuilder({
                   bottomPadding={exploreProductsBottomPadding}
                   doubleTopPadding={pageSlug === "wild"}
                   tripleTitleTopMargin={pageSlug === "wild"}
+                  carouselArrowColor={pageSlug === "calendar" ? "#1E1E1E" : undefined}
                 />
               </Fragment>
             );
@@ -360,6 +361,7 @@ export function PageBuilder({
                 topPadding={docksideTop}
                 bottomPadding={docksideBottom}
                 minHeight={docksideMinHeight}
+                arrowColor={pageSlug === "calendar" ? "#1E1E1E" : undefined}
               />
             );
           }

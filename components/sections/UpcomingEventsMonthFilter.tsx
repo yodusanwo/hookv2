@@ -17,8 +17,9 @@ const MONTHS = [
   "December",
 ] as const;
 
-const BLUE_ACTIVE = "#498ccb";
-const BLUE_INACTIVE = "rgba(73, 140, 203, 0.25)";
+/* Use global filter pill colors for consistency (recipes, shop, calendar) */
+const BLUE_ACTIVE = "var(--filter-pill-active-bg)";
+const BLUE_INACTIVE = "var(--filter-pill-inactive-bg)";
 
 const BUTTON_BASE_STYLE: React.CSSProperties = {
   display: "flex",
@@ -33,7 +34,7 @@ const BUTTON_BASE_STYLE: React.CSSProperties = {
   fontWeight: 600,
   fontSize: "0.909rem",
   lineHeight: "normal",
-  color: "white",
+  color: "var(--filter-pill-active-color)",
   whiteSpace: "nowrap",
   transition: "background-color 0.2s",
   border: "none",
@@ -73,6 +74,7 @@ export function UpcomingEventsMonthFilter({
               style={{
                 ...BUTTON_BASE_STYLE,
                 backgroundColor: isSelected ? BLUE_ACTIVE : BLUE_INACTIVE,
+                color: isSelected ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
               }}
             >
               {year}
@@ -95,6 +97,7 @@ export function UpcomingEventsMonthFilter({
                 style={{
                   ...BUTTON_BASE_STYLE,
                   backgroundColor: isSelected ? BLUE_ACTIVE : BLUE_INACTIVE,
+                  color: isSelected ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
                 }}
               >
                 {label}
@@ -114,6 +117,7 @@ export function UpcomingEventsMonthFilter({
                 style={{
                   ...BUTTON_BASE_STYLE,
                   backgroundColor: isSelected ? BLUE_ACTIVE : BLUE_INACTIVE,
+                  color: isSelected ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
                 }}
               >
                 {label}

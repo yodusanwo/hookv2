@@ -23,12 +23,15 @@ export function ExploreProductsCategoryCarousel({
   categories,
   textTheme = "dark",
   labelColor,
+  arrowColor,
 }: {
   categories: ExploreCategoryItem[];
   /** "light" = dark text/arrows for light backgrounds; "dark" = white text/arrows. */
   textTheme?: "light" | "dark";
   /** Override label color (e.g. #1E1E1E for light backgrounds). */
   labelColor?: string;
+  /** Override arrow color (e.g. #1E1E1E on /calendar page). When set, overrides default white. */
+  arrowColor?: string;
 }) {
   const ref = React.useRef<HTMLDivElement>(null);
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
@@ -133,7 +136,7 @@ export function ExploreProductsCategoryCarousel({
         onClick={() => scroll(-1)}
         ariaLabel="Scroll left"
         theme={textTheme}
-        arrowColor="#FFFFFF"
+        arrowColor={arrowColor ?? "#FFFFFF"}
       />
       <CarouselArrow
         direction="next"
@@ -141,7 +144,7 @@ export function ExploreProductsCategoryCarousel({
         onClick={() => scroll(1)}
         ariaLabel="Scroll right"
         theme={textTheme}
-        arrowColor="#FFFFFF"
+        arrowColor={arrowColor ?? "#FFFFFF"}
       />
     </div>
   );

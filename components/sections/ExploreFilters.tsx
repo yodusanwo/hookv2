@@ -37,11 +37,11 @@ export function ExploreFilters({
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
               ...(isActive
-                ? { backgroundColor: "#4F7F9D", color: "white" }
+                ? { backgroundColor: "var(--filter-pill-active-bg)", color: "var(--filter-pill-active-color)" }
                 : {
-                    backgroundColor: "white",
-                    color: "#4F7F9D",
-                    border: "1px solid #BEE6F5",
+                    backgroundColor: "var(--filter-pill-inactive-bg)",
+                    color: "var(--filter-pill-inactive-color)",
+                    border: "1px solid rgba(73, 140, 203, 0.4)",
                   }),
             }}
           >

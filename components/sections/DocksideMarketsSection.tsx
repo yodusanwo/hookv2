@@ -31,6 +31,7 @@ export function DocksideMarketsSection({
   topPadding,
   bottomPadding,
   minHeight,
+  arrowColor,
 }: {
   block: DocksideMarketsBlock;
   /** Optional top padding CSS value (e.g. reduced on /story page). */
@@ -39,6 +40,8 @@ export function DocksideMarketsSection({
   bottomPadding?: string;
   /** Optional min-height in px (e.g. half = 331 on /story to reduce bottom space). */
   minHeight?: number;
+  /** Optional arrow color (e.g. #1E1E1E on /calendar page). */
+  arrowColor?: string;
 }) {
   const title = block.title ?? "Find us at these Chicagoland Farmers Markets";
   const description = block.description ?? "";
@@ -172,6 +175,7 @@ export function DocksideMarketsSection({
                 inset
                 insetNoBackground
                 showOnMobile
+                arrowColor={arrowColor}
               />
               <CarouselArrow
                 direction="next"
@@ -182,6 +186,7 @@ export function DocksideMarketsSection({
                 inset
                 insetNoBackground
                 showOnMobile
+                arrowColor={arrowColor}
               />
             </div>
             {/* Dot pagination */}
@@ -294,6 +299,7 @@ export function DocksideMarketsSection({
                 theme="light"
                 inset
                 insetNoBackground
+                arrowColor={arrowColor}
               />
               <CarouselArrow
                 direction="next"
@@ -303,6 +309,7 @@ export function DocksideMarketsSection({
                 theme="light"
                 inset
                 insetNoBackground
+                arrowColor={arrowColor}
               />
             </div>
           </div>
