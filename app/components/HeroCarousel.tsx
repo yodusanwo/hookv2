@@ -107,15 +107,20 @@ export function HeroCarousel({
           }
         >
           <h1
-            className={`${FONT_INTER} max-w-full ${variant === "default" ? "md:whitespace-nowrap" : ""}`}
+            className={`${FONT_INTER} max-w-full ${
+              variant === "default"
+                ? "text-[24px] md:text-[clamp(1.5rem,4vw+1rem,3rem)] xl:whitespace-nowrap"
+                : ""
+            }`}
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: variant === "story" ? "clamp(1.75rem, 4.5vw, 3rem)" : "3rem",
               fontWeight: 600,
-              lineHeight: variant === "story" ? 1.3 : "auto",
               letterSpacing: "0%",
               color: "var(--gray-content-background-text-icon-0, #F2F6EF)",
               fontStyle: "normal",
+              ...(variant === "story"
+                ? { fontSize: "clamp(1.75rem, 4.5vw, 3rem)", lineHeight: 1.3 }
+                : { lineHeight: "auto" }),
             }}
           >
             <span className="block">{headlineLine1}</span>
@@ -126,14 +131,18 @@ export function HeroCarousel({
           <p
             className={
               variant === "story"
-                ? `${FONT_INTER} max-w-[740px] text-xs font-semibold sm:text-2xl sm:font-medium`
-                : `${FONT_INTER} mt-3 sm:mt-6 max-w-[920px] text-xs font-semibold sm:text-2xl sm:font-medium`
+                ? `${FONT_INTER} max-w-[740px] font-semibold sm:font-medium`
+                : `${FONT_INTER} max-w-[920px] font-semibold sm:font-medium`
             }
             style={{
               color: "#FFF",
               fontFamily: "Inter, var(--font-inter), sans-serif",
+              fontSize: "clamp(0.75rem, 1.5vw + 0.5rem, 1.5rem)",
               fontStyle: "normal",
               lineHeight: "normal",
+              ...(variant === "default"
+                ? { marginTop: "clamp(0.75rem, 2vw + 0.5rem, 1.5rem)" }
+                : {}),
             }}
           >
             {subline}
@@ -141,8 +150,12 @@ export function HeroCarousel({
           {ctaLabel && ctaHref && variant !== "story" && (
             <Link
               href={ctaHref}
-              className="inline-flex items-center justify-center mt-4 sm:mt-6 rounded-2xl text-white font-semibold w-full max-w-[200px] sm:max-w-[250px] h-12 sm:h-[70px] text-base sm:text-2xl border border-transparent transition-all duration-300 ease-out bg-[var(--brand-green)] hover:bg-white/20 hover:border-white/40 hover:backdrop-blur-sm"
+              className="inline-flex items-center justify-center rounded-2xl text-white font-semibold w-full border border-transparent transition-all duration-300 ease-out bg-[var(--brand-green)] hover:bg-white/20 hover:border-white/40 hover:backdrop-blur-sm"
               style={{
+                marginTop: "clamp(1rem, 2vw + 0.5rem, 1.5rem)",
+                maxWidth: "min(100%, clamp(200px, 20vw + 120px, 250px))",
+                height: "clamp(3rem, 6vw + 2rem, 4.375rem)",
+                fontSize: "clamp(1rem, 1.25vw + 0.75rem, 1.5rem)",
                 lineHeight: "normal",
                 fontFamily: "var(--font-inter), Inter, sans-serif",
               }}
