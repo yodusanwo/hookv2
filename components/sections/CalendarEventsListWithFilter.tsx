@@ -28,6 +28,27 @@ export function CalendarEventsListWithFilter({
   const [selectedYear, setSelectedYear] = React.useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = React.useState<number | null>(null);
 
+  const scrollToCalendar = React.useCallback(() => {
+    const el = document.getElementById("events");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  const handleYearChange = React.useCallback(
+    (year: number | null) => {
+      setSelectedYear(year);
+      scrollToCalendar();
+    },
+    [scrollToCalendar]
+  );
+
+  const handleMonthChange = React.useCallback(
+    (month: number | null) => {
+      setSelectedMonth(month);
+      scrollToCalendar();
+    },
+    [scrollToCalendar]
+  );
+
   const availableYears = React.useMemo(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -56,9 +77,9 @@ export function CalendarEventsListWithFilter({
         <div className="mt-8">
           <UpcomingEventsMonthFilter
             selectedYear={selectedYear}
-            onYearChange={setSelectedYear}
+            onYearChange={handleYearChange}
             selectedMonth={selectedMonth}
-            onMonthChange={setSelectedMonth}
+            onMonthChange={handleMonthChange}
             availableYears={availableYears}
           />
         </div>
@@ -181,9 +202,9 @@ export function CalendarEventsListWithFilter({
       <div className="mt-8">
         <UpcomingEventsMonthFilter
           selectedYear={selectedYear}
-          onYearChange={setSelectedYear}
+          onYearChange={handleYearChange}
           selectedMonth={selectedMonth}
-          onMonthChange={setSelectedMonth}
+          onMonthChange={handleMonthChange}
           availableYears={availableYears}
         />
       </div>
