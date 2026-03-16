@@ -217,7 +217,7 @@ export function CatchOfTheDayGrid({
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="w-[387px] max-w-full flex flex-col rounded-xl overflow-hidden animate-pulse"
+                    className="w-[387px] max-w-full flex flex-col overflow-hidden animate-pulse"
                   >
                     <div
                       className="w-full shrink-0 bg-white/10"

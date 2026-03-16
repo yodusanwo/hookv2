@@ -160,13 +160,13 @@ export function CategorySectionBlock({
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="w-full max-w-[387px] mx-auto rounded-xl overflow-hidden animate-pulse"
+                  className="w-full max-w-[387px] mx-auto overflow-hidden animate-pulse"
                 >
                   <div
                     className="w-full bg-white/30"
-                    style={{ height: 320, borderRadius: 10 }}
+                    style={{ height: 320 }}
                   />
-                  <div className="h-20 bg-white/20 rounded-b-xl" />
+                  <div className="h-20 bg-white/20" />
                 </div>
               ))}
             </div>

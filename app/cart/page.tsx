@@ -632,8 +632,8 @@ export default function CartPage() {
                   const subtitle = product.sizeOrDescription ?? product.productType ?? "";
                   return (
                     <li key={product.id} className="group">
-                      <Link href={`/products/${product.handle}`} className="section-card block overflow-hidden rounded-xl transition-shadow" style={{ backgroundColor: "var(--section-bg)" }}>
-                        <div className="relative aspect-square overflow-hidden rounded-t-xl bg-slate-100">
+                      <Link href={`/products/${product.handle}`} className="section-card block overflow-hidden transition-shadow" style={{ backgroundColor: "var(--section-bg)" }}>
+                        <div className="relative aspect-square overflow-hidden bg-slate-100">
                           {img?.url ? (
                             <img
                               src={img.url}

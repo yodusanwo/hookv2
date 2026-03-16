@@ -57,7 +57,7 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
   return (
     <Link
       href={`/products/${product.handle}`}
-      className="group flex flex-col items-center w-full rounded-xl shadow-sm transition-shadow hover:shadow-md"
+      className="group flex flex-col items-center w-full shadow-sm transition-shadow hover:shadow-md"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >
       <div
@@ -67,7 +67,6 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
           height: "226px",
           maxWidth: "100%",
           aspectRatio: "145 / 99",
-          borderRadius: "10px",
           ...(product.imageUrl
             ? {
                 background: `url(${product.imageUrl}) lightgray 0.681px -55.209px / 99.891% 146.507% no-repeat`,

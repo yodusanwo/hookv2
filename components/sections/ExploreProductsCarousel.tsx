@@ -37,7 +37,7 @@ export function ExploreProductsCarousel({
             href={cat.href}
             className="group shrink-0 snap-start w-[200px] sm:w-[220px]"
           >
-            <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+            <div className="overflow-hidden border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
               <div className="aspect-square bg-slate-100">
                 {cat.imageUrl ? (
                   <img
