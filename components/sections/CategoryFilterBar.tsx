@@ -97,7 +97,6 @@ export function CategoryFilterBar({
       className="px-4 py-6"
       style={{
         backgroundColor: "var(--brand-light-blue-bg)",
-        border: "2px solid red",
         marginTop: -30,
         marginBottom: 60,
       }}
