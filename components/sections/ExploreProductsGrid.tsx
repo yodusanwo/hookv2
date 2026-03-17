@@ -84,9 +84,9 @@ export function ExploreProductsGrid({
             </div>
           ) : products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center items-start" style={{ gap: "6px" }}>
-              {products.slice(0, 3).map((product) => (
+              {products.slice(0, 3).map((product, index) => (
                 <div key={product.id} className="w-[331px] max-w-full">
-                  <ExploreProductCard product={product} />
+                  <ExploreProductCard product={product} priority={index === 0} />
                 </div>
               ))}
             </div>

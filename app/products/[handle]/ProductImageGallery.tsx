@@ -21,15 +21,21 @@ export function ProductImageGallery({
   return (
     <div className="space-y-3">
       <div
-        className="max-w-full overflow-hidden rounded-[10px]"
+        className="max-w-full overflow-hidden rounded-[10px] relative"
         style={{
           width: "min(661px, 100%)",
           aspectRatio: "1/1",
-          background: `url(${main.url}) lightgray 50% / cover no-repeat`,
         }}
-        role="img"
-        aria-label={main.altText ?? productTitle}
-      />
+      >
+        <img
+          src={main.url}
+          alt={main.altText ?? productTitle}
+          className="h-full w-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+          sizes="(max-width: 1024px) 100vw, min(661px, 50vw)"
+        />
+      </div>
       {images.length > 1 && (
         <>
           <div

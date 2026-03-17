@@ -259,9 +259,9 @@ export function CatchOfTheDayGrid({
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
                 style={{ gap: "6px" }}
               >
-                {currentPageProducts.map((product) => (
+                {currentPageProducts.map((product, index) => (
                   <div key={product.id} className="min-w-0 w-[387px] max-w-full">
-                    <CatchOfTheDayProductCard product={product} darkSection={darkSection} />
+                    <CatchOfTheDayProductCard product={product} darkSection={darkSection} priority={index === 0} />
                   </div>
                 ))}
               </div>

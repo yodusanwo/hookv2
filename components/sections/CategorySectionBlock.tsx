@@ -190,9 +190,9 @@ export function CategorySectionBlock({
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-6 place-items-center"
                 style={{ gap: "24px" }}
               >
-                {carouselSlice.map((product) => (
+                {carouselSlice.map((product, index) => (
                   <div key={product.id} className="min-w-0 w-[387px] max-w-full">
-                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} />
+                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} />
                   </div>
                 ))}
               </div>
@@ -214,9 +214,9 @@ export function CategorySectionBlock({
                   No products match the current filter.
                 </p>
               ) : (
-                cards.map((product) => (
+                cards.map((product, index) => (
                   <div key={product.id} className="w-full max-w-[387px] mx-auto">
-                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} />
+                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} />
                   </div>
                 ))
               )}

@@ -400,8 +400,14 @@ export default async function ProductPage({
       ? productReviews
       : [...productReviews, ...fallbacks.slice(0, needFallbacks)];
 
+  const firstImageUrl = images[0]?.url;
+
   return (
-    <main className="bg-white">
+    <>
+      {firstImageUrl && (
+        <link rel="preload" as="image" href={firstImageUrl} />
+      )}
+      <main className="bg-white">
       {/* Main product section — light blue; pt clears the header wave */}
       <section
         className="px-4 pt-[140px] pb-10 sm:pt-[170px] md:py-14 lg:pt-[230px]"
@@ -837,5 +843,6 @@ export default async function ProductPage({
         </div>
       </section>
     </main>
+    </>
   );
 }

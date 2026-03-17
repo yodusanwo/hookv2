@@ -82,7 +82,8 @@ export function ExploreProductsCategoryCarousel({
               src={cat.imageUrl}
               alt={cat.label ?? ""}
               className="h-full w-full object-cover"
-              loading="lazy"
+              loading={idx === 0 ? "eager" : "lazy"}
+              fetchPriority={idx === 0 ? "high" : undefined}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-400">

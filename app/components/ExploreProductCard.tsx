@@ -51,7 +51,14 @@ function StarIcon({ filled }: { filled?: boolean }) {
   );
 }
 
-export function ExploreProductCard({ product }: { product: ExploreProductCardProduct }) {
+export function ExploreProductCard({
+  product,
+  priority = false,
+}: {
+  product: ExploreProductCardProduct;
+  /** When true, load image with high priority (eager + fetchPriority high) for LCP. Use for first visible card. */
+  priority?: boolean;
+}) {
   const rating = product.rating ?? 5;
 
   return (
@@ -67,15 +74,25 @@ export function ExploreProductCard({ product }: { product: ExploreProductCardPro
           height: "226px",
           maxWidth: "100%",
           aspectRatio: "145 / 99",
-          ...(product.imageUrl
+          ...(!priority && product.imageUrl
             ? {
                 background: `url(${product.imageUrl}) lightgray 0.681px -55.209px / 99.891% 146.507% no-repeat`,
               }
-            : { backgroundColor: "lightgray" }),
+            : product.imageUrl ? {} : { backgroundColor: "lightgray" }),
         }}
-        role={product.imageUrl ? "img" : undefined}
-        aria-label={product.imageUrl ? product.title : undefined}
+        role={product.imageUrl && !priority ? "img" : undefined}
+        aria-label={product.imageUrl && !priority ? product.title : undefined}
       >
+        {priority && product.imageUrl ? (
+          <img
+            src={product.imageUrl}
+            alt={product.title}
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: "0.681px -55.209px" }}
+            loading="eager"
+            fetchPriority="high"
+          />
+        ) : null}
         {!product.imageUrl && (
           <div className="flex h-full w-full items-center justify-center text-slate-300">
             <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24" aria-hidden>

@@ -38,12 +38,15 @@ export function CatchOfTheDayProductCard({
   product,
   blendWhiteWithSectionBackground = false,
   darkSection = false,
+  priority = false,
 }: {
   product: CatchOfTheDayProductCardProduct;
   /** When true, white areas in the image blend with the section background (for product images on white). */
   blendWhiteWithSectionBackground?: boolean;
   /** When true, card is on a dark/navy section; footer gets a light background so dark text remains readable. */
   darkSection?: boolean;
+  /** When true, load image with high priority (eager + fetchPriority high) for LCP. Use for first visible card. */
+  priority?: boolean;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
@@ -122,16 +125,27 @@ export function CatchOfTheDayProductCard({
           style={{
             height: 320,
             alignSelf: "stretch",
-            background: product.imageUrl
-              ? blendWhiteWithSectionBackground
-                ? `url(${product.imageUrl}) ${SECTION_BG} 50% / cover no-repeat`
-                : `url(${product.imageUrl}) transparent 50% / cover no-repeat`
-              : "transparent",
-            backgroundBlendMode: blendWhiteWithSectionBackground && product.imageUrl ? "multiply" : undefined,
+            ...(!priority && product.imageUrl
+              ? {
+                  background: blendWhiteWithSectionBackground
+                    ? `url(${product.imageUrl}) ${SECTION_BG} 50% / cover no-repeat`
+                    : `url(${product.imageUrl}) transparent 50% / cover no-repeat`,
+                  backgroundBlendMode: blendWhiteWithSectionBackground ? "multiply" as const : undefined,
+                }
+              : { background: "transparent" }),
           }}
-          role={product.imageUrl ? "img" : undefined}
-          aria-label={product.imageUrl ? product.title : undefined}
+          role={product.imageUrl && !priority ? "img" : undefined}
+          aria-label={product.imageUrl && !priority ? product.title : undefined}
         >
+          {priority && product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.title}
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+            />
+          ) : null}
           <Link
             href={productHref}
             className="absolute inset-0 z-0"
