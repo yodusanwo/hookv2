@@ -2,6 +2,7 @@ import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
 import { ProductImageGallery } from "./ProductImageGallery";
+import { ScrollToTop } from "./ScrollToTop";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
 import { ReviewsCarousel } from "@/components/sections/ReviewsCarousel";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -404,6 +405,7 @@ export default async function ProductPage({
 
   return (
     <>
+      <ScrollToTop />
       {firstImageUrl && (
         <link rel="preload" as="image" href={firstImageUrl} />
       )}
@@ -415,9 +417,8 @@ export default async function ProductPage({
       >
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
-            <ProductImageGallery images={images} productTitle={product.title} />
-
-            <div>
+            {/* Mobile: 1. Title + stars  2. Images  3. Summary + Add to cart. Desktop: col 1 = images, col 2 = all copy. */}
+            <div className="order-1 lg:order-2">
               <h1
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
@@ -470,7 +471,13 @@ export default async function ProductPage({
                   {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
                 </span>
               </div>
+            </div>
 
+            <div className="order-2 lg:order-1">
+              <ProductImageGallery images={images} productTitle={product.title} />
+            </div>
+
+            <div className="order-3 lg:order-2">
               {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
               {product.summary?.value?.trim() || heroTeaser ? (
                 <p
@@ -664,12 +671,11 @@ export default async function ProductPage({
       {/* Wave between product content and reviews — same as shop page collection dividers */}
       <ShopSectionWave />
 
-      {/* Reviews — same styling as home page; product-specific from Klaviyo, fallback to last 3 global */}
+      {/* Reviews — same styling as home page; product-specific from Klaviyo, fallback to last 3 global. pt clears wave on mobile. */}
       <section
-        className="flex min-h-0 flex-col justify-center pb-12 md:pb-14"
+        className="flex min-h-0 flex-col justify-center pb-12 md:pb-14 pt-32 md:pt-[clamp(5rem,12vw,8rem)]"
         style={{
           backgroundColor: "#F8F8F8",
-          paddingTop: "clamp(5rem, 12vw, 8rem)",
           ["--section-bg" as string]: "#F8F8F8",
         }}
       >

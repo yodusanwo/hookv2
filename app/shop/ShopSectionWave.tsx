@@ -14,7 +14,7 @@ export function ShopSectionWave() {
       aria-hidden
     >
       <div
-        className="relative top-[100px] -mt-8 w-full shrink-0"
+        className="relative top-[60px] md:top-[100px] -mt-8 w-full shrink-0"
         style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
       >
         <WaveDivider
