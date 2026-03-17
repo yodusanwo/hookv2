@@ -417,9 +417,10 @@ export default async function ProductPage({
       >
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
-            {/* Mobile: 1. Title + stars  2. Images  3. Summary + Add to cart. Desktop: col 1 = images, col 2 = all copy. */}
-            <div className="order-1 lg:order-2">
-              <h1
+            {/* Mobile: contents so both children are grid items (order 1, 2, 3). Desktop: one column with title + summary stacked. */}
+            <div className="contents lg:flex lg:flex-col lg:order-2">
+              <div className="order-1 lg:order-none">
+                <h1
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
                   fontFamily: "Inter, sans-serif",
@@ -471,69 +472,70 @@ export default async function ProductPage({
                   {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
                 </span>
               </div>
+              </div>
+
+              <div className="order-3 lg:order-none">
+                {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
+                {product.summary?.value?.trim() || heroTeaser ? (
+                  <p
+                    className="mt-4 mb-[3.75rem] w-full max-w-full line-clamp-3"
+                    style={{
+                      color: "var(--Text-Color, #1E1E1E)",
+                      fontFamily: "Inter, var(--font-inter), sans-serif",
+                      fontSize: "1rem",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "1.6rem",
+                    }}
+                  >
+                    {product.summary?.value?.trim() || heroTeaser}
+                  </p>
+                ) : null}
+
+                <div className="mt-4 flex items-center gap-2">
+                  <img
+                    src="/delivery_truck_speed_24dp_000000_FILL0_wght400_GRAD0_opsz24%201.svg"
+                    alt=""
+                    className="shrink-0"
+                    width={35}
+                    height={35}
+                    aria-hidden
+                  />
+                  <span
+                    style={{
+                      color: "#374151",
+                      fontFamily: "Inter, var(--font-inter), sans-serif",
+                      fontSize: "1rem",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                    }}
+                  >
+                    {freeShippingMessage}
+                  </span>
+                </div>
+
+                <EstimatedDeliveryDisplay
+                  staticText={product.estimatedDelivery?.value?.trim() ?? null}
+                  processingDays={processingDays}
+                  transitDaysMin={transitDaysMin}
+                  transitDaysMax={transitDaysMax}
+                  cutOffTime={siteSettings?.estimatedDeliveryCutoffTime ?? null}
+                />
+
+                <div className="mt-6">
+                  <AddToCart
+                    productTitle={product.title}
+                    options={product.options}
+                    variants={variants}
+                    variant="productPage"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="order-2 lg:order-1">
               <ProductImageGallery images={images} productTitle={product.title} />
-            </div>
-
-            <div className="order-3 lg:order-2">
-              {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
-              {product.summary?.value?.trim() || heroTeaser ? (
-                <p
-                  className="mt-4 mb-[3.75rem] w-full max-w-full line-clamp-3"
-                  style={{
-                    color: "var(--Text-Color, #1E1E1E)",
-                    fontFamily: "Inter, var(--font-inter), sans-serif",
-                    fontSize: "1rem",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "1.6rem",
-                  }}
-                >
-                  {product.summary?.value?.trim() || heroTeaser}
-                </p>
-              ) : null}
-
-              <div className="mt-4 flex items-center gap-2">
-                <img
-                  src="/delivery_truck_speed_24dp_000000_FILL0_wght400_GRAD0_opsz24%201.svg"
-                  alt=""
-                  className="shrink-0"
-                  width={35}
-                  height={35}
-                  aria-hidden
-                />
-                <span
-                  style={{
-                    color: "#374151",
-                    fontFamily: "Inter, var(--font-inter), sans-serif",
-                    fontSize: "1rem",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "150%",
-                  }}
-                >
-                  {freeShippingMessage}
-                </span>
-              </div>
-
-              <EstimatedDeliveryDisplay
-                staticText={product.estimatedDelivery?.value?.trim() ?? null}
-                processingDays={processingDays}
-                transitDaysMin={transitDaysMin}
-                transitDaysMax={transitDaysMax}
-                cutOffTime={siteSettings?.estimatedDeliveryCutoffTime ?? null}
-              />
-
-              <div className="mt-6">
-                <AddToCart
-                  productTitle={product.title}
-                  options={product.options}
-                  variants={variants}
-                  variant="productPage"
-                />
-              </div>
             </div>
           </div>
         </div>

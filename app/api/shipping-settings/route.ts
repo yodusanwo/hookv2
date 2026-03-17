@@ -14,6 +14,9 @@ const SHIPPING_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   freeShippingThreshold
 }`;
 
+/** Default threshold (USD) when not set in Sanity, so cart always shows free-shipping progress. */
+const DEFAULT_FREE_SHIPPING_THRESHOLD = 50;
+
 /**
  * GET /api/shipping-settings
  * Returns { freeShippingThreshold: number | null, freeShippingMessage: string | null } for the cart page.
@@ -21,8 +24,8 @@ const SHIPPING_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
 export async function GET() {
   if (!client) {
     return NextResponse.json({
-      freeShippingThreshold: null,
-      freeShippingMessage: null,
+      freeShippingThreshold: DEFAULT_FREE_SHIPPING_THRESHOLD,
+      freeShippingMessage: `Free shipping for orders over $${DEFAULT_FREE_SHIPPING_THRESHOLD}`,
     });
   }
 
@@ -34,12 +37,12 @@ export async function GET() {
       typeof data?.freeShippingThreshold === "number" &&
       Number.isFinite(data.freeShippingThreshold)
         ? data.freeShippingThreshold
-        : null;
+        : DEFAULT_FREE_SHIPPING_THRESHOLD;
     const freeShippingMessage =
       typeof data?.freeShippingMessage === "string" &&
       data.freeShippingMessage.trim() !== ""
         ? data.freeShippingMessage.trim()
-        : null;
+        : `Free shipping for orders over $${freeShippingThreshold}`;
     return NextResponse.json({
       freeShippingThreshold,
       freeShippingMessage,
