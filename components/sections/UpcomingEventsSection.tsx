@@ -74,7 +74,7 @@ export function UpcomingEventsSection({
                 return (
                   <div
                     key={idx}
-                    className="aspect-[4/3] w-full max-w-[352px] overflow-hidden rounded-lg"
+                    className="aspect-[4/3] w-full max-w-[352px] overflow-hidden rounded-card"
                     style={{ backgroundColor: bgColor }}
                   >
                     <img
@@ -95,7 +95,7 @@ export function UpcomingEventsSection({
                 return (
                   <div
                     key={idx}
-                    className="aspect-[4/3] w-full max-w-[352px] overflow-hidden rounded-lg"
+                    className="aspect-[4/3] w-full max-w-[352px] overflow-hidden rounded-card"
                     style={{ backgroundColor: bgColor }}
                   >
                     <img

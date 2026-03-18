@@ -131,7 +131,7 @@ export function AddToCart({
 
   if (!selectedVariant) {
     return (
-      <div className="rounded-xl border border-black/5 bg-white p-5 shadow-sm text-center text-sm text-slate-600">
+      <div className="rounded-card border border-black/5 bg-white p-5 shadow-sm text-center text-sm text-slate-600">
         No variants available for this product.
       </div>
     );
@@ -294,7 +294,7 @@ export function AddToCart({
   }
 
   return (
-    <div className="rounded-xl border border-black/5 bg-white p-5 shadow-sm">
+    <div className="rounded-card border border-black/5 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-sm font-semibold text-slate-900">Price</div>

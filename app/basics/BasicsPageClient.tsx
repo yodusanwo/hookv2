@@ -41,7 +41,7 @@ export function BasicsPageClient({
           <Link
             key={b._id}
             href={href}
-            className="section-card group flex flex-col overflow-hidden rounded-xl transition-shadow"
+            className="section-card group flex flex-col overflow-hidden transition-shadow"
             style={{ backgroundColor: bgColor }}
           >
             <div

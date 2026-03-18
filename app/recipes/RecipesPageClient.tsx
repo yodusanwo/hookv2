@@ -121,7 +121,7 @@ export function RecipesPageClient({
               <Link
                 key={r._id}
                 href={href}
-                className="section-card group flex flex-col overflow-hidden rounded-xl transition-shadow"
+                className="section-card group flex flex-col overflow-hidden transition-shadow"
                 style={{ backgroundColor: "var(--section-bg)" }}
               >
                 <div

@@ -98,7 +98,7 @@ export function DealProductCard({
     <>
       <Link
         href={`/products/${product.handle}`}
-        className="group relative block rounded-xl border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow w-full min-w-0"
+        className="group relative block rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow w-full min-w-0"
       >
         <div
           className="overflow-hidden rounded-t-xl w-full bg-[#EEF1F6] relative"

@@ -150,7 +150,7 @@ export function PageBuilder({
                         {[1, 2, 3].map((i) => (
                           <div
                             key={i}
-                            className="w-[280px] h-[280px] max-w-full rounded-xl bg-white/10"
+                            className="w-[280px] h-[280px] max-w-full rounded-card bg-white/10"
                             style={{ minHeight: 280 }}
                           />
                         ))}

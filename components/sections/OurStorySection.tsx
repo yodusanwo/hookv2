@@ -146,10 +146,10 @@ export function OurStorySection({
           </>
         )}
         <div
-          className={`grid gap-8 lg:grid-cols-2 lg:items-stretch ${isStoryPage ? "pt-8 md:pt-[6.25rem]" : ""} ${!hideTitle ? "mt-10" : ""}`}
+          className={`grid gap-8 lg:grid-cols-2 ${isStoryPage ? "lg:items-stretch pt-8 md:pt-[6.25rem]" : "lg:items-start"} ${!hideTitle ? "mt-10" : ""}`}
         >
           <div
-            className={`min-w-0 overflow-hidden rounded-xl bg-slate-200 ${isStoryPage ? "w-full h-[259.875px] md:w-[86.625%] md:h-[363.825px] md:ml-[4.5625rem]" : ""}`}
+            className={`min-w-0 overflow-hidden rounded-card bg-slate-200 ${isStoryPage ? "w-full h-[259.875px] md:w-[86.625%] md:h-[363.825px] md:ml-[4.5625rem]" : "h-[300px] md:h-[420px]"}`}
           >
             {img ? (
               <img
@@ -174,7 +174,7 @@ export function OurStorySection({
             )}
           </div>
           <div
-            className="min-w-0 flex max-w-xl flex-col justify-center rounded-xl px-6 pb-6 pt-0 lg:px-6"
+            className="min-w-0 flex max-w-xl flex-col justify-center rounded-card px-6 pb-6 pt-0 lg:px-6"
             style={{
               backgroundColor: isStoryPage
                 ? "transparent"

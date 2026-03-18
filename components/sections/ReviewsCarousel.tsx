@@ -12,7 +12,7 @@ export type ReviewItem = {
 function ReviewCard({ r }: { r: ReviewItem }) {
   return (
     <div
-      className="section-card flex w-full max-w-[355px] flex-col justify-center rounded-[10px] p-6 text-center md:max-w-full"
+      className="section-card flex w-full max-w-[355px] flex-col justify-center p-6 text-center md:max-w-full"
       style={{ minHeight: 220, backgroundColor: "#FFF" }}
     >
       {r.stars != null && (

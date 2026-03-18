@@ -75,7 +75,7 @@ export function WhyWildMattersSection({
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1.58fr_2fr] lg:items-start lg:gap-12">
           {/* Left: image */}
-          <div className="overflow-hidden rounded-xl">
+          <div className="overflow-hidden rounded-card">
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -105,7 +105,7 @@ export function WhyWildMattersSection({
               return (
                 <div
                   key={idx}
-                  className="flex w-full items-center gap-6 rounded-lg p-4"
+                  className="flex w-full items-center gap-6 rounded-card p-4"
                 >
                   <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center">
                     {iconUrl ? (

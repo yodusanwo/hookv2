@@ -56,7 +56,7 @@ export default async function AccountPage({
           {params.error === "missing_params" && (
             <p className="mb-4 text-sm text-amber-700">Login failed (missing parameters). Please try again.</p>
           )}
-          <div className="rounded-xl bg-white p-8 shadow-sm">
+          <div className="rounded-card bg-white p-8 shadow-sm">
             <p className="mb-6 text-[#1E1E1E]">Sign in to view your orders and account details.</p>
             {useHeadlessLogin ? (
               <a
@@ -115,7 +115,7 @@ export default async function AccountPage({
         )}
         <h2 className="mb-4 font-medium text-lg text-[#1E1E1E] [font-family:var(--font-inter)]">Orders</h2>
         {orders.length === 0 ? (
-          <div className="rounded-xl bg-white p-8 shadow-sm">
+          <div className="rounded-card bg-white p-8 shadow-sm">
             <p className="font-medium text-[#1E1E1E]">No orders yet</p>
             <p className="mt-1 text-[#1E1E1E]">
               <Link href="/shop" className="text-[#498CCB] underline hover:no-underline">
@@ -127,7 +127,7 @@ export default async function AccountPage({
         ) : (
           <ul className="space-y-4">
             {orders.map(({ node: order }) => (
-              <li key={order.id} className="rounded-xl bg-white p-6 shadow-sm">
+              <li key={order.id} className="rounded-card bg-white p-6 shadow-sm">
                 <div className="flex flex-wrap justify-between gap-2">
                   <span className="font-medium text-[#1E1E1E]">{order.name}</span>
                   <span className="text-sm text-[#1E1E1E]">{formatDate(order.createdAt)}</span>

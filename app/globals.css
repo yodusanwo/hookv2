@@ -66,7 +66,8 @@
   --section-description-max-width: 48.125rem;
   /* Card title area: sections set --section-bg so card text area matches section background */
   --section-bg: #ffffff;
-  /* Section cards (recipe, product, reviews, etc.) – no box shadow by default; shadow on hover */
+  /* Section cards (recipe, product, reviews, etc.) – 10px radius, no box shadow by default; shadow on hover */
+  --card-radius: 10px;
   --section-card-shadow: none;
   --section-card-shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
@@ -174,10 +175,49 @@ h2.section-title,
   margin-right: auto;
 }
 
-/* Section cards – no box shadow by default; shadow on hover */
+/* Card radius – single source of truth; change --card-radius in :root to update all cards */
+.rounded-card {
+  border-radius: var(--card-radius);
+}
+.rounded-card-t {
+  border-top-left-radius: var(--card-radius);
+  border-top-right-radius: var(--card-radius);
+}
+.rounded-card-b {
+  border-bottom-left-radius: var(--card-radius);
+  border-bottom-right-radius: var(--card-radius);
+}
+
+/* Card images – apply --card-radius so image corners match the card (10px) */
+.rounded-card img,
+.rounded-card [role="img"] {
+  border-radius: var(--card-radius);
+}
+.rounded-card-t img,
+.rounded-card-t [role="img"] {
+  border-top-left-radius: var(--card-radius);
+  border-top-right-radius: var(--card-radius);
+}
+
+/* Section cards – use --card-radius, no box shadow by default; shadow on hover */
 .section-card {
+  border-radius: var(--card-radius);
   box-shadow: var(--section-card-shadow);
   transition: box-shadow 0.2s ease;
+}
+/* Section card image area (first child) – full radius so image has rounded top and bottom */
+.section-card > *:first-child {
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+.section-card > *:first-child img,
+.section-card > *:first-child [role="img"] {
+  border-radius: var(--card-radius);
+}
+/* Section card label/footer area (last child) – 10px radius on bottom */
+.section-card > *:last-child {
+  border-bottom-left-radius: var(--card-radius);
+  border-bottom-right-radius: var(--card-radius);
 }
 .section-card:hover {
   box-shadow: var(--section-card-shadow-hover);

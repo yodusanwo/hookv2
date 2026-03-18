@@ -76,7 +76,7 @@ export function ExploreProductsCategoryCarousel({
     >
       <div className="section-card overflow-hidden w-full md:w-[331px] transition-all shrink-0 active:scale-[0.98] active:opacity-95 border-0 border-none ring-0 bg-transparent">
         <div
-          className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] group-hover:bg-white/15 border-0 border-none ring-0 w-full aspect-[4/3]"
+          className="rounded-card relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] group-hover:bg-white/15 border-0 border-none ring-0 w-full aspect-[4/3]"
           style={{ maxWidth: "100%" }}
         >
           {cat.imageUrl && typeof cat.imageUrl === "string" ? (
@@ -103,7 +103,7 @@ export function ExploreProductsCategoryCarousel({
             />
           )}
         </div>
-        <div className="py-3 text-center" style={{ backgroundColor: "var(--section-bg)" }}>
+        <div className="rounded-card-b py-3 text-center" style={{ backgroundColor: "var(--section-bg)" }}>
           <span
             className="capitalize"
             style={{

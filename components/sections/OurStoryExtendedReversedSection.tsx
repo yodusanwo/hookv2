@@ -109,7 +109,7 @@ export function OurStoryExtendedReversedSection({
         >
           {/* Copy on the left */}
           <div
-            className="min-w-0 flex flex-col justify-start rounded-xl px-6 md:pl-0 md:pr-6 pb-6 pt-0 order-2 lg:order-1 lg:max-w-none"
+            className="min-w-0 flex flex-col justify-start rounded-card px-6 md:pl-0 md:pr-6 pb-6 pt-0 order-2 lg:order-1 lg:max-w-none"
             style={{ backgroundColor: "transparent" }}
           >
             <div className="min-w-0 max-w-full lg:w-[432px] lg:max-w-[432px]" style={COPY_STYLE}>

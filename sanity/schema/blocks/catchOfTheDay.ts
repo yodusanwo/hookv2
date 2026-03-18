@@ -21,6 +21,12 @@ export const catchOfTheDayBlock = defineType({
     }),
     defineField({ name: "description", type: "text", title: "Description" }),
     defineField({
+      name: "subheading",
+      type: "string",
+      title: "Subheading",
+      description: "Optional subheading below the title (e.g. uppercase label). Centered, 32px, Inter.",
+    }),
+    defineField({
       name: "filterCollections",
       type: "array",
       title: "Filter Tabs",

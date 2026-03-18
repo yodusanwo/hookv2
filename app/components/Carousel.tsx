@@ -32,7 +32,7 @@ export function Carousel({
         {items.map((item, idx) => (
           <div
             key={`${item.src}-${idx}`}
-            className="snap-start shrink-0 w-[240px] h-[140px] overflow-hidden rounded-lg bg-slate-200"
+            className="snap-start shrink-0 w-[240px] h-[140px] overflow-hidden rounded-card bg-slate-200"
           >
             <img
               src={item.src}

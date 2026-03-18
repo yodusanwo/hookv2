@@ -189,7 +189,7 @@ export default async function Home() {
           <div className="mx-auto max-w-6xl px-4">
             <SectionHeading title="We are Hook Point" variant="display" theme="light" />
             <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-center">
-              <div className="overflow-hidden rounded-xl bg-slate-200">
+              <div className="overflow-hidden rounded-card bg-slate-200">
                 <img
                   src={aboutImg}
                   alt="Fishing crew"
@@ -268,7 +268,7 @@ export default async function Home() {
                     <Link
                       key={product.id}
                       href={`/products/${product.handle}`}
-                      className="group rounded-xl border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow"
+                      className="group rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="aspect-[4/3] overflow-hidden rounded-t-xl bg-slate-100">
                         {img?.url ? (
@@ -326,7 +326,7 @@ export default async function Home() {
               ].map((name) => (
                 <div
                   key={name}
-                  className="flex items-center justify-center rounded-xl border border-black/5 bg-slate-50 p-5 text-xs font-semibold text-slate-700"
+                  className="flex items-center justify-center rounded-card border border-black/5 bg-slate-50 p-5 text-xs font-semibold text-slate-700"
                 >
                   {name}
                 </div>
@@ -375,7 +375,7 @@ export default async function Home() {
               {carouselItems.slice(0, 12).map((i, idx) => (
                 <div
                   key={`${i.src}-${idx}`}
-                  className="aspect-square overflow-hidden rounded-lg bg-slate-200"
+                  className="aspect-square overflow-hidden rounded-card bg-slate-200"
                 >
                   <img
                     src={i.src}
@@ -398,7 +398,7 @@ export default async function Home() {
           <h1 className="text-4xl font-bold mb-4 text-red-600">
             Error Loading Products
           </h1>
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <div className="bg-red-50 border border-red-200 rounded-card p-6">
             <p className="text-red-800 font-mono">
               {error instanceof Error
                 ? error.message

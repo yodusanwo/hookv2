@@ -722,14 +722,14 @@ export default async function ProductPage({
                   <Link
                     key={p.id}
                     href={`/products/${p.handle}`}
-                    className="group block rounded-xl overflow-hidden"
+                    className="group block rounded-card overflow-hidden"
                     style={{
                       backgroundColor: LIGHT_BG_HEX,
                       boxShadow: "none",
                     }}
                   >
                     <div
-                      className="relative aspect-square overflow-hidden rounded-t-xl"
+                      className="rounded-card relative aspect-square overflow-hidden"
                       style={{ backgroundColor: LIGHT_BG_HEX }}
                     >
                       {p.image?.url ? (
@@ -753,7 +753,7 @@ export default async function ProductPage({
                       </span>
                     </div>
                     <div
-                      className="rounded-b-xl p-4"
+                      className="rounded-card-b p-4"
                       style={{ backgroundColor: LIGHT_BG_HEX }}
                     >
                       <h3 className="font-semibold text-slate-900">
@@ -809,7 +809,7 @@ export default async function ProductPage({
                   <Link
                     key={r._id}
                     href={slug ? `/recipes/${slug}` : "/recipes"}
-                    className="section-card overflow-hidden rounded-xl transition-shadow"
+                    className="section-card overflow-hidden transition-shadow"
                     style={{ backgroundColor: "var(--section-bg)" }}
                   >
                     <div className="aspect-square overflow-hidden" style={{ backgroundColor: "var(--section-bg)" }}>

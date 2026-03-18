@@ -86,7 +86,7 @@ export function Footer({
           {/* Column 2: Newsletter — on mobile first, centered */}
           <div className="order-first flex flex-col items-center border-b border-white/20 pb-6 mb-6 md:border-0 md:pb-0 md:mb-0 md:order-none md:items-stretch">
             <form
-              className="rounded-xl p-6 flex flex-col gap-3 w-full max-w-md md:max-w-none"
+              className="rounded-card p-6 flex flex-col gap-3 w-full max-w-md md:max-w-none"
               style={{ backgroundColor: "#D4F2FF" }}
             >
               <h3

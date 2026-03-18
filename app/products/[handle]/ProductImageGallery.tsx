@@ -22,7 +22,7 @@ export function ProductImageGallery({
   return (
     <div className="space-y-3">
       <div
-        className="max-w-full overflow-hidden rounded-[10px] relative bg-[#d4f2ff]"
+        className="max-w-full overflow-hidden rounded-card relative bg-[#d4f2ff]"
         style={{
           width: "min(661px, 100%)",
           aspectRatio: "1/1",
@@ -43,14 +43,14 @@ export function ProductImageGallery({
                 key={i}
                 type="button"
                 onClick={() => setSelectedIndex(i)}
-                className={`aspect-square w-full overflow-hidden rounded-[10px] border-2 transition-colors p-0 ${
+                className={`aspect-square w-full overflow-hidden rounded-card border-2 transition-colors p-0 ${
                   safeIndex === i
                     ? "border-[var(--brand-navy)] ring-2 ring-[var(--brand-navy)] ring-offset-2"
                     : "border-transparent hover:border-slate-300"
                 }`}
               >
                 <span
-                  className="block h-full w-full overflow-hidden rounded-[10px]"
+                  className="block h-full w-full overflow-hidden rounded-card"
                   style={{
                     background: `url(${img.url}) ${sectionBgHex} 50% / cover no-repeat`,
                     backgroundBlendMode: "multiply",

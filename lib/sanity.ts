@@ -129,6 +129,7 @@ export const CATCH_OF_THE_DAY_BLOCK_QUERY = `*[_type == "page" && slug.current =
   backgroundColor,
   title,
   description,
+  subheading,
   "filterCollections": filterCollections[] { label, collectionHandle },
   cta { label, href }
 }`;

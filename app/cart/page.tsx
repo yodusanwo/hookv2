@@ -529,7 +529,7 @@ export default function CartPage() {
           </div>
 
           {/* Right: Order summary */}
-          <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-6 lg:sticky lg:top-28">
+          <div className="rounded-card border border-slate-200 bg-slate-50/50 p-6 lg:sticky lg:top-28">
             <h2 className="text-lg font-bold text-black">Order Summary</h2>
             <div className="mt-4 space-y-2">
               <div className="flex justify-between text-sm">
@@ -633,7 +633,7 @@ export default function CartPage() {
                   return (
                     <li key={product.id} className="group">
                       <Link href={`/products/${product.handle}`} className="section-card block overflow-hidden transition-shadow" style={{ backgroundColor: "var(--section-bg)" }}>
-                        <div className="relative aspect-square overflow-hidden bg-slate-100">
+                        <div className="rounded-card relative aspect-square overflow-hidden bg-slate-100">
                           {img?.url ? (
                             <img
                               src={img.url}
@@ -653,7 +653,7 @@ export default function CartPage() {
                             />
                           </span>
                         </div>
-                        <div className="p-4" style={{ backgroundColor: "var(--section-bg)" }}>
+                        <div className="rounded-card-b p-4" style={{ backgroundColor: "var(--section-bg)" }}>
                           <h3 className="font-semibold text-black">
                             {product.title}
                           </h3>
