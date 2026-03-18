@@ -18,6 +18,8 @@ export type ExploreCategoryItem = {
 
 const CARD_WIDTH = 331;
 const GAP = 24;
+/** Visible viewport fits exactly 3 cards so only 3 columns show at a time. */
+const VISIBLE_WIDTH = CARD_WIDTH * 3 + GAP * 2;
 
 export function ExploreProductsCategoryCarousel({
   categories,
@@ -121,14 +123,22 @@ export function ExploreProductsCategoryCarousel({
     </Link>
   );
 
+  const showCarouselViewport = categories.length > 3;
   return (
     <div className="relative mx-auto w-full max-w-6xl mt-10 px-6 md:px-2">
-      {/* Mobile: single column stack; md+: horizontal carousel */}
-      <div
-        ref={ref}
-        className="flex flex-col gap-6 md:flex-row md:gap-6 md:overflow-x-auto md:scroll-smooth md:snap-x md:snap-mandatory py-4 md:justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [-webkit-overflow-scrolling:touch]"
-      >
-        {categories.map((cat, idx) => cardContent(cat, idx))}
+      {/* Mobile: single column stack; md+: horizontal carousel — viewport shows exactly 3 cards, centered */}
+      <div className="w-full md:flex md:justify-center">
+        <div
+          ref={ref}
+          className="flex flex-col gap-6 md:flex-row md:gap-6 md:overflow-x-auto md:scroll-smooth md:snap-x md:snap-mandatory py-4 md:justify-start [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [-webkit-overflow-scrolling:touch]"
+          style={
+            showCarouselViewport
+              ? { width: "min(100%, " + VISIBLE_WIDTH + "px)", minWidth: 0, maxWidth: VISIBLE_WIDTH }
+              : undefined
+          }
+        >
+          {categories.map((cat, idx) => cardContent(cat, idx))}
+        </div>
       </div>
 
       <CarouselArrow

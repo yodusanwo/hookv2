@@ -237,7 +237,7 @@ export function PageBuilder({
                   bottomPadding={exploreProductsBottomPadding}
                   doubleTopPadding={pageSlug === "wild"}
                   tripleTitleTopMargin={pageSlug === "wild"}
-                  carouselArrowColor={pageSlug === "calendar" ? "#1E1E1E" : undefined}
+                  carouselArrowColor={pageSlug === "calendar" || pageSlug === "recipes" ? "#1E1E1E" : undefined}
                 />
               </Fragment>
             );
