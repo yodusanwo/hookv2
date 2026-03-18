@@ -26,14 +26,19 @@ function normalizeNav(items: Array<{ label?: string; href?: string }>) {
   );
 }
 
+const accountButtonClass =
+  "flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 hover:bg-white/10 transition-colors";
+
 export function Header({
   logoUrl,
   navLinks,
   backgroundColor,
+  accountUrl,
 }: {
   logoUrl?: string | null;
   navLinks?: Array<{ label?: string; href?: string }>;
   backgroundColor?: string | null;
+  accountUrl?: string | null;
 }) {
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
   const nav = normalizeNav(navLinks && navLinks.length > 0 ? navLinks : FALLBACK_NAV);
@@ -92,12 +97,23 @@ export function Header({
             <span className={`h-0.5 w-6 bg-white transition-opacity ${mobileMenuOpen ? "opacity-0" : ""}`} />
             <span className={`h-0.5 w-6 bg-white transition-transform ${mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
           </button>
-          <button type="button" aria-label="Search" className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 hover:bg-white/10 transition-colors">
+          <button type="button" aria-label="Search" className={accountButtonClass}>
             <IconSearch className="h-5 w-5" />
           </button>
-          <button type="button" aria-label="Account" className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 hover:bg-white/10 transition-colors">
-            <IconUser className="h-5 w-5" />
-          </button>
+          {accountUrl ? (
+            <a
+              href={accountUrl}
+              aria-label="Account"
+              className={accountButtonClass}
+              rel="noopener noreferrer"
+            >
+              <IconUser className="h-5 w-5" />
+            </a>
+          ) : (
+            <button type="button" aria-label="Account" className={accountButtonClass}>
+              <IconUser className="h-5 w-5" />
+            </button>
+          )}
           <CartCount />
         </div>
       </div>
@@ -123,6 +139,16 @@ export function Header({
                 </Link>
               );
             })}
+            {accountUrl ? (
+              <a
+                href={accountUrl}
+                className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
+                onClick={() => setMobileMenuOpen(false)}
+                rel="noopener noreferrer"
+              >
+                Account
+              </a>
+            ) : null}
           </nav>
         </div>
       )}

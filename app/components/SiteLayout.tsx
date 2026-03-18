@@ -13,6 +13,7 @@ type SiteLayoutProps = {
   headerLogoUrl: string | null;
   navLinks: Array<{ label?: string; href?: string }>;
   headerBackgroundColor: string | null;
+  accountUrl?: string | null;
 };
 
 /**
@@ -24,6 +25,7 @@ function SiteLayoutInner({
   headerLogoUrl,
   navLinks,
   headerBackgroundColor,
+  accountUrl,
 }: SiteLayoutProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -74,6 +76,7 @@ function SiteLayoutInner({
         logoUrl={headerLogoUrl}
         navLinks={navLinks}
         backgroundColor={headerBackgroundColor}
+        accountUrl={accountUrl}
       />
       <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       {!hideHeaderWave && <HeaderWave />}
@@ -100,6 +103,7 @@ function SiteLayoutFallback({
   headerLogoUrl,
   navLinks,
   headerBackgroundColor,
+  accountUrl,
 }: SiteLayoutProps) {
   const pathname = usePathname();
   return (
@@ -108,6 +112,7 @@ function SiteLayoutFallback({
         logoUrl={headerLogoUrl}
         navLinks={navLinks}
         backgroundColor={headerBackgroundColor}
+        accountUrl={accountUrl}
       />
       <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       <HeaderWave />

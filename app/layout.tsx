@@ -60,6 +60,17 @@ export default async function RootLayout({
   let headerLogoUrl: string | null = null;
   let navLinks: { label?: string; href?: string }[] = [];
   let headerBackgroundColor: string | null = null;
+  let accountUrl: string | null = null;
+  const explicitAccountUrl = process.env.NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL?.trim();
+  if (explicitAccountUrl) {
+    accountUrl = explicitAccountUrl;
+  } else {
+    const domain = (process.env.SHOPIFY_STORE_DOMAIN ?? "")
+      .trim()
+      .replace(/^https?:\/\//, "")
+      .replace(/\/+$/, "");
+    if (domain) accountUrl = `https://${domain}/account`;
+  }
   if (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
     try {
       const settings = await client.fetch<{
@@ -89,6 +100,7 @@ export default async function RootLayout({
           headerLogoUrl={headerLogoUrl}
           navLinks={navLinks}
           headerBackgroundColor={headerBackgroundColor}
+          accountUrl={accountUrl}
         >
           {children}
         </SiteLayout>
