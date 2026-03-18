@@ -59,12 +59,12 @@ export default async function AccountPage({
           <div className="rounded-xl bg-white p-8 shadow-sm">
             <p className="mb-6 text-[#1E1E1E]">Sign in to view your orders and account details.</p>
             {useHeadlessLogin ? (
-              <Link
+              <a
                 href="/auth/login"
                 className="inline-block rounded-lg bg-[var(--brand-navy)] px-6 py-3 font-medium text-white hover:opacity-90 [font-family:var(--font-inter)]"
               >
                 Log in
-              </Link>
+              </a>
             ) : null}
             {accountUrl && (
               <p className="mt-4">
@@ -100,12 +100,12 @@ export default async function AccountPage({
           <h1 className="font-semibold text-[var(--section-title-size,24px)] text-[#1E1E1E] [font-family:var(--font-inter)]">
             Account
           </h1>
-          <Link
+          <a
             href="/auth/logout"
             className="text-sm text-[#498CCB] underline hover:no-underline [font-family:var(--font-inter)]"
           >
             Log out
-          </Link>
+          </a>
         </div>
         {customer && (
           <p className="mb-6 text-[#1E1E1E] [font-family:var(--font-inter)]">
