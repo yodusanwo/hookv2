@@ -42,7 +42,7 @@ export default async function AccountPage({
 
   if (!token) {
     return (
-      <main className="min-h-screen bg-[#F8F8F8] px-4 py-12 md:py-16">
+      <main className="min-h-screen bg-[#F8F8F8] px-4 pt-24 pb-12 md:pt-32 md:pb-16">
         <div className="mx-auto max-w-2xl">
           <h1 className="mb-6 font-semibold text-[var(--section-title-size,24px)] text-[#1E1E1E] [font-family:var(--font-inter)]">
             Account
@@ -94,7 +94,7 @@ export default async function AccountPage({
   const orders = customer?.orders?.edges ?? [];
 
   return (
-    <main className="min-h-screen bg-[#F8F8F8] px-4 py-12 md:py-16">
+    <main className="min-h-screen bg-[#F8F8F8] px-4 pt-24 pb-12 md:pt-32 md:pb-16">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <h1 className="font-semibold text-[var(--section-title-size,24px)] text-[#1E1E1E] [font-family:var(--font-inter)]">
