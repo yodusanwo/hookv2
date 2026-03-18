@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { IconSearch, IconUser } from "./Icons";
 import { CartCount } from "./CartCount";
 import { safeHref } from "@/lib/urlValidation";
+
+const ACTIVE_LINK_COLOR = "#069400";
 
 const FALLBACK_NAV = [
   { href: "/shop", label: "Shop" },
@@ -26,6 +29,20 @@ function normalizeNav(items: Array<{ label?: string; href?: string }>) {
   );
 }
 
+/** True when the nav link should show as the current page. */
+function isActivePath(pathname: string, href: string | undefined, label?: string): boolean {
+  if (!href) return false;
+  if (href.startsWith("#")) {
+    const lower = (label ?? "").toLowerCase();
+    if (href === "#about" || lower.includes("story")) return pathname === "/story" || pathname.startsWith("/story/");
+    if (href === "#calendar" || lower.includes("calendar")) return pathname === "/calendar" || pathname.startsWith("/calendar/");
+    return false;
+  }
+  const clean = href.replace(/^https?:\/\/[^/]+/, "").split("?")[0].replace(/\/$/, "");
+  if (!clean) return false;
+  return pathname === clean || pathname.startsWith(clean + "/");
+}
+
 const accountButtonClass =
   "flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 hover:bg-white/10 transition-colors";
 
@@ -42,6 +59,7 @@ export function Header({
   accountUrl?: string | null;
   useHeadlessAccount?: boolean;
 }) {
+  const pathname = usePathname();
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
   const nav = normalizeNav(navLinks && navLinks.length > 0 ? navLinks : FALLBACK_NAV);
   const bgColor = backgroundColor ?? FALLBACK_BG;
@@ -75,11 +93,14 @@ export function Header({
           {nav.map((item) => {
             const href = safeHref(item.href) || "#";
             const label = item.label ?? "Link";
+            const isActive = isActivePath(pathname ?? "", item.href, item.label);
             return (
               <a
                 key={`${href}-${label}`}
                 href={href}
                 className="hover:text-slate-200 transition-colors"
+                style={{ color: isActive ? ACTIVE_LINK_COLOR : undefined }}
+                aria-current={isActive ? "page" : undefined}
               >
                 {label}
               </a>
@@ -134,12 +155,15 @@ export function Header({
             {nav.map((item) => {
               const href = safeHref(item.href) || "#";
               const label = item.label ?? "Link";
+              const isActive = isActivePath(pathname ?? "", item.href, item.label);
               return (
                 <Link
                   key={`${href}-${label}`}
                   href={href}
-                  className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
+                  className="py-4 text-lg font-medium hover:text-slate-200 [font-family:var(--font-inter)]"
+                  style={{ color: isActive ? ACTIVE_LINK_COLOR : "white" }}
                   onClick={() => setMobileMenuOpen(false)}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   {label}
                 </Link>
