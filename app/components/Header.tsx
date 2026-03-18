@@ -34,11 +34,13 @@ export function Header({
   navLinks,
   backgroundColor,
   accountUrl,
+  useHeadlessAccount,
 }: {
   logoUrl?: string | null;
   navLinks?: Array<{ label?: string; href?: string }>;
   backgroundColor?: string | null;
   accountUrl?: string | null;
+  useHeadlessAccount?: boolean;
 }) {
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
   const nav = normalizeNav(navLinks && navLinks.length > 0 ? navLinks : FALLBACK_NAV);
@@ -100,7 +102,11 @@ export function Header({
           <button type="button" aria-label="Search" className={accountButtonClass}>
             <IconSearch className="h-5 w-5" />
           </button>
-          {accountUrl ? (
+          {useHeadlessAccount ? (
+            <Link href="/account" aria-label="Account" className={accountButtonClass}>
+              <IconUser className="h-5 w-5" />
+            </Link>
+          ) : accountUrl ? (
             <a
               href={accountUrl}
               aria-label="Account"
@@ -139,7 +145,15 @@ export function Header({
                 </Link>
               );
             })}
-            {accountUrl ? (
+            {useHeadlessAccount ? (
+              <Link
+                href="/account"
+                className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Account
+              </Link>
+            ) : accountUrl ? (
               <a
                 href={accountUrl}
                 className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"

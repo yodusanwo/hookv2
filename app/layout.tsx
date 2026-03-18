@@ -24,6 +24,7 @@ const zamenhofInline = localFont({
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
+import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,6 +72,7 @@ export default async function RootLayout({
       .replace(/\/+$/, "");
     if (domain) accountUrl = `https://${domain}/account`;
   }
+  const useHeadlessAccount = isCustomerAccountConfigured();
   if (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
     try {
       const settings = await client.fetch<{
@@ -101,6 +103,7 @@ export default async function RootLayout({
           navLinks={navLinks}
           headerBackgroundColor={headerBackgroundColor}
           accountUrl={accountUrl}
+          useHeadlessAccount={useHeadlessAccount}
         >
           {children}
         </SiteLayout>
