@@ -232,7 +232,7 @@ h2.section-title,
   border-radius: 9999px;
   background-color: #069400;
   color: white;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: none;
 }
 .product-card-cart-badge:hover {
   background-color: #057a00;

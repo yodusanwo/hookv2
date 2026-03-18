@@ -10,6 +10,8 @@ import { CarouselArrow } from "@/components/ui/CarouselArrow";
 import type { ApiProductForCarousel } from "@/lib/types";
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
+/** Explicit light blue so section and cards always match on /shop (e.g. gift card category). */
+const LIGHT_BG_HEX = "#d4f2ff";
 const GRID_FIRST = 50;
 const CAROUSEL_FIRST = 24;
 const CAROUSEL_PAGE_SIZE = 3;
@@ -125,8 +127,8 @@ export function CategorySectionBlock({
         id={collectionHandle ? `shop-section-${collectionHandle}` : undefined}
         className="relative z-20 overflow-visible py-12 sm:py-10 lg:py-12"
         style={{
-          backgroundColor: LIGHT_BG,
-          ["--section-bg" as string]: LIGHT_BG,
+          backgroundColor: LIGHT_BG_HEX,
+          ["--section-bg" as string]: LIGHT_BG_HEX,
           ...(hasWaveAbove ? { paddingTop: WAVE_CLEARANCE_PADDING } : {}),
         }}
       >
@@ -192,7 +194,7 @@ export function CategorySectionBlock({
               >
                 {carouselSlice.map((product, index) => (
                   <div key={product.id} className="min-w-0 w-[387px] max-w-full">
-                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} />
+                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} sectionBackgroundColor={LIGHT_BG_HEX} />
                   </div>
                 ))}
               </div>
@@ -216,7 +218,7 @@ export function CategorySectionBlock({
               ) : (
                 cards.map((product, index) => (
                   <div key={product.id} className="w-full max-w-[387px] mx-auto">
-                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} />
+                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} sectionBackgroundColor={LIGHT_BG_HEX} />
                   </div>
                 ))
               )}

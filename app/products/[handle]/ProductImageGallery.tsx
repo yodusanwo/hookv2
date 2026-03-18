@@ -18,24 +18,20 @@ export function ProductImageGallery({
 
   if (!main) return null;
 
+  const sectionBgHex = "#d4f2ff";
   return (
     <div className="space-y-3">
       <div
-        className="max-w-full overflow-hidden rounded-[10px] relative"
+        className="max-w-full overflow-hidden rounded-[10px] relative bg-[#d4f2ff]"
         style={{
           width: "min(661px, 100%)",
           aspectRatio: "1/1",
+          background: `url(${main.url}) #d4f2ff 50% / cover no-repeat`,
+          backgroundBlendMode: "multiply",
         }}
-      >
-        <img
-          src={main.url}
-          alt={main.altText ?? productTitle}
-          className="h-full w-full object-cover"
-          loading="eager"
-          fetchPriority="high"
-          sizes="(max-width: 1024px) 100vw, min(661px, 50vw)"
-        />
-      </div>
+        role="img"
+        aria-label={main.altText ?? productTitle}
+      />
       {images.length > 1 && (
         <>
           <div
@@ -56,7 +52,8 @@ export function ProductImageGallery({
                 <span
                   className="block h-full w-full overflow-hidden rounded-[10px]"
                   style={{
-                    background: `url(${img.url}) lightgray 50% / cover no-repeat`,
+                    background: `url(${img.url}) ${sectionBgHex} 50% / cover no-repeat`,
+                    backgroundBlendMode: "multiply",
                   }}
                   role="img"
                   aria-hidden

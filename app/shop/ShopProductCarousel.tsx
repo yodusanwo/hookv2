@@ -71,6 +71,7 @@ export function ShopProductCarousel({
         selectedProductTypeFilter={selectedFilterValues}
         matchProductTypesAsCommaSeparated
         darkSection={!isLightBg}
+        sectionBackgroundColor={isLightBg ? sectionBg : undefined}
       />
     </section>
   );

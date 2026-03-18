@@ -33,12 +33,15 @@ export type CatchOfTheDayProductCardProduct = {
 };
 
 const SECTION_BG = "var(--brand-light-blue-bg)";
+/** Explicit light blue fallback so cards on /shop (e.g. gift card category) always match section. */
+const LIGHT_BLUE_HEX = "#d4f2ff";
 
 export function CatchOfTheDayProductCard({
   product,
   blendWhiteWithSectionBackground = false,
   darkSection = false,
   priority = false,
+  sectionBackgroundColor,
 }: {
   product: CatchOfTheDayProductCardProduct;
   /** When true, white areas in the image blend with the section background (for product images on white). */
@@ -47,6 +50,8 @@ export function CatchOfTheDayProductCard({
   darkSection?: boolean;
   /** When true, load image with high priority (eager + fetchPriority high) for LCP. Use for first visible card. */
   priority?: boolean;
+  /** Explicit section background (e.g. #d4f2ff). When set, card uses this instead of var(--section-bg) so all cards match. */
+  sectionBackgroundColor?: string | null;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
@@ -105,6 +110,11 @@ export function CatchOfTheDayProductCard({
 
   const showCompareAt = product.compareAtPrice && parseFloat(product.compareAtPrice) > parseFloat(product.price);
 
+  /** When true, force card and image area to light blue so first card on /shop isn’t blocked by variable inheritance. */
+  const forceLightBlue = priority && !darkSection;
+  const effectiveBg =
+    sectionBackgroundColor ?? (forceLightBlue ? LIGHT_BLUE_HEX : "var(--section-bg, " + LIGHT_BLUE_HEX + ")");
+
   const productHref = `/products/${product.handle}`;
 
   // Title: optional cleanup of trailing parentheses so "Name (8 oz)" shows as "Name"
@@ -118,26 +128,35 @@ export function CatchOfTheDayProductCard({
 
   return (
     <>
-      <div className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden shadow-none w-full">
+      <div
+        className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden rounded-xl w-full"
+        style={{
+          backgroundColor: effectiveBg,
+          boxShadow: "none",
+        }}
+      >
         {/* Image area: same as recipe cards — height 320px, cover */}
         <div
-          className="relative min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+          className="relative min-w-0 w-full shrink-0 overflow-hidden rounded-t-xl transition-transform group-hover:scale-[1.03]"
           style={{
             height: 320,
             alignSelf: "stretch",
-            ...(!priority && product.imageUrl
-              ? {
-                  background: blendWhiteWithSectionBackground
-                    ? `url(${product.imageUrl}) ${SECTION_BG} 50% / cover no-repeat`
-                    : `url(${product.imageUrl}) transparent 50% / cover no-repeat`,
-                  backgroundBlendMode: blendWhiteWithSectionBackground ? "multiply" as const : undefined,
-                }
-              : { background: "transparent" }),
+            ...(product.imageUrl
+              ? (priority && !sectionBackgroundColor
+                  ? { background: effectiveBg, backgroundColor: effectiveBg }
+                  : {
+                      background: blendWhiteWithSectionBackground
+                        ? `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`
+                        : `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`,
+                      backgroundColor: effectiveBg,
+                      backgroundBlendMode: blendWhiteWithSectionBackground ? ("multiply" as const) : undefined,
+                    })
+              : { background: effectiveBg, backgroundColor: effectiveBg }),
           }}
           role={product.imageUrl && !priority ? "img" : undefined}
           aria-label={product.imageUrl && !priority ? product.title : undefined}
         >
-          {priority && product.imageUrl ? (
+          {priority && product.imageUrl && !sectionBackgroundColor ? (
             <img
               src={product.imageUrl}
               alt={product.title}
@@ -193,8 +212,8 @@ export function CatchOfTheDayProductCard({
         </div>
 
         <div
-          className="flex flex-1 flex-col px-4 py-3"
-          style={{ backgroundColor: "var(--section-bg)" }}
+          className="flex flex-1 flex-col px-4 py-3 rounded-b-xl"
+          style={{ backgroundColor: effectiveBg }}
         >
           <h3
             style={{

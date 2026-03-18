@@ -136,6 +136,8 @@ const OTHER_PRODUCTS_QUERY = `
 `;
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
+/** Explicit hex so card backgrounds always match section (no variable resolve issues). */
+const LIGHT_BG_HEX = "#d4f2ff";
 const NAVY = "var(--brand-navy)";
 
 /** Returns hero teaser: second paragraph if present, else first, else full description. */
@@ -409,11 +411,11 @@ export default async function ProductPage({
       {firstImageUrl && (
         <link rel="preload" as="image" href={firstImageUrl} />
       )}
-      <main className="bg-white">
+      <main style={{ backgroundColor: LIGHT_BG_HEX }}>
       {/* Main product section — light blue; pt clears the header wave */}
       <section
         className="px-4 pt-[140px] pb-10 sm:pt-[170px] md:py-14 lg:pt-[230px]"
-        style={{ backgroundColor: LIGHT_BG }}
+        style={{ backgroundColor: LIGHT_BG_HEX }}
       >
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
@@ -702,8 +704,8 @@ export default async function ProductPage({
       <section
         className="px-4 py-12 md:py-16"
         style={{
-          backgroundColor: LIGHT_BG,
-          ["--section-bg" as string]: LIGHT_BG,
+          backgroundColor: LIGHT_BG_HEX,
+          ["--section-bg" as string]: LIGHT_BG_HEX,
         }}
       >
         <div className="mx-auto max-w-6xl px-6 md:px-4">
@@ -720,18 +722,25 @@ export default async function ProductPage({
                   <Link
                     key={p.id}
                     href={`/products/${p.handle}`}
-                    className="section-card group block rounded-xl overflow-hidden transition-shadow"
-                    style={{ backgroundColor: "var(--section-bg)" }}
+                    className="group block rounded-xl overflow-hidden"
+                    style={{
+                      backgroundColor: LIGHT_BG_HEX,
+                      boxShadow: "none",
+                    }}
                   >
-                    <div className="relative aspect-square overflow-hidden rounded-t-xl bg-slate-100">
+                    <div
+                      className="relative aspect-square overflow-hidden rounded-t-xl"
+                      style={{ backgroundColor: LIGHT_BG_HEX }}
+                    >
                       {p.image?.url ? (
                         <img
                           src={p.image.url}
                           alt={p.image.altText ?? p.title}
                           className="h-full w-full object-cover transition-transform group-hover:scale-[1.02]"
+                          style={{ mixBlendMode: "multiply" }}
                         />
                       ) : (
-                        <div className="h-full w-full bg-slate-200" />
+                        <div className="h-full w-full" style={{ backgroundColor: LIGHT_BG_HEX }} />
                       )}
                       <div className="product-card-price-overlay">
                         <span className="product-card-price-single">${Math.round(parseFloat(p.price)).toString()}</span>
@@ -744,8 +753,8 @@ export default async function ProductPage({
                       </span>
                     </div>
                     <div
-                      className="p-4"
-                      style={{ backgroundColor: "var(--section-bg)" }}
+                      className="rounded-b-xl p-4"
+                      style={{ backgroundColor: LIGHT_BG_HEX }}
                     >
                       <h3 className="font-semibold text-slate-900">
                         {p.title}
@@ -803,7 +812,7 @@ export default async function ProductPage({
                     className="section-card overflow-hidden rounded-xl transition-shadow"
                     style={{ backgroundColor: "var(--section-bg)" }}
                   >
-                    <div className="aspect-square overflow-hidden bg-slate-100">
+                    <div className="aspect-square overflow-hidden" style={{ backgroundColor: "var(--section-bg)" }}>
                       {img ? (
                         <img
                           src={img.width(400).url()}
@@ -811,7 +820,7 @@ export default async function ProductPage({
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="h-full w-full bg-slate-200" />
+                        <div className="h-full w-full" style={{ backgroundColor: "var(--section-bg)" }} />
                       )}
                     </div>
                     <p

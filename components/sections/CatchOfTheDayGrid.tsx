@@ -57,6 +57,7 @@ export function CatchOfTheDayGrid({
   hideCollectionTabs = false,
   matchProductTypesAsCommaSeparated = false,
   darkSection = false,
+  sectionBackgroundColor,
 }: {
   filterCollections: FilterItem[];
   /** Pre-fetched products for the first collection (avoids "Loading products…" on hard refresh). */
@@ -69,6 +70,8 @@ export function CatchOfTheDayGrid({
   matchProductTypesAsCommaSeparated?: boolean;
   /** When true, section has dark/navy background; card footers use a light background for readable text. */
   darkSection?: boolean;
+  /** When set (e.g. /shop Catch of the Day), card backgrounds use this so they match the section and never fall back to white. */
+  sectionBackgroundColor?: string | null;
 }) {
   const collections = filterCollections ?? [];
   const effectiveCollections = hideCollectionTabs && collections.length > 0
@@ -261,7 +264,7 @@ export function CatchOfTheDayGrid({
               >
                 {currentPageProducts.map((product, index) => (
                   <div key={product.id} className="min-w-0 w-[387px] max-w-full">
-                    <CatchOfTheDayProductCard product={product} darkSection={darkSection} priority={index === 0} />
+                    <CatchOfTheDayProductCard product={product} darkSection={darkSection} priority={index === 0} sectionBackgroundColor={sectionBackgroundColor ?? undefined} />
                   </div>
                 ))}
               </div>
