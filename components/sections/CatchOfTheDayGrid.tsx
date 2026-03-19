@@ -351,7 +351,7 @@ export function CatchOfTheDayGrid({
           ) : selectedProductsMode && [2, 3, 4, 5].includes(displayProducts.length) ? (
             <SelectedProductsLayout
               products={displayProducts}
-              count={displayProducts.length}
+              count={displayProducts.length as 2 | 3 | 4 | 5}
               darkSection={darkSection}
               sectionBackgroundColor={sectionBackgroundColor}
             />
