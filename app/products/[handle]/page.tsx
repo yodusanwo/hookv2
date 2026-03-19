@@ -716,7 +716,7 @@ export default async function ProductPage({
           />
           {otherProducts.length > 0 ? (
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {otherProducts.map((p) => {
+              {otherProducts.slice(0, 4).map((p) => {
                 const subtitle = p.sizeOrDescription ?? p.productType ?? "";
                 return (
                   <Link

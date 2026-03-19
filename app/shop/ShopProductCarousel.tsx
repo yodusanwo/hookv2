@@ -17,6 +17,8 @@ export type ShopProductCarouselBlock = {
   title?: string;
   description?: string;
   filterCollections?: FilterItem[];
+  /** When true, grid shows 2–5 selected products in fixed layouts (no tabs). */
+  selectedProductsMode?: boolean;
 };
 
 export function ShopProductCarousel({
@@ -45,6 +47,7 @@ export function ShopProductCarousel({
   const sectionBg = backgroundColorOverride ?? block.backgroundColor ?? "#171730";
   const isLightBg = Boolean(backgroundColorOverride) || isLightBackgroundColor(block.backgroundColor);
   const textTheme = isLightBg ? "light" : "dark";
+  const selectedProductsMode = Boolean(block.selectedProductsMode);
 
   return (
     <section
@@ -65,13 +68,15 @@ export function ShopProductCarousel({
       </div>
 
       <CatchOfTheDayGrid
-        filterCollections={filterCollections}
+        filterCollections={selectedProductsMode ? [] : filterCollections}
         initialProducts={initialProducts}
         hideCollectionTabs
+        selectedProductsMode={selectedProductsMode}
         selectedProductTypeFilter={selectedFilterValues}
         matchProductTypesAsCommaSeparated
         darkSection={!isLightBg}
         sectionBackgroundColor={isLightBg ? sectionBg : undefined}
+        carouselArrowTheme={isLightBg ? "light" : "dark"}
       />
     </section>
   );

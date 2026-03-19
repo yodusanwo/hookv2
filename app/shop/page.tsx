@@ -1,5 +1,6 @@
 import { client, SITE_SETTINGS_QUERY, CATCH_OF_THE_DAY_BLOCK_QUERY } from "@/lib/sanity";
 import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsForCarousel";
+import { getProductsByHandles } from "@/lib/getProductsByHandles";
 import { ShopPageClient } from "./ShopPageClient";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
 import type { FilterItem } from "@/lib/types";
@@ -27,6 +28,7 @@ type CatchOfTheDayBlockRaw = {
   backgroundColor?: string | null;
   title?: string | null;
   description?: string | null;
+  productRefs?: Array<{ shopifyHandle?: string | null }> | null;
   filterCollections?: FilterItem[];
   cta?: { label?: string; href?: string } | null;
 };
@@ -63,19 +65,38 @@ export default async function ShopPage({
       promoBannerUrl = settings?.promoBannerUrl ?? null;
 
       if (catchData) {
-        const filterCollections =
-          catchData.filterCollections && catchData.filterCollections.length > 0
-            ? catchData.filterCollections.filter((f) => f.label || f.collectionHandle)
-            : DEFAULT_FILTER_COLLECTIONS;
-        const firstHandle = filterCollections[0]?.collectionHandle?.trim() ?? "";
-        productCarouselBlock = {
-          backgroundColor: catchData.backgroundColor ?? undefined,
-          title: catchData.title ?? undefined,
-          description: catchData.description ?? undefined,
-          filterCollections,
-        };
-        if (firstHandle) {
-          productCarouselInitialProducts = await getCollectionProductsForCarousel(firstHandle);
+        const productRefs = (catchData.productRefs ?? []).filter(
+          (r) => typeof r?.shopifyHandle === "string" && r.shopifyHandle.trim() !== ""
+        );
+        const useSelectedProducts =
+          productRefs.length >= 2 && productRefs.length <= 5;
+
+        if (useSelectedProducts) {
+          const handles = productRefs.map((r) => (r.shopifyHandle as string).trim());
+          productCarouselInitialProducts = await getProductsByHandles(handles);
+          productCarouselBlock = {
+            backgroundColor: catchData.backgroundColor ?? undefined,
+            title: catchData.title ?? undefined,
+            description: catchData.description ?? undefined,
+            filterCollections: [],
+            selectedProductsMode: true,
+          };
+        } else {
+          const filterCollections =
+            catchData.filterCollections && catchData.filterCollections.length > 0
+              ? catchData.filterCollections.filter((f) => f.label || f.collectionHandle)
+              : DEFAULT_FILTER_COLLECTIONS;
+          const firstHandle = filterCollections[0]?.collectionHandle?.trim() ?? "";
+          productCarouselBlock = {
+            backgroundColor: catchData.backgroundColor ?? undefined,
+            title: catchData.title ?? undefined,
+            description: catchData.description ?? undefined,
+            filterCollections,
+            selectedProductsMode: false,
+          };
+          if (firstHandle) {
+            productCarouselInitialProducts = await getCollectionProductsForCarousel(firstHandle);
+          }
         }
       }
 

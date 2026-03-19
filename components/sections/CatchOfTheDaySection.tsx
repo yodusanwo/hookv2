@@ -98,6 +98,8 @@ export async function CatchOfTheDaySection({
         hideCollectionTabs={useSelectedProducts || hideCollectionTabs}
         selectedProductsMode={useSelectedProducts}
         darkSection={!isLightBg}
+        sectionBackgroundColor={block.backgroundColor ?? undefined}
+        carouselArrowTheme={isLightBg ? "light" : "dark"}
       />
     </section>
   );

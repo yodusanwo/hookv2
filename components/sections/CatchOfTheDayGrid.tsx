@@ -130,9 +130,12 @@ export function CatchOfTheDayGrid({
   selectedProductTypeFilter = [],
   hideCollectionTabs = false,
   selectedProductsMode = false,
+  fixedProductsOnly = false,
   matchProductTypesAsCommaSeparated = false,
   darkSection = false,
   sectionBackgroundColor,
+  carouselArrowTheme = "dark",
+  carouselArrowColor,
 }: {
   filterCollections: FilterItem[];
   /** Pre-fetched products for the first collection or selected product refs (avoids "Loading products…" on hard refresh). */
@@ -143,12 +146,18 @@ export function CatchOfTheDayGrid({
   hideCollectionTabs?: boolean;
   /** When true, section shows 2–5 selected products in fixed layouts (no filter tabs, no carousel). */
   selectedProductsMode?: boolean;
+  /** When true, use only initialProducts (no fetch), show carousel with arrows (e.g. product page "You Might Also Like"). */
+  fixedProductsOnly?: boolean;
   /** When true (shop page only), product type / filterValue is treated as comma-separated (e.g. "Boxes, Salmon, Sablefish"). */
   matchProductTypesAsCommaSeparated?: boolean;
   /** When true, section has dark/navy background; card footers use a light background for readable text. */
   darkSection?: boolean;
   /** When set (e.g. /shop Catch of the Day), card backgrounds use this so they match the section and never fall back to white. */
   sectionBackgroundColor?: string | null;
+  /** "dark" = white arrows (navy sections); "light" = dark arrows on light sections. Used site-wide for consistent product carousel. */
+  carouselArrowTheme?: "light" | "dark";
+  /** Override arrow color (e.g. #1E1E1E). When set, overrides carouselArrowTheme. */
+  carouselArrowColor?: string | null;
 }) {
   const collections = filterCollections ?? [];
   const effectiveCollections = hideCollectionTabs && collections.length > 0
@@ -166,7 +175,7 @@ export function CatchOfTheDayGrid({
     CatchOfTheDayProductCardProduct[]
   >(initialMapped);
   const [loading, setLoading] = React.useState(
-    !selectedProductsMode && initialMapped.length === 0
+    !selectedProductsMode && !fixedProductsOnly && initialMapped.length === 0
   );
   const [error, setError] = React.useState<string | null>(null);
   const cacheRef = React.useRef<Map<string, CatchOfTheDayProductCardProduct[]>>(
@@ -189,7 +198,15 @@ export function CatchOfTheDayGrid({
   }, [effectiveCollections.length]);
 
   React.useEffect(() => {
-    if (selectedProductsMode) return;
+    if (fixedProductsOnly) {
+      setProducts(initialMapped);
+      setLoading(false);
+      setPageIndex(0);
+      return;
+    }
+  }, [fixedProductsOnly, initialMapped]);
+  React.useEffect(() => {
+    if (selectedProductsMode || fixedProductsOnly) return;
     const cached = cacheRef.current.get(collectionHandle);
     if (cached !== undefined) {
       setProducts(cached);
@@ -235,9 +252,10 @@ export function CatchOfTheDayGrid({
       });
 
     return () => controller.abort();
-  }, [collectionHandle, selectedProductsMode]);
+  }, [collectionHandle, selectedProductsMode, fixedProductsOnly]);
 
   const displayProducts = React.useMemo(() => {
+    if (fixedProductsOnly) return products;
     if (selectedProductsMode) return products;
     if (selectedProductTypeFilter.length === 0) return products;
     const raw = rawProductsRef.current.get(collectionHandle);
@@ -252,7 +270,7 @@ export function CatchOfTheDayGrid({
       )
       .map(mapApiProductToCard);
     return filtered;
-  }, [products, collectionHandle, selectedProductTypeFilter, selectedProductsMode]);
+  }, [products, collectionHandle, selectedProductTypeFilter, selectedProductsMode, fixedProductsOnly]);
 
   React.useEffect(() => {
     setPageIndex(0);
@@ -293,7 +311,7 @@ export function CatchOfTheDayGrid({
         <div className="mx-auto w-full max-w-[1200px]">
           {loading && products.length === 0 ? (
             <div className="relative flex items-center justify-center gap-6">
-              <CarouselArrow direction="prev" disabled onClick={() => {}} ariaLabel="Previous" />
+              <CarouselArrow direction="prev" disabled onClick={() => {}} ariaLabel="Previous" theme={carouselArrowTheme} arrowColor={carouselArrowColor ?? undefined} />
               <div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
                 style={{ gap: "6px" }}
@@ -317,7 +335,7 @@ export function CatchOfTheDayGrid({
                   </div>
                 ))}
               </div>
-              <CarouselArrow direction="next" disabled onClick={() => {}} ariaLabel="Next" />
+              <CarouselArrow direction="next" disabled onClick={() => {}} ariaLabel="Next" theme={carouselArrowTheme} arrowColor={carouselArrowColor ?? undefined} />
             </div>
           ) : error ? (
             <div
@@ -344,6 +362,8 @@ export function CatchOfTheDayGrid({
                 disabled={!canGoPrev}
                 onClick={() => goToPage(-1)}
                 ariaLabel="Previous"
+                theme={carouselArrowTheme}
+                arrowColor={carouselArrowColor ?? undefined}
               />
               {/* 3 centered columns - card dimensions match Recipe cards (min 280px, max 387px) */}
               <div
@@ -361,6 +381,8 @@ export function CatchOfTheDayGrid({
                 disabled={!canGoNext}
                 onClick={() => goToPage(1)}
                 ariaLabel="Next"
+                theme={carouselArrowTheme}
+                arrowColor={carouselArrowColor ?? undefined}
               />
             </div>
           ) : (
