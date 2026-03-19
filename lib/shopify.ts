@@ -22,8 +22,9 @@ function normalizeShopifyDomain(domain: string): string {
 const SHOPIFY_STORE_DOMAIN = normalizeShopifyDomain(
   process.env.SHOPIFY_STORE_DOMAIN || ""
 );
-const SHOPIFY_STOREFRONT_ACCESS_TOKEN =
-  process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
+const SHOPIFY_STOREFRONT_ACCESS_TOKEN = (
+  process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || ""
+).trim();
 const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION || "2024-10";
 
 function getStorefrontUrl(): string {

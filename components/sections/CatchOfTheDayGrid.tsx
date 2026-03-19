@@ -2,7 +2,7 @@
 
 /**
  * Grid for the Product Carousel section only.
- * Card sizes and layout here do not affect the first "Catch of the day" (Explore Products) section.
+ * When selectedProductsMode: 2 = row of 2, 3 = row of 3, 4 = 3 top + 1 centered below, 5 = 3 top + 2 centered below.
  */
 import * as React from "react";
 import {
@@ -11,6 +11,80 @@ import {
 } from "@/app/components/CatchOfTheDayProductCard";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
 import type { ApiProductForCarousel, FilterItem } from "@/lib/types";
+
+const CARD_CLASS = "min-w-0 w-[387px] max-w-full";
+const GAP_STYLE = { gap: "6px" };
+
+function SelectedProductsLayout({
+  products,
+  count,
+  darkSection,
+  sectionBackgroundColor,
+}: {
+  products: CatchOfTheDayProductCardProduct[];
+  count: 2 | 3 | 4 | 5;
+  darkSection: boolean;
+  sectionBackgroundColor?: string | null;
+}) {
+  const card = (product: CatchOfTheDayProductCardProduct, index: number) => (
+    <div key={product.id} className={CARD_CLASS}>
+      <CatchOfTheDayProductCard
+        product={product}
+        darkSection={darkSection}
+        priority={index === 0}
+        sectionBackgroundColor={sectionBackgroundColor ?? undefined}
+      />
+    </div>
+  );
+
+  if (count === 2) {
+    return (
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 w-full max-w-[800px] mx-auto place-items-center"
+        style={GAP_STYLE}
+      >
+        {products.map((p, i) => card(p, i))}
+      </div>
+    );
+  }
+  if (count === 3) {
+    return (
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+        style={GAP_STYLE}
+      >
+        {products.map((p, i) => card(p, i))}
+      </div>
+    );
+  }
+  if (count === 4) {
+    return (
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+        style={GAP_STYLE}
+      >
+        {products.slice(0, 3).map((p, i) => card(p, i))}
+        <div className="w-full flex justify-center lg:col-start-2 lg:col-end-3">
+          {card(products[3], 3)}
+        </div>
+      </div>
+    );
+  }
+  if (count === 5) {
+    return (
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+        style={GAP_STYLE}
+      >
+        {products.slice(0, 3).map((p, i) => card(p, i))}
+        <div className="w-full flex justify-center gap-2 sm:gap-6 lg:col-span-3">
+          {products.slice(3, 5).map((p, i) => card(p, i + 3))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
 
 const ITEMS_PER_PAGE = 3;
 const MAX_PRODUCTS = 9;
@@ -55,17 +129,20 @@ export function CatchOfTheDayGrid({
   initialProducts = [],
   selectedProductTypeFilter = [],
   hideCollectionTabs = false,
+  selectedProductsMode = false,
   matchProductTypesAsCommaSeparated = false,
   darkSection = false,
   sectionBackgroundColor,
 }: {
   filterCollections: FilterItem[];
-  /** Pre-fetched products for the first collection (avoids "Loading products…" on hard refresh). */
+  /** Pre-fetched products for the first collection or selected product refs (avoids "Loading products…" on hard refresh). */
   initialProducts?: ApiProductForCarousel[];
   /** When set, only products whose productType matches one of these values are shown (e.g. on /shop page). */
   selectedProductTypeFilter?: string[];
   /** When true, hide the Seafood / Subscription Box / etc. tabs and only show the first collection (e.g. on /shop page). */
   hideCollectionTabs?: boolean;
+  /** When true, section shows 2–5 selected products in fixed layouts (no filter tabs, no carousel). */
+  selectedProductsMode?: boolean;
   /** When true (shop page only), product type / filterValue is treated as comma-separated (e.g. "Boxes, Salmon, Sablefish"). */
   matchProductTypesAsCommaSeparated?: boolean;
   /** When true, section has dark/navy background; card footers use a light background for readable text. */
@@ -88,7 +165,9 @@ export function CatchOfTheDayGrid({
   const [products, setProducts] = React.useState<
     CatchOfTheDayProductCardProduct[]
   >(initialMapped);
-  const [loading, setLoading] = React.useState(initialMapped.length === 0);
+  const [loading, setLoading] = React.useState(
+    !selectedProductsMode && initialMapped.length === 0
+  );
   const [error, setError] = React.useState<string | null>(null);
   const cacheRef = React.useRef<Map<string, CatchOfTheDayProductCardProduct[]>>(
     new Map(),
@@ -110,6 +189,7 @@ export function CatchOfTheDayGrid({
   }, [effectiveCollections.length]);
 
   React.useEffect(() => {
+    if (selectedProductsMode) return;
     const cached = cacheRef.current.get(collectionHandle);
     if (cached !== undefined) {
       setProducts(cached);
@@ -155,9 +235,10 @@ export function CatchOfTheDayGrid({
       });
 
     return () => controller.abort();
-  }, [collectionHandle]);
+  }, [collectionHandle, selectedProductsMode]);
 
   const displayProducts = React.useMemo(() => {
+    if (selectedProductsMode) return products;
     if (selectedProductTypeFilter.length === 0) return products;
     const raw = rawProductsRef.current.get(collectionHandle);
     if (!raw?.length) return products;
@@ -171,7 +252,7 @@ export function CatchOfTheDayGrid({
       )
       .map(mapApiProductToCard);
     return filtered;
-  }, [products, collectionHandle, selectedProductTypeFilter]);
+  }, [products, collectionHandle, selectedProductTypeFilter, selectedProductsMode]);
 
   React.useEffect(() => {
     setPageIndex(0);
@@ -249,6 +330,13 @@ export function CatchOfTheDayGrid({
             >
               {error}
             </div>
+          ) : selectedProductsMode && [2, 3, 4, 5].includes(displayProducts.length) ? (
+            <SelectedProductsLayout
+              products={displayProducts}
+              count={displayProducts.length}
+              darkSection={darkSection}
+              sectionBackgroundColor={sectionBackgroundColor}
+            />
           ) : displayProducts.length > 0 ? (
             <div className="relative flex items-center justify-center gap-6">
               <CarouselArrow

@@ -130,6 +130,7 @@ export const CATCH_OF_THE_DAY_BLOCK_QUERY = `*[_type == "page" && slug.current =
   title,
   description,
   subheading,
+  "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
   "filterCollections": filterCollections[] { label, collectionHandle },
   cta { label, href }
 }`;

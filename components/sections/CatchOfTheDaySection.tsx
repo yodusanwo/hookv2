@@ -1,18 +1,21 @@
 /**
  * Product Carousel section (separate from the first "Catch of the day" section).
- * Sizing and layout here are independent; changing this does not affect ExploreProductsSection.
- * Pre-fetches the first collection's products on the server so the section doesn't show "Loading products…" on hard refresh.
+ * When productRefs (2–5) are set in Sanity, shows selected products in fixed layouts (no filter tabs).
+ * Otherwise falls back to collection-based carousel with filter tabs.
  */
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CatchOfTheDayGrid } from "./CatchOfTheDayGrid";
 import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsForCarousel";
+import { getProductsByHandles } from "@/lib/getProductsByHandles";
 import { isLightBackgroundColor } from "@/lib/theme";
 import type { FilterItem } from "@/lib/types";
 
+type ProductRef = { shopifyHandle?: string | null; featuredImageIndex?: number | null };
 type CatchOfTheDayBlock = {
   backgroundColor?: string;
   title?: string;
   description?: string;
+  productRefs?: ProductRef[] | null;
   filterCollections?: FilterItem[];
   cta?: { label?: string; href?: string };
 };
@@ -38,15 +41,31 @@ export async function CatchOfTheDaySection({
   const title = block.title ?? DEFAULT_TITLE;
   const description = block.description ?? DEFAULT_DESCRIPTION;
 
+  const productRefs = (block.productRefs ?? []).filter(
+    (r) => typeof r?.shopifyHandle === "string" && r.shopifyHandle.trim() !== ""
+  );
+  const useSelectedProducts =
+    productRefs.length >= 2 && productRefs.length <= 5;
+
+  let initialProducts: Awaited<ReturnType<typeof getCollectionProductsForCarousel>> = [];
+  if (useSelectedProducts) {
+    const handles = productRefs.map((r) => (r.shopifyHandle as string).trim());
+    initialProducts = await getProductsByHandles(handles);
+  } else {
+    const filterCollections =
+      block.filterCollections && block.filterCollections.length > 0
+        ? block.filterCollections.filter((f) => f.label || f.collectionHandle)
+        : DEFAULT_FILTER_COLLECTIONS;
+    const firstHandle = filterCollections[0]?.collectionHandle?.trim() ?? "";
+    if (firstHandle) {
+      initialProducts = await getCollectionProductsForCarousel(firstHandle);
+    }
+  }
+
   const filterCollections =
     block.filterCollections && block.filterCollections.length > 0
       ? block.filterCollections.filter((f) => f.label || f.collectionHandle)
       : DEFAULT_FILTER_COLLECTIONS;
-
-  const firstHandle = filterCollections[0]?.collectionHandle?.trim() ?? "";
-  const initialProducts = firstHandle
-    ? await getCollectionProductsForCarousel(firstHandle)
-    : [];
 
   const isLightBg = isLightBackgroundColor(block.backgroundColor);
   const textTheme = isLightBg ? "light" : "dark";
@@ -74,9 +93,10 @@ export async function CatchOfTheDaySection({
       </div>
 
       <CatchOfTheDayGrid
-        filterCollections={filterCollections}
+        filterCollections={useSelectedProducts ? [] : filterCollections}
         initialProducts={initialProducts}
-        hideCollectionTabs={hideCollectionTabs}
+        hideCollectionTabs={useSelectedProducts || hideCollectionTabs}
+        selectedProductsMode={useSelectedProducts}
         darkSection={!isLightBg}
       />
     </section>

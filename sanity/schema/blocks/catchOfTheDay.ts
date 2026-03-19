@@ -27,28 +27,28 @@ export const catchOfTheDayBlock = defineType({
       description: "Optional subheading below the title (e.g. uppercase label). Centered, 32px, Inter.",
     }),
     defineField({
+      name: "productRefs",
+      type: "array",
+      title: "Selected Products",
+      description: "Choose 2–5 products to display. Layout adjusts automatically (2 = row of 2, 3 = row of 3, 4 = 3 on top + 1 centered below, 5 = 3 on top + 2 centered below).",
+      validation: (Rule) =>
+        Rule.min(2).max(5).error("Select between 2 and 5 products."),
+      of: [{ type: "productReference" }],
+    }),
+    defineField({
       name: "filterCollections",
       type: "array",
-      title: "Filter Tabs",
-      description: "Each tab maps to a Shopify collection. Products are fetched from the selected collection.",
+      title: "Filter Tabs (legacy)",
+      description: "Deprecated. Use Selected Products above instead.",
+      hidden: true,
       of: [
         {
           type: "object",
           fields: [
-            { name: "label", type: "string", title: "Label", description: "Button text (e.g. Seafood)" },
-            {
-              name: "collectionHandle",
-              type: "string",
-              title: "Collection Handle",
-              description: "Shopify collection handle (from collection URL). E.g. seafood, subscription-box",
-            },
+            { name: "label", type: "string", title: "Label" },
+            { name: "collectionHandle", type: "string", title: "Collection Handle" },
           ],
-          preview: {
-            select: { label: "label" },
-            prepare({ label }) {
-              return { title: label ?? "Filter" };
-            },
-          },
+          preview: { select: { label: "label" }, prepare({ label }) { return { title: label ?? "Filter" }; } },
         },
       ],
     }),
