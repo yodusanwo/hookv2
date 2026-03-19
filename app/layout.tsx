@@ -48,7 +48,12 @@ const mulish = Mulish({
   weight: ["300", "800"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+
 export const metadata: Metadata = {
+  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
   title: "Hook Point — Wild Alaskan Fish",
   description: "From our family to yours.",
 };

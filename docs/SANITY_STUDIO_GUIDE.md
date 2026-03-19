@@ -116,3 +116,19 @@ The new URL (e.g. `https://yoursite.com/about-us`) will use the same header, top
 - **Homepage still shows fallback** — Confirm slug is exactly `home` and the page is **Published**
 - **Product refs not showing** — Product handles must match Shopify exactly (lowercase, hyphens)
 - **Images not loading** — Upload images in Sanity; they’re served from Sanity’s CDN
+
+### Changes not showing on the live site (e.g. removed a Dockside Markets logo)
+
+The frontend only shows **published** content from Sanity. Caching can delay updates.
+
+1. **Publish in Sanity**  
+   After editing (e.g. removing a logo from Dockside and Farmers Markets), click **Publish** (top right). Until you publish, the live site keeps showing the previous published version.
+
+2. **Cache (ISR)**  
+   Pages revalidate every **60 seconds**. After publishing, wait up to a minute and reload the page, or do a hard refresh (Ctrl+Shift+R / Cmd+Shift+R). If you use a host like Vercel, triggering a new deployment also fetches fresh Sanity data.
+
+3. **Confirm the right page**  
+   Dockside and Farmers Markets can be on the **Home** page or the **Story** page. Edit the page that actually shows that section on the URL you’re checking.
+
+4. **Remove the item, don’t only clear the logo**  
+   To remove a market from the list, delete that entry from the **Items** array in the Dockside block (use the trash icon on the item). If you only clear the logo image, the item row stays and may still show a label or empty cell.
