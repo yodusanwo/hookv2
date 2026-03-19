@@ -208,15 +208,23 @@ export default function CartPage() {
           const json = await res.json().catch(() => ({}));
           products = json.products ?? [];
         }
-        if (products.length === 0) {
-          const res = await fetch("/api/products?first=6");
+        if (products.length < 4) {
+          const res = await fetch("/api/products?first=12");
           if (cancelled) return;
           const json = await res.json().catch(() => ({}));
-          products = json.products ?? [];
+          const more = json.products ?? [];
+          const combined = [...products];
+          for (const p of more) {
+            if (combined.length >= 4) break;
+            if (!combined.some((x) => x.id === p.id) && !cartHandles.has(p.handle)) {
+              combined.push(p);
+            }
+          }
+          products = combined;
         }
         const filtered = products
           .filter((p) => !cartHandles.has(p.handle))
-          .slice(0, 3);
+          .slice(0, 4);
         setRecommendations(filtered);
       } catch {
         if (!cancelled) setRecommendations([]);
@@ -626,7 +634,7 @@ export default function CartPage() {
             {recommendationsLoading ? (
               <p className="mt-4 text-sm text-slate-500">Loading…</p>
             ) : (
-              <ul className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {recommendations.map((product) => {
                   const img = product.images?.edges?.[0]?.node;
                   const subtitle = product.sizeOrDescription ?? product.productType ?? "";

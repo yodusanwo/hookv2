@@ -129,10 +129,12 @@ export function CatchOfTheDayProductCard({
   return (
     <>
       <div
-        className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden rounded-card w-full transition-transform duration-200 hover:scale-[1.02]"
+        className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden rounded-card w-full transition-transform duration-200 hover:scale-[1.02] shadow-none border-0"
         style={{
           backgroundColor: effectiveBg,
           boxShadow: "none",
+          border: "none",
+          outline: "none",
         }}
       >
         {/* Image area: same as recipe cards — height 320px, cover */}

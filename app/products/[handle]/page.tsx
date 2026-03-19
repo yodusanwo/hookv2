@@ -212,24 +212,30 @@ export default async function ProductPage({
     }).catch(() => ({ productRecommendations: [] }));
 
     const recs = recResponse.productRecommendations ?? [];
+    const mapNodeToOther = (node: RecNode): OtherProduct => {
+      const variant = node.variants?.edges?.[0]?.node;
+      const price = variant?.price ?? node.priceRange?.minVariantPrice;
+      const sizeOrDescription =
+        variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
+      const img = node.images?.edges?.[0]?.node ?? null;
+      return {
+        id: node.id,
+        title: node.title,
+        handle: node.handle,
+        price: price?.amount ?? "0",
+        currencyCode: price?.currencyCode ?? "USD",
+        image: img,
+        productType: node.productType ?? null,
+        sizeOrDescription,
+      };
+    };
+
     if (recs.length > 0) {
-      otherProducts = recs.slice(0, 4).map((node) => {
-        const variant = node.variants?.edges?.[0]?.node;
-        const price = variant?.price ?? node.priceRange?.minVariantPrice;
-        const sizeOrDescription =
-          variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
-        return {
-          id: node.id,
-          title: node.title,
-          handle: node.handle,
-          price: price?.amount ?? "0",
-          currencyCode: price?.currencyCode ?? "USD",
-          image: node.images?.edges?.[0]?.node ?? null,
-          productType: node.productType ?? null,
-          sizeOrDescription,
-        };
-      });
-    } else {
+      otherProducts = recs.slice(0, 4).map((node) => mapNodeToOther(node));
+    }
+
+    const needMore = 4 - otherProducts.length;
+    if (needMore > 0) {
       const otherData = await shopifyFetch<{
         products: {
           edges: Array<{
@@ -257,29 +263,24 @@ export default async function ProductPage({
         };
       }>({
         query: OTHER_PRODUCTS_QUERY,
-        variables: { first: 8 },
+        variables: { first: 20 },
         cache: "no-store",
       }).catch(() => ({ products: { edges: [] } }));
-      otherProducts = (otherData.products?.edges ?? [])
-        .filter((e) => currentId == null || e.node.id !== currentId)
-        .slice(0, 4)
+      const existingIds = new Set(otherProducts.map((p) => p.id));
+      const extra = (otherData.products?.edges ?? [])
+        .filter(
+          (e) =>
+            (currentId == null || e.node.id !== currentId) &&
+            !existingIds.has(e.node.id)
+        )
+        .slice(0, needMore)
         .map((e) => {
           const node = e.node;
-          const variant = node.variants?.edges?.[0]?.node;
-          const price = variant?.price ?? node.priceRange?.minVariantPrice;
-          const sizeOrDescription =
-            variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
-          return {
-            id: node.id,
-            title: node.title,
-            handle: node.handle,
-            price: price?.amount ?? "0",
-            currencyCode: price?.currencyCode ?? "USD",
-            image: node.images?.edges?.[0]?.node ?? null,
-            productType: node.productType ?? null,
-            sizeOrDescription,
-          };
+          const mapped = mapNodeToOther(node as RecNode);
+          existingIds.add(mapped.id);
+          return mapped;
         });
+      otherProducts = [...otherProducts, ...extra];
     }
   } catch (err) {
     console.error("Failed to fetch product:", err);
@@ -402,6 +403,21 @@ export default async function ProductPage({
     productReviews.length >= 3
       ? productReviews
       : [...productReviews, ...fallbacks.slice(0, needFallbacks)];
+
+  const productReviewSummary =
+    reviewCount > 0 || reviewsToShow.length > 0
+      ? {
+          totalCount: reviewCount > 0 ? reviewCount : reviewsToShow.length,
+          averageRating:
+            reviewsToShow.length > 0
+              ? Math.round(
+                  (reviewsToShow.reduce((s, r) => s + (r.stars ?? 0), 0) /
+                    reviewsToShow.length) *
+                    10
+                ) / 10
+              : 0,
+        }
+      : null;
 
   const firstImageUrl = images[0]?.url;
 
@@ -675,9 +691,9 @@ export default async function ProductPage({
       {/* Wave between product content and reviews — same as shop page collection dividers */}
       <ShopSectionWave />
 
-      {/* Reviews — same styling as home page; product-specific from Klaviyo, fallback to last 3 global. pt clears wave on mobile. */}
+      {/* Reviews — same section and carousel as home page; extra top padding clears the wave above. */}
       <section
-        className="flex min-h-0 flex-col justify-center pb-12 md:pb-14 pt-32 md:pt-[clamp(5rem,12vw,8rem)]"
+        className="flex min-h-0 flex-col justify-center pb-12 md:pb-14 pt-28 md:pt-[clamp(5rem,12vw,8rem)]"
         style={{
           backgroundColor: "#F8F8F8",
           ["--section-bg" as string]: "#F8F8F8",
@@ -690,7 +706,10 @@ export default async function ProductPage({
             variant="section"
           />
           {reviewsToShow.length > 0 ? (
-            <ReviewsCarousel reviews={reviewsToShow} />
+            <ReviewsCarousel
+              reviews={reviewsToShow}
+              reviewSummary={productReviewSummary}
+            />
           ) : (
             <p className="mt-10 text-center section-description-block">
               No reviews yet for this product. Be the first to leave a review
