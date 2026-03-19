@@ -9,13 +9,13 @@ import {
   isCustomerAccountConfigured,
   getRedirectUri,
 } from "@/lib/shopifyCustomerAccount";
-import { setPkceCookie, getOriginFromRequest } from "@/lib/authCookie";
+import { setPkceCookie, getPreferredRedirectOrigin } from "@/lib/authCookie";
 
 export async function GET(request: Request) {
   if (!isCustomerAccountConfigured()) {
     return NextResponse.redirect(new URL("/account", request.url));
   }
-  const origin = getOriginFromRequest(request);
+  const origin = getPreferredRedirectOrigin(request);
   const redirectUri = getRedirectUri(origin);
   const config = await getOpenIdConfig();
   if (!config?.authorization_endpoint) {

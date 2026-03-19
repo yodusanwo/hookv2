@@ -5,14 +5,14 @@ import {
   setAccessTokenCookie,
   setIdTokenCookie,
   clearPkceCookie,
-  getOriginFromRequest,
+  getPreferredRedirectOrigin,
 } from "@/lib/authCookie";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
-  const origin = getOriginFromRequest(request);
+  const origin = getPreferredRedirectOrigin(request);
   const redirectUri = getRedirectUri(origin);
   const accountUrl = new URL("/account", origin);
 

@@ -14,6 +14,16 @@ function getOriginFromRequest(request: Request): string {
   return url.origin;
 }
 
+/** Prefer canonical site URL for auth redirects (e.g. so logout returns to hookv2.vercel.app, not store theme). */
+export function getPreferredRedirectOrigin(request: Request): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) {
+    const u = explicit.replace(/\/+$/, "");
+    return u.startsWith("http") ? u : `https://${u}`;
+  }
+  return getOriginFromRequest(request);
+}
+
 export type PkcePayload = { state: string; code_verifier: string };
 
 export function setPkceCookie(payload: PkcePayload, origin: string): string {
