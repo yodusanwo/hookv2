@@ -632,13 +632,13 @@ export default function CartPage() {
                   const subtitle = product.sizeOrDescription ?? product.productType ?? "";
                   return (
                     <li key={product.id} className="group">
-                      <Link href={`/products/${product.handle}`} className="section-card block overflow-hidden transition-shadow" style={{ backgroundColor: "var(--section-bg)" }}>
+                      <Link href={`/products/${product.handle}`} className="section-card block overflow-hidden transition-all duration-200 hover:scale-[1.02]" style={{ backgroundColor: "var(--section-bg)" }}>
                         <div className="rounded-card relative aspect-square overflow-hidden bg-slate-100">
                           {img?.url ? (
                             <img
                               src={img.url}
                               alt={img.altText ?? product.title}
-                              className="h-full w-full object-cover transition-transform group-hover:scale-[1.02]"
+                              className="h-full w-full object-cover"
                             />
                           ) : (
                             <div className="h-full w-full bg-slate-200" />

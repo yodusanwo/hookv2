@@ -74,9 +74,9 @@ export function ExploreProductsCategoryCarousel({
       href={cat.href}
       className="group flex flex-col items-center outline-none focus:outline-none w-full md:w-auto md:shrink-0 md:snap-start"
     >
-      <div className="section-card overflow-hidden w-full md:w-[331px] transition-all shrink-0 active:scale-[0.98] active:opacity-95 border-0 border-none ring-0 bg-transparent">
+      <div className="section-card overflow-hidden w-full md:w-[331px] transition-all duration-200 shrink-0 hover:scale-[1.02] active:scale-[0.98] active:opacity-95 border-0 border-none ring-0 bg-transparent">
         <div
-          className="rounded-card relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] group-hover:bg-white/15 border-0 border-none ring-0 w-full aspect-[4/3]"
+          className="rounded-card relative shrink-0 overflow-hidden border-0 border-none ring-0 w-full aspect-[4/3]"
           style={{ maxWidth: "100%" }}
         >
           {cat.imageUrl && typeof cat.imageUrl === "string" ? (

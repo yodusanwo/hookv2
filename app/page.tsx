@@ -268,14 +268,14 @@ export default async function Home() {
                     <Link
                       key={product.id}
                       href={`/products/${product.handle}`}
-                      className="group rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow"
+                      className="group rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 overflow-hidden"
                     >
                       <div className="aspect-[4/3] overflow-hidden rounded-t-xl bg-slate-100">
                         {img?.url ? (
                           <img
                             src={img.url}
                             alt={img.altText ?? product.title}
-                            className="h-full w-full max-w-full object-cover group-hover:scale-[1.03] transition-transform"
+                            className="h-full w-full max-w-full object-cover"
                             loading="lazy"
                           />
                         ) : null}

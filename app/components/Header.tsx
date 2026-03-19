@@ -7,8 +7,6 @@ import { IconSearch, IconUser } from "./Icons";
 import { CartCount } from "./CartCount";
 import { safeHref } from "@/lib/urlValidation";
 
-const ACTIVE_LINK_COLOR = "#069400";
-
 const FALLBACK_NAV = [
   { href: "/shop", label: "Shop" },
   { href: "#about", label: "Our Story" },
@@ -99,7 +97,7 @@ export function Header({
                 key={`${href}-${label}`}
                 href={href}
                 className="hover:text-slate-200 transition-colors"
-                style={{ color: isActive ? ACTIVE_LINK_COLOR : undefined }}
+                style={{ textDecorationLine: isActive ? "underline" : undefined }}
                 aria-current={isActive ? "page" : undefined}
               >
                 {label}
@@ -161,7 +159,7 @@ export function Header({
                   key={`${href}-${label}`}
                   href={href}
                   className="py-4 text-lg font-medium hover:text-slate-200 [font-family:var(--font-inter)]"
-                  style={{ color: isActive ? ACTIVE_LINK_COLOR : "white" }}
+                  style={{ color: "white", textDecorationLine: isActive ? "underline" : undefined }}
                   onClick={() => setMobileMenuOpen(false)}
                   aria-current={isActive ? "page" : undefined}
                 >

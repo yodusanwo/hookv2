@@ -270,9 +270,6 @@ export function OurStorySection({
                         >
                           – Riendeau Family,
                         </p>
-                        <p className="mt-1 font-light !text-white">
-                          Founder of Hook Point Fisheries
-                        </p>
                       </>
                     </>
                   ) : (
@@ -299,9 +296,6 @@ export function OurStorySection({
                         }}
                       >
                         – Riendeau Family,
-                      </p>
-                      <p className="mt-1 font-light !text-white">
-                        Founder of Hook Point Fisheries
                       </p>
                     </div>
                   )}

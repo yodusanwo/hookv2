@@ -80,11 +80,11 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
               <Link
                 key={idx}
                 href={href}
-                className="section-card group flex shrink-0 w-[min(280px,78vw)] snap-center min-w-0 max-w-[387px] flex-col overflow-hidden transition-shadow md:shrink-0 md:w-full md:max-w-[387px]"
+                className="section-card group flex shrink-0 w-[min(280px,78vw)] snap-center min-w-0 max-w-[387px] flex-col overflow-hidden transition-all duration-200 hover:scale-[1.02] md:shrink-0 md:w-full md:max-w-[387px]"
                 style={{ backgroundColor: bgColor }}
               >
                 <div
-                  className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+                  className="min-w-0 w-full shrink-0 overflow-hidden"
                   style={{
                     height: 320,
                     alignSelf: "stretch",

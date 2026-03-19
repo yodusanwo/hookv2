@@ -85,7 +85,7 @@ export default async function RecipesIndexPage() {
   const description =
     (pageContent?.description ?? "").trim() ||
     (pageContent?.block?.description ?? "").trim() ||
-    "Wild-caught seafood recipes from our kitchen to yours.";
+    "";
   const bgColor =
     (pageContent?.block?.backgroundColor ?? "").trim() || LIGHT_BG;
 
@@ -110,19 +110,23 @@ export default async function RecipesIndexPage() {
         >
           {title}
         </h1>
-        <p
-          className="mb-10 mx-auto text-center w-full max-w-[743px]"
-          style={{
-            color: "#1E1E1E",
-            fontFamily: "Inter, sans-serif",
-            fontSize: "1rem",
-            fontStyle: "normal",
-            fontWeight: 400,
-            lineHeight: "150%",
-          }}
-        >
-          {description}
-        </p>
+        {description ? (
+          <p
+            className="mb-10 mx-auto text-center w-full max-w-[743px]"
+            style={{
+              color: "#1E1E1E",
+              fontFamily: "Inter, sans-serif",
+              fontSize: "1rem",
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "150%",
+            }}
+          >
+            {description}
+          </p>
+        ) : (
+          <div className="mb-10" />
+        )}
         <RecipesPageClient recipes={recipes} bgColor={bgColor} categoryOptions={categoryOptions} />
         </div>
       </div>

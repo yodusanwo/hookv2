@@ -1,8 +1,8 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
+import { getKlaviyoReviewsForSection, getKlaviyoReviewsSummary } from "@/lib/klaviyoReviews";
 import { ReviewsCarousel } from "./ReviewsCarousel";
 
-type Review = { stars?: number; text?: string; name?: string; date?: string };
+type Review = { stars?: number; text?: string; name?: string; date?: string; createdAt?: string };
 
 type ReviewsBlock = {
   backgroundColor?: string;
@@ -17,14 +17,32 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   const sanityReviews = block.reviews ?? [];
 
   let reviews: Review[] = [];
+  let reviewSummary: { totalCount: number; averageRating: number } | null = null;
   try {
-    const klaviyoReviews = await getKlaviyoReviews();
-    reviews = klaviyoReviews.length > 0 ? klaviyoReviews : sanityReviews;
+    const [klaviyoReviews, summary] = await Promise.all([
+      getKlaviyoReviewsForSection(),
+      getKlaviyoReviewsSummary(),
+    ]);
+    if (klaviyoReviews.length > 0) {
+      reviews = klaviyoReviews;
+      reviewSummary = summary.totalCount > 0 || summary.averageRating > 0 ? summary : null;
+    } else {
+      reviews = sanityReviews;
+    }
   } catch {
     reviews = sanityReviews;
   }
 
   if (reviews.length === 0) return null;
+
+  reviews = [...reviews].sort((a, b) => {
+    const t1 = a.createdAt ?? "";
+    const t2 = b.createdAt ?? "";
+    if (t1 && t2) return t2.localeCompare(t1);
+    if (t1) return -1;
+    if (t2) return 1;
+    return 0;
+  });
 
   const bgColor = block.backgroundColor ?? "#F8F8F8";
   return (
@@ -38,7 +56,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
           description={description || undefined}
           variant="section"
         />
-        <ReviewsCarousel reviews={reviews} />
+        <ReviewsCarousel reviews={reviews} reviewSummary={reviewSummary} />
       </div>
     </section>
   );

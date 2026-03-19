@@ -23,8 +23,8 @@ export const recipesBlock = defineType({
     defineField({
       name: "description",
       type: "text",
-      title: "Description",
-      description: "Intro text above the category filters on /recipes. Also used if the Page’s Description is empty.",
+      title: "Subheading",
+      description: "Recipes page subheading (below the main title, above the filters). Used when the Page description is empty. Leave empty to hide.",
     }),
     defineField({
       name: "recipes",

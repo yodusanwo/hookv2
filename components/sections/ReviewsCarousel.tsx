@@ -9,12 +9,116 @@ export type ReviewItem = {
   date?: string;
 };
 
-function ReviewCard({ r }: { r: ReviewItem }) {
+export type ReviewSummary = { totalCount: number; averageRating: number };
+
+function ReviewSummaryCard({
+  totalCount,
+  averageRating,
+}: {
+  totalCount: number;
+  averageRating: number;
+}) {
+  const displayRating =
+    averageRating > 0
+      ? Number.isInteger(averageRating)
+        ? String(averageRating)
+        : averageRating.toFixed(1)
+      : "0";
+  const displayCount = totalCount.toLocaleString();
+
   return (
     <div
-      className="section-card flex w-full max-w-[355px] flex-col justify-center p-6 text-center md:max-w-full"
+      className="section-card flex w-full max-w-[355px] flex-col items-center justify-center gap-2 p-6 text-center md:max-w-full"
+      style={{
+        minHeight: 220,
+        backgroundColor: "#FFF",
+        border: "1px solid #E5E7EB",
+        borderRadius: 8,
+        fontFamily: "var(--font-inter), Inter, sans-serif",
+      }}
+    >
+      <div
+        className="flex justify-center items-center gap-0.5"
+        style={{ color: "#FFD700" }}
+        aria-hidden
+      >
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span
+            key={i}
+            className="flex items-center justify-center"
+            style={{ width: 24, height: 24, fontSize: "1.5rem", lineHeight: 1 }}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+      <p
+        className="font-medium"
+        style={{
+          color: "#1E1E1E",
+          fontSize: "0.9375rem",
+          fontWeight: 500,
+          lineHeight: "normal",
+        }}
+      >
+        Average Customer Ratings
+      </p>
+      <p
+        className="font-bold"
+        style={{
+          color: "#1E1E1E",
+          fontSize: "1.75rem",
+          fontWeight: 700,
+          lineHeight: "normal",
+          fontStyle: "italic",
+        }}
+      >
+        {displayRating}/5
+      </p>
+      <p
+        style={{
+          color: "#9CA3AF",
+          fontSize: "0.875rem",
+          fontWeight: 400,
+          lineHeight: "normal",
+        }}
+      >
+        {displayCount} customer review{totalCount === 1 ? "" : "s"}
+      </p>
+    </div>
+  );
+}
+
+function ReviewCard({
+  r,
+  reviewNumber,
+  totalReviews,
+}: {
+  r: ReviewItem;
+  /** 1-based index for Q/A (e.g. 4 = "Review #4"). */
+  reviewNumber?: number;
+  totalReviews?: number;
+}) {
+  return (
+    <div
+      className="section-card flex w-full max-w-[355px] flex-col justify-center p-6 text-center md:max-w-full relative"
       style={{ minHeight: 220, backgroundColor: "#FFF" }}
     >
+      {reviewNumber != null && (
+        <p
+          className="absolute top-3 right-3 text-right"
+          style={{
+            color: "#9CA3AF",
+            fontFamily: "var(--font-inter), Inter, sans-serif",
+            fontSize: "0.75rem",
+            fontWeight: 500,
+            lineHeight: "normal",
+          }}
+        >
+          Review #{reviewNumber}
+          {totalReviews != null ? ` of ${totalReviews}` : ""}
+        </p>
+      )}
       {r.stars != null && (
         <div
           className="flex justify-center items-center gap-0.5"
@@ -83,68 +187,136 @@ function ReviewCard({ r }: { r: ReviewItem }) {
   );
 }
 
-export function ReviewsCarousel({ reviews }: { reviews: ReviewItem[] }) {
+const AUTO_SCROLL_INTERVAL_MS = 5500;
+
+export function ReviewsCarousel({
+  reviews,
+  reviewSummary = null,
+}: {
+  reviews: ReviewItem[];
+  /** When provided (e.g. from Klaviyo), summary card shows these. When null, derived from reviews. */
+  reviewSummary?: ReviewSummary | null;
+}) {
   const [index, setIndex] = React.useState(0);
-  const current = reviews[index % Math.max(1, reviews.length)];
+  const L = Math.max(1, reviews.length);
+  const current = reviews[index % L];
   const canPrev = reviews.length > 1 && index > 0;
   const canNext = reviews.length > 1 && index < reviews.length - 1;
 
+  const summary: ReviewSummary = React.useMemo(() => {
+    if (reviewSummary && (reviewSummary.totalCount > 0 || reviewSummary.averageRating > 0))
+      return reviewSummary;
+    const total = reviews.length;
+    const withStars = reviews.filter((r) => r.stars != null && r.stars > 0);
+    const avg =
+      withStars.length > 0
+        ? withStars.reduce((s, r) => s + (r.stars ?? 0), 0) / withStars.length
+        : 0;
+    return { totalCount: total, averageRating: Math.round(avg * 10) / 10 };
+  }, [reviewSummary, reviews]);
+
+  React.useEffect(() => {
+    if (reviews.length <= 1) return;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 3) % reviews.length);
+    }, AUTO_SCROLL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [reviews.length]);
+
+  const showSummary = summary.totalCount > 0 || summary.averageRating > 0;
+
   return (
     <>
-      {/* Mobile: single card with arrows and dot indicators */}
-      <div className="relative mt-10 flex flex-col md:hidden items-center justify-center gap-2 px-6 md:px-4">
-        <div className="relative flex w-full items-center justify-center">
-          <button
-            type="button"
-            onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            disabled={!canPrev}
-            className="absolute left-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
-            aria-label="Previous review"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <div className="min-w-0 flex-1 px-10">
-            {current ? <ReviewCard r={current} /> : null}
-          </div>
-          <button
-            type="button"
-            onClick={() => setIndex((i) => Math.min(reviews.length - 1, i + 1))}
-            disabled={!canNext}
-            className="absolute right-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
-            aria-label="Next review"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
-        </div>
-        {reviews.length > 1 && (
-          <div className="mt-4 flex items-center justify-center gap-2" role="tablist" aria-label={`Review ${index + 1} of ${reviews.length}`}>
-            {reviews.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setIndex(i)}
-                aria-label={`Go to review ${i + 1} of ${reviews.length}`}
-                aria-current={i === index ? "true" : undefined}
-                className={`h-2 rounded-full transition-opacity hover:opacity-80 ${
-                  i === index ? "w-6 bg-[#333333]" : "w-2 bg-[#333333]/40"
-                }`}
-              />
-            ))}
+      {/* Mobile: summary card (if we have summary) then single review with arrows and dots */}
+      <div className="mt-10 flex flex-col md:hidden items-center gap-6 px-6 md:px-4">
+        {showSummary && (
+          <div className="w-full max-w-[355px] mx-auto">
+            <ReviewSummaryCard
+              totalCount={summary.totalCount}
+              averageRating={summary.averageRating}
+            />
           </div>
         )}
+        <div className="relative flex flex-col items-center justify-center gap-2 w-full">
+          <div className="relative flex w-full items-center justify-center">
+            <button
+              type="button"
+              onClick={() => setIndex((i) => Math.max(0, i - 1))}
+              disabled={!canPrev}
+              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
+              aria-label="Previous review"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <div className="min-w-0 flex-1 px-10">
+              {current ? (
+                <ReviewCard
+                  r={current}
+                  reviewNumber={index + 1}
+                  totalReviews={reviews.length}
+                />
+              ) : null}
+            </div>
+            <button
+              type="button"
+              onClick={() => setIndex((i) => Math.min(reviews.length - 1, i + 1))}
+              disabled={!canNext}
+              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
+              aria-label="Next review"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+          {reviews.length > 1 && (
+            <div className="mt-4 flex items-center justify-center gap-2" role="tablist" aria-label={`Review ${index + 1} of ${reviews.length}`}>
+              {reviews.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setIndex(i)}
+                  aria-label={`Go to review ${i + 1} of ${reviews.length}`}
+                  aria-current={i === index ? "true" : undefined}
+                  className={`h-2 rounded-full transition-opacity hover:opacity-80 ${
+                    i === index ? "w-6 bg-[#333333]" : "w-2 bg-[#333333]/40"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Desktop: three columns in one row */}
-      <div className="mt-10 hidden max-w-6xl mx-auto gap-6 px-6 md:px-4 md:grid md:grid-cols-3 md:justify-items-center">
-        {reviews.map((r, idx) => (
-          <div key={idx} className="w-full max-w-[355px]">
-            <ReviewCard r={r} />
+      {/* Desktop: 4 columns — column 1 = summary card (static), columns 2–4 = auto-scrolling review cards */}
+      <div
+        className={`mt-10 hidden max-w-6xl mx-auto gap-6 px-6 md:px-4 md:grid md:justify-items-center ${showSummary ? "md:grid-cols-4" : "md:grid-cols-3"}`}
+      >
+        {showSummary && (
+          <div className="w-full max-w-[355px]">
+            <ReviewSummaryCard
+              totalCount={summary.totalCount}
+              averageRating={summary.averageRating}
+            />
           </div>
-        ))}
+        )}
+        {[0, 1, 2].map((offset) => {
+          const i = (index + offset) % L;
+          const r = reviews[i];
+          return (
+            <div key={offset} className="w-full max-w-[355px]">
+              {r ? (
+                <ReviewCard
+                  r={r}
+                  reviewNumber={i + 1}
+                  totalReviews={reviews.length}
+                />
+              ) : null}
+            </div>
+          );
+        })}
       </div>
     </>
   );

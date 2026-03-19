@@ -41,11 +41,11 @@ export function BasicsPageClient({
           <Link
             key={b._id}
             href={href}
-            className="section-card group flex flex-col overflow-hidden transition-shadow"
+            className="section-card group flex flex-col overflow-hidden transition-all duration-200 hover:scale-[1.02]"
             style={{ backgroundColor: bgColor }}
           >
             <div
-              className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+              className="min-w-0 w-full shrink-0 overflow-hidden"
               style={imageStyle}
             />
             <div className="flex flex-1 flex-col p-4" style={{ backgroundColor: bgColor }}>

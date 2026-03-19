@@ -722,7 +722,7 @@ export default async function ProductPage({
                   <Link
                     key={p.id}
                     href={`/products/${p.handle}`}
-                    className="group block rounded-card overflow-hidden"
+                    className="group block rounded-card overflow-hidden transition-all duration-200 hover:scale-[1.02]"
                     style={{
                       backgroundColor: LIGHT_BG_HEX,
                       boxShadow: "none",
@@ -736,7 +736,7 @@ export default async function ProductPage({
                         <img
                           src={p.image.url}
                           alt={p.image.altText ?? p.title}
-                          className="h-full w-full object-cover transition-transform group-hover:scale-[1.02]"
+                          className="h-full w-full object-cover"
                           style={{ mixBlendMode: "multiply" }}
                         />
                       ) : (
@@ -809,7 +809,7 @@ export default async function ProductPage({
                   <Link
                     key={r._id}
                     href={slug ? `/recipes/${slug}` : "/recipes"}
-                    className="section-card overflow-hidden transition-shadow"
+                    className="section-card overflow-hidden transition-all duration-200 hover:scale-[1.02]"
                     style={{ backgroundColor: "var(--section-bg)" }}
                   >
                     <div className="aspect-square overflow-hidden" style={{ backgroundColor: "var(--section-bg)" }}>

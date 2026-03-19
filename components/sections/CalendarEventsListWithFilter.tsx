@@ -25,21 +25,12 @@ export function CalendarEventsListWithFilter({
   showAllUrl?: string | null;
   bgColor: string;
 }) {
-  const [selectedYear, setSelectedYear] = React.useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = React.useState<number | null>(null);
 
   const scrollToCalendar = React.useCallback(() => {
     const el = document.getElementById("events");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
-
-  const handleYearChange = React.useCallback(
-    (year: number | null) => {
-      setSelectedYear(year);
-      scrollToCalendar();
-    },
-    [scrollToCalendar]
-  );
 
   const handleMonthChange = React.useCallback(
     (month: number | null) => {
@@ -49,24 +40,12 @@ export function CalendarEventsListWithFilter({
     [scrollToCalendar]
   );
 
-  const availableYears = React.useMemo(() => {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const nextYear = currentYear + 1;
-    const years = new Set<number>([currentYear, nextYear]);
-    for (const e of events) {
-      if (e.eventYear != null) years.add(e.eventYear);
-    }
-    return Array.from(years).sort((a, b) => a - b);
-  }, [events]);
-
   const filteredEvents = React.useMemo(() => {
     return events.filter((e) => {
-      if (selectedYear != null && e.eventYear !== selectedYear) return false;
       if (selectedMonth != null && e.eventMonth !== selectedMonth) return false;
       return true;
     });
-  }, [events, selectedYear, selectedMonth]);
+  }, [events, selectedMonth]);
 
   if (events.length === 0) {
     return (
@@ -74,13 +53,10 @@ export function CalendarEventsListWithFilter({
         <p className="mt-10 text-center text-slate-600">
           No upcoming events at the moment. Check back soon.
         </p>
-        <div className="mt-8">
+        <div className="mt-8 w-full flex justify-center">
           <UpcomingEventsMonthFilter
-            selectedYear={selectedYear}
-            onYearChange={handleYearChange}
             selectedMonth={selectedMonth}
             onMonthChange={handleMonthChange}
-            availableYears={availableYears}
           />
         </div>
         {showAllUrl && (
@@ -201,13 +177,10 @@ export function CalendarEventsListWithFilter({
         </p>
       )}
 
-      <div className="mt-8">
+      <div className="mt-8 w-full flex justify-center">
         <UpcomingEventsMonthFilter
-          selectedYear={selectedYear}
-          onYearChange={handleYearChange}
           selectedMonth={selectedMonth}
           onMonthChange={handleMonthChange}
-          availableYears={availableYears}
         />
       </div>
 

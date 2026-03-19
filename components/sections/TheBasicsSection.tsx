@@ -78,11 +78,11 @@ export function TheBasicsSection({
               <Link
                 key={idx}
                 href={href}
-                className="section-card group flex min-w-0 max-w-[387px] flex-col overflow-hidden transition-shadow"
+                className="section-card group flex min-w-0 max-w-[387px] flex-col overflow-hidden transition-all duration-200 hover:scale-[1.02]"
                 style={{ backgroundColor: bgColor }}
               >
                 <div
-                  className="min-w-0 w-full shrink-0 overflow-hidden transition-transform group-hover:scale-[1.03]"
+                  className="min-w-0 w-full shrink-0 overflow-hidden"
                   style={{
                     height: 320,
                     alignSelf: "stretch",

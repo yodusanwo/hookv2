@@ -98,7 +98,7 @@ export function DealProductCard({
     <>
       <Link
         href={`/products/${product.handle}`}
-        className="group relative block rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md transition-shadow w-full min-w-0"
+        className="group relative block rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 w-full min-w-0 overflow-hidden"
       >
         <div
           className="overflow-hidden rounded-t-xl w-full bg-[#EEF1F6] relative"
@@ -108,7 +108,7 @@ export function DealProductCard({
             <img
               src={product.imageUrl}
               alt={product.title}
-              className="h-full w-full max-w-full object-cover group-hover:scale-[1.03] transition-transform"
+              className="h-full w-full max-w-full object-cover"
               loading="lazy"
             />
           )}

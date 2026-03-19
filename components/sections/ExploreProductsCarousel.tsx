@@ -35,7 +35,7 @@ export function ExploreProductsCarousel({
           <Link
             key={idx}
             href={cat.href}
-            className="group shrink-0 snap-start w-[200px] sm:w-[220px]"
+            className="group shrink-0 snap-start w-[200px] sm:w-[220px] overflow-hidden transition-all duration-200 hover:scale-[1.02]"
           >
             <div className="overflow-hidden rounded-card border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
               <div className="aspect-square bg-slate-100">
@@ -43,7 +43,7 @@ export function ExploreProductsCarousel({
                   <img
                     src={cat.imageUrl}
                     alt={cat.label ?? ""}
-                    className="h-full w-full max-w-full object-cover group-hover:scale-[1.02] transition-transform"
+                    className="h-full w-full max-w-full object-cover"
                     loading="lazy"
                   />
                 ) : (

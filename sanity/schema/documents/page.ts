@@ -10,9 +10,9 @@ export const page = defineType({
     defineField({
       name: "description",
       type: "text",
-      title: "Description",
+      title: "Description / Subheading",
       description:
-        "Optional intro text. On the Recipes page this appears above the category filters.",
+        "Optional. On the Recipes page (slug: recipes) this is the subheading below the title. Leave empty to hide the subheading. You can also set it in the Recipes block in Sections below.",
     }),
     defineField({
       name: "slug",

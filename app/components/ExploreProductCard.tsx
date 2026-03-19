@@ -64,11 +64,11 @@ export function ExploreProductCard({
   return (
     <Link
       href={`/products/${product.handle}`}
-      className="group flex flex-col items-center w-full shadow-sm transition-shadow hover:shadow-md"
+      className="group flex flex-col items-center w-full shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02]"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >
       <div
-        className="relative shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-[1.03]"
+        className="relative shrink-0 overflow-hidden"
         style={{
           width: "331px",
           height: "226px",
