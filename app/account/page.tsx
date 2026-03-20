@@ -42,36 +42,47 @@ export default async function AccountPage({
 
   if (!token) {
     return (
-      <main className="min-h-screen bg-[#F8F8F8] px-4 pt-24 pb-12 md:pt-32 md:pb-16">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="mb-6 font-semibold text-[var(--section-title-size,24px)] text-[#1E1E1E] [font-family:var(--font-inter)]">
-            Account
-          </h1>
-          {params.error === "invalid_state" && (
-            <p className="mb-4 text-sm text-amber-700">Login failed (invalid state). Please try again.</p>
-          )}
-          {params.error === "token_exchange" && (
-            <p className="mb-4 text-sm text-amber-700">Login failed. Please try again.</p>
-          )}
-          {params.error === "missing_params" && (
-            <p className="mb-4 text-sm text-amber-700">Login failed (missing parameters). Please try again.</p>
-          )}
+      <main className="flex min-h-screen flex-col items-center justify-center bg-[var(--section-bg-light)] px-4">
+        <div className="w-full max-w-2xl">
           <div className="rounded-card bg-white p-8 shadow-sm">
-            <p className="mb-6 text-[#1E1E1E]">Sign in to view your orders and account details.</p>
+            <h1 className="mb-2 font-bold text-[var(--section-title-size,24px)] uppercase tracking-wide text-[#1E1E1E] [font-family:var(--font-inter)]">
+              Account
+            </h1>
+            <p className="mb-6 text-[#1E1E1E] [font-family:var(--font-inter)]">
+              Sign in to view your orders and account details.
+            </p>
+            {params.error === "invalid_state" && (
+              <p className="mb-4 text-sm text-amber-700">Login failed (invalid state). Please try again.</p>
+            )}
+            {params.error === "token_exchange" && (
+              <p className="mb-4 text-sm text-amber-700">Login failed. Please try again.</p>
+            )}
+            {params.error === "missing_params" && (
+              <p className="mb-4 text-sm text-amber-700">Login failed (missing parameters). Please try again.</p>
+            )}
             {useHeadlessLogin ? (
-              <a
-                href="/auth/login"
-                className="inline-block rounded-lg bg-[var(--brand-navy)] px-6 py-3 font-medium text-white hover:opacity-90 [font-family:var(--font-inter)]"
-              >
-                Log in
-              </a>
+              <div className="flex flex-col gap-3">
+                <a
+                  href="/auth/login"
+                  className="block w-full rounded-lg bg-[var(--brand-green)] px-6 py-3 text-center font-medium text-white hover:opacity-90 [font-family:var(--font-inter)]"
+                >
+                  Log in
+                </a>
+                <a
+                  href="/auth/login"
+                  className="block w-full rounded-lg border-2 border-[var(--brand-green)] bg-white px-6 py-3 text-center font-medium text-[var(--brand-green)] hover:bg-[var(--brand-green)]/5 [font-family:var(--font-inter)]"
+                >
+                  Create account
+                </a>
+              </div>
             ) : null}
             {accountUrl && (
-              <p className="mt-4">
+              <p className="mt-6 text-[#1E1E1E] [font-family:var(--font-inter)]">
+                {useHeadlessLogin ? "or " : null}
                 <a
                   href={accountUrl}
                   rel="noopener noreferrer"
-                  className="text-[#498CCB] underline hover:no-underline [font-family:var(--font-inter)]"
+                  className="text-[var(--gray-content-background-text-icon-40)] underline hover:no-underline"
                 >
                   Open account on Shopify
                 </a>
