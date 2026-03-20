@@ -48,8 +48,9 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              // Bridge loads from core.sanity-cdn.com (not only core.sanity.com). *.api.sanity.io + wss for API + realtime socket.
+              // Bridge loads from core.sanity-cdn.com. script-src-elem mirrors script-src so injected <script src=…> is allowed in all browsers.
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com",
+              "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: https: blob:",

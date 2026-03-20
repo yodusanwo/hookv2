@@ -194,23 +194,3 @@ export const RECIPE_BY_SLUG_QUERY = `*[_type == "recipe" && slug.current == $slu
   ingredients[] { text, productHandle },
   directions[] { step }
 }`;
-
-/** GROQ query for a collection page (collectionPage document whose collectionHandle matches) */
-export const COLLECTION_PAGE_QUERY = `*[_type == "collectionPage" && collectionHandle == $handle][0] {
-  _id,
-  title,
-  collectionHandle,
-  sections[] {
-    _type,
-    _key,
-    ...,
-    cta { label, href },
-    images[] { asset-> },
-    galleryImages[] { image, alt, caption, badge },
-    teamMembers[] { _key, image, name, role },
-    image { asset-> },
-    body,
-    "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
-    "filterCollections": filterCollections[] { label, collectionHandle, image }
-  }
-}`;

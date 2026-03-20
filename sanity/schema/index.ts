@@ -25,7 +25,6 @@ import { basicsBlock } from "./blocks/basicsPage";
 import { categorySectionBlock } from "./blocks/categorySection";
 
 import { page } from "./documents/page";
-import { collectionPage } from "./documents/collectionPage";
 import { siteSettings } from "./documents/siteSettings";
 import { recipe } from "./documents/recipe";
 import { recipeCategory } from "./documents/recipeCategory";
@@ -57,7 +56,6 @@ export const schemaTypes = [
   theBasicsSectionBlock,
   basicsBlock,
   page,
-  collectionPage,
   siteSettings,
   recipe,
   recipeCategory,
