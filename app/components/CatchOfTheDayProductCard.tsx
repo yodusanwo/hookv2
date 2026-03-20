@@ -42,6 +42,7 @@ export function CatchOfTheDayProductCard({
   darkSection = false,
   priority = false,
   sectionBackgroundColor,
+  priceChipBackground,
 }: {
   product: CatchOfTheDayProductCardProduct;
   /** When true, white areas in the image blend with the section background (CSS multiply; use on colored sections). */
@@ -52,6 +53,8 @@ export function CatchOfTheDayProductCard({
   priority?: boolean;
   /** Explicit section background (e.g. #d4f2ff). When set, card uses this instead of var(--section-bg) so all cards match. */
   sectionBackgroundColor?: string | null;
+  /** When set (e.g. #fff for home page), price chip uses this background and Figma typography (30px bold current, 20px light strikethrough compare). */
+  priceChipBackground?: string | null;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
@@ -151,8 +154,9 @@ export function CatchOfTheDayProductCard({
         className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden rounded-card w-full transition-transform duration-200 hover:scale-[1.02] shadow-none border-0"
         style={{
           backgroundColor: effectiveBg,
-          /** Price chip uses this in globals `.product-card-price-overlay` so it always matches the card/section. */
-          ["--product-card-price-bg" as string]: effectiveBg,
+          /** Price chip: white on home (Figma); elsewhere matches section. */
+          ["--product-card-price-bg" as string]:
+            priceChipBackground ?? effectiveBg,
           boxShadow: "none",
           border: "none",
           outline: "none",
@@ -184,6 +188,11 @@ export function CatchOfTheDayProductCard({
               src={product.imageUrl!}
               alt={product.title}
               className="absolute inset-0 z-0 h-full w-full object-cover"
+              style={
+                darkSection
+                  ? { mixBlendMode: "lighten" }
+                  : undefined
+              }
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : undefined}
             />
@@ -209,18 +218,14 @@ export function CatchOfTheDayProductCard({
             </div>
           )}
 
-          {/* Price chip background comes from --product-card-price-bg on the card root */}
-          <div className="product-card-price-overlay">
-            {showCompareAt && (
-              <span
-                className="product-card-price-compare"
-                style={{
-                  color: darkSection ? "rgba(255,255,255,0.92)" : "#000",
-                }}
-              >
-                ${Math.round(parseFloat(product.compareAtPrice!)).toString()}
-              </span>
-            )}
+          {/* Price chip: Figma style (white bg, 30px bold current, 20px light strikethrough compare) when priceChipBackground is white */}
+          <div
+            className={
+              priceChipBackground === "#fff" || priceChipBackground === "#ffffff"
+                ? "product-card-price-overlay product-card-price-overlay--figma"
+                : "product-card-price-overlay"
+            }
+          >
             <span
               className={
                 showCompareAt
@@ -228,13 +233,32 @@ export function CatchOfTheDayProductCard({
                   : "product-card-price-single"
               }
               style={
-                !showCompareAt && darkSection
+                !showCompareAt && !priceChipBackground && darkSection
                   ? { color: "rgba(255,255,255,0.95)" }
                   : undefined
               }
             >
               ${Math.round(parseFloat(product.price)).toString()}
             </span>
+            {showCompareAt && (
+              <span
+                className="product-card-price-compare"
+                style={
+                  priceChipBackground === "#fff" ||
+                  priceChipBackground === "#ffffff"
+                    ? undefined
+                    : {
+                        color: darkSection
+                          ? "rgba(255,255,255,0.92)"
+                          : "#000",
+                      }
+                }
+              >
+                ${Math.round(
+                  parseFloat(product.compareAtPrice!),
+                ).toString()}
+              </span>
+            )}
           </div>
 
           {/* Green circular add-to-cart button bottom-right – matches globals .product-card-cart-badge */}

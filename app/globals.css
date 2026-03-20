@@ -260,6 +260,29 @@ h2.section-title,
   font-size: 1.1875rem;
   color: #000;
 }
+
+/* Figma price chip (home page): white bg, current 30px bold, compare 20px light strikethrough */
+.product-card-price-overlay--figma {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.625rem;
+}
+.product-card-price-overlay--figma .product-card-price-current,
+.product-card-price-overlay--figma .product-card-price-single {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e1e1e;
+  background-color: transparent;
+  padding: 0;
+}
+.product-card-price-overlay--figma .product-card-price-compare {
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: #1e1e1e;
+  text-decoration: line-through;
+  text-decoration-color: #1e1e1e;
+}
+
 .product-card-cart-badge {
   position: absolute;
   bottom: 0.5rem;

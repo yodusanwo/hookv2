@@ -101,6 +101,7 @@ export async function CatchOfTheDaySection({
         darkSection={!isLightBg}
         sectionBackgroundColor={resolvedSectionBg}
         blendWhiteWithSectionBackground
+        priceChipBackground="#fff"
         carouselArrowTheme={isLightBg ? "light" : "dark"}
       />
     </section>
