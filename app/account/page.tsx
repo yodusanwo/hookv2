@@ -43,7 +43,15 @@ export default async function AccountPage({
             <h1 className="mb-2 font-bold text-[var(--section-title-size,24px)] uppercase tracking-wide text-[#1E1E1E] [font-family:var(--font-inter)]">
               Account
             </h1>
-            <p className="mb-6 text-[#1E1E1E] [font-family:var(--font-inter)]">
+            <p
+              className="mb-6 font-normal [font-family:var(--font-inter)]"
+              style={{
+                color: "var(--Text-Color, #1E1E1E)",
+                fontSize: 16,
+                fontStyle: "normal",
+                lineHeight: "normal",
+              }}
+            >
               Sign in to view your orders and account details.
             </p>
             {params.error === "invalid_state" && (
