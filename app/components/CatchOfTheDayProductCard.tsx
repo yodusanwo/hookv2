@@ -35,8 +35,6 @@ export type CatchOfTheDayProductCardProduct = {
 const SECTION_BG = "var(--brand-light-blue-bg)";
 /** Explicit light blue fallback so cards on /shop (e.g. gift card category) always match section. */
 const LIGHT_BLUE_HEX = "#d4f2ff";
-/** Fill behind the product photo (image well only). */
-const IMAGE_WELL_BG = "#171730";
 
 export function CatchOfTheDayProductCard({
   product,
@@ -124,9 +122,8 @@ export function CatchOfTheDayProductCard({
       ? LIGHT_BLUE_HEX
       : "var(--section-bg, " + LIGHT_BLUE_HEX + ")");
   /**
-   * Multiply blend tints the *entire* photo toward the section color. On dark (navy) sections that
-   * makes product photos nearly black. Only use multiply on light sections to soften white pack-shot
-   * backgrounds; on dark sections use a normal img on top of the section-colored fill.
+   * Multiply blend tints the photo toward `effectiveBg`. Only on **light** sections: on navy, multiply
+   * darkens the entire bitmap (not just white edges), so dark sections use a normal photo layer.
    */
   const useMultiplyBlend =
     Boolean(product.imageUrl) &&
@@ -173,11 +170,11 @@ export function CatchOfTheDayProductCard({
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
-                  /** Light sections: blend into section color. Navy (#171730) here would crush the photo. */
+                  /** Light sections only — multiply on navy crushes the whole product image. */
                   backgroundColor: effectiveBg,
                   backgroundBlendMode: "multiply",
                 }
-              : { backgroundColor: IMAGE_WELL_BG }),
+              : { backgroundColor: effectiveBg }),
           }}
           role={product.imageUrl && useMultiplyBlend ? "img" : undefined}
           aria-label={product.imageUrl && useMultiplyBlend ? product.title : undefined}
@@ -199,7 +196,7 @@ export function CatchOfTheDayProductCard({
           {!product.imageUrl && (
             <div
               className="flex h-full w-full items-center justify-center text-slate-300"
-              style={{ backgroundColor: IMAGE_WELL_BG }}
+              style={{ backgroundColor: effectiveBg }}
             >
               <svg
                 className="h-16 w-16"

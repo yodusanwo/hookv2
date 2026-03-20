@@ -13,16 +13,9 @@ That makes the carousel a **light section**. In `CatchOfTheDayProductCard`, a **
 
 The home page usually uses the **dark navy** from Sanity (`#171730` or similar) for the same block.
 
-On **dark** sections we **turn off** multiply for the product image. If we didn’t, the **entire** photo would go nearly black. So the image is drawn with a normal `<img>` on top of the navy fill.
+We **do not** use multiply on **dark** sections: `background-blend-mode: multiply` with a navy base darkens **every** pixel in the product photo (not only the white studio backdrop), so the carousel would show nearly black images.
 
-**Important:** If the **file from Shopify** is a normal photo with an **opaque white** background, that white is part of the **bitmap**. CSS cannot turn those pixels into “transparent” or navy without also destroying the product (the old multiply-on-navy problem).
-
-So on navy:
-
-- The **page background** and **card fill** can match (navy).
-- The **white rectangle inside the photo** will still show **unless** the asset has:
-  - a **transparent** background (PNG/WebP), or
-  - you switch the carousel to a **light** section (like `/shop`) so multiply can soften the white again.
+The **image well** uses **`effectiveBg`** so **transparent** PNG/WebP assets match the section. To soften white JPEG halos on navy you need **cut-out or transparent assets** in Shopify, or set this Sanity block to a **lighter** background so `darkSection` is false and multiply is safe (same idea as the `/shop` bottom carousel).
 
 ## Price chip (bottom-left)
 
@@ -33,5 +26,5 @@ The price overlay uses `--product-card-price-bg` set on the card root so it matc
 | Goal | Approach |
 |------|----------|
 | Match `/shop` look (softer white in photos) | Light carousel background (e.g. shop’s `#F2F2F5` override) + multiply on light sections |
-| Navy section + no white halos in the bitmap | Use **transparent** product images in Shopify |
-| Navy section + standard e‑com JPEGs | Some white in the photo will usually remain visible |
+| Navy section + transparent assets | Well background matches section (`effectiveBg`) |
+| Navy section + white JPEG halos | Retouch assets, or use the light carousel on `/shop` where multiply applies |
