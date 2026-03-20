@@ -27,17 +27,27 @@ export function CalendarEventsListWithFilter({
 }) {
   const [selectedMonth, setSelectedMonth] = React.useState<number | null>(null);
 
-  const scrollToCalendar = React.useCallback(() => {
-    const el = document.getElementById("events");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  /** Run after React commits and the browser paints — fixes mobile Safari where immediate scrollIntoView from a click often does nothing. */
+  const scrollEventsSectionIntoView = React.useCallback(() => {
+    const run = () => {
+      const el = document.getElementById("events");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    requestAnimationFrame(() => {
+      requestAnimationFrame(run);
+    });
   }, []);
 
   const handleMonthChange = React.useCallback(
     (month: number | null) => {
       setSelectedMonth(month);
-      scrollToCalendar();
+      scrollEventsSectionIntoView();
     },
-    [scrollToCalendar]
+    [scrollEventsSectionIntoView]
   );
 
   const filteredEvents = React.useMemo(() => {

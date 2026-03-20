@@ -51,7 +51,11 @@ export function UpcomingEventsSection({
   return (
     <section
       id="events"
-      className="pt-12 pb-12 md:pt-[104px] md:pb-14"
+      className={
+        isCalendarPage
+          ? "scroll-mt-[140px] pt-12 pb-12 md:scroll-mt-[180px] md:pt-[104px] md:pb-14"
+          : "pt-12 pb-12 md:pt-[104px] md:pb-14"
+      }
       style={{
         backgroundColor: bgColor,
       }}
