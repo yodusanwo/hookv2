@@ -137,8 +137,9 @@ async function fetchKlaviyoReviewsForSectionUncached(): Promise<MappedReview[]> 
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
   if (!apiKey) return [];
 
+  /** All published reviews (any rating), same pool as summary — home + product carousel rotate through full set. */
   const params = new URLSearchParams({
-    filter: "and(equals(status,'published'),equals(rating,5))",
+    filter: "equals(status,'published')",
     "fields[review]": "rating,author,content,title,created,review_type,status",
     "page[size]": String(SECTION_REVIEWS_PAGE_SIZE),
     sort: "-created",
@@ -190,14 +191,14 @@ async function fetchKlaviyoReviewsForSectionUncached(): Promise<MappedReview[]> 
 }
 
 /**
- * Returns more 5-star published Klaviyo reviews for the homepage reviews section carousel.
- * Cached 1 minute. Call only from server.
+ * Returns published Klaviyo reviews for the reviews carousel (home, product page, etc.).
+ * Paginates through all published reviews (any rating). Cached 1 minute. Server-only.
  */
 export async function getKlaviyoReviewsForSection(): Promise<MappedReview[]> {
   const { unstable_cache } = await import("next/cache");
   const cached = unstable_cache(
     fetchKlaviyoReviewsForSectionUncached,
-    ["klaviyo-reviews-section"],
+    ["klaviyo-reviews-section", "v2-all-published"],
     { revalidate: 60 },
   );
   return cached();

@@ -95,14 +95,17 @@ function ReviewCard({
   r,
   reviewNumber,
   totalReviews,
+  showFullText = false,
 }: {
   r: ReviewItem;
   /** 1-based index for Q/A (e.g. 4 = "Review #4"). */
   reviewNumber?: number;
   totalReviews?: number;
+  /** When true, always show full review (no 300-char trim / See more). */
+  showFullText?: boolean;
 }) {
   const text = r.text ?? "";
-  const isLong = text.length > REVIEW_PREVIEW_LENGTH;
+  const isLong = !showFullText && text.length > REVIEW_PREVIEW_LENGTH;
   const [expanded, setExpanded] = React.useState(false);
   const displayText = isLong && !expanded ? `${text.slice(0, REVIEW_PREVIEW_LENGTH).trim()}…` : text;
 
@@ -208,10 +211,13 @@ const AUTO_SCROLL_INTERVAL_MS = 5500;
 export function ReviewsCarousel({
   reviews,
   reviewSummary = null,
+  expandFirstReviewFullText = false,
 }: {
   reviews: ReviewItem[];
   /** When provided (e.g. from Klaviyo), summary card shows these. When null, derived from reviews. */
   reviewSummary?: ReviewSummary | null;
+  /** Product page: first visible review card shows full text (no truncation). */
+  expandFirstReviewFullText?: boolean;
 }) {
   const [index, setIndex] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
@@ -277,6 +283,7 @@ export function ReviewsCarousel({
                   r={current}
                   reviewNumber={index + 1}
                   totalReviews={reviews.length}
+                  showFullText={expandFirstReviewFullText}
                 />
               ) : null}
             </div>
@@ -333,6 +340,7 @@ export function ReviewsCarousel({
                   r={r}
                   reviewNumber={i + 1}
                   totalReviews={reviews.length}
+                  showFullText={expandFirstReviewFullText && offset === 0}
                 />
               ) : null}
             </div>

@@ -8,8 +8,8 @@ import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
 import { ReviewsCarousel } from "@/components/sections/ReviewsCarousel";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
-  getKlaviyoReviewsForProduct,
-  getKlaviyoReviews,
+  getKlaviyoReviewsForSection,
+  getKlaviyoReviewsSummary,
   getKlaviyoReviewCountForProduct,
 } from "@/lib/klaviyoReviews";
 import {
@@ -325,10 +325,10 @@ export default async function ProductPage({
   const subtitle = variants[0]?.title ?? product.title;
   const heroTeaser = heroTeaserFromDescription(product.description);
 
-  const [productReviews, globalReviews, reviewCount, siteSettings] =
+  const [sectionReviews, storeReviewSummary, productReviewCount, siteSettings] =
     await Promise.all([
-      getKlaviyoReviewsForProduct(product.id),
-      getKlaviyoReviews(),
+      getKlaviyoReviewsForSection(),
+      getKlaviyoReviewsSummary(),
       getKlaviyoReviewCountForProduct(product.id),
       client
         ? client.fetch<{
@@ -393,31 +393,11 @@ export default async function ProductPage({
     }
   }
 
-  const productSet = new Set(
-    productReviews.map((r) => `${r.name}|${r.date}|${r.text}`),
-  );
-  const fallbacks = globalReviews.filter(
-    (r) => !productSet.has(`${r.name}|${r.date}|${r.text}`),
-  );
-  const needFallbacks = Math.max(0, 3 - productReviews.length);
-  const reviewsToShow =
-    productReviews.length >= 3
-      ? productReviews
-      : [...productReviews, ...fallbacks.slice(0, needFallbacks)];
-
+  /** Same Klaviyo pool + summary as home page — full store review carousel (all published reviews). */
+  const reviewsToShow = sectionReviews;
   const productReviewSummary =
-    reviewCount > 0 || reviewsToShow.length > 0
-      ? {
-          totalCount: reviewCount > 0 ? reviewCount : reviewsToShow.length,
-          averageRating:
-            reviewsToShow.length > 0
-              ? Math.round(
-                  (reviewsToShow.reduce((s, r) => s + (r.stars ?? 0), 0) /
-                    reviewsToShow.length) *
-                    10
-                ) / 10
-              : 0,
-        }
+    storeReviewSummary.totalCount > 0 || storeReviewSummary.averageRating > 0
+      ? storeReviewSummary
       : null;
 
   const firstImageUrl = images[0]?.url;
@@ -497,7 +477,8 @@ export default async function ProductPage({
                   ))}
                 </span>
                 <span className="text-slate-700">
-                  {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
+                  {productReviewCount}{" "}
+                  {productReviewCount === 1 ? "review" : "reviews"}
                 </span>
               </div>
               </div>
@@ -712,18 +693,18 @@ export default async function ProductPage({
         <div className="mx-auto max-w-6xl px-6 md:px-4">
           <SectionHeading
             title="Reviews"
-            description="What our customers are saying about this product."
+            description="What our customers are saying."
             variant="section"
           />
           {reviewsToShow.length > 0 ? (
             <ReviewsCarousel
               reviews={reviewsToShow}
               reviewSummary={productReviewSummary}
+              expandFirstReviewFullText
             />
           ) : (
             <p className="mt-10 text-center section-description-block">
-              No reviews yet for this product. Be the first to leave a review
-              after your purchase.
+              No reviews yet. Be the first to leave a review after your purchase.
             </p>
           )}
         </div>
