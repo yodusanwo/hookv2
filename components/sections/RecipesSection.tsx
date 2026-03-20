@@ -110,7 +110,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
           </div>
         <div className="mt-10 mb-10 flex w-full justify-center md:col-start-1 md:row-start-2 md:justify-start">
           <Link
-            href={safeHref(showMoreUrl) || "#"}
+            href={safeHref(showMoreUrl) || "/recipes"}
             className="inline-flex items-center gap-1.5 hover:opacity-90 w-fit"
             style={SHOW_MORE_LINK_STYLE}
           >
