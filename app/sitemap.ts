@@ -14,18 +14,20 @@ const PRODUCT_HANDLES_QUERY = `
   }
 `;
 
+type ProductHandlesQueryData = {
+  products: {
+    edges: Array<{ node: { handle: string } }>;
+    pageInfo: { hasNextPage: boolean; endCursor: string | null };
+  };
+};
+
 async function getAllProductHandles(): Promise<string[]> {
   const handles: string[] = [];
   let after: string | null = null;
   const first = 250;
   try {
     for (;;) {
-      const data = await shopifyFetch<{
-        products: {
-          edges: Array<{ node: { handle: string } }>;
-          pageInfo: { hasNextPage: boolean; endCursor: string | null };
-        };
-      }>({
+      const data: ProductHandlesQueryData = await shopifyFetch<ProductHandlesQueryData>({
         query: PRODUCT_HANDLES_QUERY,
         variables: { first, after },
         next: { revalidate: 3600 },
