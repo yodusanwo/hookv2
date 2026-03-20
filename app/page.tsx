@@ -131,6 +131,7 @@ export default async function Home() {
     const data = await shopifyFetch<ProductsResponse>({
       query: PRODUCTS_QUERY,
       variables: { first: 12 },
+      next: { revalidate: 60 },
     });
 
     const products = data.products.edges;

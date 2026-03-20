@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { client, PAGE_LAYOUT_SETTINGS_QUERY } from "@/lib/sanity";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// Cache per path for 60s so client navigations don't trigger a Sanity fetch every time (reduces CPU spike).
+export const revalidate = 60;
 
 type PageLayoutSettings = { color?: string | null; hideHeaderWave?: boolean };
 
