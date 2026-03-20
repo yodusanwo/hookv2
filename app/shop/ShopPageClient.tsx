@@ -121,6 +121,7 @@ export function ShopPageClient({
       ))}
 
       {productCarouselBlock && !hasSelection ? (
+        /* Light carousel bg → multiply blend on product shots (see docs/PRODUCT_CAROUSEL_IMAGE_BACKGROUNDS.md) */
         <ShopProductCarousel
           block={productCarouselBlock}
           initialProducts={productCarouselInitialProducts}

@@ -187,7 +187,7 @@ export function OurStorySection({
                   src="/quote.png"
                   alt=""
                   aria-hidden
-                  className="-mt-[2.8125rem] h-16 w-10 shrink-0 object-contain sm:h-20 sm:w-12 lg:h-24 lg:w-14"
+                  className="-mt-[calc(2.8125rem-1.25rem)] h-16 w-10 shrink-0 object-contain md:-mt-[2.8125rem] sm:h-20 sm:w-12 lg:h-24 lg:w-14"
                 />
                 <div
                   className="min-w-0 flex-1 pl-0 pr-0 lg:pl-5 lg:pr-6"

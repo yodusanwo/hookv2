@@ -28,9 +28,8 @@ function ReviewSummaryCard({
 
   return (
     <div
-      className="section-card flex w-full max-w-[355px] flex-col items-center justify-center gap-2 p-6 text-center md:max-w-full"
+      className="section-card flex min-h-[200px] w-full max-w-full flex-col items-center justify-center gap-2 p-4 text-center sm:min-h-[220px] sm:max-w-[355px] sm:p-6 md:max-w-full"
       style={{
-        minHeight: 220,
         backgroundColor: "#FFF",
         border: "1px solid #E5E7EB",
         borderRadius: 8,
@@ -111,12 +110,12 @@ function ReviewCard({
 
   return (
     <div
-      className="section-card flex w-full max-w-[355px] flex-col justify-center p-6 text-center md:max-w-full relative"
-      style={{ minHeight: 220, backgroundColor: "#FFF" }}
+      className="section-card relative flex min-h-[200px] w-full max-w-full flex-col justify-center p-4 text-center sm:min-h-[220px] sm:max-w-[355px] sm:p-6 md:max-w-full"
+      style={{ backgroundColor: "#FFF" }}
     >
       {reviewNumber != null && (
         <p
-          className="absolute top-3 right-3 text-right"
+          className="mb-2 text-right sm:absolute sm:top-3 sm:right-3 sm:mb-0"
           style={{
             color: "#9CA3AF",
             fontFamily: "var(--font-inter), Inter, sans-serif",
@@ -152,12 +151,11 @@ function ReviewCard({
         </div>
       )}
       <p
-        className="mt-4 min-h-0 overflow-y-auto mx-auto text-center"
+        className="mx-auto mt-4 min-h-0 max-w-full overflow-y-auto text-center break-words text-balance"
         style={{
-          maxWidth: "100%",
           color: "#333333",
           fontFamily: "var(--font-inter), Inter, sans-serif",
-          fontSize: "0.9375rem",
+          fontSize: "clamp(0.875rem, 2.8vw, 0.9375rem)",
           fontStyle: "normal",
           fontWeight: 400,
           lineHeight: 1.5,
@@ -250,34 +248,34 @@ export function ReviewsCarousel({
 
   return (
     <div
-      className="reviews-carousel-root"
+      className="reviews-carousel-root w-full min-w-0 max-w-full overflow-x-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Mobile: summary card (if we have summary) then single review with arrows and dots */}
-      <div className="mt-10 flex flex-col md:hidden items-center gap-6 px-6 md:px-4">
+      <div className="mt-6 flex w-full min-w-0 flex-col items-stretch gap-5 sm:mt-10 sm:gap-6 md:hidden">
         {showSummary && (
-          <div className="w-full max-w-[355px] mx-auto">
+          <div className="mx-auto w-full max-w-full">
             <ReviewSummaryCard
               totalCount={summary.totalCount}
               averageRating={summary.averageRating}
             />
           </div>
         )}
-        <div className="relative flex flex-col items-center justify-center gap-2 w-full">
-          <div className="relative flex w-full items-center justify-center">
+        <div className="flex w-full min-w-0 flex-col items-center justify-center gap-3">
+          <div className="flex w-full min-w-0 items-stretch gap-1 sm:gap-2">
             <button
               type="button"
               onClick={() => setIndex((i) => Math.max(0, i - 1))}
               disabled={!canPrev}
-              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
+              className="flex min-h-[44px] min-w-[44px] shrink-0 touch-manipulation items-center justify-center self-center rounded-full bg-transparent text-[#333333] disabled:pointer-events-none disabled:opacity-30 hover:opacity-80"
               aria-label="Previous review"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
-            <div className="min-w-0 flex-1 px-10">
+            <div className="min-w-0 flex-1">
               {current ? (
                 <ReviewCard
                   r={current}
@@ -291,7 +289,7 @@ export function ReviewsCarousel({
               type="button"
               onClick={() => setIndex((i) => Math.min(reviews.length - 1, i + 1))}
               disabled={!canNext}
-              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full bg-transparent text-[#333333] disabled:opacity-30 disabled:pointer-events-none hover:opacity-80"
+              className="flex min-h-[44px] min-w-[44px] shrink-0 touch-manipulation items-center justify-center self-center rounded-full bg-transparent text-[#333333] disabled:pointer-events-none disabled:opacity-30 hover:opacity-80"
               aria-label="Next review"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -299,28 +297,12 @@ export function ReviewsCarousel({
               </svg>
             </button>
           </div>
-          {reviews.length > 1 && (
-            <div className="mt-4 flex items-center justify-center gap-2" role="tablist" aria-label={`Review ${index + 1} of ${reviews.length}`}>
-              {reviews.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setIndex(i)}
-                  aria-label={`Go to review ${i + 1} of ${reviews.length}`}
-                  aria-current={i === index ? "true" : undefined}
-                  className={`h-2 rounded-full transition-opacity hover:opacity-80 ${
-                    i === index ? "w-6 bg-[#333333]" : "w-2 bg-[#333333]/40"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
       {/* Desktop: 4 columns — column 1 = summary card (static), columns 2–4 = auto-scrolling review cards */}
       <div
-        className={`mt-10 hidden max-w-6xl mx-auto gap-6 px-6 md:px-4 md:grid md:justify-items-center ${showSummary ? "md:grid-cols-4" : "md:grid-cols-3"}`}
+        className={`mx-auto mt-10 hidden w-full min-w-0 max-w-6xl gap-4 md:grid md:justify-items-center md:gap-6 lg:gap-8 ${showSummary ? "md:grid-cols-4" : "md:grid-cols-3"}`}
       >
         {showSummary && (
           <div className="w-full max-w-[355px]">

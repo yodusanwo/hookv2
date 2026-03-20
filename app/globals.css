@@ -223,7 +223,8 @@ h2.section-title,
   box-shadow: var(--section-card-shadow-hover);
 }
 
-/* Product card price + cart badge – match design: white price box (sharp corners), add-to-cart circle #069400 */
+/* Product card price + cart badge – match design: sharp corners, add-to-cart circle #069400.
+   Background: CatchOfTheDayProductCard sets --product-card-price-bg on the card so the chip matches the section; fallback #fff elsewhere (cart, etc.). */
 .product-card-price-overlay {
   position: absolute;
   bottom: 0.5rem;
@@ -235,7 +236,7 @@ h2.section-title,
   gap: 0.25rem;
   padding: 0.375rem 0.5rem;
   border-radius: 0;
-  background-color: #fff;
+  background-color: var(--product-card-price-bg, #fff);
   font-family: var(--font-inter), Inter, sans-serif;
 }
 .product-card-price-compare {

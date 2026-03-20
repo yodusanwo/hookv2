@@ -47,6 +47,18 @@ const PRODUCT_BY_HANDLE_QUERY = `
 `;
 
 /**
+ * Normalizes pasted Shopify handles (strips slashes, "products/" prefix, etc.).
+ * CMS users often paste `/handle` or `products/handle` from the storefront URL.
+ */
+export function normalizeShopifyProductHandle(raw: string): string {
+  let h = raw.trim().replace(/^\/+|\/+$/g, "");
+  if (h.toLowerCase().startsWith("products/")) {
+    h = h.slice("products/".length).replace(/^\/+|\/+$/g, "");
+  }
+  return h;
+}
+
+/**
  * Fetches products by Shopify handle (server-only).
  * Returns array in the same order as handles; missing products are omitted.
  */
@@ -54,7 +66,7 @@ export async function getProductsByHandles(
   handles: string[]
 ): Promise<ApiProductForCarousel[]> {
   const trimmed = handles
-    .map((h) => (typeof h === "string" ? h.trim() : ""))
+    .map((h) => (typeof h === "string" ? normalizeShopifyProductHandle(h) : ""))
     .filter((h) => h.length > 0 && /^[a-zA-Z0-9-_]+$/.test(h));
   if (trimmed.length === 0) return [];
 

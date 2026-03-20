@@ -35,6 +35,8 @@ export type CatchOfTheDayProductCardProduct = {
 const SECTION_BG = "var(--brand-light-blue-bg)";
 /** Explicit light blue fallback so cards on /shop (e.g. gift card category) always match section. */
 const LIGHT_BLUE_HEX = "#d4f2ff";
+/** Fill behind the product photo (image well only). */
+const IMAGE_WELL_BG = "#171730";
 
 export function CatchOfTheDayProductCard({
   product,
@@ -44,7 +46,7 @@ export function CatchOfTheDayProductCard({
   sectionBackgroundColor,
 }: {
   product: CatchOfTheDayProductCardProduct;
-  /** When true, white areas in the image blend with the section background (for product images on white). */
+  /** When true, white areas in the image blend with the section background (CSS multiply; use on colored sections). */
   blendWhiteWithSectionBackground?: boolean;
   /** When true, card is on a dark/navy section; footer gets a light background so dark text remains readable. */
   darkSection?: boolean;
@@ -121,6 +123,16 @@ export function CatchOfTheDayProductCard({
     (forceLightBlue
       ? LIGHT_BLUE_HEX
       : "var(--section-bg, " + LIGHT_BLUE_HEX + ")");
+  /**
+   * Multiply blend tints the *entire* photo toward the section color. On dark (navy) sections that
+   * makes product photos nearly black. Only use multiply on light sections to soften white pack-shot
+   * backgrounds; on dark sections use a normal img on top of the section-colored fill.
+   */
+  const useMultiplyBlend =
+    Boolean(product.imageUrl) &&
+    blendWhiteWithSectionBackground &&
+    !darkSection;
+  const showPhotoImg = Boolean(product.imageUrl) && !useMultiplyBlend;
 
   const productHref = `/products/${product.handle}`;
 
@@ -142,6 +154,8 @@ export function CatchOfTheDayProductCard({
         className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden rounded-card w-full transition-transform duration-200 hover:scale-[1.02] shadow-none border-0"
         style={{
           backgroundColor: effectiveBg,
+          /** Price chip uses this in globals `.product-card-price-overlay` so it always matches the card/section. */
+          ["--product-card-price-bg" as string]: effectiveBg,
           boxShadow: "none",
           border: "none",
           outline: "none",
@@ -153,39 +167,40 @@ export function CatchOfTheDayProductCard({
           style={{
             height: 320,
             alignSelf: "stretch",
-            ...(product.imageUrl
-              ? priority && !sectionBackgroundColor
-                ? { background: effectiveBg, backgroundColor: effectiveBg }
-                : {
-                    background: blendWhiteWithSectionBackground
-                      ? `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`
-                      : `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`,
-                    backgroundColor: effectiveBg,
-                    backgroundBlendMode: blendWhiteWithSectionBackground
-                      ? ("multiply" as const)
-                      : undefined,
-                  }
-              : { background: effectiveBg, backgroundColor: effectiveBg }),
+            ...(product.imageUrl && useMultiplyBlend
+              ? {
+                  backgroundImage: `url(${product.imageUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  /** Light sections: blend into section color. Navy (#171730) here would crush the photo. */
+                  backgroundColor: effectiveBg,
+                  backgroundBlendMode: "multiply",
+                }
+              : { backgroundColor: IMAGE_WELL_BG }),
           }}
-          role={product.imageUrl && !priority ? "img" : undefined}
-          aria-label={product.imageUrl && !priority ? product.title : undefined}
+          role={product.imageUrl && useMultiplyBlend ? "img" : undefined}
+          aria-label={product.imageUrl && useMultiplyBlend ? product.title : undefined}
         >
-          {priority && product.imageUrl && !sectionBackgroundColor ? (
+          {showPhotoImg ? (
             <img
-              src={product.imageUrl}
+              src={product.imageUrl!}
               alt={product.title}
-              className="absolute inset-0 h-full w-full object-cover"
-              loading="eager"
-              fetchPriority="high"
+              className="absolute inset-0 z-0 h-full w-full object-cover"
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : undefined}
             />
           ) : null}
           <Link
             href={productHref}
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 z-[1]"
             aria-label={`View ${product.title}`}
           />
           {!product.imageUrl && (
-            <div className="flex h-full w-full items-center justify-center text-slate-300">
+            <div
+              className="flex h-full w-full items-center justify-center text-slate-300"
+              style={{ backgroundColor: IMAGE_WELL_BG }}
+            >
               <svg
                 className="h-16 w-16"
                 fill="currentColor"
@@ -197,10 +212,15 @@ export function CatchOfTheDayProductCard({
             </div>
           )}
 
-          {/* Price overlay bottom-left – white box, compare-at (black + red strikethrough), current (white on orange-red) */}
+          {/* Price chip background comes from --product-card-price-bg on the card root */}
           <div className="product-card-price-overlay">
             {showCompareAt && (
-              <span className="product-card-price-compare">
+              <span
+                className="product-card-price-compare"
+                style={{
+                  color: darkSection ? "rgba(255,255,255,0.92)" : "#000",
+                }}
+              >
                 ${Math.round(parseFloat(product.compareAtPrice!)).toString()}
               </span>
             )}
@@ -209,6 +229,11 @@ export function CatchOfTheDayProductCard({
                 showCompareAt
                   ? "product-card-price-current"
                   : "product-card-price-single"
+              }
+              style={
+                !showCompareAt && darkSection
+                  ? { color: "rgba(255,255,255,0.95)" }
+                  : undefined
               }
             >
               ${Math.round(parseFloat(product.price)).toString()}

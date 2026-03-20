@@ -9,6 +9,8 @@ export const productReference = defineType({
       name: "shopifyHandle",
       type: "string",
       title: "Shopify Product Handle",
+      description:
+        "The handle only (e.g. black-pepper-smoked-salmon-portion). No leading slash or /products/ — paste from Admin → Products → handle in the URL bar if unsure.",
     }),
     defineField({
       name: "featuredImageIndex",

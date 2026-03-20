@@ -20,11 +20,13 @@ function SelectedProductsLayout({
   count,
   darkSection,
   sectionBackgroundColor,
+  blendWhiteWithSectionBackground,
 }: {
   products: CatchOfTheDayProductCardProduct[];
   count: 2 | 3 | 4 | 5;
   darkSection: boolean;
   sectionBackgroundColor?: string | null;
+  blendWhiteWithSectionBackground?: boolean;
 }) {
   const card = (product: CatchOfTheDayProductCardProduct, index: number) => (
     <div key={product.id} className={CARD_CLASS}>
@@ -33,6 +35,7 @@ function SelectedProductsLayout({
         darkSection={darkSection}
         priority={index === 0}
         sectionBackgroundColor={sectionBackgroundColor ?? undefined}
+        blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
       />
     </div>
   );
@@ -134,6 +137,7 @@ export function CatchOfTheDayGrid({
   matchProductTypesAsCommaSeparated = false,
   darkSection = false,
   sectionBackgroundColor,
+  blendWhiteWithSectionBackground = false,
   carouselArrowTheme = "dark",
   carouselArrowColor,
 }: {
@@ -154,6 +158,8 @@ export function CatchOfTheDayGrid({
   darkSection?: boolean;
   /** When set (e.g. /shop Catch of the Day), card backgrounds use this so they match the section and never fall back to white. */
   sectionBackgroundColor?: string | null;
+  /** When true, product photos with white backgrounds blend into the section color (multiply). */
+  blendWhiteWithSectionBackground?: boolean;
   /** "dark" = white arrows (navy sections); "light" = dark arrows on light sections. Used site-wide for consistent product carousel. */
   carouselArrowTheme?: "light" | "dark";
   /** Override arrow color (e.g. #1E1E1E). When set, overrides carouselArrowTheme. */
@@ -354,6 +360,7 @@ export function CatchOfTheDayGrid({
               count={displayProducts.length as 2 | 3 | 4 | 5}
               darkSection={darkSection}
               sectionBackgroundColor={sectionBackgroundColor}
+              blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
             />
           ) : displayProducts.length > 0 ? (
             <div className="relative flex items-center justify-center gap-6">
@@ -372,7 +379,13 @@ export function CatchOfTheDayGrid({
               >
                 {currentPageProducts.map((product, index) => (
                   <div key={product.id} className="min-w-0 w-[387px] max-w-full">
-                    <CatchOfTheDayProductCard product={product} darkSection={darkSection} priority={index === 0} sectionBackgroundColor={sectionBackgroundColor ?? undefined} />
+                    <CatchOfTheDayProductCard
+                      product={product}
+                      darkSection={darkSection}
+                      priority={index === 0}
+                      sectionBackgroundColor={sectionBackgroundColor ?? undefined}
+                      blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
+                    />
                   </div>
                 ))}
               </div>

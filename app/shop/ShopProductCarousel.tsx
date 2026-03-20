@@ -75,7 +75,8 @@ export function ShopProductCarousel({
         selectedProductTypeFilter={selectedFilterValues}
         matchProductTypesAsCommaSeparated
         darkSection={!isLightBg}
-        sectionBackgroundColor={isLightBg ? sectionBg : undefined}
+        sectionBackgroundColor={sectionBg}
+        blendWhiteWithSectionBackground
         carouselArrowTheme={isLightBg ? "light" : "dark"}
       />
     </section>

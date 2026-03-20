@@ -67,6 +67,7 @@ export async function CatchOfTheDaySection({
       ? block.filterCollections.filter((f) => f.label || f.collectionHandle)
       : DEFAULT_FILTER_COLLECTIONS;
 
+  const resolvedSectionBg = block.backgroundColor ?? "#171730";
   const isLightBg = isLightBackgroundColor(block.backgroundColor);
   const textTheme = isLightBg ? "light" : "dark";
   const LIGHT_TEXT_COLOR = "#1E1E1E";
@@ -76,8 +77,8 @@ export async function CatchOfTheDaySection({
       id="catch-of-the-day"
       className="relative z-20 overflow-visible py-12 sm:py-10 lg:py-12"
       style={{
-        backgroundColor: block.backgroundColor ?? "#171730",
-        ["--section-bg" as string]: block.backgroundColor ?? "#171730",
+        backgroundColor: resolvedSectionBg,
+        ["--section-bg" as string]: resolvedSectionBg,
       }}
     >
       <div className="mx-auto w-full max-w-6xl px-6 md:px-4">
@@ -98,7 +99,8 @@ export async function CatchOfTheDaySection({
         hideCollectionTabs={useSelectedProducts || hideCollectionTabs}
         selectedProductsMode={useSelectedProducts}
         darkSection={!isLightBg}
-        sectionBackgroundColor={block.backgroundColor ?? undefined}
+        sectionBackgroundColor={resolvedSectionBg}
+        blendWhiteWithSectionBackground
         carouselArrowTheme={isLightBg ? "light" : "dark"}
       />
     </section>
