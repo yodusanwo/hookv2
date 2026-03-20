@@ -119,10 +119,11 @@ export function ExploreProductCard({
         </h3>
         <div className="mt-2 flex items-center gap-2">
           <span
-            className="font-semibold text-[#FFF]"
+            className="inline-block rounded-none px-2 py-0.5 font-bold text-[#1e1e1e]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "1.25rem",
+              fontSize: "1.875rem",
+              backgroundColor: "#fff",
             }}
           >
             ${Math.round(parseFloat(product.price)).toString()}

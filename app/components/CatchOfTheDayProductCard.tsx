@@ -42,7 +42,6 @@ export function CatchOfTheDayProductCard({
   darkSection = false,
   priority = false,
   sectionBackgroundColor,
-  priceChipBackground,
 }: {
   product: CatchOfTheDayProductCardProduct;
   /** When true, white areas in the image blend with the section background (CSS multiply; use on colored sections). */
@@ -53,8 +52,6 @@ export function CatchOfTheDayProductCard({
   priority?: boolean;
   /** Explicit section background (e.g. #d4f2ff). When set, card uses this instead of var(--section-bg) so all cards match. */
   sectionBackgroundColor?: string | null;
-  /** When set (e.g. #fff for home page), price chip uses this background and Figma typography (30px bold current, 20px light strikethrough compare). */
-  priceChipBackground?: string | null;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
@@ -154,9 +151,8 @@ export function CatchOfTheDayProductCard({
         className="group relative flex min-w-0 max-w-[387px] flex-1 flex-col overflow-hidden rounded-card w-full transition-transform duration-200 hover:scale-[1.02] shadow-none border-0"
         style={{
           backgroundColor: effectiveBg,
-          /** Price chip: white on home (Figma); elsewhere matches section. */
-          ["--product-card-price-bg" as string]:
-            priceChipBackground ?? effectiveBg,
+          /** Price chip: white background + Figma typography everywhere. */
+          ["--product-card-price-bg" as string]: "#fff",
           boxShadow: "none",
           border: "none",
           outline: "none",
@@ -218,42 +214,19 @@ export function CatchOfTheDayProductCard({
             </div>
           )}
 
-          {/* Price chip: Figma style (white bg, 30px bold current, 20px light strikethrough compare) when priceChipBackground is white */}
-          <div
-            className={
-              priceChipBackground === "#fff" || priceChipBackground === "#ffffff"
-                ? "product-card-price-overlay product-card-price-overlay--figma"
-                : "product-card-price-overlay"
-            }
-          >
+          {/* Price chip: white bg + Figma typography (30px bold current, 20px light strikethrough compare) */}
+          <div className="product-card-price-overlay product-card-price-overlay--figma">
             <span
               className={
                 showCompareAt
                   ? "product-card-price-current"
                   : "product-card-price-single"
               }
-              style={
-                !showCompareAt && !priceChipBackground && darkSection
-                  ? { color: "rgba(255,255,255,0.95)" }
-                  : undefined
-              }
             >
               ${Math.round(parseFloat(product.price)).toString()}
             </span>
             {showCompareAt && (
-              <span
-                className="product-card-price-compare"
-                style={
-                  priceChipBackground === "#fff" ||
-                  priceChipBackground === "#ffffff"
-                    ? undefined
-                    : {
-                        color: darkSection
-                          ? "rgba(255,255,255,0.92)"
-                          : "#000",
-                      }
-                }
-              >
+              <span className="product-card-price-compare">
                 ${Math.round(
                   parseFloat(product.compareAtPrice!),
                 ).toString()}

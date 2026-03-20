@@ -261,7 +261,7 @@ h2.section-title,
   color: #000;
 }
 
-/* Figma price chip (home page): white bg, current 30px bold, compare 20px light strikethrough */
+/* Figma price chip: white bg, current 30px bold, compare 20px light strikethrough. Used on all product cards. */
 .product-card-price-overlay--figma {
   flex-direction: row;
   align-items: center;

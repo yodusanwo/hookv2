@@ -815,7 +815,7 @@ export default async function ProductPage({
                       ) : (
                         <div className="h-full w-full" style={{ backgroundColor: LIGHT_BG_HEX }} />
                       )}
-                      <div className="product-card-price-overlay">
+                      <div className="product-card-price-overlay product-card-price-overlay--figma" style={{ ["--product-card-price-bg" as string]: "#fff" }}>
                         <span className="product-card-price-single">${Math.round(parseFloat(p.price)).toString()}</span>
                       </div>
                       <span className="product-card-cart-badge" aria-hidden>

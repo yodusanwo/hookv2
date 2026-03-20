@@ -651,7 +651,7 @@ export default function CartPage() {
                           ) : (
                             <div className="h-full w-full bg-slate-200" />
                           )}
-                          <div className="product-card-price-overlay">
+                          <div className="product-card-price-overlay product-card-price-overlay--figma" style={{ ["--product-card-price-bg" as string]: "#fff" }}>
                             <span className="product-card-price-single">${Math.round(parseFloat(product.price)).toString()}</span>
                           </div>
                           <span className="product-card-cart-badge" aria-hidden>

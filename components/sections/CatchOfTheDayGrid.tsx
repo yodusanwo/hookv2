@@ -21,14 +21,12 @@ function SelectedProductsLayout({
   darkSection,
   sectionBackgroundColor,
   blendWhiteWithSectionBackground,
-  priceChipBackground,
 }: {
   products: CatchOfTheDayProductCardProduct[];
   count: 2 | 3 | 4 | 5;
   darkSection: boolean;
   sectionBackgroundColor?: string | null;
   blendWhiteWithSectionBackground?: boolean;
-  priceChipBackground?: string | null;
 }) {
   const card = (product: CatchOfTheDayProductCardProduct, index: number) => (
     <div key={product.id} className={CARD_CLASS}>
@@ -38,7 +36,6 @@ function SelectedProductsLayout({
         priority={index === 0}
         sectionBackgroundColor={sectionBackgroundColor ?? undefined}
         blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
-        priceChipBackground={priceChipBackground ?? undefined}
       />
     </div>
   );
@@ -141,7 +138,6 @@ export function CatchOfTheDayGrid({
   darkSection = false,
   sectionBackgroundColor,
   blendWhiteWithSectionBackground = false,
-  priceChipBackground,
   carouselArrowTheme = "dark",
   carouselArrowColor,
 }: {
@@ -164,8 +160,6 @@ export function CatchOfTheDayGrid({
   sectionBackgroundColor?: string | null;
   /** When true, product photos with white backgrounds blend into the section color (multiply). */
   blendWhiteWithSectionBackground?: boolean;
-  /** When set (e.g. #fff), price chip uses this background and Figma typography. Used on home page carousel. */
-  priceChipBackground?: string | null;
   /** "dark" = white arrows (navy sections); "light" = dark arrows on light sections. Used site-wide for consistent product carousel. */
   carouselArrowTheme?: "light" | "dark";
   /** Override arrow color (e.g. #1E1E1E). When set, overrides carouselArrowTheme. */
@@ -367,7 +361,6 @@ export function CatchOfTheDayGrid({
               darkSection={darkSection}
               sectionBackgroundColor={sectionBackgroundColor}
               blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
-              priceChipBackground={priceChipBackground ?? undefined}
             />
           ) : displayProducts.length > 0 ? (
             <div className="relative flex items-center justify-center gap-6">
@@ -392,7 +385,6 @@ export function CatchOfTheDayGrid({
                       priority={index === 0}
                       sectionBackgroundColor={sectionBackgroundColor ?? undefined}
                       blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
-                      priceChipBackground={priceChipBackground ?? undefined}
                     />
                   </div>
                 ))}
