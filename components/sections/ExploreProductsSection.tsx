@@ -57,9 +57,9 @@ export function ExploreProductsSection({
   hasWaveAbove?: boolean;
   /** Optional bottom padding CSS value (e.g. to match Chicagoland Farmers Markets on /story). */
   bottomPadding?: string;
-  /** When true, use double the default top padding (e.g. on /wild). */
+  /** When true, use double the default top padding (e.g. on /wild-vs-farmed). */
   doubleTopPadding?: boolean;
-  /** When true, use triple the top padding above the title (e.g. on /wild). */
+  /** When true, use triple the top padding above the title (e.g. on /wild-vs-farmed). */
   tripleTitleTopMargin?: boolean;
   /** Optional carousel arrow color (e.g. #1E1E1E on /calendar page). */
   carouselArrowColor?: string;

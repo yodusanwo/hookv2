@@ -21,6 +21,9 @@ import { FaqSection } from "./FaqSection";
 import { WhyWildMattersSection } from "./WhyWildMattersSection";
 import { TheBasicsSection } from "./TheBasicsSection";
 
+/** CMS `page` slug for the Wild vs farmed page (public URL `/wild-vs-farmed`). */
+export const WILD_VS_FARMED_PAGE_SLUG = "wild-vs-farmed";
+
 type PageSection =
   | { _type: "heroBlock"; _key?: string; [key: string]: unknown }
   | { _type: "catchOfTheDayBlock"; _key?: string; [key: string]: unknown }
@@ -174,7 +177,7 @@ export function PageBuilder({
               (prevBlock._type === "ourStoryExtendedBlock" ||
                 prevBlock._type === "ourStoryExtendedReversedBlock");
             const prevIsSecondOurStoryExtended =
-              pageSlug === "wild" &&
+              pageSlug === WILD_VS_FARMED_PAGE_SLUG &&
               prevBlock?._type === "ourStoryExtendedBlock" &&
               items
                 .slice(0, idx)
@@ -235,8 +238,8 @@ export function PageBuilder({
                   showTopWave={showExploreProductsTopWave}
                   hasWaveAbove={hasWaveAbove}
                   bottomPadding={exploreProductsBottomPadding}
-                  doubleTopPadding={pageSlug === "wild"}
-                  tripleTitleTopMargin={pageSlug === "wild"}
+                  doubleTopPadding={pageSlug === WILD_VS_FARMED_PAGE_SLUG}
+                  tripleTitleTopMargin={pageSlug === WILD_VS_FARMED_PAGE_SLUG}
                   carouselArrowColor={pageSlug === "calendar" || pageSlug === "recipes" ? "#1E1E1E" : undefined}
                 />
               </Fragment>
@@ -249,7 +252,7 @@ export function PageBuilder({
                 block={block as Parameters<typeof OurStorySection>[0]["block"]}
                 hideTitle={hideOurStoryTitle}
                 hideCta={hideOurStoryCta}
-                hideWave={hideOurStoryWave || pageSlug === "wild"}
+                hideWave={hideOurStoryWave || pageSlug === WILD_VS_FARMED_PAGE_SLUG}
                 variant={ourStoryVariant}
               />
             );

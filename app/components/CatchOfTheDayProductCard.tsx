@@ -82,7 +82,9 @@ export function CatchOfTheDayProductCard({
         const json = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
         if (!controller.signal.aborted) {
-          setCheckoutUrl((json as { checkoutUrl?: string }).checkoutUrl ?? null);
+          setCheckoutUrl(
+            (json as { checkoutUrl?: string }).checkoutUrl ?? null,
+          );
           setModalOpen(true);
           window.dispatchEvent(new CustomEvent("cart-updated"));
         }
@@ -99,7 +101,7 @@ export function CatchOfTheDayProductCard({
         if (!controller.signal.aborted) setAdding(false);
       }
     },
-    [product.variantId, product.availableForSale, adding]
+    [product.variantId, product.availableForSale, adding],
   );
 
   React.useEffect(() => {
@@ -108,21 +110,29 @@ export function CatchOfTheDayProductCard({
     };
   }, []);
 
-  const showCompareAt = product.compareAtPrice && parseFloat(product.compareAtPrice) > parseFloat(product.price);
+  const showCompareAt =
+    product.compareAtPrice &&
+    parseFloat(product.compareAtPrice) > parseFloat(product.price);
 
   /** When true, force card and image area to light blue so first card on /shop isn’t blocked by variable inheritance. */
   const forceLightBlue = priority && !darkSection;
   const effectiveBg =
-    sectionBackgroundColor ?? (forceLightBlue ? LIGHT_BLUE_HEX : "var(--section-bg, " + LIGHT_BLUE_HEX + ")");
+    sectionBackgroundColor ??
+    (forceLightBlue
+      ? LIGHT_BLUE_HEX
+      : "var(--section-bg, " + LIGHT_BLUE_HEX + ")");
 
   const productHref = `/products/${product.handle}`;
 
   // Title: optional cleanup of trailing parentheses so "Name (8 oz)" shows as "Name"
   const titleSizeMatch = product.title.match(/\s*\(([^)]+)\)\s*$/);
-  const displayTitle = titleSizeMatch ? product.title.slice(0, titleSizeMatch.index).trim() : product.title;
+  const displayTitle = titleSizeMatch
+    ? product.title.slice(0, titleSizeMatch.index).trim()
+    : product.title;
   // Subtitle beneath title: size/description from variant; never show Shopify's "Default Title" placeholder
   const subtitle =
-    product.sizeOrDescription?.trim() && product.sizeOrDescription !== "Default Title"
+    product.sizeOrDescription?.trim() &&
+    product.sizeOrDescription !== "Default Title"
       ? product.sizeOrDescription
       : null;
 
@@ -144,15 +154,17 @@ export function CatchOfTheDayProductCard({
             height: 320,
             alignSelf: "stretch",
             ...(product.imageUrl
-              ? (priority && !sectionBackgroundColor
-                  ? { background: effectiveBg, backgroundColor: effectiveBg }
-                  : {
-                      background: blendWhiteWithSectionBackground
-                        ? `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`
-                        : `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`,
-                      backgroundColor: effectiveBg,
-                      backgroundBlendMode: blendWhiteWithSectionBackground ? ("multiply" as const) : undefined,
-                    })
+              ? priority && !sectionBackgroundColor
+                ? { background: effectiveBg, backgroundColor: effectiveBg }
+                : {
+                    background: blendWhiteWithSectionBackground
+                      ? `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`
+                      : `url(${product.imageUrl}) ${effectiveBg} 50% / cover no-repeat`,
+                    backgroundColor: effectiveBg,
+                    backgroundBlendMode: blendWhiteWithSectionBackground
+                      ? ("multiply" as const)
+                      : undefined,
+                  }
               : { background: effectiveBg, backgroundColor: effectiveBg }),
           }}
           role={product.imageUrl && !priority ? "img" : undefined}
@@ -174,7 +186,12 @@ export function CatchOfTheDayProductCard({
           />
           {!product.imageUrl && (
             <div className="flex h-full w-full items-center justify-center text-slate-300">
-              <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <svg
+                className="h-16 w-16"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
                 <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
               </svg>
             </div>
@@ -187,7 +204,13 @@ export function CatchOfTheDayProductCard({
                 ${Math.round(parseFloat(product.compareAtPrice!)).toString()}
               </span>
             )}
-            <span className={showCompareAt ? "product-card-price-current" : "product-card-price-single"}>
+            <span
+              className={
+                showCompareAt
+                  ? "product-card-price-current"
+                  : "product-card-price-single"
+              }
+            >
               ${Math.round(parseFloat(product.price)).toString()}
             </span>
           </div>
@@ -219,7 +242,9 @@ export function CatchOfTheDayProductCard({
         >
           <h3
             style={{
-              color: darkSection ? "rgba(255,255,255,0.95)" : "var(--Text-Color, #1E1E1E)",
+              color: darkSection
+                ? "rgba(255,255,255,0.95)"
+                : "var(--Text-Color, #1E1E1E)",
               fontFamily: "Inter, var(--font-inter), sans-serif",
               fontSize: "1.25rem",
               fontStyle: "normal",
@@ -228,7 +253,11 @@ export function CatchOfTheDayProductCard({
               textTransform: "capitalize",
             }}
           >
-            <Link href={productHref} className="hover:underline" style={{ color: "inherit" }}>
+            <Link
+              href={productHref}
+              className="hover:underline"
+              style={{ color: "inherit" }}
+            >
               {displayTitle}
             </Link>
           </h3>
@@ -236,7 +265,9 @@ export function CatchOfTheDayProductCard({
             <p
               className="mt-1"
               style={{
-                color: darkSection ? "rgba(255,255,255,0.85)" : "var(--Text-Color, #1E1E1E)",
+                color: darkSection
+                  ? "rgba(255,255,255,0.85)"
+                  : "var(--Text-Color, #1E1E1E)",
                 fontFamily: "Inter, var(--font-inter), sans-serif",
                 fontSize: "1rem",
                 fontStyle: "normal",
@@ -251,7 +282,9 @@ export function CatchOfTheDayProductCard({
             href={productHref}
             className="mt-2 inline-flex items-center gap-1 hover:underline"
             style={{
-              color: darkSection ? "rgba(255,255,255,0.85)" : "var(--Text-Color, #1E1E1E)",
+              color: darkSection
+                ? "rgba(255,255,255,0.85)"
+                : "var(--Text-Color, #1E1E1E)",
               fontFamily: "Inter, var(--font-inter), sans-serif",
               fontSize: "1rem",
               fontStyle: "normal",

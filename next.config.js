@@ -7,6 +7,15 @@ const nextConfig = {
       root: __dirname,
     },
   },
+  async redirects() {
+    return [
+      {
+        source: "/wild",
+        destination: "/wild-vs-farmed",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

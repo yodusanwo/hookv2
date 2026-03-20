@@ -54,8 +54,21 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: siteUrl ? new URL(siteUrl) : undefined,
-  title: "Hook Point — Wild Alaskan Fish",
-  description: "From our family to yours.",
+  title: { default: "Hook Point — Wild Alaskan Fish", template: "%s | Hook Point" },
+  description: "From our family to yours. Wild Alaskan seafood, smoked & specialty, pet treats, and more.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Hook Point",
+    title: "Hook Point — Wild Alaskan Fish",
+    description: "From our family to yours. Wild Alaskan seafood, smoked & specialty, pet treats, and more.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hook Point — Wild Alaskan Fish",
+    description: "From our family to yours. Wild Alaskan seafood, smoked & specialty, pet treats, and more.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default async function RootLayout({

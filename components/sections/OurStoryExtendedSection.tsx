@@ -53,7 +53,7 @@ export function OurStoryExtendedSection({
   showBottomWave = false,
 }: {
   block: OurStoryExtendedBlock;
-  /** When true, show the wave at the bottom of this section (e.g. /wild page only). */
+  /** When true, show the wave at the bottom of this section (e.g. /wild-vs-farmed page only). */
   showBottomWave?: boolean;
 }) {
   const subheading = block.subheading ?? "Who We Are";

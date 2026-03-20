@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
@@ -53,6 +54,16 @@ type ProductByHandleResponse = {
     };
   } | null;
 };
+
+const PRODUCT_METADATA_QUERY = `
+  query ProductMetadata($handle: String!) {
+    productByHandle(handle: $handle) {
+      title
+      description
+      featuredImage { url altText }
+    }
+  }
+`;
 
 const PRODUCT_BY_HANDLE_QUERY = `
   query ProductByHandle($handle: String!) {
@@ -154,6 +165,58 @@ function heroTeaserFromDescription(
   if (paragraphs.length >= 2) return paragraphs[1]!;
   if (paragraphs.length === 1) return paragraphs[0]!;
   return description.trim();
+}
+
+function truncateForMeta(text: string, maxLen: number): string {
+  const trimmed = text.trim().replace(/\s+/g, " ");
+  if (trimmed.length <= maxLen) return trimmed;
+  return trimmed.slice(0, maxLen - 1).trim() + "…";
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params;
+  try {
+    const data = await shopifyFetch<{
+      productByHandle: {
+        title: string;
+        description: string | null;
+        featuredImage: { url: string; altText: string | null } | null;
+      } | null;
+    }>({
+      query: PRODUCT_METADATA_QUERY,
+      variables: { handle },
+      next: { revalidate: 60 },
+    });
+    const p = data?.productByHandle;
+    if (!p) return { title: "Product | Hook Point" };
+    const title = p.title ? `${p.title} | Hook Point` : "Product | Hook Point";
+    const description = p.description
+      ? truncateForMeta(p.description, 160)
+      : "Wild Alaskan seafood from Hook Point.";
+    const image = p.featuredImage?.url;
+    return {
+      title,
+      description,
+      openGraph: {
+        title: p.title ?? "Product | Hook Point",
+        description,
+        type: "website",
+        ...(image && { images: [{ url: image, alt: p.featuredImage?.altText ?? p.title ?? undefined }] }),
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: p.title ?? "Product | Hook Point",
+        description,
+        ...(image && { images: [image] }),
+      },
+    };
+  } catch {
+    return { title: "Product | Hook Point" };
+  }
 }
 
 export default async function ProductPage({
