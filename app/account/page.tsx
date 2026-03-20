@@ -7,16 +7,6 @@ import {
   type CustomerOrdersResult,
 } from "@/lib/shopifyCustomerAccount";
 
-function getAccountUrl(): string | null {
-  const explicit = process.env.NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL?.trim();
-  if (explicit) return explicit;
-  const domain = (process.env.SHOPIFY_STORE_DOMAIN ?? "")
-    .trim()
-    .replace(/^https?:\/\//, "")
-    .replace(/\/+$/, "");
-  return domain ? `https://${domain}/account` : null;
-}
-
 function formatDate(iso: string): string {
   try {
     return new Date(iso).toLocaleDateString(undefined, {
@@ -37,7 +27,6 @@ export default async function AccountPage({
   const cookieStore = await cookies();
   const token = getAccessTokenFromCookies(cookieStore);
   const params = await searchParams;
-  const accountUrl = getAccountUrl();
   const useHeadlessLogin = isCustomerAccountConfigured();
 
   if (!token) {
@@ -82,32 +71,6 @@ export default async function AccountPage({
                 </a>
               </div>
             ) : null}
-            {accountUrl && (
-              <p className="mt-6 text-sm text-[#1E1E1E] [font-family:var(--font-inter)]">
-                {useHeadlessLogin ? (
-                  <>
-                    Use <strong>Log in</strong> or <strong>Create account</strong> above to sign in on this site.{" "}
-                    <a
-                      href={accountUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      className="text-[var(--gray-content-background-text-icon-40)] underline hover:no-underline"
-                    >
-                      Open account on Shopify
-                    </a>{" "}
-                    opens the store in a new tab.
-                  </>
-                ) : (
-                  <a
-                    href={accountUrl}
-                    rel="noopener noreferrer"
-                    className="text-[var(--gray-content-background-text-icon-40)] underline hover:no-underline"
-                  >
-                    Open account on Shopify
-                  </a>
-                )}
-              </p>
-            )}
           </div>
         </div>
       </main>
@@ -181,17 +144,6 @@ export default async function AccountPage({
               </li>
             ))}
           </ul>
-        )}
-        {accountUrl && (
-          <p className="mt-8">
-            <a
-              href={accountUrl}
-              rel="noopener noreferrer"
-              className="text-[#498CCB] underline hover:no-underline [font-family:var(--font-inter)]"
-            >
-              Manage account on Shopify
-            </a>
-          </p>
         )}
       </div>
     </main>
