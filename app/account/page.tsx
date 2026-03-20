@@ -43,8 +43,14 @@ export default async function AccountPage({
   if (!token) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center bg-[var(--section-bg-light)] px-4">
-        <div className="w-full max-w-2xl">
-          <div className="rounded-card bg-white p-8 shadow-sm">
+        <div className="w-full max-w-[620px]">
+          <div
+            className="flex flex-col overflow-y-auto rounded-card bg-white p-8 md:h-[360px] md:w-[620px]"
+            style={{
+              borderRadius: 10,
+              boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.05)",
+            }}
+          >
             <h1 className="mb-2 font-bold text-[var(--section-title-size,24px)] uppercase tracking-wide text-[#1E1E1E] [font-family:var(--font-inter)]">
               Account
             </h1>
@@ -77,15 +83,29 @@ export default async function AccountPage({
               </div>
             ) : null}
             {accountUrl && (
-              <p className="mt-6 text-[#1E1E1E] [font-family:var(--font-inter)]">
-                {useHeadlessLogin ? "or " : null}
-                <a
-                  href={accountUrl}
-                  rel="noopener noreferrer"
-                  className="text-[var(--gray-content-background-text-icon-40)] underline hover:no-underline"
-                >
-                  Open account on Shopify
-                </a>
+              <p className="mt-6 text-sm text-[#1E1E1E] [font-family:var(--font-inter)]">
+                {useHeadlessLogin ? (
+                  <>
+                    Use <strong>Log in</strong> or <strong>Create account</strong> above to sign in on this site.{" "}
+                    <a
+                      href={accountUrl}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      className="text-[var(--gray-content-background-text-icon-40)] underline hover:no-underline"
+                    >
+                      Open account on Shopify
+                    </a>{" "}
+                    opens the store in a new tab.
+                  </>
+                ) : (
+                  <a
+                    href={accountUrl}
+                    rel="noopener noreferrer"
+                    className="text-[var(--gray-content-background-text-icon-40)] underline hover:no-underline"
+                  >
+                    Open account on Shopify
+                  </a>
+                )}
               </p>
             )}
           </div>

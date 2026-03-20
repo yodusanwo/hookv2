@@ -17,6 +17,7 @@ If `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID` is **not** set in production, the accoun
 |----------|----------|------------------|
 | `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID` | Yes | Shopify Admin → **Sales channels** → **Headless** → your storefront → **Customer Account API** → Client ID |
 | `SHOPIFY_STORE_DOMAIN` | Yes | Your store domain, e.g. `your-store.myshopify.com` (no `https://`) |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | Your app URL, e.g. `https://hookv2.vercel.app` (used as OAuth `redirect_uri` base; on Vercel we fall back to `VERCEL_URL` if unset) |
 
 - Add both for **Production** (and Preview if you test there).
 - **Redeploy** after adding so the new env is used.
@@ -41,7 +42,7 @@ Without these, `isCustomerAccountConfigured()` is false and the app never shows 
 
 ## Checklist
 
-1. **Vercel:** Set `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID` and `SHOPIFY_STORE_DOMAIN` → redeploy.
+1. **Vercel:** Set `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID`, `SHOPIFY_STORE_DOMAIN`, and `NEXT_PUBLIC_SITE_URL=https://hookv2.vercel.app` → redeploy.
 2. **Shopify:** Callback URI(s) = `https://hookv2.vercel.app/auth/callback`, Logout URI = `https://hookv2.vercel.app/auth/post-logout`, Javascript origin = `https://hookv2.vercel.app`.
-3. Open https://hookv2.vercel.app/account — you should see the **“Log in”** button.
-4. Click **Log in** — flow should go to `/auth/login` → Shopify → back to `https://hookv2.vercel.app/auth/callback` → your app.
+3. Open https://hookv2.vercel.app/account — use **“Log in”** or **“Create account”** (both use this site’s flow). Do **not** use “Open account on Shopify” for headless login; that link goes to the store and uses the native flow.
+4. If you still see a redirect to `shopify.com/.../account/callback`: the app is sending `redirect_uri=https://hookv2.vercel.app/auth/callback`. Add that **exact** URL to **Callback URI(s)** in Shopify and save. If it’s missing or different, Shopify falls back to the native callback.

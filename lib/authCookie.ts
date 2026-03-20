@@ -14,12 +14,17 @@ function getOriginFromRequest(request: Request): string {
   return url.origin;
 }
 
-/** Prefer canonical site URL for auth redirects (e.g. so logout returns to hookv2.vercel.app, not store theme). */
+/** Prefer canonical site URL for auth redirects so Shopify sends users back to this app, not the theme. */
 export function getPreferredRedirectOrigin(request: Request): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (explicit) {
     const u = explicit.replace(/\/+$/, "");
     return u.startsWith("http") ? u : `https://${u}`;
+  }
+  // Production: use Vercel URL so redirect_uri is always the deployed app (required for Shopify Callback URI)
+  const vercelUrl = process.env.VERCEL_URL?.trim();
+  if (vercelUrl) {
+    return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")}`;
   }
   return getOriginFromRequest(request);
 }
