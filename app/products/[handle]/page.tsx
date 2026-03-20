@@ -1,6 +1,7 @@
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
+import { RecentlyViewedTracker } from "@/app/components/SearchModal";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ScrollToTop } from "./ScrollToTop";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
@@ -421,9 +422,18 @@ export default async function ProductPage({
 
   const firstImageUrl = images[0]?.url;
 
+  const firstVariantPrice = variants[0]?.price?.amount ?? "0";
+
   return (
     <>
       <ScrollToTop />
+      <RecentlyViewedTracker
+        handle={handle}
+        title={product.title}
+        image={product.featuredImage?.url ?? firstImageUrl ?? null}
+        price={firstVariantPrice}
+        compareAtPrice={null}
+      />
       {firstImageUrl && (
         <link rel="preload" as="image" href={firstImageUrl} />
       )}

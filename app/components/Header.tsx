@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IconSearch, IconUser } from "./Icons";
 import { CartCount } from "./CartCount";
+import { SearchModal } from "./SearchModal";
 import { safeHref } from "@/lib/urlValidation";
 
 const FALLBACK_NAV = [
@@ -62,6 +63,7 @@ export function Header({
   const nav = normalizeNav(navLinks && navLinks.length > 0 ? navLinks : FALLBACK_NAV);
   const bgColor = backgroundColor ?? FALLBACK_BG;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <header
@@ -118,9 +120,15 @@ export function Header({
             <span className={`h-0.5 w-6 bg-white transition-opacity ${mobileMenuOpen ? "opacity-0" : ""}`} />
             <span className={`h-0.5 w-6 bg-white transition-transform ${mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
           </button>
-          <button type="button" aria-label="Search" className={accountButtonClass}>
+          <button
+            type="button"
+            aria-label="Search"
+            className={accountButtonClass}
+            onClick={() => setSearchOpen(true)}
+          >
             <IconSearch className="h-5 w-5" />
           </button>
+          <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
           {useHeadlessAccount ? (
             <Link href="/account" aria-label="Account" className={accountButtonClass}>
               <IconUser className="h-5 w-5" />

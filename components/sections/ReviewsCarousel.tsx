@@ -89,6 +89,8 @@ function ReviewSummaryCard({
   );
 }
 
+const REVIEW_PREVIEW_LENGTH = 300;
+
 function ReviewCard({
   r,
   reviewNumber,
@@ -99,6 +101,11 @@ function ReviewCard({
   reviewNumber?: number;
   totalReviews?: number;
 }) {
+  const text = r.text ?? "";
+  const isLong = text.length > REVIEW_PREVIEW_LENGTH;
+  const [expanded, setExpanded] = React.useState(false);
+  const displayText = isLong && !expanded ? `${text.slice(0, REVIEW_PREVIEW_LENGTH).trim()}…` : text;
+
   return (
     <div
       className="section-card flex w-full max-w-[355px] flex-col justify-center p-6 text-center md:max-w-full relative"
@@ -153,7 +160,16 @@ function ReviewCard({
           lineHeight: 1.5,
         }}
       >
-        {r.text}
+        {displayText}
+        {isLong && (
+          <button
+            type="button"
+            onClick={() => setExpanded((e) => !e)}
+            className="ml-1 inline-block font-medium text-[#498CCB] hover:underline focus:outline-none focus:underline"
+          >
+            {expanded ? "See less" : "See more"}
+          </button>
+        )}
       </p>
       <p
         className="mt-4 font-semibold"
@@ -198,6 +214,7 @@ export function ReviewsCarousel({
   reviewSummary?: ReviewSummary | null;
 }) {
   const [index, setIndex] = React.useState(0);
+  const [isPaused, setIsPaused] = React.useState(false);
   const L = Math.max(1, reviews.length);
   const current = reviews[index % L];
   const canPrev = reviews.length > 1 && index > 0;
@@ -216,17 +233,21 @@ export function ReviewsCarousel({
   }, [reviewSummary, reviews]);
 
   React.useEffect(() => {
-    if (reviews.length <= 1) return;
+    if (reviews.length <= 1 || isPaused) return;
     const id = setInterval(() => {
       setIndex((i) => (i + 3) % reviews.length);
     }, AUTO_SCROLL_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [reviews.length]);
+  }, [reviews.length, isPaused]);
 
   const showSummary = summary.totalCount > 0 || summary.averageRating > 0;
 
   return (
-    <>
+    <div
+      className="reviews-carousel-root"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       {/* Mobile: summary card (if we have summary) then single review with arrows and dots */}
       <div className="mt-10 flex flex-col md:hidden items-center gap-6 px-6 md:px-4">
         {showSummary && (
@@ -318,6 +339,6 @@ export function ReviewsCarousel({
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
