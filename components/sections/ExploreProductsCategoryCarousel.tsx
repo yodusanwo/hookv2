@@ -5,6 +5,7 @@
  * Shows image + label per category with left/right arrows. Dark theme (white text, white arrows).
  * Uses the same CarouselArrow as the Product Carousel section.
  */
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
@@ -80,12 +81,13 @@ export function ExploreProductsCategoryCarousel({
           style={{ maxWidth: "100%" }}
         >
           {cat.imageUrl && typeof cat.imageUrl === "string" ? (
-            <img
+            <Image
               src={cat.imageUrl}
               alt={cat.label ?? ""}
-              className="h-full w-full object-cover"
-              loading={idx === 0 ? "eager" : "lazy"}
-              fetchPriority={idx === 0 ? "high" : undefined}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 331px"
+              priority={idx < 3}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-400">
@@ -95,10 +97,12 @@ export function ExploreProductsCategoryCarousel({
             </div>
           )}
           {(cat.collectionHandle === "pet-treats" || cat.label?.toLowerCase().includes("pet")) && (
-            <img
+            <Image
               src="/pet%201.png"
               alt=""
               aria-hidden
+              width={56}
+              height={56}
               className="pointer-events-none absolute bottom-3 right-3 h-12 w-12 object-contain opacity-90 sm:h-14 sm:w-14"
             />
           )}

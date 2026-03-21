@@ -33,7 +33,7 @@ function SelectedProductsLayout({
       <CatchOfTheDayProductCard
         product={product}
         darkSection={darkSection}
-        priority={index === 0}
+        priority={index < 3}
         sectionBackgroundColor={sectionBackgroundColor ?? undefined}
         blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
       />
@@ -382,7 +382,7 @@ export function CatchOfTheDayGrid({
                     <CatchOfTheDayProductCard
                       product={product}
                       darkSection={darkSection}
-                      priority={index === 0}
+                      priority={index < 3}
                       sectionBackgroundColor={sectionBackgroundColor ?? undefined}
                       blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
                     />

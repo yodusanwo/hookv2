@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
+import { ProductVariantProvider } from "@/app/components/ProductVariantContext";
+import { ProductVariantSubtitle } from "@/app/components/ProductVariantSubtitle";
 import { EstimatedDeliveryDisplay } from "@/app/components/EstimatedDeliveryDisplay";
 import { RecentlyViewedTracker } from "@/app/components/SearchModal";
 import { ProductImageGallery } from "./ProductImageGallery";
@@ -11,8 +13,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   getKlaviyoReviewsForSection,
   getKlaviyoReviewsSummary,
-  getKlaviyoReviewCountForProduct,
+  getKlaviyoReviewsForProduct,
+  getKlaviyoReviewSummaryForProduct,
 } from "@/lib/klaviyoReviews";
+import { aggregatesFromShopifyReviewMetafields } from "@/lib/shopifyProductReviewAggregates";
 import {
   client,
   SITE_SETTINGS_QUERY,
@@ -37,6 +41,10 @@ type ProductByHandleResponse = {
     isFrozen: { value: string } | null;
     /** Metafield custom.what_you_get (rich text). Per-product "What You Get" content. */
     whatYouGet: { value: string } | null;
+    /** Standard Shopify review aggregate JSON (from review apps, e.g. Judge.me). */
+    reviewsRating: { value: string } | null;
+    /** Standard Shopify review count string. */
+    reviewsRatingCount: { value: string } | null;
     productType: string;
     featuredImage: { url: string; altText: string | null } | null;
     images: { edges: Array<{ node: { url: string; altText: string | null } }> };
@@ -76,6 +84,8 @@ const PRODUCT_BY_HANDLE_QUERY = `
       estimatedDelivery: metafield(namespace: "custom", key: "estimated_delivery") { value }
       isFrozen: metafield(namespace: "custom", key: "is_frozen") { value }
       whatYouGet: metafield(namespace: "custom", key: "what_you_get") { value }
+      reviewsRating: metafield(namespace: "reviews", key: "rating") { value }
+      reviewsRatingCount: metafield(namespace: "reviews", key: "rating_count") { value }
       productType
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
@@ -385,16 +395,21 @@ export default async function ProductPage({
     return true;
   });
   const variants = product.variants.edges.map((e) => e.node);
-  const subtitle = variants[0]?.title ?? product.title;
   const heroTeaser = heroTeaserFromDescription(product.description);
 
-  const [sectionReviews, storeReviewSummary, productReviewCount, siteSettings] =
-    await Promise.all([
-      getKlaviyoReviewsForSection(),
-      getKlaviyoReviewsSummary(),
-      getKlaviyoReviewCountForProduct(product.id),
-      client
-        ? client.fetch<{
+  const [
+    sectionReviews,
+    storeReviewSummary,
+    productReviewsForCarousel,
+    productScopedReviewSummary,
+    siteSettings,
+  ] = await Promise.all([
+    getKlaviyoReviewsForSection(),
+    getKlaviyoReviewsSummary(),
+    getKlaviyoReviewsForProduct(product.id),
+    getKlaviyoReviewSummaryForProduct(product.id),
+    client
+      ? client.fetch<{
             freeShippingMessage?: string | null;
             estimatedDeliveryProcessingDays?: number | null;
             estimatedDeliveryTransitDays?: string | null;
@@ -402,8 +417,15 @@ export default async function ProductPage({
             estimatedDeliveryFrozenProcessingDays?: number | null;
             estimatedDeliveryFrozenTransitDays?: string | null;
           }>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } })
-        : Promise.resolve(null),
-    ]);
+      : Promise.resolve(null),
+  ]);
+
+  const shopifyReviewAgg = aggregatesFromShopifyReviewMetafields(product);
+  /** Klaviyo product-scoped count when present; else Shopify standard aggregates (theme / review apps). */
+  const productReviewCount =
+    productScopedReviewSummary.totalCount > 0
+      ? productScopedReviewSummary.totalCount
+      : shopifyReviewAgg.count;
   const freeShippingMessage =
     siteSettings?.freeShippingMessage?.trim() ||
     "Free shipping for orders over $50";
@@ -456,12 +478,25 @@ export default async function ProductPage({
     }
   }
 
-  /** Same Klaviyo pool + summary as home page — full store review carousel (all published reviews). */
-  const reviewsToShow = sectionReviews;
+  /** Product-scoped Klaviyo reviews when present; otherwise same pool as home (store-wide fallback). */
+  const reviewsToShow =
+    productReviewsForCarousel.length > 0
+      ? productReviewsForCarousel
+      : sectionReviews;
   const productReviewSummary =
-    storeReviewSummary.totalCount > 0 || storeReviewSummary.averageRating > 0
-      ? storeReviewSummary
-      : null;
+    productReviewsForCarousel.length > 0
+      ? productScopedReviewSummary.totalCount > 0 ||
+        productScopedReviewSummary.averageRating > 0
+        ? productScopedReviewSummary
+        : null
+      : shopifyReviewAgg.count > 0 || shopifyReviewAgg.averageRating > 0
+        ? {
+            totalCount: shopifyReviewAgg.count,
+            averageRating: shopifyReviewAgg.averageRating,
+          }
+        : storeReviewSummary.totalCount > 0 || storeReviewSummary.averageRating > 0
+          ? storeReviewSummary
+          : null;
 
   const firstImageUrl = images[0]?.url;
 
@@ -489,6 +524,7 @@ export default async function ProductPage({
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
             {/* Mobile: contents so both children are grid items (order 1, 2, 3). Desktop: one column with title + summary stacked. */}
+            <ProductVariantProvider variants={variants} options={product.options}>
             <div className="contents lg:flex lg:flex-col lg:order-2">
               <div className="order-1 lg:order-none">
                 <h1
@@ -503,22 +539,9 @@ export default async function ProductPage({
               >
                 {product.title}
               </h1>
-              <p
-                style={{
-                  marginTop: 21,
-                  marginBottom: 27,
-                  color: "#374151",
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: "1.5rem",
-                  fontStyle: "normal",
-                  fontWeight: 300,
-                  lineHeight: "normal",
-                }}
-              >
-                {subtitle}
-              </p>
+              <ProductVariantSubtitle productTitle={product.title} />
 
-              <div className="mt-3 mb-[3.3125rem] flex items-center gap-2 text-sm text-slate-600">
+              <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
                 <span
                   className="flex justify-center items-center gap-0.5"
                   style={{ color: "#FFA100" }}
@@ -543,6 +566,15 @@ export default async function ProductPage({
                   {productReviewCount}{" "}
                   {productReviewCount === 1 ? "review" : "reviews"}
                 </span>
+              </div>
+
+              <div className="mt-6 mb-[3.3125rem] w-full min-w-0 max-w-full">
+                <AddToCart
+                  productTitle={product.title}
+                  options={product.options}
+                  variants={variants}
+                  variant="productPage"
+                />
               </div>
               </div>
 
@@ -594,17 +626,9 @@ export default async function ProductPage({
                   transitDaysMax={transitDaysMax}
                   cutOffTime={siteSettings?.estimatedDeliveryCutoffTime ?? null}
                 />
-
-                <div className="mt-6">
-                  <AddToCart
-                    productTitle={product.title}
-                    options={product.options}
-                    variants={variants}
-                    variant="productPage"
-                  />
-                </div>
               </div>
             </div>
+            </ProductVariantProvider>
 
             <div className="order-2 lg:order-1">
               <ProductImageGallery images={images} productTitle={product.title} />

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import * as React from "react";
 
 type CarouselItem = {
@@ -32,12 +33,14 @@ export function Carousel({
         {items.map((item, idx) => (
           <div
             key={`${item.src}-${idx}`}
-            className="snap-start shrink-0 w-[240px] h-[140px] overflow-hidden rounded-card bg-slate-200"
+            className="relative snap-start shrink-0 w-[240px] h-[140px] overflow-hidden rounded-card bg-slate-200"
           >
-            <img
+            <Image
               src={item.src}
               alt={item.alt}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="240px"
               loading="lazy"
             />
           </div>

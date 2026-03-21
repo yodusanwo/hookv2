@@ -6,11 +6,13 @@
  *   npx tsx scripts/klaviyo-reviews-by-product.ts --all               # counts per product (via Shopify product list)
  *
  * Prerequisites: KLAVIYO_PRIVATE_API_KEY in .env.local
+ * Optional: KLAVIYO_SHOPIFY_REVIEWS_CATALOG_ID if item ids use a non-default catalog (see lib/klaviyoReviews.ts).
  * For --all and for resolving handle: SHOPIFY_STORE_DOMAIN, SHOPIFY_STOREFRONT_ACCESS_TOKEN in .env.local
  */
 
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { shopifyProductReviewItemId } from "../lib/klaviyoReviews";
 
 try {
   const content = readFileSync(resolve(process.cwd(), ".env.local"), "utf-8");
@@ -83,7 +85,7 @@ async function fetchReviewsForProduct(numericProductId: string): Promise<{ count
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
   if (!apiKey) throw new Error("Missing KLAVIYO_PRIVATE_API_KEY in .env.local");
 
-  const itemId = `$shopify:::$default:::${numericProductId}`;
+  const itemId = shopifyProductReviewItemId(numericProductId);
   const filter = `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
   const all: KlaviyoReviewResource[] = [];
   let nextUrl: string | null = `${KLAVIYO_REVIEWS_URL}?${new URLSearchParams({

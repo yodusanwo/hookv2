@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.sanity.io", pathname: "/**" },
+      { protocol: "https", hostname: "cdn.shopify.com", pathname: "/**" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+    ],
+  },
   // Force Turbopack to use this directory as the workspace root.
   // Fixes "Can't resolve 'tailwindcss' in '/Users/yodusanwo'" when a lockfile exists in the parent dir.
   experimental: {

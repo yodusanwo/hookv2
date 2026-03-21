@@ -297,6 +297,22 @@ function shopifyProductIdFromGid(gid: string): string | null {
   return match ? match[1]! : null;
 }
 
+/**
+ * Klaviyo Reviews API `item.id` for a Shopify catalog product.
+ * Default catalog is `$default`; override with `KLAVIYO_SHOPIFY_REVIEWS_CATALOG_ID` if your account uses another catalog.
+ * @see https://developers.klaviyo.com/en/reference/get_reviews
+ */
+export function shopifyProductReviewItemId(numericShopifyProductId: string): string {
+  const catalog =
+    process.env.KLAVIYO_SHOPIFY_REVIEWS_CATALOG_ID?.trim() || "$default";
+  return `$shopify:::${catalog}:::${numericShopifyProductId}`;
+}
+
+function publishedReviewsFilterForShopifyProduct(numericShopifyProductId: string): string {
+  const itemId = shopifyProductReviewItemId(numericShopifyProductId);
+  return `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
+}
+
 const PRODUCT_REVIEWS_PAGE_SIZE = 6;
 
 /**
@@ -314,8 +330,7 @@ export async function getKlaviyoReviewsForProduct(
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
   if (!apiKey) return [];
 
-  const itemId = `$shopify:::$default:::${numericId}`;
-  const filter = `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
+  const filter = publishedReviewsFilterForShopifyProduct(numericId);
 
   const params = new URLSearchParams({
     filter,
@@ -357,6 +372,85 @@ export async function getKlaviyoReviewsForProduct(
   return mapped;
 }
 
+/**
+ * Total count and average rating for published Klaviyo reviews linked to one Shopify product.
+ * Uses the same `item.id` filter as {@link getKlaviyoReviewsForProduct}. Cached via fetch revalidate.
+ */
+export async function getKlaviyoReviewSummaryForProduct(
+  shopifyProductGid: string,
+): Promise<ReviewsSummary> {
+  const numericId = shopifyProductIdFromGid(shopifyProductGid);
+  if (!numericId) return { totalCount: 0, averageRating: 0 };
+
+  const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
+  if (!apiKey) return { totalCount: 0, averageRating: 0 };
+
+  const filter = publishedReviewsFilterForShopifyProduct(numericId);
+  const params = new URLSearchParams({
+    filter,
+    "fields[review]": "rating,review_type,status",
+    "page[size]": String(SUMMARY_PAGE_SIZE),
+    sort: "-created",
+  });
+
+  let totalCount = 0;
+  let sumRating = 0;
+  let totalWithRating = 0;
+  let nextUrl: string | null = `${KLAVIYO_REVIEWS_URL}?${params.toString()}`;
+  let pages = 0;
+
+  while (nextUrl && pages < SUMMARY_MAX_PAGES) {
+    const res = await fetch(nextUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Klaviyo-API-Key ${apiKey}`,
+        Accept: "application/json",
+        Revision: REVISION,
+      },
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) break;
+
+    const json = (await res.json()) as KlaviyoReviewsResponse;
+    const list = json.data ?? [];
+
+    if (pages === 0 && json.meta?.count != null) {
+      totalCount = json.meta.count;
+    } else {
+      totalCount += list.length;
+    }
+
+    for (const r of list) {
+      const a = r.attributes;
+      if (a.review_type === "question") continue;
+      const rating =
+        a.rating != null && a.rating >= 1 && a.rating <= 5 ? a.rating : 0;
+      if (rating > 0) {
+        sumRating += rating;
+        totalWithRating += 1;
+      }
+    }
+
+    const next = json.links?.next;
+    nextUrl = next
+      ? next.startsWith("http")
+        ? next
+        : `${new URL(KLAVIYO_REVIEWS_URL).origin}${next}`
+      : null;
+    pages += 1;
+    if (list.length < SUMMARY_PAGE_SIZE) break;
+  }
+
+  if (totalCount === 0 && totalWithRating > 0) totalCount = totalWithRating;
+  const averageRating =
+    totalWithRating > 0
+      ? Math.round((sumRating / totalWithRating) * 10) / 10
+      : 0;
+
+  return { totalCount, averageRating };
+}
+
 const COUNT_PAGE_SIZE = 100;
 
 /**
@@ -372,8 +466,7 @@ export async function getKlaviyoReviewCountForProduct(
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
   if (!apiKey) return 0;
 
-  const itemId = `$shopify:::$default:::${numericId}`;
-  const filter = `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
+  const filter = publishedReviewsFilterForShopifyProduct(numericId);
 
   let total = 0;
   let nextUrl: string | null = `${KLAVIYO_REVIEWS_URL}?${new URLSearchParams({

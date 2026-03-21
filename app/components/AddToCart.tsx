@@ -2,14 +2,14 @@
 
 import * as React from "react";
 import Link from "next/link";
+import {
+  getInitialSelectedOptions,
+  getVariantByOptions,
+  type ProductVariantOption,
+} from "@/lib/productVariantSelection";
+import { useOptionalProductVariant } from "@/app/components/ProductVariantContext";
 
-type Variant = {
-  id: string;
-  title: string;
-  availableForSale: boolean;
-  selectedOptions: Array<{ name: string; value: string }>;
-  price: { amount: string; currencyCode: string };
-};
+type Variant = ProductVariantOption;
 
 function formatMoney(amount: string, currency: string) {
   const n = Math.round(Number(amount));
@@ -23,15 +23,6 @@ function formatMoney(amount: string, currency: string) {
   } catch {
     return `${amount} ${currency}`;
   }
-}
-
-function getVariantByOptions(
-  variants: Variant[],
-  selected: Record<string, string>
-) {
-  return variants.find((v) =>
-    v.selectedOptions.every((o) => selected[o.name] === o.value)
-  );
 }
 
 async function ensureCartId(): Promise<string> {
@@ -61,20 +52,19 @@ export function AddToCart({
   /** "recipeIngredient" = single compact green "Add to cart" button (e.g. next to recipe ingredients) */
   variant?: "default" | "productPage" | "recipeIngredient";
 }) {
-  const initialSelected = React.useMemo(() => {
-    const first = variants.find((v) => v.availableForSale) ?? variants[0];
-    const s: Record<string, string> = {};
-    for (const o of first?.selectedOptions ?? []) s[o.name] = o.value;
-    return s;
-  }, [variants]);
-
-  const [selected, setSelected] = React.useState<Record<string, string>>(
-    initialSelected
+  const shared = useOptionalProductVariant();
+  const initialSelected = React.useMemo(
+    () => getInitialSelectedOptions(variants),
+    [variants],
   );
-  const selectedVariant = React.useMemo(
-    () => getVariantByOptions(variants, selected) ?? variants[0],
-    [variants, selected]
-  );
+  const [localSelected, setLocalSelected] =
+    React.useState<Record<string, string>>(initialSelected);
+  const selected = shared?.selected ?? localSelected;
+  const setSelected = shared?.setSelected ?? setLocalSelected;
+  const selectedVariant = React.useMemo(() => {
+    if (shared) return shared.selectedVariant;
+    return getVariantByOptions(variants, selected) ?? variants[0];
+  }, [shared, variants, selected]);
 
   const [qty, setQty] = React.useState(1);
   const [status, setStatus] = React.useState<

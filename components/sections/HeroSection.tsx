@@ -1,6 +1,6 @@
 import { HeroCarousel } from "@/app/components/HeroCarousel";
 import { PromoBanner } from "../PromoBanner";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForHeroImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type HeroBlock = {
@@ -49,9 +49,9 @@ export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: Her
   const items: Array<{ src: string; alt: string }> =
     block.images
       ?.map((img) => {
-        const u = urlFor(img);
-        if (!u) return null;
-        return { src: u.url(), alt: `${headline.line1} ${headline.line2}` };
+        const src = urlForHeroImage(img);
+        if (!src) return null;
+        return { src, alt: `${headline.line1} ${headline.line2}` };
       })
       .filter((x): x is { src: string; alt: string } => Boolean(x)) ?? [];
 

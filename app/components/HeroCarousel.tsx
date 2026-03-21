@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 type CarouselItem = { src: string; alt: string };
@@ -52,11 +53,13 @@ export function HeroCarousel({
         }
       >
         {active.src ? (
-          <img
+          <Image
             key={active.src}
             src={active.src}
             alt={active.alt}
-            fetchPriority={idx === 0 ? "high" : undefined}
+            fill
+            priority={idx === 0}
+            sizes="100vw"
             className={`${IMAGE_LAYER} object-cover`}
             style={
               variant === "story"

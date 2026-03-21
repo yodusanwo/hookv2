@@ -179,18 +179,15 @@ export function CatchOfTheDayProductCard({
           role={product.imageUrl && useMultiplyBlend ? "img" : undefined}
           aria-label={product.imageUrl && useMultiplyBlend ? product.title : undefined}
         >
+          {/* No mix-blend-mode on dark navy: "lighten" could composite to blank on some desktop browsers. */}
           {showPhotoImg ? (
             <img
               src={product.imageUrl!}
               alt={product.title}
               className="absolute inset-0 z-0 h-full w-full object-cover"
-              style={
-                darkSection
-                  ? { mixBlendMode: "lighten" }
-                  : undefined
-              }
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : undefined}
+              decoding="async"
             />
           ) : null}
           <Link

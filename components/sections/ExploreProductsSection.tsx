@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 import { ExploreProductsCategoryCarousel } from "./ExploreProductsCategoryCarousel";
 import { isLightBackgroundColor } from "@/lib/theme";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForExploreCategoryImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 import type { FilterItem } from "@/lib/types";
 
@@ -89,8 +89,7 @@ export function ExploreProductsSection({
       : "/shop";
     let imageUrl: string | null = null;
     try {
-      const img = urlFor(f.image);
-      imageUrl = img ? img.url() : null;
+      imageUrl = urlForExploreCategoryImage(f.image) ?? null;
     } catch {
       imageUrl = null;
     }
