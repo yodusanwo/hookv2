@@ -12,6 +12,11 @@ import {
   SHOPIFY_HOME_PRODUCTS_QUERY,
   type ShopifyHomeProductsResponse,
 } from "@/lib/shopifyHomeProductsQuery";
+import { HeroImagePreload } from "@/app/components/HeroImagePreload";
+import {
+  FALLBACK_HOME_HERO_PRELOAD_URL,
+  getFirstHeroImagePreloadUrlFromSections,
+} from "@/lib/homeHeroPreloadUrl";
 
 export default async function Home() {
   try {
@@ -59,7 +64,11 @@ export default async function Home() {
         }
         return section;
       });
+      const heroPreloadUrl =
+        getFirstHeroImagePreloadUrlFromSections(sectionsWithEvents);
       return (
+        <>
+          <HeroImagePreload href={heroPreloadUrl} />
         <main className="bg-white">
           <PageBuilder
             sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
@@ -68,6 +77,7 @@ export default async function Home() {
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
           />
         </main>
+        </>
       );
     }
 
@@ -78,11 +88,14 @@ export default async function Home() {
     });
 
     return (
-      <HomePageFallback
-        products={data.products.edges}
-        promoBanner={promoBanner}
-        promoBannerUrl={promoBannerUrl}
-      />
+      <>
+        <HeroImagePreload href={FALLBACK_HOME_HERO_PRELOAD_URL} />
+        <HomePageFallback
+          products={data.products.edges}
+          promoBanner={promoBanner}
+          promoBannerUrl={promoBannerUrl}
+        />
+      </>
     );
   } catch (error) {
     console.error("Error fetching products:", error);

@@ -522,11 +522,9 @@ export default async function ProductPage({
         style={{ backgroundColor: LIGHT_BG_HEX }}
       >
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
-            {/* Mobile: contents so both children are grid items (order 1, 2, 3). Desktop: one column with title + summary stacked. */}
+          <div className="grid gap-10 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-0">
             <ProductVariantProvider variants={variants} options={product.options}>
-            <div className="contents lg:flex lg:flex-col lg:order-2">
-              <div className="order-1 lg:order-none">
+              <div className="order-1 min-w-0 lg:sticky lg:top-28 lg:z-20 lg:col-start-2 lg:row-start-1 lg:self-start lg:bg-[#d4f2ff] lg:-ml-6 lg:pl-6">
                 <h1
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
@@ -568,7 +566,7 @@ export default async function ProductPage({
                 </span>
               </div>
 
-              <div className="mt-6 mb-[3.3125rem] w-full min-w-0 max-w-full">
+              <div className="mt-4 mb-[3.3125rem] w-full min-w-0 max-w-full lg:mb-0">
                 <AddToCart
                   productTitle={product.title}
                   options={product.options}
@@ -578,11 +576,15 @@ export default async function ProductPage({
               </div>
               </div>
 
-              <div className="order-3 lg:order-none">
+              <div className="order-2 min-w-0 lg:col-start-1 lg:row-span-2 lg:row-start-1">
+                <ProductImageGallery images={images} productTitle={product.title} />
+              </div>
+
+              <div className="order-3 min-w-0 lg:col-start-2 lg:row-start-2 lg:pt-8 lg:relative lg:z-0">
                 {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
                 {product.summary?.value?.trim() || heroTeaser ? (
                   <p
-                    className="mt-4 mb-[3.75rem] w-full max-w-full line-clamp-3"
+                    className="mt-4 mb-[3.75rem] w-full max-w-full line-clamp-3 lg:mt-0"
                     style={{
                       color: "var(--Text-Color, #1E1E1E)",
                       fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -627,12 +629,7 @@ export default async function ProductPage({
                   cutOffTime={siteSettings?.estimatedDeliveryCutoffTime ?? null}
                 />
               </div>
-            </div>
             </ProductVariantProvider>
-
-            <div className="order-2 lg:order-1">
-              <ProductImageGallery images={images} productTitle={product.title} />
-            </div>
           </div>
         </div>
       </section>

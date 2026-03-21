@@ -79,6 +79,7 @@ export function Header({
       >
         <Link
           href="/"
+          onClick={() => window.scrollTo({ top: 0 })}
           className="block shrink-0 border-0 outline-none ring-0 w-[80px] h-[78px] sm:w-[99px] sm:h-[96px] md:w-[122px] md:h-[119px]"
           aria-label="Hook Point home"
           style={{

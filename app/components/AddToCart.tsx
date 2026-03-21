@@ -72,6 +72,8 @@ export function AddToCart({
   >("idle");
   const [error, setError] = React.useState<string | null>(null);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
+  const [buyNowLoading, setBuyNowLoading] = React.useState(false);
+  const [buyNowError, setBuyNowError] = React.useState<string | null>(null);
 
   const onAdd = React.useCallback(async () => {
     if (!selectedVariant?.id) return;
@@ -119,6 +121,45 @@ export function AddToCart({
     }
   }, [qty, selectedVariant?.id]);
 
+  React.useEffect(() => {
+    setBuyNowError(null);
+  }, [selectedVariant?.id]);
+
+  const onBuyNow = React.useCallback(async () => {
+    if (!selectedVariant?.id || !selectedVariant.availableForSale || buyNowLoading)
+      return;
+    setBuyNowError(null);
+    setBuyNowLoading(true);
+    try {
+      const res = await fetch("/api/checkout/buy-now", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          merchandiseId: selectedVariant.id,
+          quantity: qty,
+        }),
+      });
+      const json = (await res.json().catch(() => ({}))) as {
+        checkoutUrl?: string;
+        error?: string;
+      };
+      if (!res.ok) {
+        throw new Error(json.error ?? "Could not start checkout.");
+      }
+      if (json.checkoutUrl) {
+        window.location.assign(json.checkoutUrl);
+        return;
+      }
+      throw new Error("No checkout URL returned.");
+    } catch (e) {
+      setBuyNowError(
+        e instanceof Error ? e.message : "Could not start checkout.",
+      );
+    } finally {
+      setBuyNowLoading(false);
+    }
+  }, [selectedVariant, qty, buyNowLoading]);
+
   if (!selectedVariant) {
     return (
       <div className="rounded-card border border-black/5 bg-white p-5 shadow-sm text-center text-sm text-slate-600">
@@ -156,7 +197,56 @@ export function AddToCart({
 
   if (variant === "productPage") {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 bg-[#d4f2ff]">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              void onBuyNow();
+            }}
+            disabled={
+              !selectedVariant.availableForSale ||
+              buyNowLoading ||
+              status === "loading"
+            }
+            className="inline-flex h-12 w-full min-w-0 items-center justify-center rounded-md border-2 border-[var(--brand-navy)] bg-white px-4 text-sm font-semibold text-[var(--brand-navy)] transition-opacity hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {buyNowLoading ? "Redirecting…" : "Buy now"}
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onAdd();
+            }}
+            disabled={
+              !selectedVariant.availableForSale || status === "loading"
+            }
+            className="inline-flex h-12 w-full min-w-0 items-center justify-center rounded-md px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              backgroundColor:
+                selectedVariant.availableForSale
+                  ? "var(--brand-green)"
+                  : "var(--brand-navy, #1e3a5f)",
+            }}
+          >
+            {status === "loading"
+              ? "Adding…"
+              : status === "success"
+                ? "Added!"
+                : !selectedVariant.availableForSale
+                  ? "Sold out"
+                  : "Add to cart"}
+          </button>
+        </div>
+
+        {buyNowError ? (
+          <p className="text-sm font-medium text-red-700" role="alert">
+            {buyNowError}
+          </p>
+        ) : null}
+
         {options.length > 0 ? (
           <div className="space-y-3">
             {options.map((opt) => (
@@ -227,30 +317,6 @@ export function AddToCart({
             {priceDisplay}
           </span>
         </div>
-
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            onAdd();
-          }}
-          disabled={!selectedVariant.availableForSale || status === "loading"}
-          className="inline-flex h-12 w-full min-w-[200px] items-center justify-center rounded-md px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-          style={{
-            backgroundColor:
-              selectedVariant.availableForSale
-                ? "var(--brand-green)"
-                : "var(--brand-navy, #1e3a5f)",
-          }}
-        >
-          {status === "loading"
-            ? "Adding…"
-            : status === "success"
-              ? "Added!"
-              : !selectedVariant.availableForSale
-                ? "Sold out"
-                : "Add to cart"}
-        </button>
 
         {status === "success" ? (
           <div className="mt-3 flex flex-wrap items-center justify-center gap-3">

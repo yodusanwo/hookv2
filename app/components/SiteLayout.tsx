@@ -84,7 +84,7 @@ function SiteLayoutInner({
       <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       {!hideHeaderWave && <HeaderWave />}
       <div
-        className={`relative z-0 overflow-x-hidden ${hideHeaderWave ? "-mt-0" : "-mt-[96px] sm:-mt-[150px] lg:-mt-[206px]"}`}
+        className={`relative z-0 overflow-x-clip ${hideHeaderWave ? "-mt-0" : "-mt-[96px] sm:-mt-[150px] lg:-mt-[206px]"}`}
       >
         {children}
       </div>
@@ -121,7 +121,7 @@ function SiteLayoutFallback({
       />
       <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       <HeaderWave />
-      <div className="relative z-0 overflow-x-hidden -mt-[96px] sm:-mt-[150px] lg:-mt-[206px]">{children}</div>
+      <div className="relative z-0 overflow-x-clip -mt-[96px] sm:-mt-[150px] lg:-mt-[206px]">{children}</div>
       <Footer
         logoUrl={headerLogoUrl}
         pathname={pathname ?? undefined}
