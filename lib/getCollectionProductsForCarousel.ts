@@ -45,7 +45,7 @@ function buildCollectionProductsQuery(): string {
             ${metafieldLine}
             priceRange { minVariantPrice { amount currencyCode } }
             images(first: 1) { edges { node { url altText } } }
-            variants(first: 1) {
+            variants(first: 250) {
               edges {
                 node {
                   id
@@ -87,36 +87,60 @@ export async function getCollectionProductsForCarousel(
     });
 
     const edges = data.collection?.products?.edges ?? [];
-    return edges.map((e) => {
+    const results: ApiProductForCarousel[] = [];
+    for (const e of edges) {
       const node = e.node;
-      const variant = node.variants?.edges?.[0]?.node;
-      const price = variant?.price ?? node.priceRange?.minVariantPrice;
-      const compareAtPrice = variant?.compareAtPrice?.amount
-        ? variant.compareAtPrice
-        : null;
-      const sizeOrDescription =
-        variant?.selectedOptions?.map((o) => o.value)?.join(" / ") || null;
+      const variantEdges = node.variants?.edges ?? [];
       const productType = node.productType ?? null;
       const filterValue =
         (node.filterCategory?.value != null && node.filterCategory.value !== ""
           ? node.filterCategory.value
           : null) ?? productType;
-      return {
-        id: node.id,
-        title: node.title,
-        handle: node.handle,
-        productType,
-        filterValue: filterValue ?? null,
-        images: node.images,
-        priceRange: { minVariantPrice: price },
-        variantId: variant?.id ?? null,
-        price: price?.amount ?? "0",
-        currencyCode: price?.currencyCode ?? "USD",
-        compareAtPrice: compareAtPrice?.amount ?? null,
-        availableForSale: variant?.availableForSale ?? false,
-        sizeOrDescription,
-      };
-    });
+      if (variantEdges.length === 0) {
+        const price = node.priceRange?.minVariantPrice;
+        results.push({
+          id: node.id,
+          title: node.title,
+          handle: node.handle,
+          productType,
+          filterValue: filterValue ?? null,
+          images: node.images,
+          priceRange: { minVariantPrice: price },
+          variantId: null,
+          price: price?.amount ?? "0",
+          currencyCode: price?.currencyCode ?? "USD",
+          compareAtPrice: null,
+          availableForSale: false,
+          sizeOrDescription: null,
+        });
+      } else {
+        for (const ve of variantEdges) {
+          const variant = ve.node;
+          const price = variant.price ?? node.priceRange?.minVariantPrice;
+          const compareAtPrice = variant.compareAtPrice?.amount
+            ? variant.compareAtPrice
+            : null;
+          const sizeOrDescription =
+            variant.selectedOptions?.map((o) => o.value).join(" / ") || null;
+          results.push({
+            id: variant.id,
+            title: node.title,
+            handle: node.handle,
+            productType,
+            filterValue: filterValue ?? null,
+            images: node.images,
+            priceRange: { minVariantPrice: price },
+            variantId: variant.id,
+            price: price?.amount ?? "0",
+            currencyCode: price?.currencyCode ?? "USD",
+            compareAtPrice: compareAtPrice?.amount ?? null,
+            availableForSale: variant.availableForSale ?? false,
+            sizeOrDescription,
+          });
+        }
+      }
+    }
+    return results;
   } catch (err) {
     console.error("Failed to fetch collection products for carousel:", err);
     return [];

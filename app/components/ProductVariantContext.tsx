@@ -21,15 +21,18 @@ const ProductVariantContext =
 export function ProductVariantProvider({
   variants,
   options,
+  initialVariantId,
   children,
 }: {
   variants: ProductVariantOption[];
   options: Array<{ name: string; values: string[] }>;
+  /** When set, pre-select this variant (e.g. from ?variant= URL param). */
+  initialVariantId?: string | null;
   children: React.ReactNode;
 }) {
   const initialSelected = React.useMemo(
-    () => getInitialSelectedOptions(variants),
-    [variants],
+    () => getInitialSelectedOptions(variants, initialVariantId),
+    [variants, initialVariantId],
   );
   const [selected, setSelected] =
     React.useState<Record<string, string>>(initialSelected);

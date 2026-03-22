@@ -231,10 +231,15 @@ export async function generateMetadata({
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ handle: string }>;
+  searchParams?: Promise<{ variant?: string }> | { variant?: string };
 }) {
   const { handle } = await params;
+  const resolvedSearchParams =
+    searchParams instanceof Promise ? await searchParams : searchParams ?? {};
+  const variantFromUrl = resolvedSearchParams.variant?.trim() || null;
 
   let data: ProductByHandleResponse;
   type OtherProduct = {
@@ -523,7 +528,11 @@ export default async function ProductPage({
       >
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-0">
-            <ProductVariantProvider variants={variants} options={product.options}>
+            <ProductVariantProvider
+              variants={variants}
+              options={product.options}
+              initialVariantId={variantFromUrl}
+            >
               <div className="order-1 min-w-0 lg:sticky lg:top-28 lg:z-20 lg:col-start-2 lg:row-start-1 lg:self-start lg:bg-[#d4f2ff] lg:-ml-6 lg:pl-6">
                 <h1
                 style={{

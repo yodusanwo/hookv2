@@ -15,6 +15,14 @@ export const client: SanityClient = projectId
     })
   : (null as unknown as SanityClient);
 
+/** Shop page only: promo + shop sections + filters (no header, nav, or shipping fields). */
+export const SHOP_PAGE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
+  promoBanner,
+  promoBannerUrl,
+  shopPageCollectionSections[] { title, description, collectionHandle, layout, blendWhiteWithBackground },
+  shopFilterOptions[] { label, value, insertAfterCategory }
+}`;
+
 /** GROQ query for site settings (singleton) */
 export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   headerLogo { asset-> },

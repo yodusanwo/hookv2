@@ -61,19 +61,26 @@ export function CategorySectionBlock({
   block,
   selectedFilterValues = [],
   hasWaveAbove = false,
+  initialProducts,
 }: {
   block: CategorySectionBlockData;
   selectedFilterValues?: string[];
   /** When true, adds top padding so the wave above isn't covered by this section's background. */
   hasWaveAbove?: boolean;
+  /** When set (e.g. from /shop server prefetch), skip client fetch and initial loading skeleton. */
+  initialProducts?: ApiProductForCarousel[];
 }) {
   const { title, description, collectionHandle, layout = "grid", blendWhiteWithBackground = false } = block;
-  const [products, setProducts] = React.useState<ApiProductForCarousel[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const hasServerProducts = initialProducts !== undefined;
+  const [products, setProducts] = React.useState<ApiProductForCarousel[]>(
+    () => initialProducts ?? [],
+  );
+  const [loading, setLoading] = React.useState(() => !hasServerProducts);
   const [error, setError] = React.useState<string | null>(null);
   const [carouselPage, setCarouselPage] = React.useState(0);
 
   React.useEffect(() => {
+    if (hasServerProducts) return;
     const first = layout === "carousel" ? CAROUSEL_FIRST : GRID_FIRST;
     const url = `/api/collections/${encodeURIComponent(collectionHandle)}/products?first=${first}`;
     const controller = new AbortController();
@@ -96,7 +103,7 @@ export function CategorySectionBlock({
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [collectionHandle, layout]);
+  }, [collectionHandle, layout, hasServerProducts]);
 
   const filtered = React.useMemo(
     () =>

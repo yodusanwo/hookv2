@@ -31,7 +31,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       handle
       priceRange { minVariantPrice { amount currencyCode } }
       images(first: 1) { edges { node { url altText } } }
-      variants(first: 1) {
+      variants(first: 250) {
         edges {
           node {
             id
@@ -79,31 +79,57 @@ export async function getProductsByHandles(
     )
   );
 
-  return results
+  const products: ApiProductForCarousel[] = [];
+  const nodes = results
     .map((data) => data.productByHandle)
-    .filter((node): node is ProductByHandleNode => node != null)
-    .map((node) => {
-      const variant = node.variants?.edges?.[0]?.node;
-      const price = variant?.price ?? node.priceRange?.minVariantPrice;
-      const compareAtPrice = variant?.compareAtPrice?.amount
-        ? variant.compareAtPrice
-        : null;
-      const sizeOrDescription =
-        variant?.selectedOptions?.map((o) => o.value).join(" / ") || null;
-      return {
+    .filter((node): node is ProductByHandleNode => node != null);
+
+  for (const node of nodes) {
+    const variantEdges = node.variants?.edges ?? [];
+    const defaultPrice = node.priceRange?.minVariantPrice;
+    if (variantEdges.length === 0) {
+      products.push({
         id: node.id,
         title: node.title,
         handle: node.handle,
         productType: null,
         filterValue: null,
         images: node.images,
-        priceRange: price ? { minVariantPrice: price } : undefined,
-        variantId: variant?.id ?? null,
-        price: price?.amount ?? "0",
-        currencyCode: price?.currencyCode ?? "USD",
-        compareAtPrice: compareAtPrice?.amount ?? null,
-        availableForSale: variant?.availableForSale ?? false,
-        sizeOrDescription,
-      };
-    });
+        priceRange: defaultPrice ? { minVariantPrice: defaultPrice } : undefined,
+        variantId: null,
+        price: defaultPrice?.amount ?? "0",
+        currencyCode: defaultPrice?.currencyCode ?? "USD",
+        compareAtPrice: null,
+        availableForSale: false,
+        sizeOrDescription: null,
+      });
+    } else {
+      for (const ve of variantEdges) {
+        const variant = ve.node;
+        const price = variant.price ?? defaultPrice;
+        const compareAtPrice = variant.compareAtPrice?.amount
+          ? variant.compareAtPrice
+          : null;
+        const sizeOrDescription =
+          variant.selectedOptions?.map((o) => o.value).join(" / ") || null;
+        products.push({
+          id: variant.id,
+          title: node.title,
+          handle: node.handle,
+          productType: null,
+          filterValue: null,
+          images: node.images,
+          priceRange: price ? { minVariantPrice: price } : undefined,
+          variantId: variant.id,
+          price: price?.amount ?? "0",
+          currencyCode: price?.currencyCode ?? "USD",
+          compareAtPrice: compareAtPrice?.amount ?? null,
+          availableForSale: variant.availableForSale ?? false,
+          sizeOrDescription,
+        });
+      }
+    }
+  }
+
+  return products;
 }

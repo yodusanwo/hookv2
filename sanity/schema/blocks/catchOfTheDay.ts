@@ -5,6 +5,8 @@ export const catchOfTheDayBlock = defineType({
   name: "catchOfTheDayBlock",
   type: "object",
   title: "Product Carousel",
+  description:
+    "The /shop page reuses the first Product Carousel block on the Home page (same content). Editing this block on Home updates the carousel on Shop.",
   fields: [
     defineField({
       name: "backgroundColor",

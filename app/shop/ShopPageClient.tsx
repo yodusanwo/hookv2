@@ -19,6 +19,7 @@ export function ShopPageClient({
   productCarouselBlock,
   productCarouselInitialProducts = [],
   initialCategoryFromUrl = null,
+  initialSectionProductsByHandle = {},
 }: {
   promoBanner: string | null;
   promoBannerUrl?: string | null;
@@ -34,6 +35,8 @@ export function ShopPageClient({
   productCarouselInitialProducts?: ApiProductForCarousel[];
   /** When set (e.g. from /shop?category=seafood), preselect this category so only that section is shown. */
   initialCategoryFromUrl?: string | null;
+  /** Server-prefetched products per collection handle (skips client loading skeleton). */
+  initialSectionProductsByHandle?: Record<string, ApiProductForCarousel[]>;
 }) {
   const categoryOptions = collectionSections.map((s) => ({
     value: s.collectionHandle,
@@ -113,6 +116,7 @@ export function ShopPageClient({
             block={block}
             selectedFilterValues={selectedFilterValues}
             hasWaveAbove={!hasSelection && idx > 0}
+            initialProducts={initialSectionProductsByHandle[block.collectionHandle]}
           />
           {!hasSelection && idx < visibleSections.length - 1 ? (
             <ShopSectionWave />

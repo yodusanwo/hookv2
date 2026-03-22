@@ -15,9 +15,26 @@ export function getVariantByOptions(
   );
 }
 
+/** Match variant by full GID or numeric ID (e.g. from ?variant=123 in URL). */
+function variantMatchesId(v: ProductVariantOption, id: string): boolean {
+  if (v.id === id) return true;
+  const num = id.replace(/\D/g, "");
+  if (num && v.id.endsWith("/" + num)) return true;
+  return false;
+}
+
 export function getInitialSelectedOptions(
   variants: ProductVariantOption[],
+  variantId?: string | null,
 ): Record<string, string> {
+  if (variantId?.trim()) {
+    const byId = variants.find((v) => variantMatchesId(v, variantId.trim()));
+    if (byId) {
+      const s: Record<string, string> = {};
+      for (const o of byId.selectedOptions ?? []) s[o.name] = o.value;
+      return s;
+    }
+  }
   const first = variants.find((v) => v.availableForSale) ?? variants[0];
   const s: Record<string, string> = {};
   for (const o of first?.selectedOptions ?? []) s[o.name] = o.value;

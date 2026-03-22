@@ -1,9 +1,14 @@
 "use client";
 
 /** Card for the Product Carousel section only. Sizing is independent of the first "Catch of the day" section. */
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import { shopifyImageUrlForWidth } from "@/lib/shopifyImage";
 import { AddToCartModal } from "./AddToCartModal";
+
+/** Request width for Shopify CDN (card max ~387px at 2x DPR). */
+const CARD_IMAGE_REQUEST_WIDTH = 800;
 
 async function ensureCartId(): Promise<string> {
   const existing =
@@ -130,8 +135,17 @@ export function CatchOfTheDayProductCard({
     blendWhiteWithSectionBackground &&
     !darkSection;
   const showPhotoImg = Boolean(product.imageUrl) && !useMultiplyBlend;
+  const sizedImageUrl = product.imageUrl
+    ? shopifyImageUrlForWidth(product.imageUrl, CARD_IMAGE_REQUEST_WIDTH)
+    : null;
 
-  const productHref = `/products/${product.handle}`;
+  const variantParam = product.variantId
+    ? (product.variantId.match(/\d+$/)?.[0] ?? product.variantId)
+    : null;
+  const productHref =
+    variantParam ?
+      `/products/${product.handle}?variant=${variantParam}`
+    : `/products/${product.handle}`;
 
   // Title: optional cleanup of trailing parentheses so "Name (8 oz)" shows as "Name"
   const titleSizeMatch = product.title.match(/\s*\(([^)]+)\)\s*$/);
@@ -164,9 +178,9 @@ export function CatchOfTheDayProductCard({
           style={{
             height: 320,
             alignSelf: "stretch",
-            ...(product.imageUrl && useMultiplyBlend
+            ...(product.imageUrl && useMultiplyBlend && sizedImageUrl
               ? {
-                  backgroundImage: `url(${product.imageUrl})`,
+                  backgroundImage: `url(${sizedImageUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
@@ -180,13 +194,14 @@ export function CatchOfTheDayProductCard({
           aria-label={product.imageUrl && useMultiplyBlend ? product.title : undefined}
         >
           {/* No mix-blend-mode on dark navy: "lighten" could composite to blank on some desktop browsers. */}
-          {showPhotoImg ? (
-            <img
-              src={product.imageUrl!}
+          {showPhotoImg && sizedImageUrl ? (
+            <Image
+              src={sizedImageUrl}
               alt={product.title}
-              className="absolute inset-0 z-0 h-full w-full object-cover"
-              loading={priority ? "eager" : "lazy"}
-              fetchPriority={priority ? "high" : undefined}
+              fill
+              className="absolute inset-0 z-0 object-cover"
+              sizes="(max-width: 640px) 100vw, 387px"
+              priority={priority}
               decoding="async"
             />
           ) : null}
