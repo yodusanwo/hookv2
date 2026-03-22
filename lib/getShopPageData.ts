@@ -140,13 +140,24 @@ export async function getShopPageData(
     const rawSections = settings?.shopPageCollectionSections ?? [];
     collectionSections = rawSections
       .filter((s) => s?.collectionHandle)
-      .map((s) => ({
-        title: (s.title ?? s.collectionHandle ?? "").trim() || String(s.collectionHandle),
-        description: s.description ?? null,
-        collectionHandle: String(s.collectionHandle).trim(),
-        layout: s.layout === "carousel" ? ("carousel" as const) : ("grid" as const),
-        blendWhiteWithBackground: Boolean(s?.blendWhiteWithBackground),
-      }));
+      .map((s) => {
+        const handle = String(s.collectionHandle).trim();
+        const title = (s.title ?? s.collectionHandle ?? "").trim() || handle;
+        const isGiftCard =
+          handle.toLowerCase().includes("gift-card") ||
+          title.toLowerCase().includes("gift card");
+        const layout =
+          s.layout === "carousel" || isGiftCard
+            ? ("carousel" as const)
+            : ("grid" as const);
+        return {
+          title,
+          description: s.description ?? null,
+          collectionHandle: handle,
+          layout,
+          blendWhiteWithBackground: Boolean(s?.blendWhiteWithBackground),
+        };
+      });
 
     const prefetchHandles = collectionSections.map((s) => ({
       handle: s.collectionHandle,
