@@ -116,6 +116,11 @@ export function youtubePortableTextComponents(): PortableTextComponents {
             return <YouTubeEmbed videoId={id} />;
           }
         }
+        // Empty blocks or newline-only paragraphs still serialize children; with
+        // whitespace-pre-wrap they become a tall blank strip above real content.
+        if (!plain) {
+          return null;
+        }
         return (
           <p className="mt-4 whitespace-pre-wrap first:mt-0 [&_a]:text-[#498CCB] [&_a]:underline">
             {children}

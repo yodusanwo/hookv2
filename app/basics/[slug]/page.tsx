@@ -49,7 +49,11 @@ type ExploreProductsBlockType = {
   hideWave?: boolean;
   title?: string;
   description?: string;
-  filterCollections?: Array<{ label?: string; collectionHandle?: string; image?: { asset?: { _ref?: string } } }>;
+  filterCollections?: Array<{
+    label?: string;
+    collectionHandle?: string;
+    image?: { asset?: { _ref?: string } };
+  }>;
 };
 
 const BG_COLOR = "var(--brand-light-blue-bg)";
@@ -65,7 +69,9 @@ export async function generateMetadata({
   const { slug } = await params;
   if (!client) return { title: "Basic" };
   try {
-    const basic = await client.fetch<BasicData | null>(BASIC_BY_SLUG_QUERY, { slug });
+    const basic = await client.fetch<BasicData | null>(BASIC_BY_SLUG_QUERY, {
+      slug,
+    });
     const title = basic?.title ?? "Basic";
     return { title: `${title} — The Basics` };
   } catch {
@@ -81,7 +87,8 @@ function BasicSectionBlock({
   bodyColor?: string;
 }) {
   const hasList = section.listItems && section.listItems.length > 0;
-  const hasBody = section.body && Array.isArray(section.body) && section.body.length > 0;
+  const hasBody =
+    section.body && Array.isArray(section.body) && section.body.length > 0;
   const img = section.image ? urlFor(section.image) : null;
   const imageUrl = img ? img.url() : null;
 
@@ -142,18 +149,16 @@ function BasicSectionBlock({
           }}
         >
           <PortableText
-            value={section.body as import("@portabletext/types").PortableTextBlock[]}
+            value={
+              section.body as import("@portabletext/types").PortableTextBlock[]
+            }
             components={youtubePortableTextComponents()}
           />
         </div>
       )}
       {imageUrl && (
         <div className="mt-4 overflow-hidden rounded-[10px] w-full max-w-[462px] aspect-[462/308]">
-          <img
-            src={imageUrl}
-            alt=""
-            className="h-full w-full object-cover"
-          />
+          <img src={imageUrl} alt="" className="h-full w-full object-cover" />
         </div>
       )}
     </div>
@@ -174,7 +179,9 @@ export default async function BasicDetailPage({
     try {
       [basic, exploreProductsBlock] = await Promise.all([
         client.fetch<BasicData | null>(BASIC_BY_SLUG_QUERY, { slug }),
-        client.fetch<ExploreProductsBlockType | null>(EXPLORE_PRODUCTS_BLOCK_QUERY),
+        client.fetch<ExploreProductsBlockType | null>(
+          EXPLORE_PRODUCTS_BLOCK_QUERY,
+        ),
       ]);
     } catch {
       basic = null;
@@ -183,13 +190,20 @@ export default async function BasicDetailPage({
   }
   if (!basic) notFound();
 
-  const heroImageUrl = basic.image ? (urlFor(basic.image)?.url() ?? null) : null;
+  const heroImageUrl = basic.image
+    ? (urlFor(basic.image)?.url() ?? null)
+    : null;
   const sections = basic.sections ?? [];
   const topSections = sections.filter((s) => (s.row ?? "top") === "top");
-  const bottomLeftSections = sections.filter((s) => s.row === "bottom" && (s.column ?? "left") === "left");
-  const bottomRightSections = sections.filter((s) => s.row === "bottom" && s.column === "right");
+  const bottomLeftSections = sections.filter(
+    (s) => s.row === "bottom" && (s.column ?? "left") === "left",
+  );
+  const bottomRightSections = sections.filter(
+    (s) => s.row === "bottom" && s.column === "right",
+  );
   const hasTopSections = topSections.length > 0;
-  const hasBottomSections = bottomLeftSections.length > 0 || bottomRightSections.length > 0;
+  const hasBottomSections =
+    bottomLeftSections.length > 0 || bottomRightSections.length > 0;
 
   return (
     <main className="bg-white">
@@ -274,24 +288,31 @@ export default async function BasicDetailPage({
 
           {!hasTopSections && !hasBottomSections && (
             <>
-              {basic.body && Array.isArray(basic.body) && basic.body.length > 0 && (
-                <div
-                  className="prose prose-slate mx-auto max-w-3xl [&_p]:text-[16px] [&_p]:leading-[1.6] [&_p]:text-[#1E1E1E]"
-                  style={{ color: TEXT_COLOR }}
-                >
-                  <PortableText
-                    value={basic.body as import("@portabletext/types").PortableTextBlock[]}
-                    components={youtubePortableTextComponents()}
-                  />
-                </div>
-              )}
+              {basic.body &&
+                Array.isArray(basic.body) &&
+                basic.body.length > 0 && (
+                  <div
+                    className="prose prose-slate mx-auto max-w-3xl [&_p]:text-[16px] [&_p]:leading-[1.6] [&_p]:text-[#1E1E1E]"
+                    style={{ color: TEXT_COLOR }}
+                  >
+                    <PortableText
+                      value={
+                        basic.body as import("@portabletext/types").PortableTextBlock[]
+                      }
+                      components={youtubePortableTextComponents()}
+                    />
+                  </div>
+                )}
             </>
           )}
         </div>
       </section>
 
       <ExploreProductsSection
-        block={{ ...(exploreProductsBlock ?? {}), backgroundColor: exploreProductsBlock?.backgroundColor ?? "#F2F2F5" }}
+        block={{
+          ...(exploreProductsBlock ?? {}),
+          backgroundColor: exploreProductsBlock?.backgroundColor ?? "#F2F2F5",
+        }}
         hideExploreProductsWave={true}
       />
     </main>
