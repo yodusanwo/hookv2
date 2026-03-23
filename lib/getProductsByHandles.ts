@@ -113,7 +113,7 @@ export async function getProductsByHandles(
         const sizeOrDescription =
           variant.selectedOptions?.map((o) => o.value).join(" / ") || null;
         products.push({
-          id: variant.id,
+          id: node.id,
           title: node.title,
           handle: node.handle,
           productType: null,

@@ -10,7 +10,11 @@ import {
   type CatchOfTheDayProductCardProduct,
 } from "@/app/components/CatchOfTheDayProductCard";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
-import type { ApiProductForCarousel, FilterItem } from "@/lib/types";
+import {
+  type ApiProductForCarousel,
+  type FilterItem,
+  carouselProductRowKey,
+} from "@/lib/types";
 
 const CARD_CLASS = "min-w-0 w-[387px] max-w-full";
 const GAP_STYLE = { gap: "6px" };
@@ -29,7 +33,7 @@ function SelectedProductsLayout({
   blendWhiteWithSectionBackground?: boolean;
 }) {
   const card = (product: CatchOfTheDayProductCardProduct, index: number) => (
-    <div key={product.id} className={CARD_CLASS}>
+    <div key={carouselProductRowKey(product)} className={CARD_CLASS}>
       <CatchOfTheDayProductCard
         product={product}
         darkSection={darkSection}
@@ -43,7 +47,7 @@ function SelectedProductsLayout({
   if (count === 2) {
     return (
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 w-full max-w-[800px] mx-auto place-items-center"
+        className="grid grid-cols-1 lg:grid-cols-2 w-full max-w-[800px] mx-auto place-items-center"
         style={GAP_STYLE}
       >
         {products.map((p, i) => card(p, i))}
@@ -53,7 +57,7 @@ function SelectedProductsLayout({
   if (count === 3) {
     return (
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+        className="grid grid-cols-1 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
         style={GAP_STYLE}
       >
         {products.map((p, i) => card(p, i))}
@@ -63,7 +67,7 @@ function SelectedProductsLayout({
   if (count === 4) {
     return (
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+        className="grid grid-cols-1 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
         style={GAP_STYLE}
       >
         {products.slice(0, 3).map((p, i) => card(p, i))}
@@ -76,11 +80,11 @@ function SelectedProductsLayout({
   if (count === 5) {
     return (
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+        className="grid grid-cols-1 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
         style={GAP_STYLE}
       >
         {products.slice(0, 3).map((p, i) => card(p, i))}
-        <div className="w-full flex justify-center gap-2 sm:gap-6 lg:col-span-3">
+        <div className="flex w-full flex-col items-center gap-2 lg:col-span-3 lg:flex-row lg:justify-center lg:gap-6">
           {products.slice(3, 5).map((p, i) => card(p, i + 3))}
         </div>
       </div>
@@ -319,7 +323,7 @@ export function CatchOfTheDayGrid({
             <div className="relative flex items-center justify-center gap-6">
               <CarouselArrow direction="prev" disabled onClick={() => {}} ariaLabel="Previous" theme={carouselArrowTheme} arrowColor={carouselArrowColor ?? undefined} />
               <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+                className="grid grid-cols-1 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
                 style={{ gap: "6px" }}
               >
                 {[1, 2, 3].map((i) => (
@@ -374,11 +378,14 @@ export function CatchOfTheDayGrid({
               />
               {/* 3 centered columns - card dimensions match Recipe cards (min 280px, max 387px) */}
               <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
+                className="grid grid-cols-1 lg:grid-cols-3 w-full max-w-[1200px] mx-auto place-items-center"
                 style={{ gap: "6px" }}
               >
                 {currentPageProducts.map((product, index) => (
-                  <div key={product.id} className="min-w-0 w-[387px] max-w-full">
+                  <div
+                    key={carouselProductRowKey(product)}
+                    className="min-w-0 w-[387px] max-w-full"
+                  >
                     <CatchOfTheDayProductCard
                       product={product}
                       darkSection={darkSection}

@@ -221,6 +221,7 @@ async function fetchKlaviyoReviewsSummaryUncached(): Promise<ReviewsSummary> {
   });
 
   let totalCount = 0;
+  let totalCountLockedFromMeta = false;
   let sumRating = 0;
   let totalWithRating = 0;
   let nextUrl: string | null = `${KLAVIYO_REVIEWS_URL}?${params.toString()}`;
@@ -244,7 +245,8 @@ async function fetchKlaviyoReviewsSummaryUncached(): Promise<ReviewsSummary> {
 
     if (pages === 0 && json.meta?.count != null) {
       totalCount = json.meta.count;
-    } else {
+      totalCountLockedFromMeta = true;
+    } else if (!totalCountLockedFromMeta) {
       totalCount += list.length;
     }
 
@@ -394,6 +396,7 @@ export async function getKlaviyoReviewSummaryForProduct(
   });
 
   let totalCount = 0;
+  let totalCountLockedFromMeta = false;
   let sumRating = 0;
   let totalWithRating = 0;
   let nextUrl: string | null = `${KLAVIYO_REVIEWS_URL}?${params.toString()}`;
@@ -417,7 +420,8 @@ export async function getKlaviyoReviewSummaryForProduct(
 
     if (pages === 0 && json.meta?.count != null) {
       totalCount = json.meta.count;
-    } else {
+      totalCountLockedFromMeta = true;
+    } else if (!totalCountLockedFromMeta) {
       totalCount += list.length;
     }
 

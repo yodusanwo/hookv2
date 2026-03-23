@@ -454,19 +454,20 @@ h2.section-title,
   }
 }
 
-/* Section description/subcopy – 48.125rem max, Inter 1rem 400 150%. Color set per-section. */
+/* Section description/subcopy – tokens in :root; Inter 400 150%. Override color inline on dark sections. */
 .section-description {
   width: 100%;
-  max-width: min(48.125rem, calc(100vw - 2rem));
+  max-width: min(var(--section-description-max-width), calc(100vw - 2rem));
   margin-left: auto;
   margin-right: auto;
   margin-top: 1rem;
   text-align: center;
   font-family: var(--font-inter), Inter, sans-serif;
-  font-size: 1rem;
+  font-size: var(--section-description-size);
   font-style: normal;
   font-weight: 400;
   line-height: 150%;
+  color: var(--section-description-color);
 }
 
 /* Lead variant: wider max-width, larger responsive font, tighter line-height (Explore Products, Catch of the Day). */

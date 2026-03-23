@@ -123,7 +123,7 @@ export async function getCollectionProductsForCarousel(
           const sizeOrDescription =
             variant.selectedOptions?.map((o) => o.value).join(" / ") || null;
           results.push({
-            id: variant.id,
+            id: node.id,
             title: node.title,
             handle: node.handle,
             productType,

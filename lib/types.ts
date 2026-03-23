@@ -8,7 +8,16 @@ export type FilterItem = { label?: string; collectionHandle?: string };
  * Product shape returned by /api/collections/[handle]/products and /api/products.
  * Used by Product Carousel grid; must match the normalized payload from both APIs.
  */
+/** Unique key for list rows when one product may map to multiple variant cards. */
+export function carouselProductRowKey(p: {
+  id: string;
+  variantId?: string | null;
+}): string {
+  return p.variantId ?? p.id;
+}
+
 export type ApiProductForCarousel = {
+  /** Shopify product GID (stable product identity). */
   id: string;
   title: string;
   handle: string;

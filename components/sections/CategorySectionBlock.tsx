@@ -7,7 +7,10 @@ import {
 } from "@/app/components/CatchOfTheDayProductCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
-import type { ApiProductForCarousel } from "@/lib/types";
+import {
+  type ApiProductForCarousel,
+  carouselProductRowKey,
+} from "@/lib/types";
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
 /** Explicit light blue so section and cards always match on /shop (e.g. gift card category). */
@@ -163,7 +166,7 @@ export function CategorySectionBlock({
           )}
           {loading ? (
             <div
-              className="grid gap-6 mt-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+              className="grid gap-6 mt-8 grid-cols-1 lg:grid-cols-3"
               style={{ minHeight: 320 }}
             >
               {[1, 2, 3].map((i) => (
@@ -196,11 +199,14 @@ export function CategorySectionBlock({
                 theme="light"
               />
               <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-6 place-items-center"
+                className="grid grid-cols-1 lg:grid-cols-3 w-full gap-6 place-items-center"
                 style={{ gap: "24px" }}
               >
                 {carouselSlice.map((product, index) => (
-                  <div key={product.id} className="min-w-0 w-[387px] max-w-full">
+                  <div
+                    key={carouselProductRowKey(product)}
+                    className="min-w-0 w-[387px] max-w-full"
+                  >
                     <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} sectionBackgroundColor={LIGHT_BG_HEX} />
                   </div>
                 ))}
@@ -217,14 +223,17 @@ export function CategorySectionBlock({
             </div>
             )
           ) : (
-            <div className="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-6 grid-cols-1 lg:grid-cols-3">
               {cards.length === 0 ? (
                 <p className="col-span-full text-center text-slate-600 py-12">
                   No products match the current filter.
                 </p>
               ) : (
                 cards.map((product, index) => (
-                  <div key={product.id} className="w-full max-w-[387px] mx-auto">
+                  <div
+                    key={carouselProductRowKey(product)}
+                    className="w-full max-w-[387px] mx-auto"
+                  >
                     <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} sectionBackgroundColor={LIGHT_BG_HEX} />
                   </div>
                 ))

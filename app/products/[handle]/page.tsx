@@ -818,7 +818,7 @@ export default async function ProductPage({
             variant="section"
           />
           {otherProducts.length > 0 ? (
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-4">
               {otherProducts.slice(0, 4).map((p) => {
                 const subtitle = p.sizeOrDescription ?? p.productType ?? "";
                 return (
@@ -904,7 +904,7 @@ export default async function ProductPage({
             variant="section"
           />
           {recipesToShow.length > 0 ? (
-            <div className="mt-8 grid gap-6 sm:grid-cols-3">
+            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
               {recipesToShow.map((r) => {
                 const img = urlFor(r.mainImage);
                 const slug = r.slug?.trim();

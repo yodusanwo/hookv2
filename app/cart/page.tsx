@@ -634,7 +634,7 @@ export default function CartPage() {
             {recommendationsLoading ? (
               <p className="mt-4 text-sm text-slate-500">Loading…</p>
             ) : (
-              <ul className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <ul className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-4">
                 {recommendations.map((product) => {
                   const img = product.images?.edges?.[0]?.node;
                   const subtitle = product.sizeOrDescription ?? product.productType ?? "";
