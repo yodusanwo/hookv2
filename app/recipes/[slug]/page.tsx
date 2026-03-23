@@ -5,6 +5,7 @@ import { urlFor } from "@/lib/sanityImage";
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { ExploreProductsSection } from "@/components/sections/ExploreProductsSection";
+import { BackToRecipesLink } from "@/components/BackToRecipesLink";
 import { RecipeImageGallery } from "./RecipeImageGallery";
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
@@ -266,8 +267,37 @@ export default async function RecipePage({
                     </li>
                   ))}
                 </ol>
-                <ol className="list-decimal list-inside space-y-4 pl-0" start={leftCount + 1}>
-                  {rightSteps.map((d, idx) => (
+                <div>
+                  <ol
+                    className="list-decimal list-inside space-y-4 pl-0"
+                    start={leftCount + 1}
+                  >
+                    {rightSteps.map((d, idx) => (
+                      <li
+                        key={idx}
+                        className="pl-2"
+                        style={{
+                          color: "var(--Text-Color, #1E1E1E)",
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "1rem",
+                          fontWeight: 400,
+                          lineHeight: "150%",
+                        }}
+                      >
+                        {(d.step ?? "").trim() || "—"}
+                      </li>
+                    ))}
+                  </ol>
+                  <div className="mt-8">
+                    <BackToRecipesLink />
+                  </div>
+                </div>
+              </div>
+              );
+            })(            ) : (
+              <>
+                <ol className="list-decimal list-inside space-y-4 pl-0">
+                  {directions.map((d, idx) => (
                     <li
                       key={idx}
                       className="pl-2"
@@ -283,26 +313,10 @@ export default async function RecipePage({
                     </li>
                   ))}
                 </ol>
-              </div>
-              );
-            })() : (
-              <ol className="list-decimal list-inside space-y-4 pl-0">
-                {directions.map((d, idx) => (
-                  <li
-                    key={idx}
-                    className="pl-2"
-                    style={{
-                      color: "var(--Text-Color, #1E1E1E)",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "1rem",
-                      fontWeight: 400,
-                      lineHeight: "150%",
-                    }}
-                  >
-                    {(d.step ?? "").trim() || "—"}
-                  </li>
-                ))}
-              </ol>
+                <div className="mt-8">
+                  <BackToRecipesLink />
+                </div>
+              </>
             )}
           </div>
         </section>

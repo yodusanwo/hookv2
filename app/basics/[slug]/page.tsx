@@ -5,6 +5,7 @@ import { urlFor } from "@/lib/sanityImage";
 import { PortableText } from "next-sanity";
 import { youtubePortableTextComponents } from "@/components/portableText/youtubePortableText";
 import { ExploreProductsSection } from "@/components/sections/ExploreProductsSection";
+import { BackToRecipesLink } from "@/components/BackToRecipesLink";
 
 const BASIC_BY_SLUG_QUERY = `*[_type == "basic" && slug.current == $slug][0] {
   _id,
@@ -260,6 +261,11 @@ export default async function BasicDetailPage({
                   ))}
                 </div>
               )}
+              {hasTopSections && !hasBottomSections && (
+                <div className="mt-8">
+                  <BackToRecipesLink />
+                </div>
+              )}
             </div>
           </div>
 
@@ -274,14 +280,27 @@ export default async function BasicDetailPage({
                   />
                 ))}
               </div>
-              <div className="space-y-10">
-                {bottomRightSections.map((section, i) => (
-                  <BasicSectionBlock
-                    key={i}
-                    section={section}
-                    bodyColor={BODY_COLOR_SECONDARY}
-                  />
-                ))}
+              <div className="flex h-full min-h-0 flex-col">
+                {bottomRightSections.length > 0 && (
+                  <div className="space-y-10">
+                    {bottomRightSections.map((section, i) => (
+                      <BasicSectionBlock
+                        key={i}
+                        section={section}
+                        bodyColor={BODY_COLOR_SECONDARY}
+                      />
+                    ))}
+                  </div>
+                )}
+                <div
+                  className={
+                    bottomRightSections.length > 0
+                      ? "mt-8"
+                      : "mt-6 lg:mt-auto lg:pt-0"
+                  }
+                >
+                  <BackToRecipesLink />
+                </div>
               </div>
             </div>
           )}
@@ -291,17 +310,22 @@ export default async function BasicDetailPage({
               {basic.body &&
                 Array.isArray(basic.body) &&
                 basic.body.length > 0 && (
-                  <div
-                    className="prose prose-slate mx-auto max-w-3xl [&_p]:text-[16px] [&_p]:leading-[1.6] [&_p]:text-[#1E1E1E]"
-                    style={{ color: TEXT_COLOR }}
-                  >
-                    <PortableText
-                      value={
-                        basic.body as import("@portabletext/types").PortableTextBlock[]
-                      }
-                      components={youtubePortableTextComponents()}
-                    />
-                  </div>
+                  <>
+                    <div
+                      className="prose prose-slate mx-auto max-w-3xl [&_p]:text-[16px] [&_p]:leading-[1.6] [&_p]:text-[#1E1E1E]"
+                      style={{ color: TEXT_COLOR }}
+                    >
+                      <PortableText
+                        value={
+                          basic.body as import("@portabletext/types").PortableTextBlock[]
+                        }
+                        components={youtubePortableTextComponents()}
+                      />
+                    </div>
+                    <div className="mx-auto mt-8 max-w-3xl">
+                      <BackToRecipesLink />
+                    </div>
+                  </>
                 )}
             </>
           )}
