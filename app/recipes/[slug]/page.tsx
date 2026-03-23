@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { client, RECIPE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { shopifyFetch } from "@/lib/shopify";
@@ -38,6 +39,14 @@ type RecipeData = {
   images?: Array<{ _ref?: string; asset?: { _ref?: string } }>;
   ingredients?: Array<{ text?: string; productHandle?: string }>;
   directions?: Array<{ step?: string }>;
+  /** assetRef + assetMeta from GROQ — urlFor needs the ref, not a dereferenced asset doc. */
+  directionsImage?: {
+    alt?: string | null;
+    assetRef?: string | null;
+    assetMeta?: {
+      metadata?: { dimensions?: { width?: number; height?: number } };
+    } | null;
+  } | null;
 };
 
 type ExploreProductsBlockType = {
@@ -143,6 +152,36 @@ export default async function RecipePage({
   const title = recipe.title ?? "Recipe";
   const directions = recipe.directions ?? [];
 
+  let directionsImageUrl: string | null = null;
+  let directionsImageWidth = 1200;
+  let directionsImageHeight = 1600;
+  const rawDirectionsImage = recipe.directionsImage;
+  const directionsImageRef = rawDirectionsImage?.assetRef?.trim();
+  if (directionsImageRef) {
+    try {
+      /** builder.image() requires { asset: { _ref } }, not a GROQ-dereferenced asset document. */
+      const b = urlFor({ asset: { _ref: directionsImageRef } });
+      if (b) {
+        directionsImageUrl = b.width(1200).quality(88).auto("format").url();
+      }
+    } catch {
+      // skip invalid image
+    }
+  }
+
+  const dimW = rawDirectionsImage?.assetMeta?.metadata?.dimensions?.width;
+  const dimH = rawDirectionsImage?.assetMeta?.metadata?.dimensions?.height;
+  if (dimW && dimH && dimW > 0 && dimH > 0) {
+    directionsImageWidth = dimW;
+    directionsImageHeight = dimH;
+  }
+
+  const directionsImageAlt =
+    (typeof rawDirectionsImage?.alt === "string" && rawDirectionsImage.alt.trim()) ||
+    `Directions for ${title}`;
+
+  const showDirectionsSection = directions.length > 0 || Boolean(directionsImageUrl);
+
   return (
     <main className="bg-white">
       <section
@@ -225,7 +264,7 @@ export default async function RecipePage({
         </div>
       </section>
 
-      {directions.length > 0 && (
+      {showDirectionsSection && (
         <section
           className="px-4 py-12 md:py-16"
           style={{ backgroundColor: LIGHT_BG }}
@@ -244,6 +283,19 @@ export default async function RecipePage({
             >
               Directions
             </h2>
+            {directionsImageUrl ? (
+              <figure className="mb-8 max-w-3xl">
+                <Image
+                  src={directionsImageUrl}
+                  alt={directionsImageAlt}
+                  width={directionsImageWidth}
+                  height={directionsImageHeight}
+                  className="h-auto w-full rounded-lg object-contain"
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  priority={false}
+                />
+              </figure>
+            ) : null}
             {directions.length > 5 ? (() => {
               const leftCount = Math.ceil(directions.length / 2);
               const leftSteps = directions.slice(0, leftCount);
@@ -294,7 +346,7 @@ export default async function RecipePage({
                 </div>
               </div>
               );
-            })(            ) : (
+            })(            ) : directions.length > 0 ? (
               <>
                 <ol className="list-decimal list-inside space-y-4 pl-0">
                   {directions.map((d, idx) => (
@@ -317,6 +369,10 @@ export default async function RecipePage({
                   <BackToRecipesLink />
                 </div>
               </>
+            ) : (
+              <div className="mt-2">
+                <BackToRecipesLink />
+              </div>
             )}
           </div>
         </section>

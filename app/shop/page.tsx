@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getShopPageData } from "@/lib/getShopPageData";
 import { ShopPageClient } from "./ShopPageClient";
 
@@ -12,6 +13,11 @@ export default async function ShopPage({
 }: {
   searchParams?: Promise<{ category?: string }> | { category?: string };
 }) {
-  const data = await getShopPageData(searchParams);
+  const sp =
+    searchParams instanceof Promise ? await searchParams : searchParams ?? {};
+  if (typeof sp.category === "string" && sp.category.trim()) {
+    redirect(`/shop/${encodeURIComponent(sp.category.trim())}`);
+  }
+  const data = await getShopPageData(searchParams, null);
   return <ShopPageClient {...data} />;
 }

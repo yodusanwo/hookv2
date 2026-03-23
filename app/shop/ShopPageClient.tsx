@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useFooterWaveOverride } from "@/app/context/FooterWaveOverride";
 import { PromoBanner } from "@/components/PromoBanner";
 import { CategoryFilterBar } from "@/components/sections/CategoryFilterBar";
@@ -10,6 +11,7 @@ import { ShopSectionWave } from "./ShopSectionWave";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
 import type { ApiProductForCarousel } from "@/lib/types";
 import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
+import { shopPathSegmentFromValue } from "@/lib/shopPathSegment";
 
 export function ShopPageClient({
   promoBanner,
@@ -19,6 +21,7 @@ export function ShopPageClient({
   productCarouselBlock,
   productCarouselInitialProducts = [],
   initialCategoryFromUrl = null,
+  initialFilterValuesFromUrl = [],
   initialSectionProductsByHandle = {},
 }: {
   promoBanner: string | null;
@@ -33,8 +36,10 @@ export function ShopPageClient({
   productCarouselBlock?: ShopProductCarouselBlock | null;
   /** Pre-fetched products for the carousel's first collection. */
   productCarouselInitialProducts?: ApiProductForCarousel[];
-  /** When set (e.g. from /shop?category=seafood), preselect this category so only that section is shown. */
+  /** When set (e.g. /shop/seafood), preselect this collection so only that section is shown. */
   initialCategoryFromUrl?: string | null;
+  /** When set (e.g. /shop/salmon), preselect this product-type filter from Sanity shopFilterOptions. */
+  initialFilterValuesFromUrl?: string[];
   /** Server-prefetched products per collection handle (skips client loading skeleton). */
   initialSectionProductsByHandle?: Record<string, ApiProductForCarousel[]>;
 }) {
@@ -48,23 +53,40 @@ export function ShopPageClient({
       ? initialCategoryFromUrl
       : null;
 
+  const validFilterValues = new Set(filterOptions.map((f) => f.value));
+  const initialFiltersFromUrl = (initialFilterValuesFromUrl ?? []).filter((v) =>
+    validFilterValues.has(v),
+  );
+
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>(
-    [],
+    () => (initialFiltersFromUrl.length > 0 ? initialFiltersFromUrl : []),
   );
   const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<
     string[]
   >(initialCategory ? [initialCategory] : []);
 
+  const router = useRouter();
+
   const handleFilterChange = (values: string[]) => {
     setSelectedFilterValues(values);
     setSelectedCategoryHandles([]);
+    if (values.length === 0) {
+      router.push("/shop", { scroll: false });
+    } else {
+      const v = values[0];
+      router.push(`/shop/${shopPathSegmentFromValue(v)}`, { scroll: false });
+    }
   };
 
   const toggleCategory = (handle: string) => {
     const next = selectedCategoryHandles.includes(handle) ? [] : [handle];
     setSelectedCategoryHandles(next);
     setSelectedFilterValues([]);
-    // No scroll — filter-only behavior so selection consistently filters visible content
+    if (next.length === 0) {
+      router.push("/shop", { scroll: false });
+    } else {
+      router.push(`/shop/${encodeURIComponent(handle)}`, { scroll: false });
+    }
   };
 
   const visibleSections =
@@ -79,6 +101,7 @@ export function ShopPageClient({
   const clearAll = () => {
     setSelectedFilterValues([]);
     setSelectedCategoryHandles([]);
+    router.push("/shop", { scroll: false });
   };
 
   const setFooterWaveOverride = useFooterWaveOverride();

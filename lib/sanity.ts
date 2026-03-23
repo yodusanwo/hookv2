@@ -200,5 +200,12 @@ export const RECIPE_BY_SLUG_QUERY = `*[_type == "recipe" && slug.current == $slu
   "slug": slug.current,
   "images": images[] { _ref, asset-> },
   ingredients[] { text, productHandle },
-  directions[] { step }
+  directions[] { step },
+  directionsImage {
+    alt,
+    "assetRef": asset._ref,
+    "assetMeta": asset->{
+      metadata { dimensions { width, height } }
+    }
+  }
 }`;

@@ -102,6 +102,23 @@ export const recipe = defineType({
         },
       ],
     }),
+    defineField({
+      name: "directionsImage",
+      type: "image",
+      title: "Directions image (optional)",
+      description:
+        "Upload a photo of handwritten or printed instructions instead of (or in addition to) numbered steps below. Shown under the “Directions” heading.",
+      options: { accept: IMAGE_ACCEPT },
+      fields: [
+        defineField({
+          name: "alt",
+          type: "string",
+          title: "Alt text",
+          description: "Short description for accessibility (e.g. handwritten recipe card).",
+        }),
+      ],
+      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+    }),
   ],
   preview: {
     select: { title: "title" },

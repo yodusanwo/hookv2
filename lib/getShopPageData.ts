@@ -4,6 +4,7 @@ import { client, CATCH_OF_THE_DAY_BLOCK_QUERY, SHOP_PAGE_SETTINGS_QUERY } from "
 import { getCollectionProductsForCarousel } from "@/lib/getCollectionProductsForCarousel";
 import { getProductsByHandles } from "@/lib/getProductsByHandles";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
+import { resolveShopPathSegment } from "@/lib/shopPathSegment";
 import type { FilterItem } from "@/lib/types";
 import type { ShopProductCarouselBlock } from "@/app/shop/ShopProductCarousel";
 import type { ApiProductForCarousel } from "@/lib/types";
@@ -52,16 +53,23 @@ export type ShopPageData = {
   productCarouselInitialProducts: ApiProductForCarousel[];
   /** Server-prefetched products per collection handle for category sections (avoids client waterfall). */
   initialSectionProductsByHandle: Record<string, ApiProductForCarousel[]>;
+  /** When URL matches a collection handle (e.g. /shop/seafood). */
   initialCategoryFromUrl: string | null;
+  /** When URL matches a product-type filter from shopFilterOptions (e.g. /shop/salmon). */
+  initialFilterValuesFromUrl: string[];
 };
 
 export async function getShopPageData(
   searchParams?: Promise<{ category?: string }> | { category?: string },
+  /** From `/shop/[category]` path segment; wins over `?category=` when both present. */
+  pathCategory?: string | null,
 ): Promise<ShopPageData> {
   const params =
     searchParams instanceof Promise ? await searchParams : searchParams ?? {};
-  const initialCategory =
+  const fromQuery =
     typeof params.category === "string" ? params.category.trim() : null;
+  const trimmedPath = pathCategory?.trim() || null;
+  const pathOrQuerySegment = (trimmedPath || fromQuery || "").trim();
 
   let promoBanner: string | null = null;
   let promoBannerUrl: string | null = null;
@@ -80,7 +88,8 @@ export async function getShopPageData(
       productCarouselBlock,
       productCarouselInitialProducts,
       initialSectionProductsByHandle,
-      initialCategoryFromUrl: initialCategory,
+      initialCategoryFromUrl: null,
+      initialFilterValuesFromUrl: [],
     };
   }
 
@@ -181,6 +190,21 @@ export async function getShopPageData(
     console.warn("Shop page data fetch failed:", e);
   }
 
+  let initialCategoryFromUrl: string | null = null;
+  let initialFilterValuesFromUrl: string[] = [];
+  if (pathOrQuerySegment) {
+    const resolved = resolveShopPathSegment(
+      pathOrQuerySegment,
+      collectionSections,
+      filterOptions,
+    );
+    if (resolved?.kind === "collection") {
+      initialCategoryFromUrl = resolved.handle;
+    } else if (resolved?.kind === "filter") {
+      initialFilterValuesFromUrl = [resolved.value];
+    }
+  }
+
   return {
     promoBanner,
     promoBannerUrl,
@@ -189,6 +213,7 @@ export async function getShopPageData(
     productCarouselBlock,
     productCarouselInitialProducts,
     initialSectionProductsByHandle,
-    initialCategoryFromUrl: initialCategory,
+    initialCategoryFromUrl,
+    initialFilterValuesFromUrl,
   };
 }
