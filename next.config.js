@@ -62,7 +62,7 @@ const nextConfig = {
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: https: blob:",
               "connect-src 'self' https://*.sanity.net https://*.sanity.io https://*.api.sanity.io wss://*.api.sanity.io https://core.sanity.com https://core.sanity-cdn.com https://*.shopify.com https://*.klaviyo.com wss: https:",
-              "frame-src 'self' https://*.shopify.com https://checkout.shopify.com https://*.sanity.io https://*.sanity.net",
+              "frame-src 'self' https://*.shopify.com https://checkout.shopify.com https://*.sanity.io https://*.sanity.net https://www.youtube.com https://www.youtube-nocookie.com",
               "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'",

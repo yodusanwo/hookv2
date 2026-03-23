@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { client, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { PortableText } from "next-sanity";
+import { youtubePortableTextComponents } from "@/components/portableText/youtubePortableText";
 import { ExploreProductsSection } from "@/components/sections/ExploreProductsSection";
 
 const BASIC_BY_SLUG_QUERY = `*[_type == "basic" && slug.current == $slug][0] {
@@ -142,6 +143,7 @@ function BasicSectionBlock({
         >
           <PortableText
             value={section.body as import("@portabletext/types").PortableTextBlock[]}
+            components={youtubePortableTextComponents()}
           />
         </div>
       )}
@@ -279,6 +281,7 @@ export default async function BasicDetailPage({
                 >
                   <PortableText
                     value={basic.body as import("@portabletext/types").PortableTextBlock[]}
+                    components={youtubePortableTextComponents()}
                   />
                 </div>
               )}
