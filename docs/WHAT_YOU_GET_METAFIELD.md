@@ -2,6 +2,11 @@
 
 The product page shows **What You Get** content in the right column of the Product Description section (below the images). This comes from a Shopify **product metafield** (rich text) so each product can have its own formatted list and notes. When the metafield is empty, the app falls back to a default bullet list.
 
+### Custom section title (replaces “What You Get”)
+
+- **Rich text:** Put the **title in the first block** (paragraph or heading), then add **at least one more block** (paragraph, list, etc.). The first block becomes the section heading; everything after it is the body. If the metafield has only **one** block, the heading stays **What You Get** and the whole field is the body.
+- **Plain text (legacy):** Put the **first line** as the title, then a newline, then the rest. The first line becomes the section heading; lines after the first are the body. A **single line** keeps the heading **What You Get** and uses that line as the body.
+
 ## Metafield used
 
 - **Namespace:** `custom`

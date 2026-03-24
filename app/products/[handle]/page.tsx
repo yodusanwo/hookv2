@@ -24,7 +24,7 @@ import {
   RECIPES_LIST_QUERY,
 } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
-import { renderShopifyRichText } from "@/lib/shopifyRichText";
+import { renderShopifyRichText, splitWhatYouGetMetafield } from "@/lib/shopifyRichText";
 import Link from "next/link";
 
 type ProductByHandleResponse = {
@@ -435,6 +435,10 @@ export default async function ProductPage({
     siteSettings?.freeShippingMessage?.trim() ||
     "Free shipping for orders over $50";
 
+  const whatYouGetRaw = product.whatYouGet?.value?.trim() ?? null;
+  const whatYouGetSplit = splitWhatYouGetMetafield(whatYouGetRaw);
+  const whatYouGetHeading = whatYouGetSplit.sectionTitle ?? "What You Get";
+
   const isFrozen =
     product.isFrozen?.value?.toLowerCase() === "true" ||
     (product.productType?.toLowerCase() ?? "").includes("frozen");
@@ -708,14 +712,17 @@ export default async function ProductPage({
                   lineHeight: "150%",
                 }}
               >
-                What You Get
+                {whatYouGetHeading}
               </h2>
               <div style={{ width: "90%" }}>
-                {product.whatYouGet?.value?.trim() ? (
+                {whatYouGetRaw ? (
                   (() => {
-                    const html = renderShopifyRichText(
-                      product.whatYouGet!.value,
-                    );
+                    const source =
+                      whatYouGetSplit.sectionTitle != null
+                        ? (whatYouGetSplit.bodyValue ?? "")
+                        : (whatYouGetSplit.bodyValue ?? whatYouGetRaw);
+                    if (!source?.trim()) return null;
+                    const html = renderShopifyRichText(source);
                     if (html) {
                       return (
                         <div
@@ -744,7 +751,7 @@ export default async function ProductPage({
                           lineHeight: "160%",
                         }}
                       >
-                        {product.whatYouGet!.value.trim()}
+                        {source.trim()}
                       </div>
                     );
                   })()
