@@ -142,10 +142,13 @@ export function CatchOfTheDayProductCard({
   const variantParam = product.variantId
     ? (product.variantId.match(/\d+$/)?.[0] ?? product.variantId)
     : null;
+  const handle = product.handle?.trim() ?? "";
   const productHref =
-    variantParam ?
-      `/products/${product.handle}?variant=${variantParam}`
-    : `/products/${product.handle}`;
+    !handle
+      ? "/shop"
+      : variantParam
+        ? `/products/${handle}?variant=${variantParam}`
+        : `/products/${handle}`;
 
   // Title: optional cleanup of trailing parentheses so "Name (8 oz)" shows as "Name"
   const titleSizeMatch = product.title.match(/\s*\(([^)]+)\)\s*$/);

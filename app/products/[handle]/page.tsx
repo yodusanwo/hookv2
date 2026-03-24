@@ -438,6 +438,7 @@ export default async function ProductPage({
   const whatYouGetRaw = product.whatYouGet?.value?.trim() ?? null;
   const whatYouGetSplit = splitWhatYouGetMetafield(whatYouGetRaw);
   const whatYouGetHeading = whatYouGetSplit.sectionTitle ?? "What You Get";
+  const showWhatYouGetColumn = Boolean(whatYouGetRaw);
 
   const isFrozen =
     product.isFrozen?.value?.toLowerCase() === "true" ||
@@ -653,7 +654,9 @@ export default async function ProductPage({
         style={{ backgroundColor: LIGHT_BG }}
       >
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-10 md:grid-cols-2">
+          <div
+            className={`grid gap-10 ${showWhatYouGetColumn ? "md:grid-cols-2" : ""}`}
+          >
             <div>
               <h2
                 style={{
@@ -701,22 +704,22 @@ export default async function ProductPage({
                 )}
               </div>
             </div>
-            <div>
-              <h2
-                style={{
-                  color: "var(--Text-Color, #1E1E1E)",
-                  fontFamily: "Inter",
-                  fontSize: "1.5rem",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  lineHeight: "150%",
-                }}
-              >
-                {whatYouGetHeading}
-              </h2>
-              <div style={{ width: "90%" }}>
-                {whatYouGetRaw ? (
-                  (() => {
+            {showWhatYouGetColumn ? (
+              <div>
+                <h2
+                  style={{
+                    color: "var(--Text-Color, #1E1E1E)",
+                    fontFamily: "Inter",
+                    fontSize: "1.5rem",
+                    fontStyle: "normal",
+                    fontWeight: 600,
+                    lineHeight: "150%",
+                  }}
+                >
+                  {whatYouGetHeading}
+                </h2>
+                <div style={{ width: "90%" }}>
+                  {(() => {
                     const source =
                       whatYouGetSplit.sectionTitle != null
                         ? (whatYouGetSplit.bodyValue ?? "")
@@ -754,27 +757,10 @@ export default async function ProductPage({
                         {source.trim()}
                       </div>
                     );
-                  })()
-                ) : (
-                  <ul
-                    className="mt-3 list-outside list-disc space-y-2 pl-5"
-                    style={{
-                      color: "var(--Text-Color, #1E1E1E)",
-                      fontFamily: "Inter",
-                      fontSize: "1rem",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "160%",
-                    }}
-                  >
-                    <li>100% wild Alaskan seafood</li>
-                    <li>Individually vacuum-sealed</li>
-                    <li>All-natural (preservative free)</li>
-                    <li>Ideal for pan-searing, grilling, or oven cooking</li>
-                  </ul>
-                )}
+                  })()}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
       </section>

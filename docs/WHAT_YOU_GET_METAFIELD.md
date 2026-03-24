@@ -1,6 +1,6 @@
 # What You Get metafield
 
-The product page shows **What You Get** content in the right column of the Product Description section (below the images). This comes from a Shopify **product metafield** (rich text) so each product can have its own formatted list and notes. When the metafield is empty, the app falls back to a default bullet list.
+The product page can show **What You Get** content in the right column next to **Product Description** (below the images). This comes from a Shopify **product metafield** (rich text). **If the metafield is empty for a product, the whole column is omitted** and the description uses the full width.
 
 ### Custom section title (replaces “What You Get”)
 
@@ -76,7 +76,7 @@ Then a separate paragraph:
 
 A quick note: We pack these boxes by weight, so the number of pieces will vary slightly depending on the fish. Portions are generally around 8 oz each, and your total box weight will always meet or exceed the size selected.
 
-When the metafield is empty, the app shows a default list: 100% wild Alaskan seafood, Individually vacuum-sealed, All-natural (preservative free), Ideal for pan-searing, grilling, or oven cooking.
+If you leave the metafield empty on a product, that product has no “What You Get” block.
 
 ## Migrating from Multi-line text
 
