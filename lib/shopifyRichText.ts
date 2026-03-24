@@ -5,6 +5,11 @@ import {
 
 const TITLE_BLOCK_TYPES = new Set(["paragraph", "heading"]);
 
+function isTitleBlockType(type: string | undefined): boolean {
+  if (!type) return false;
+  return TITLE_BLOCK_TYPES.has(type.toLowerCase());
+}
+
 function plainTextFromRichTextNode(node: unknown): string {
   if (node == null || typeof node !== "object") return "";
   const n = node as { type?: string; value?: string; children?: unknown[] };
@@ -60,27 +65,89 @@ export function splitWhatYouGetMetafield(
 
   const root = parsed as { type: "root"; children?: unknown[] };
   const children = root.children;
-  if (!Array.isArray(children) || children.length < 2) {
+  if (!Array.isArray(children) || children.length === 0) {
     return { sectionTitle: null, bodyValue: trimmed };
   }
 
-  const first = children[0];
-  const firstType = (first as { type?: string })?.type;
-  if (!firstType || !TITLE_BLOCK_TYPES.has(firstType)) {
-    return { sectionTitle: null, bodyValue: trimmed };
+  /** Two+ top-level blocks: first paragraph/heading = section title, rest = body. */
+  if (children.length >= 2) {
+    const first = children[0];
+    const firstType = (first as { type?: string })?.type;
+    if (isTitleBlockType(firstType)) {
+      const titleText = plainTextFromRichTextNode(first).trim();
+      if (titleText) {
+        const restRoot = { ...root, children: children.slice(1) };
+        return {
+          sectionTitle: titleText,
+          bodyValue: JSON.stringify(restRoot),
+        };
+      }
+    }
   }
 
-  const titleText = plainTextFromRichTextNode(first).trim();
-  if (!titleText) {
-    return { sectionTitle: null, bodyValue: trimmed };
+  /** Single block — common Shopify patterns that don’t use a second top-level node. */
+  if (children.length === 1) {
+    const only = children[0];
+    const onlyType = (only as { type?: string })?.type?.toLowerCase();
+
+    /** “Perfect for:” as first bullet, real bullets follow (one list, multiple items). */
+    if (onlyType === "list") {
+      const listNode = only as {
+        type: "list";
+        listType?: string;
+        children?: unknown[];
+      };
+      const items = (listNode.children ?? []).filter(
+        (c) => (c as { type?: string }).type === "list-item",
+      );
+      if (items.length >= 2) {
+        const titleText = plainTextFromRichTextNode(items[0]).trim();
+        if (titleText) {
+          const restRoot = {
+            type: "root" as const,
+            children: [
+              {
+                type: "list",
+                listType: listNode.listType ?? "bullet",
+                children: items.slice(1),
+              },
+            ],
+          };
+          return {
+            sectionTitle: titleText,
+            bodyValue: JSON.stringify(restRoot),
+          };
+        }
+      }
+    }
+
+    /** One paragraph/heading with a title line then body (line breaks inside the block). */
+    if (onlyType === "paragraph" || onlyType === "heading") {
+      const full = plainTextFromRichTextNode(only).trim();
+      const lines = full.split(/\r?\n/);
+      if (lines.length >= 2) {
+        const titleLine = lines[0].trim();
+        const restText = lines.slice(1).join("\n").trim();
+        if (titleLine && restText) {
+          const restRoot = {
+            type: "root" as const,
+            children: [
+              {
+                type: "paragraph",
+                children: [{ type: "text", value: restText }],
+              },
+            ],
+          };
+          return {
+            sectionTitle: titleLine,
+            bodyValue: JSON.stringify(restRoot),
+          };
+        }
+      }
+    }
   }
 
-  const restChildren = children.slice(1);
-  const restRoot = { ...root, children: restChildren };
-  return {
-    sectionTitle: titleText,
-    bodyValue: JSON.stringify(restRoot),
-  };
+  return { sectionTitle: null, bodyValue: trimmed };
 }
 
 /**

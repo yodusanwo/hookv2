@@ -4,7 +4,10 @@ The product page shows **What You Get** content in the right column of the Produ
 
 ### Custom section title (replaces “What You Get”)
 
-- **Rich text:** Put the **title in the first block** (paragraph or heading), then add **at least one more block** (paragraph, list, etc.). The first block becomes the section heading; everything after it is the body. If the metafield has only **one** block, the heading stays **What You Get** and the whole field is the body.
+- **Rich text — two top-level blocks:** Put the **title in the first block** (paragraph or heading), then add **at least one more block** (paragraph, list, etc.). The first block becomes the section heading; everything after it is the body.
+- **Rich text — one list only:** If the whole section is a **single bullet list** and the **first bullet** is the label (e.g. `Perfect for:`) with the real bullets after it, that **first list item** becomes the section heading and the **remaining bullets** are the body.
+- **Rich text — one paragraph with line breaks:** If you only have **one paragraph** but use **multiple lines** (title on line 1, body starting on line 2), the **first line** becomes the section heading and the **rest of the paragraph** is the body.
+- **Otherwise:** If the metafield has only **one** block that doesn’t match the above, the heading stays **What You Get** and the whole field is the body.
 - **Plain text (legacy):** Put the **first line** as the title, then a newline, then the rest. The first line becomes the section heading; lines after the first are the body. A **single line** keeps the heading **What You Get** and uses that line as the body.
 
 ## Metafield used
