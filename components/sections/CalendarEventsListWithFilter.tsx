@@ -16,6 +16,17 @@ type Event = {
   eventYear?: number;
 };
 
+/** Month 1–12 for “now” in America/Chicago (matches lib/googleSheets.ts MARKET_TIMEZONE). */
+function getCurrentMonthChicago(): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago",
+    month: "numeric",
+  }).formatToParts(new Date());
+  const monthPart = parts.find((p) => p.type === "month");
+  const n = monthPart ? parseInt(monthPart.value, 10) : NaN;
+  return Number.isFinite(n) && n >= 1 && n <= 12 ? n : new Date().getMonth() + 1;
+}
+
 export function CalendarEventsListWithFilter({
   events,
   showAllUrl,
@@ -25,7 +36,9 @@ export function CalendarEventsListWithFilter({
   showAllUrl?: string | null;
   bgColor: string;
 }) {
-  const [selectedMonth, setSelectedMonth] = React.useState<number | null>(null);
+  const [selectedMonth, setSelectedMonth] = React.useState<number | null>(
+    getCurrentMonthChicago,
+  );
 
   /** Run after React commits and the browser paints — fixes mobile Safari where immediate scrollIntoView from a click often does nothing. */
   const scrollEventsSectionIntoView = React.useCallback(() => {
