@@ -108,9 +108,10 @@ export function renderShopifyRichText(value: string | null | undefined): string 
       newLineToBreak: true,
       classes: {
         p: "mb-4 last:mb-0 text-[var(--Text-Color,#1E1E1E)]",
-        ul: "list-disc list-inside mb-4 last:mb-0 text-[var(--Text-Color,#1E1E1E)]",
-        ol: "list-decimal list-inside mb-4 last:mb-0 text-[var(--Text-Color,#1E1E1E)]",
-        li: "text-sm leading-6 text-[var(--Text-Color,#1E1E1E)]",
+        /** Outside markers + padding so wrapped lines align with first line, not under the bullet. */
+        ul: "list-disc list-outside mb-4 last:mb-0 pl-5 text-[var(--Text-Color,#1E1E1E)]",
+        ol: "list-decimal list-outside mb-4 last:mb-0 pl-5 text-[var(--Text-Color,#1E1E1E)]",
+        li: "list-outside text-sm leading-6 text-[var(--Text-Color,#1E1E1E)]",
         a: "underline hover:opacity-80 text-[var(--Text-Color,#1E1E1E)]",
         strong: "font-semibold text-[var(--Text-Color,#1E1E1E)]",
         em: "italic text-[var(--Text-Color,#1E1E1E)]",

@@ -670,7 +670,7 @@ export default async function ProductPage({
               <div style={{ width: "90%" }}>
                 {product.descriptionHtml ? (
                   <div
-                    className="product-description mt-3 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_p:first-child]:mt-0 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1 [&_ul]:mb-4"
+                    className="product-description mt-3 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_p:first-child]:mt-0 [&_ul]:list-disc [&_ul]:list-outside [&_ul]:pl-5 [&_ul]:space-y-1 [&_ul]:mb-4"
                     style={{
                       color: "var(--Text-Color, #1E1E1E)",
                       fontFamily: "Inter",
@@ -726,7 +726,7 @@ export default async function ProductPage({
                     if (html) {
                       return (
                         <div
-                          className="what-you-get mt-3"
+                          className="what-you-get mt-3 [&_ul]:list-outside [&_ul]:pl-5 [&_ol]:list-outside [&_ol]:pl-5"
                           style={{
                             color: "var(--Text-Color, #1E1E1E)",
                             fontFamily: "Inter",
@@ -757,7 +757,7 @@ export default async function ProductPage({
                   })()
                 ) : (
                   <ul
-                    className="mt-3 list-inside list-disc space-y-2"
+                    className="mt-3 list-outside list-disc space-y-2 pl-5"
                     style={{
                       color: "var(--Text-Color, #1E1E1E)",
                       fontFamily: "Inter",
