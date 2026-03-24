@@ -1,3 +1,17 @@
+/**
+ * Maps Sanity `page.sections[]` to React section components by `block._type`.
+ *
+ * Used by the home page (`app/page.tsx`), dynamic CMS pages (`app/[slug]/page.tsx`), and
+ * any other route that passes a Sanity page document — not `/` only.
+ *
+ * - `pageSlug` — Optional; comes from the CMS page slug and tweaks layout (waves, padding,
+ *   carousel arrow color on calendar/recipes, wild-vs-farmed-only wave glue). See props below.
+ * - `promoBanner` / `promoBannerUrl` — Only passed into `heroBlock` → `HeroSection`.
+ * - `canonicalExploreProductsBlock` — When set, merged into each `exploreProductsBlock` so
+ *   non-home pages can reuse the home Explore copy/collections; see `case "exploreProductsBlock"`.
+ * - `upcomingEventsBlock` — Google Sheet rows are NOT loaded here; the parent injects `events`
+ *   and `eventsLimit` (e.g. `app/page.tsx` for home) before sections reach PageBuilder.
+ */
 import * as React from "react";
 import { Fragment, Suspense } from "react";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
@@ -119,10 +133,12 @@ export function PageBuilder({
 
   return (
     <>
+      {/* Section order follows the Sanity sections array. Unknown _type → default branch (null). */}
       {items.map((block, idx) => {
         const key = block._key ?? `section-${idx}`;
         switch (block._type) {
           case "heroBlock":
+            /* Promo banner props apply only to the hero. */
             return (
               <HeroSection
                 key={key}
@@ -132,6 +148,7 @@ export function PageBuilder({
               />
             );
           case "catchOfTheDayBlock":
+            /* Suspense: async server work + data fetching inside CatchOfTheDaySection. */
             return (
               <Suspense
                 key={key}
@@ -170,6 +187,12 @@ export function PageBuilder({
               </Suspense>
             );
           case "exploreProductsBlock": {
+            /*
+             * Merge: `canonicalExploreProductsBlock` supplies home Explore marketing content
+             * (title, description, filterCollections, etc.); the page’s own block may still
+             * override `backgroundColor` and `hideWave`.
+             * `wildWave` below is layout-only for WILD_VS_FARMED_PAGE_SLUG (second ourStoryExtended).
+             */
             const prevBlock = idx > 0 ? items[idx - 1] : null;
             const prevIsTeamBios = prevBlock?._type === "teamBiosBlock";
             const prevIsOurStoryExtended =
@@ -189,7 +212,6 @@ export function PageBuilder({
               (prevIsTeamBios && teamBiosShowsBottomWave) ||
               (!!prevIsOurStoryExtended && ourStoryExtendedShowsWave) ||
               prevIsSecondOurStoryExtended;
-            // Use home page content (description, categories, images, /shop links) when provided; page block can override backgroundColor and hideWave.
             const pageBlock = block as {
               backgroundColor?: string;
               hideWave?: boolean;
@@ -369,6 +391,7 @@ export function PageBuilder({
             );
           }
           case "upcomingEventsBlock":
+            /* Events + limit: injected by parent (e.g. app/page.tsx). pageSlug "calendar" → month filter UI. */
             return (
               <UpcomingEventsSection
                 key={key}
@@ -414,6 +437,7 @@ export function PageBuilder({
               />
             );
           default:
+            /* Unknown block types: skip so Studio can add new schemas without breaking old deploys. */
             return null;
         }
       })}

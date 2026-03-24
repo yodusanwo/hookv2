@@ -1,3 +1,22 @@
+/**
+ * Home page (`/`) — server component.
+ *
+ * Two render paths:
+ * 1. Sanity CMS — `HOMEPAGE_QUERY` returns page sections; rendered via `PageBuilder`.
+ *    Requires `NEXT_PUBLIC_SANITY_PROJECT_ID` + `NEXT_PUBLIC_SANITY_DATASET`.
+ * 2. Fallback — if Sanity is off or the homepage doc has no sections, we fetch a fixed
+ *    Shopify product list and render `HomePageFallback` (static hero + hard-coded copy).
+ *
+ * Cross-cutting:
+ * - `upcomingEventsBlock` sections get `events` from Google Sheets (`getEventsFromSheet`)
+ *   and `eventsLimit: 3` injected here (Studio does not store sheet rows).
+ * - `HeroImagePreload` injects `<link rel="preload">` for LCP; URL comes from the first
+ *   hero image in Sanity sections, or a constant for the fallback path.
+ * - Promo banner text/link come from `SITE_SETTINGS_QUERY` when Sanity is available.
+ *
+ * Queries use `revalidate: 60` (ISR-ish caching). Sheet fetch uses its own revalidation
+ * inside `lib/googleSheets.ts`.
+ */
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { HomePageFallback } from "@/components/home/HomePageFallback";
 import { getEventsFromSheet } from "@/lib/googleSheets";
@@ -20,6 +39,7 @@ import {
 
 export default async function Home() {
   try {
+    // Gate Sanity: without project + dataset, we skip fetches and go straight to fallback.
     const hasSanity =
       !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
       !!process.env.NEXT_PUBLIC_SANITY_DATASET;
@@ -33,6 +53,7 @@ export default async function Home() {
 
     if (hasSanity) {
       try {
+        // Homepage document, global promo settings, shared Explore Products block (used by PageBuilder).
         const [homePage, settings, canonicalExplore] = await Promise.all([
           client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
           client.fetch<{ promoBanner?: string; promoBannerUrl?: string } | null>(
@@ -55,8 +76,10 @@ export default async function Home() {
       }
     }
 
+    // Primary path: CMS-driven layout (see `sanity/schema` / Studio for block types).
     if (sanityPage?.sections && Array.isArray(sanityPage.sections) && sanityPage.sections.length > 0) {
       const sheetEvents = await getEventsFromSheet();
+      // Upcoming Events block expects `events` at runtime; sheet is the source of truth.
       const sectionsWithEvents = sanityPage.sections.map((section: unknown) => {
         const s = section as { _type?: string; [key: string]: unknown };
         if (s._type === "upcomingEventsBlock") {
@@ -81,6 +104,7 @@ export default async function Home() {
       );
     }
 
+    // Fallback path: no Sanity homepage content — static marketing shell + live Shopify products.
     const data = await shopifyFetch<ShopifyHomeProductsResponse>({
       query: SHOPIFY_HOME_PRODUCTS_QUERY,
       variables: { first: 12 },
@@ -98,6 +122,7 @@ export default async function Home() {
       </>
     );
   } catch (error) {
+    // Typically Shopify Storefront failure when fallback path runs; Sanity path errors often hit inner catch above.
     console.error("Error fetching products:", error);
     return (
       <main className="min-h-screen p-8 bg-gray-50">

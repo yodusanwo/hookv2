@@ -38,6 +38,14 @@ export const recipe = defineType({
       options: { layout: "grid" },
     }),
     defineField({
+      name: "summary",
+      type: "text",
+      title: "Summary (optional)",
+      description:
+        "Short intro shown on the recipe page between the title and the Ingredients list (e.g. what makes this dish special).",
+      rows: 4,
+    }),
+    defineField({
       name: "ingredients",
       type: "array",
       title: "Ingredients",

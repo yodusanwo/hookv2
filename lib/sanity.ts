@@ -197,6 +197,7 @@ export const RECIPES_BY_PRODUCT_HANDLE_QUERY = `*[_type == "recipe" && $productH
 export const RECIPE_BY_SLUG_QUERY = `*[_type == "recipe" && slug.current == $slug][0] {
   _id,
   title,
+  summary,
   "slug": slug.current,
   "images": images[] { _ref, asset-> },
   ingredients[] { text, productHandle, shopCategorySegment },

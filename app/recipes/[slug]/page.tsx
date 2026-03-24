@@ -38,6 +38,8 @@ const PRODUCT_BY_HANDLE_FOR_CART_QUERY = `
 type RecipeData = {
   _id: string;
   title?: string;
+  /** Optional intro between title and Ingredients. */
+  summary?: string | null;
   slug?: string;
   images?: Array<{ _ref?: string; asset?: { _ref?: string } }>;
   ingredients?: Array<{
@@ -78,7 +80,11 @@ export async function generateMetadata({
   try {
     const recipe = await client.fetch<RecipeData | null>(RECIPE_BY_SLUG_QUERY, { slug });
     const title = recipe?.title ?? "Recipe";
-    return { title: `${title} — Recipe` };
+    const desc = recipe?.summary?.trim();
+    return {
+      title: `${title} — Recipe`,
+      ...(desc && { description: desc.length > 160 ? `${desc.slice(0, 157)}…` : desc }),
+    };
   } catch {
     return { title: "Recipe" };
   }
@@ -226,6 +232,21 @@ export default async function RecipePage({
               >
                 {title}
               </h1>
+
+              {recipe.summary?.trim() ? (
+                <p
+                  className="mt-6 max-w-prose whitespace-pre-line"
+                  style={{
+                    color: "var(--Text-Color, #1E1E1E)",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "1rem",
+                    fontWeight: 400,
+                    lineHeight: "150%",
+                  }}
+                >
+                  {recipe.summary.trim()}
+                </p>
+              ) : null}
 
               <h2
                 className="mt-8 mb-4"

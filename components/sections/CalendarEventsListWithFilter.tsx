@@ -16,15 +16,39 @@ type Event = {
   eventYear?: number;
 };
 
-/** Month 1–12 for “now” in America/Chicago (matches lib/googleSheets.ts MARKET_TIMEZONE). */
+const CHICAGO: Intl.DateTimeFormatOptions = {
+  timeZone: "America/Chicago",
+  month: "numeric",
+};
+
+function isValidMonth(n: number): boolean {
+  return Number.isFinite(n) && n >= 1 && n <= 12;
+}
+
+/** Month 1–12 for “now” in America/Chicago (matches lib/googleSheets.ts MARKET_TIMEZONE). Never uses the browser local timezone. */
 function getCurrentMonthChicago(): number {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Chicago",
-    month: "numeric",
-  }).formatToParts(new Date());
-  const monthPart = parts.find((p) => p.type === "month");
-  const n = monthPart ? parseInt(monthPart.value, 10) : NaN;
-  return Number.isFinite(n) && n >= 1 && n <= 12 ? n : new Date().getMonth() + 1;
+  const now = new Date();
+  const fmt = new Intl.DateTimeFormat("en-US", CHICAGO);
+
+  try {
+    const parts = fmt.formatToParts(now);
+    const monthPart = parts.find((p) => p.type === "month");
+    const n = monthPart ? parseInt(monthPart.value, 10) : NaN;
+    if (isValidMonth(n)) return n;
+  } catch {
+    /* try .format() */
+  }
+
+  try {
+    const s = fmt.format(now).trim();
+    const n = parseInt(s, 10);
+    if (isValidMonth(n)) return n;
+  } catch {
+    /* last resort below */
+  }
+
+  // Extremely rare: no Chicago month from Intl — avoid local TZ; default to 1.
+  return 1;
 }
 
 export function CalendarEventsListWithFilter({
@@ -36,8 +60,9 @@ export function CalendarEventsListWithFilter({
   showAllUrl?: string | null;
   bgColor: string;
 }) {
-  const [selectedMonth, setSelectedMonth] = React.useState<number | null>(
-    getCurrentMonthChicago,
+  /** Lazy initializer runs once on mount; value is always 1–12 (see getCurrentMonthChicago). */
+  const [selectedMonth, setSelectedMonth] = React.useState<number | null>(() =>
+    getCurrentMonthChicago(),
   );
 
   /** Run after React commits and the browser paints — fixes mobile Safari where immediate scrollIntoView from a click often does nothing. */

@@ -52,35 +52,52 @@ export function HeroCarousel({
             : "relative w-full overflow-hidden h-[min(75vh,560px)] sm:h-[min(70vh,580px)] md:h-[760px]"
         }
       >
-        {active.src ? (
-          <Image
-            key={active.src}
-            src={active.src}
-            alt={active.alt}
-            fill
-            priority={idx === 0}
-            sizes="100vw"
-            className={`${IMAGE_LAYER} object-cover`}
-            style={
-              variant === "story"
-                ? {
-                    ...IMAGE_LAYER_STYLE,
-                    objectPosition: "center 100%",
-                    transform: "translateY(12%)",
-                  }
-                : {
-                    ...IMAGE_LAYER_STYLE,
-                    objectPosition: "center 100%",
-                    transform: "translateY(12%)",
-                  }
-            }
-          />
+        {/* Stack one Image per slide (stable key by index) so slides don’t remount; cross-fade via opacity. */}
+        {safeItems.some((it) => it.src) ? (
+          safeItems.map((item, i) =>
+            item.src ? (
+              <Image
+                key={i}
+                src={item.src}
+                alt={item.alt}
+                fill
+                priority={i === 0}
+                sizes="100vw"
+                className={`${IMAGE_LAYER} object-cover transition-opacity duration-500 ${
+                  idx === i
+                    ? "z-[1] opacity-100"
+                    : "z-0 opacity-0 pointer-events-none"
+                }`}
+                aria-hidden={idx !== i}
+                style={
+                  variant === "story"
+                    ? {
+                        ...IMAGE_LAYER_STYLE,
+                        objectPosition: "center 100%",
+                        transform: "translateY(12%)",
+                      }
+                    : {
+                        ...IMAGE_LAYER_STYLE,
+                        objectPosition: "center 100%",
+                        transform: "translateY(12%)",
+                      }
+                }
+              />
+            ) : null,
+          )
         ) : (
           <div
             className={`${IMAGE_LAYER} bg-slate-200`}
             style={IMAGE_LAYER_STYLE}
           />
         )}
+        {/* Active slide has no image URL: show placeholder (e.g. mixed empty and filled slides). */}
+        {!active.src && safeItems.some((it) => it.src) ? (
+          <div
+            className={`${IMAGE_LAYER} z-[2] bg-slate-200`}
+            style={IMAGE_LAYER_STYLE}
+          />
+        ) : null}
         <div
           className={`${IMAGE_LAYER} ring-1 ring-black/5`}
           style={IMAGE_LAYER_STYLE}

@@ -1,3 +1,11 @@
+/**
+ * Fallback home UI when Sanity has no homepage sections (or Sanity env is missing).
+ * Invoked from `app/page.tsx` after a Shopify query for featured products.
+ *
+ * Not CMS-editable: hero copy, about text, and section order are fixed here.
+ * Product carousel tiles use live Shopify images/titles; promo banner still comes
+ * from Sanity site settings when the parent fetch succeeded.
+ */
 import Image from "next/image";
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
