@@ -1,13 +1,16 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { client, RECIPE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
+import { normalizeIngredientShopSegment } from "@/lib/shopPathSegment";
 import { urlFor } from "@/lib/sanityImage";
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { ExploreProductsSection } from "@/components/sections/ExploreProductsSection";
 import { BackToRecipesLink } from "@/components/BackToRecipesLink";
 import { RecipeImageGallery } from "./RecipeImageGallery";
+import { normalizeRecipeSlugParam } from "@/lib/recipeSlug";
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
 
@@ -37,7 +40,12 @@ type RecipeData = {
   title?: string;
   slug?: string;
   images?: Array<{ _ref?: string; asset?: { _ref?: string } }>;
-  ingredients?: Array<{ text?: string; productHandle?: string }>;
+  ingredients?: Array<{
+    text?: string;
+    productHandle?: string;
+    /** Path segment for `/shop/[segment]` (e.g. salmon). Overrides product add-to-cart when set. */
+    shopCategorySegment?: string | null;
+  }>;
   directions?: Array<{ step?: string }>;
   /** assetRef + assetMeta from GROQ — urlFor needs the ref, not a dereferenced asset doc. */
   directionsImage?: {
@@ -64,8 +72,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const slug = normalizeRecipeSlugParam((await params).slug);
   if (!client) return { title: "Recipe" };
+  if (!slug) return { title: "Recipe" };
   try {
     const recipe = await client.fetch<RecipeData | null>(RECIPE_BY_SLUG_QUERY, { slug });
     const title = recipe?.title ?? "Recipe";
@@ -97,7 +106,12 @@ export default async function RecipePage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  const rawSlug = (await params).slug ?? "";
+  const slug = normalizeRecipeSlugParam(rawSlug);
+  if (!slug) notFound();
+  if (rawSlug !== slug) {
+    redirect(`/recipes/${encodeURIComponent(slug)}`);
+  }
 
   let recipe: RecipeData | null = null;
   let exploreProductsBlock: ExploreProductsBlockType | null = null;
@@ -229,8 +243,12 @@ export default async function RecipePage({
               <ul className="list-none space-y-2 p-0 m-0">
                 {ingredients.map((ing, idx) => {
                   const text = ing.text ?? "";
+                  const shopSegment = normalizeIngredientShopSegment(
+                    ing.shopCategorySegment,
+                  );
                   const handle = ing.productHandle?.trim();
-                  const product = handle ? productsByHandle[handle] : null;
+                  const product =
+                    !shopSegment && handle ? productsByHandle[handle] : null;
                   const variants = product?.variants?.edges?.map((e) => e.node) ?? [];
                   const options = product?.options ?? [];
 
@@ -247,6 +265,14 @@ export default async function RecipePage({
                       }}
                     >
                       <span>{text}</span>
+                      {shopSegment ? (
+                        <Link
+                          href={`/shop/${encodeURIComponent(shopSegment)}`}
+                          className="inline-flex h-9 shrink-0 items-center justify-center rounded-md border-2 border-[var(--brand-navy)] bg-white px-4 text-sm font-semibold text-[var(--brand-navy)] transition-opacity hover:bg-slate-50"
+                        >
+                          Shop
+                        </Link>
+                      ) : null}
                       {product && variants.length > 0 && (
                         <AddToCart
                           productTitle={product.title}

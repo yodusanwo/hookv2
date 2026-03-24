@@ -1,5 +1,24 @@
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
 
+/**
+ * Recipe ingredient field: editors may enter `salmon`, `shop/salmon`, or `/shop/salmon`.
+ * Returns a single path segment for `href="/shop/[segment]"`.
+ */
+export function normalizeIngredientShopSegment(
+  raw: string | undefined | null,
+): string | null {
+  let s = typeof raw === "string" ? raw.trim() : "";
+  if (!s) return null;
+  s = s.replace(/^\/+|\/+$/g, "");
+  if (s.toLowerCase().startsWith("shop/")) {
+    s = s.slice(5);
+  }
+  s = s.trim();
+  const first = s.split("/").filter(Boolean)[0];
+  if (!first) return null;
+  return first;
+}
+
 /** Builds the `/shop/[segment]` path piece for a collection handle or Shopify product-type filter value. */
 export function shopPathSegmentFromValue(value: string): string {
   return encodeURIComponent(

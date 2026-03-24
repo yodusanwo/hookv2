@@ -199,7 +199,7 @@ export const RECIPE_BY_SLUG_QUERY = `*[_type == "recipe" && slug.current == $slu
   title,
   "slug": slug.current,
   "images": images[] { _ref, asset-> },
-  ingredients[] { text, productHandle },
+  ingredients[] { text, productHandle, shopCategorySegment },
   directions[] { step },
   directionsImage {
     alt,

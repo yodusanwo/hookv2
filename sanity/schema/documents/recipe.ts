@@ -57,7 +57,15 @@ export const recipe = defineType({
               name: "productHandle",
               type: "string",
               title: "Shopify product handle (optional)",
-              description: "If set, an “Add to cart” button appears next to this ingredient. Use the product’s handle from Shopify (e.g. wild-alaska-sockeye-portions).",
+              description:
+                "If set, an “Add to cart” button appears next to this ingredient. Use the product’s handle from Shopify (e.g. wild-alaska-sockeye-portions). Leave empty if you use “Shop category segment” instead.",
+            }),
+            defineField({
+              name: "shopCategorySegment",
+              type: "string",
+              title: "Shop category segment (optional)",
+              description:
+                "Link to a shop URL instead of a single product: enter the path segment only (e.g. salmon → /shop/salmon). Same values as on the Shop page filters/collections (e.g. seafood, salmon, halibut). Overrides “Shopify product handle” when set.",
             }),
             defineField({
               name: "filterCategory",
