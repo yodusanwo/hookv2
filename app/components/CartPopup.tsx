@@ -41,7 +41,11 @@ type CartLine = {
   merchandise: {
     id: string;
     title: string;
-    product: { title: string; handle: string };
+    product: {
+      title: string;
+      handle: string;
+      requiresSellingPlan?: boolean;
+    };
     price: { amount: string; currencyCode: string };
     image: { url: string; altText: string | null } | null;
   };

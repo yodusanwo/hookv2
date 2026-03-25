@@ -130,6 +130,15 @@ export const EXPLORE_PRODUCTS_BLOCK_QUERY = `*[_type == "page" && slug.current =
   "filterCollections": filterCollections[] { label, collectionHandle, image { asset-> } }
 }`;
 
+/** Recipe cards from the home page `recipesBlock` (manual title/image/url). Used to pad PDP recipe grid to 3. */
+export const HOMEPAGE_RECIPES_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "recipesBlock"][0] {
+  "recipes": recipes[] {
+    title,
+    "mainImage": image { asset-> },
+    "url": url
+  }
+}`;
+
 /** GROQ query for the first Catch of the Day (product carousel) block from the home page. Used on /shop page. */
 export const CATCH_OF_THE_DAY_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "catchOfTheDayBlock"][0] {
   _type,

@@ -17,15 +17,10 @@ import {
   getKlaviyoReviewSummaryForProduct,
 } from "@/lib/klaviyoReviews";
 import { aggregatesFromShopifyReviewMetafields } from "@/lib/shopifyProductReviewAggregates";
-import {
-  client,
-  SITE_SETTINGS_QUERY,
-  RECIPES_BY_PRODUCT_HANDLE_QUERY,
-  RECIPES_BY_FILTER_CATEGORY_SLUG_QUERY,
-  RECIPES_LIST_QUERY,
-} from "@/lib/sanity";
+import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
-import { recipeCategorySlugFromProduct } from "@/lib/recipeCategorySlugFromProduct";
+import { fetchPdpRecipeCards, type PdpRecipeCard } from "@/lib/pdpProductRecipes";
+import { isPetProductPage } from "@/lib/isPetProductPage";
 import { urlFor } from "@/lib/sanityImage";
 import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import { renderShopifyRichText, splitWhatYouGetMetafield } from "@/lib/shopifyRichText";
@@ -50,6 +45,10 @@ type ProductByHandleResponse = {
     /** Standard Shopify review count string. */
     reviewsRatingCount: { value: string } | null;
     productType: string;
+    tags: string[];
+    collections: {
+      edges: Array<{ node: { handle: string } }>;
+    };
     /** Optional: same metafield as /shop filters; used to match Recipe Category slugs. */
     filterCategory?: { value: string } | null;
     /** Subscription-only product (Storefront API: Product.requiresSellingPlan). */
@@ -110,6 +109,14 @@ function buildProductByHandleQuery(): string {
       reviewsRating: metafield(namespace: "reviews", key: "rating") { value }
       reviewsRatingCount: metafield(namespace: "reviews", key: "rating_count") { value }
       productType
+      tags
+      collections(first: 25) {
+        edges {
+          node {
+            handle
+          }
+        }
+      }
       ${filterMetafieldLine}
       requiresSellingPlan
       featuredImage { url altText }
@@ -518,36 +525,18 @@ export default async function ProductPage({
       ? 2
       : 4;
 
-  type RecipeCard = {
-    _id: string;
-    title?: string;
-    slug?: string;
-    mainImage?: { asset?: { _ref?: string } };
-  };
-  const recipeCategorySlug = recipeCategorySlugFromProduct({
-    filterMetafieldValue: product.filterCategory?.value,
+  const hideRecipesSection = isPetProductPage({
+    title: product.title,
+    handle,
     productType: product.productType,
+    tags: product.tags ?? [],
+    collections: product.collections,
   });
 
-  let recipesToShow: RecipeCard[] = [];
-  if (client) {
+  let recipesToShow: PdpRecipeCard[] = [];
+  if (client && !hideRecipesSection) {
     try {
-      if (recipeCategorySlug) {
-        recipesToShow = await client.fetch<RecipeCard[]>(
-          RECIPES_BY_FILTER_CATEGORY_SLUG_QUERY,
-          { categorySlug: recipeCategorySlug },
-        );
-      }
-      if (recipesToShow.length === 0) {
-        recipesToShow = await client.fetch<RecipeCard[]>(
-          RECIPES_BY_PRODUCT_HANDLE_QUERY,
-          { productHandle: handle },
-        );
-      }
-      if (recipesToShow.length === 0) {
-        const all = await client.fetch<RecipeCard[]>(RECIPES_LIST_QUERY);
-        recipesToShow = all.slice(0, 3);
-      }
+      recipesToShow = await fetchPdpRecipeCards(client, handle);
     } catch {
       recipesToShow = [];
     }
@@ -942,84 +931,88 @@ export default async function ProductPage({
         </div>
       </section>
 
-      {/* Wave between You Might Also Like and Recipes */}
-      <ShopSectionWave />
+      {!hideRecipesSection ? (
+        <>
+          {/* Wave between You Might Also Like and Recipes */}
+          <ShopSectionWave />
 
-      {/* Wild Flavor Starts Here — recipes promo, light blue; extra bottom padding fills area above footer wave */}
-      <section
-        className="px-4 py-12 md:py-16"
-        style={{
-          backgroundColor: LIGHT_BG,
-          paddingTop: "clamp(8rem, 16vw, 12rem)",
-          paddingBottom: "clamp(6rem, 14vw, 10rem)",
-          ["--section-bg" as string]: LIGHT_BG,
-        }}
-      >
-        <div className="mx-auto max-w-6xl px-6 md:px-4">
-          <SectionHeading
-            title="Wild Flavor Starts Here"
-            description="Get inspired with simple, delicious ways to prepare your catch."
-            variant="section"
-          />
-          {recipesToShow.length > 0 ? (
-            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-              {recipesToShow.map((r) => {
-                const img = urlFor(r.mainImage);
-                const slug = r.slug?.trim();
-                return (
-                  <Link
-                    key={r._id}
-                    href={slug ? `/recipes/${slug}` : "/recipes"}
-                    className="section-card overflow-hidden transition-all duration-200 hover:scale-[1.02]"
-                    style={{ backgroundColor: "var(--section-bg)" }}
-                  >
-                    <div className="aspect-square overflow-hidden" style={{ backgroundColor: "var(--section-bg)" }}>
-                      {img ? (
-                        <img
-                          src={img.width(400).url()}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-full w-full" style={{ backgroundColor: "var(--section-bg)" }} />
-                      )}
-                    </div>
-                    <p
-                      className="recipe-card-title p-3 text-center"
-                      style={{ backgroundColor: "var(--section-bg)" }}
-                    >
-                      {r.title ?? "Recipe"}
-                    </p>
-                  </Link>
-                );
-              })}
+          {/* Wild Flavor Starts Here — recipes promo, light blue; extra bottom padding fills area above footer wave */}
+          <section
+            className="px-4 py-12 md:py-16"
+            style={{
+              backgroundColor: LIGHT_BG,
+              paddingTop: "clamp(8rem, 16vw, 12rem)",
+              paddingBottom: "clamp(6rem, 14vw, 10rem)",
+              ["--section-bg" as string]: LIGHT_BG,
+            }}
+          >
+            <div className="mx-auto max-w-6xl px-6 md:px-4">
+              <SectionHeading
+                title="Wild Flavor Starts Here"
+                description="Get inspired with simple, delicious ways to prepare your catch."
+                variant="section"
+              />
+              {recipesToShow.length > 0 ? (
+                <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                  {recipesToShow.map((r) => {
+                    const img = urlFor(r.mainImage);
+                    const slug = r.slug?.trim();
+                    return (
+                      <Link
+                        key={r._id}
+                        href={slug ? `/recipes/${slug}` : "/recipes"}
+                        className="section-card overflow-hidden transition-all duration-200 hover:scale-[1.02]"
+                        style={{ backgroundColor: "var(--section-bg)" }}
+                      >
+                        <div className="aspect-square overflow-hidden" style={{ backgroundColor: "var(--section-bg)" }}>
+                          {img ? (
+                            <img
+                              src={img.width(400).url()}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="h-full w-full" style={{ backgroundColor: "var(--section-bg)" }} />
+                          )}
+                        </div>
+                        <p
+                          className="recipe-card-title p-3 text-center"
+                          style={{ backgroundColor: "var(--section-bg)" }}
+                        >
+                          {r.title ?? "Recipe"}
+                        </p>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="mt-8 text-center text-sm text-slate-600">
+                  Check out our recipes for inspiration.
+                </p>
+              )}
+              <p className="mt-6 text-center">
+                <Link
+                  href="/recipes"
+                  className="inline-flex items-center justify-center gap-1.5 hover:underline"
+                  style={{
+                    color: "#498CCB",
+                    fontFamily: "var(--font-inter), Inter, sans-serif",
+                    fontSize: "1rem",
+                    fontStyle: "normal",
+                    fontWeight: 500,
+                    lineHeight: "normal",
+                  }}
+                >
+                  Show more recipes
+                  <svg width="29" height="13" viewBox="0 0 29 13" fill="#498CCB" xmlns="http://www.w3.org/2000/svg" aria-hidden className="shrink-0">
+                    <path d="M22.0383 12.3065L21.1121 11.4128L25.8492 6.76284H0V5.51281H25.8908L21.1217 0.89375L22.0063 0L28.3333 6.13762L22.0383 12.3065Z" />
+                  </svg>
+                </Link>
+              </p>
             </div>
-          ) : (
-            <p className="mt-8 text-center text-sm text-slate-600">
-              Check out our recipes for inspiration.
-            </p>
-          )}
-          <p className="mt-6 text-center">
-            <Link
-              href="/recipes"
-              className="inline-flex items-center justify-center gap-1.5 hover:underline"
-              style={{
-                color: "#498CCB",
-                fontFamily: "var(--font-inter), Inter, sans-serif",
-                fontSize: "1rem",
-                fontStyle: "normal",
-                fontWeight: 500,
-                lineHeight: "normal",
-              }}
-            >
-              Show more recipes
-              <svg width="29" height="13" viewBox="0 0 29 13" fill="#498CCB" xmlns="http://www.w3.org/2000/svg" aria-hidden className="shrink-0">
-                <path d="M22.0383 12.3065L21.1121 11.4128L25.8492 6.76284H0V5.51281H25.8908L21.1217 0.89375L22.0063 0L28.3333 6.13762L22.0383 12.3065Z" />
-              </svg>
-            </Link>
-          </p>
-        </div>
-      </section>
+          </section>
+        </>
+      ) : null}
     </main>
     </>
   );

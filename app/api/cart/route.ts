@@ -42,7 +42,12 @@ type CartGetResponse = {
           merchandise: {
             id: string;
             title: string;
-            product: { title: string; handle: string };
+            product: {
+              title: string;
+              handle: string;
+              /** True = subscription-only product (no one-time purchase). */
+              requiresSellingPlan: boolean;
+            };
             price: { amount: string; currencyCode: string };
             image: { url: string; altText: string | null } | null;
           };
@@ -87,7 +92,7 @@ const CART_QUERY = `
               ... on ProductVariant {
                 id
                 title
-                product { title handle }
+                product { title handle requiresSellingPlan }
                 price { amount currencyCode }
                 image { url altText }
               }
