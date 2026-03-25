@@ -26,11 +26,7 @@ import {
   SITE_SETTINGS_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
 } from "@/lib/sanity";
-import { shopifyFetch } from "@/lib/shopify";
-import {
-  SHOPIFY_HOME_PRODUCTS_QUERY,
-  type ShopifyHomeProductsResponse,
-} from "@/lib/shopifyHomeProductsQuery";
+import { fetchHomeFallbackProducts } from "@/lib/fetchHomeFallbackProducts";
 import { HeroImagePreload } from "@/app/components/HeroImagePreload";
 import {
   FALLBACK_HOME_HERO_PRELOAD_URL,
@@ -105,11 +101,7 @@ export default async function Home() {
     }
 
     // Fallback path: no Sanity homepage content — static marketing shell + live Shopify products.
-    const data = await shopifyFetch<ShopifyHomeProductsResponse>({
-      query: SHOPIFY_HOME_PRODUCTS_QUERY,
-      variables: { first: 12 },
-      next: { revalidate: 60 },
-    });
+    const data = await fetchHomeFallbackProducts();
 
     return (
       <>
@@ -122,8 +114,8 @@ export default async function Home() {
       </>
     );
   } catch (error) {
-    // Typically Shopify Storefront failure when fallback path runs; Sanity path errors often hit inner catch above.
-    console.error("Error fetching products:", error);
+    // Sanity/sheet or other unexpected failures (Shopify fallback is non-throwing — see `fetchHomeFallbackProducts`).
+    console.error("Home page error:", error);
     return (
       <main className="min-h-screen p-8 bg-gray-50">
         <div className="max-w-4xl mx-auto">

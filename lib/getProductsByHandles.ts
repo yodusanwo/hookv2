@@ -61,6 +61,7 @@ export function normalizeShopifyProductHandle(raw: string): string {
 /**
  * Fetches products by Shopify handle (server-only).
  * Returns array in the same order as handles; missing products are omitted.
+ * On Storefront API failure (missing token, 401, network), returns [] so prerender/build can finish.
  */
 export async function getProductsByHandles(
   handles: string[]
@@ -70,48 +71,25 @@ export async function getProductsByHandles(
     .filter((h) => h.length > 0 && /^[a-zA-Z0-9-_]+$/.test(h));
   if (trimmed.length === 0) return [];
 
-  const results = await Promise.all(
-    trimmed.map((handle) =>
-      shopifyFetch<ProductByHandleResponse, { handle: string }>({
-        query: PRODUCT_BY_HANDLE_QUERY,
-        variables: { handle },
-      })
-    )
-  );
+  try {
+    const results = await Promise.all(
+      trimmed.map((handle) =>
+        shopifyFetch<ProductByHandleResponse, { handle: string }>({
+          query: PRODUCT_BY_HANDLE_QUERY,
+          variables: { handle },
+        })
+      )
+    );
 
-  const products: ApiProductForCarousel[] = [];
-  const nodes = results
-    .map((data) => data.productByHandle)
-    .filter((node): node is ProductByHandleNode => node != null);
+    const products: ApiProductForCarousel[] = [];
+    const nodes = results
+      .map((data) => data.productByHandle)
+      .filter((node): node is ProductByHandleNode => node != null);
 
-  for (const node of nodes) {
-    const variantEdges = node.variants?.edges ?? [];
-    const defaultPrice = node.priceRange?.minVariantPrice;
-    if (variantEdges.length === 0) {
-      products.push({
-        id: node.id,
-        title: node.title,
-        handle: node.handle,
-        productType: null,
-        filterValue: null,
-        images: node.images,
-        priceRange: defaultPrice ? { minVariantPrice: defaultPrice } : undefined,
-        variantId: null,
-        price: defaultPrice?.amount ?? "0",
-        currencyCode: defaultPrice?.currencyCode ?? "USD",
-        compareAtPrice: null,
-        availableForSale: false,
-        sizeOrDescription: null,
-      });
-    } else {
-      for (const ve of variantEdges) {
-        const variant = ve.node;
-        const price = variant.price ?? defaultPrice;
-        const compareAtPrice = variant.compareAtPrice?.amount
-          ? variant.compareAtPrice
-          : null;
-        const sizeOrDescription =
-          variant.selectedOptions?.map((o) => o.value).join(" / ") || null;
+    for (const node of nodes) {
+      const variantEdges = node.variants?.edges ?? [];
+      const defaultPrice = node.priceRange?.minVariantPrice;
+      if (variantEdges.length === 0) {
         products.push({
           id: node.id,
           title: node.title,
@@ -119,17 +97,45 @@ export async function getProductsByHandles(
           productType: null,
           filterValue: null,
           images: node.images,
-          priceRange: price ? { minVariantPrice: price } : undefined,
-          variantId: variant.id,
-          price: price?.amount ?? "0",
-          currencyCode: price?.currencyCode ?? "USD",
-          compareAtPrice: compareAtPrice?.amount ?? null,
-          availableForSale: variant.availableForSale ?? false,
-          sizeOrDescription,
+          priceRange: defaultPrice ? { minVariantPrice: defaultPrice } : undefined,
+          variantId: null,
+          price: defaultPrice?.amount ?? "0",
+          currencyCode: defaultPrice?.currencyCode ?? "USD",
+          compareAtPrice: null,
+          availableForSale: false,
+          sizeOrDescription: null,
         });
+      } else {
+        for (const ve of variantEdges) {
+          const variant = ve.node;
+          const price = variant.price ?? defaultPrice;
+          const compareAtPrice = variant.compareAtPrice?.amount
+            ? variant.compareAtPrice
+            : null;
+          const sizeOrDescription =
+            variant.selectedOptions?.map((o) => o.value).join(" / ") || null;
+          products.push({
+            id: node.id,
+            title: node.title,
+            handle: node.handle,
+            productType: null,
+            filterValue: null,
+            images: node.images,
+            priceRange: price ? { minVariantPrice: price } : undefined,
+            variantId: variant.id,
+            price: price?.amount ?? "0",
+            currencyCode: price?.currencyCode ?? "USD",
+            compareAtPrice: compareAtPrice?.amount ?? null,
+            availableForSale: variant.availableForSale ?? false,
+            sizeOrDescription,
+          });
+        }
       }
     }
-  }
 
-  return products;
+    return products;
+  } catch (err) {
+    console.warn("getProductsByHandles: Shopify unavailable", err);
+    return [];
+  }
 }
