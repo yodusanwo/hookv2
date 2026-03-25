@@ -32,6 +32,11 @@ function TrashIcon({ className }: { className?: string }) {
 type CartLine = {
   id: string;
   quantity: number;
+  cost?: {
+    totalAmount: { amount: string; currencyCode: string };
+    amountPerQuantity: { amount: string; currencyCode: string };
+  };
+  sellingPlanAllocation?: { sellingPlan: { name: string } } | null;
   merchandise: {
     id: string;
     title: string;
@@ -120,21 +125,74 @@ export function CartPopup() {
   const close = React.useCallback(() => setIsOpen(false), []);
 
   const recomputeCost = React.useCallback((lines: CartLine[]) => {
-    const currencyCode = lines[0]?.merchandise?.price?.currencyCode ?? "USD";
-    const total = lines.reduce(
-      (sum, l) => sum + parseFloat(l.merchandise.price.amount) * l.quantity,
-      0
-    );
+    const currencyCode =
+      lines[0]?.cost?.totalAmount?.currencyCode ??
+      lines[0]?.merchandise?.price?.currencyCode ??
+      "USD";
+    const total = lines.reduce((sum, l) => {
+      if (l.cost?.totalAmount?.amount) {
+        return sum + parseFloat(l.cost.totalAmount.amount);
+      }
+      return sum + parseFloat(l.merchandise.price.amount) * l.quantity;
+    }, 0);
     return {
       totalAmount: { amount: total.toFixed(2), currencyCode },
     };
   }, []);
 
+  const scaleLineCostForQuantity = React.useCallback(
+    (line: CartLine, newQty: number): CartLine => {
+      const q = Math.max(1, line.quantity);
+      const listUnit = parseFloat(line.merchandise.price.amount);
+      const cc =
+        line.cost?.totalAmount?.currencyCode ??
+        line.merchandise.price.currencyCode;
+      if (!line.cost?.totalAmount?.amount) {
+        return {
+          ...line,
+          quantity: newQty,
+          cost: {
+            totalAmount: {
+              amount: (listUnit * newQty).toFixed(2),
+              currencyCode: cc,
+            },
+            amountPerQuantity: {
+              amount: listUnit.toFixed(2),
+              currencyCode: cc,
+            },
+          },
+        };
+      }
+      const perUnit =
+        line.cost.amountPerQuantity?.amount != null
+          ? parseFloat(line.cost.amountPerQuantity.amount)
+          : parseFloat(line.cost.totalAmount.amount) / q;
+      const newTotal = (perUnit * newQty).toFixed(2);
+      return {
+        ...line,
+        quantity: newQty,
+        cost: {
+          totalAmount: { amount: newTotal, currencyCode: cc },
+          amountPerQuantity: {
+            amount: perUnit.toFixed(2),
+            currencyCode: cc,
+          },
+        },
+      };
+    },
+    [],
+  );
+
   const updateQuantity = React.useCallback(
     async (lineId: string, quantity: number) => {
       if (!cartId || !cart) return;
       const optimisticLines = cart.lines.edges.map((e) =>
-        e.node.id === lineId ? { ...e, node: { ...e.node, quantity } } : e
+        e.node.id === lineId
+          ? {
+              ...e,
+              node: scaleLineCostForQuantity(e.node, quantity),
+            }
+          : e
       );
       setCart({
         ...cart,
@@ -168,7 +226,7 @@ export function CartPopup() {
         });
       }
     },
-    [cartId, cart, fetchCart, recomputeCost]
+    [cartId, cart, fetchCart, recomputeCost, scaleLineCostForQuantity]
   );
 
   const removeLine = React.useCallback(
@@ -231,8 +289,8 @@ export function CartPopup() {
           setDiscountError(data?.error ?? "Could not apply code.");
           return;
         }
-        if (data.cart) {
-          setCart(data.cart);
+        if (data.cart && cartId) {
+          await fetchCart(cartId);
           setDiscountSuccess(true);
           setDiscountInput("");
           window.dispatchEvent(new CustomEvent("cart-updated"));
@@ -243,7 +301,7 @@ export function CartPopup() {
         setDiscountLoading(false);
       }
     },
-    [cartId, cart, discountInput]
+    [cartId, cart, discountInput, fetchCart]
   );
 
   const saveNote = React.useCallback(
@@ -338,8 +396,13 @@ export function CartPopup() {
               {/* Line items */}
               <ul className="divide-y divide-slate-200">
                 {lines.map((line) => {
-                  const unitPrice = parseFloat(line.merchandise.price.amount);
-                  const lineTotal = unitPrice * line.quantity;
+                  const lineTotal =
+                    line.cost?.totalAmount?.amount != null
+                      ? parseFloat(line.cost.totalAmount.amount)
+                      : parseFloat(line.merchandise.price.amount) *
+                        line.quantity;
+                  const planName =
+                    line.sellingPlanAllocation?.sellingPlan?.name?.trim() ?? "";
                   return (
                     <li
                       key={line.id}
@@ -373,6 +436,16 @@ export function CartPopup() {
                               {line.merchandise.title}
                             </p>
                           )}
+                          {planName ? (
+                            <p className="mt-2 max-w-md text-sm leading-snug text-green-800">
+                              <span className="font-semibold">
+                                Subscribe &amp; save
+                              </span>
+                              {" · "}
+                              {planName}. This line uses your subscription rate
+                              (not the one-time price).
+                            </p>
+                          ) : null}
                         </div>
                       </div>
                       <div className="flex items-center justify-center gap-2 sm:justify-start">
@@ -494,6 +567,15 @@ export function CartPopup() {
                   </p>
                 )}
                 <div className="flex flex-col items-end">
+                {lines.some((l) => l.sellingPlanAllocation?.sellingPlan?.name) ? (
+                  <p className="mb-2 max-w-md text-right text-xs leading-relaxed text-slate-600">
+                    Estimated total includes{" "}
+                    <span className="font-medium text-green-800">
+                      subscribe &amp; save
+                    </span>{" "}
+                    pricing on subscription items.
+                  </p>
+                ) : null}
                 <p className="text-sm text-slate-600">Estimated total</p>
                 <p className="mt-1 text-lg font-semibold text-slate-900">
                   $
