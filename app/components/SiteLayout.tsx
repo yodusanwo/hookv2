@@ -20,6 +20,9 @@ type SiteLayoutProps = {
 /**
  * Inner layout that uses useSearchParams. Must be wrapped in Suspense so static
  * pages (e.g. 404) can prerender without access to search params.
+ *
+ * Follow-up (lower priority): narrow Suspense to only the subtree that reads search params so
+ * the fallback matches the resolved layout more closely and reduces subtree swap on hydration.
  */
 function SiteLayoutInner({
   children,

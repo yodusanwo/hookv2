@@ -92,12 +92,18 @@ export function ExploreProductsCategoryCarousel({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-400">
-              <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <svg
+                className="h-16 w-16"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
                 <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
               </svg>
             </div>
           )}
-          {(cat.collectionHandle === "pet-treats" || cat.label?.toLowerCase().includes("pet")) && (
+          {(cat.collectionHandle === "pet-treats" ||
+            cat.label?.toLowerCase().includes("pet")) && (
             <Image
               src="/pet%201.png"
               alt=""
@@ -108,7 +114,10 @@ export function ExploreProductsCategoryCarousel({
             />
           )}
         </div>
-        <div className="rounded-card-b py-3 text-center" style={{ backgroundColor: "var(--section-bg)" }}>
+        <div
+          className="rounded-card-b py-3 text-center"
+          style={{ backgroundColor: "var(--section-bg)" }}
+        >
           <span
             className="capitalize"
             style={{
@@ -138,7 +147,11 @@ export function ExploreProductsCategoryCarousel({
           className="flex flex-col gap-6 md:flex-row md:gap-6 md:overflow-x-auto md:scroll-smooth md:snap-x md:snap-mandatory py-4 md:justify-start [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [-webkit-overflow-scrolling:touch]"
           style={
             showCarouselViewport
-              ? { width: "min(100%, " + VISIBLE_WIDTH + "px)", minWidth: 0, maxWidth: VISIBLE_WIDTH }
+              ? {
+                  width: "min(100%, " + VISIBLE_WIDTH + "px)",
+                  minWidth: 0,
+                  maxWidth: VISIBLE_WIDTH,
+                }
               : undefined
           }
         >

@@ -15,7 +15,7 @@ type SectionHeadingProps = {
   descriptionColor?: string;
   /** Override letter-spacing for the title (e.g. responsive: tracking-[0.04em] md:tracking-[0.05em] lg:tracking-[0.06em]) */
   titleLetterSpacingClass?: string;
-  /** Override font family for the title (e.g. var(--font-zamenhof)) */
+  /** Override font family for the title (e.g. var(--font-inter)) */
   titleFontFamily?: string;
   /** Override font size for the title (e.g. 48) */
   titleFontSize?: number;

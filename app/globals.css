@@ -1,33 +1,6 @@
 @import "tailwindcss";
 
-/* ========== Fonts ========== */
-/* Custom Zamenhof fonts (also loaded via Next.js localFont in layout.tsx). */
-@font-face {
-  font-family: "Zamenhof Outline";
-  src: url("/fonts/zamenhof_outline.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Zamenhof Inverse";
-  src: url("/fonts/zamenhof_inverse.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Zamenhof Inline";
-  src: url("/fonts/zamenhof_inline.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Font family variables for use with Next.js font variables (set on body).
-   Usage: var(--font-zamenhof), var(--font-zamenhof-inverse), var(--font-zamenhof-inline), var(--font-inter). */
+/* Font family variables (set on body in layout.tsx): var(--font-inter), var(--font-mulish), var(--font-geist-mono). */
 
 :root {
   --background: #ffffff;

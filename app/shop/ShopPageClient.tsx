@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useFooterWaveOverride } from "@/app/context/FooterWaveOverride";
 import { PromoBanner } from "@/components/PromoBanner";
 import { CategoryFilterBar } from "@/components/sections/CategoryFilterBar";
@@ -11,21 +11,10 @@ import { ShopSectionWave } from "./ShopSectionWave";
 import type { CategorySectionBlockData } from "@/components/sections/CategorySectionBlock";
 import type { ApiProductForCarousel } from "@/lib/types";
 import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
-import { shopPathSegmentFromValue } from "@/lib/shopPathSegment";
-
-function resolveCategoryFromUrl(
-  raw: string | null | undefined,
-  sections: CategorySectionBlockData[],
-): string | null {
-  if (!raw?.trim()) return null;
-  const t = raw.trim();
-  const exact = sections.find((s) => s.collectionHandle === t);
-  if (exact) return exact.collectionHandle;
-  const ci = sections.find(
-    (s) => s.collectionHandle.toLowerCase() === t.toLowerCase(),
-  );
-  return ci?.collectionHandle ?? null;
-}
+import {
+  resolveShopPathSegment,
+  shopPathSegmentFromValue,
+} from "@/lib/shopPathSegment";
 
 function resolveFiltersFromUrl(
   urls: string[] | undefined,
@@ -79,33 +68,70 @@ export function ShopPageClient({
     label: s.title.replace(/\s+/g, " ").trim() || s.collectionHandle,
   }));
 
-  const resolvedCategory = useMemo(
-    () => resolveCategoryFromUrl(initialCategoryFromUrl, collectionSections),
-    [initialCategoryFromUrl, collectionSections],
-  );
+  const params = useParams();
+  /** Dynamic segment from `/shop/[category]` — source of truth on client navigations (Explore → shop). */
+  const pathSegmentFromUrl = useMemo(() => {
+    const raw = params?.category;
+    if (typeof raw !== "string" || !raw.trim()) return null;
+    try {
+      return decodeURIComponent(raw).trim();
+    } catch {
+      return raw.trim();
+    }
+  }, [params?.category]);
 
-  const resolvedFilters = useMemo(
-    () => resolveFiltersFromUrl(initialFilterValuesFromUrl, filterOptions),
-    [initialFilterValuesFromUrl, filterOptions],
-  );
+  /**
+   * Match server-side `getShopPageData` + `resolveShopPathSegment` (fuzzy hyphen/space, filter vs collection).
+   * Prefer the URL segment when present so pills stay in sync after client transitions; fall back to SSR props.
+   */
+  const resolvedFromUrl = useMemo(() => {
+    const segment =
+      pathSegmentFromUrl?.trim() || initialCategoryFromUrl?.trim() || "";
+    if (!segment) {
+      return {
+        category: null as string | null,
+        filters: resolveFiltersFromUrl(initialFilterValuesFromUrl, filterOptions),
+      };
+    }
+    const r = resolveShopPathSegment(
+      segment,
+      collectionSections,
+      filterOptions,
+    );
+    if (r?.kind === "collection") {
+      return { category: r.handle, filters: [] as string[] };
+    }
+    if (r?.kind === "filter") {
+      return { category: null as string | null, filters: [r.value] };
+    }
+    return {
+      category: null as string | null,
+      filters: resolveFiltersFromUrl(initialFilterValuesFromUrl, filterOptions),
+    };
+  }, [
+    pathSegmentFromUrl,
+    initialCategoryFromUrl,
+    initialFilterValuesFromUrl,
+    collectionSections,
+    filterOptions,
+  ]);
 
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>(
-    () => resolvedFilters,
+    () => resolvedFromUrl.filters,
   );
   const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<
     string[]
-  >(() => (resolvedCategory ? [resolvedCategory] : []));
-
-  const urlCategoryKey = initialCategoryFromUrl ?? "";
-  const urlFiltersKey = (initialFilterValuesFromUrl ?? []).join("\u0001");
-
-  /** When CMS data streams in, resolvedCategory can go from null → handle without URL changing; must resync or pills stay empty and the next click toggles off → router.push("/shop"). */
-  const resolvedFiltersKey = resolvedFilters.join("\u0001");
+  >(() => (resolvedFromUrl.category ? [resolvedFromUrl.category] : []));
 
   useEffect(() => {
-    setSelectedFilterValues([...resolvedFilters]);
-    setSelectedCategoryHandles(resolvedCategory ? [resolvedCategory] : []);
-  }, [urlCategoryKey, urlFiltersKey, resolvedCategory, resolvedFiltersKey]);
+    setSelectedFilterValues([...resolvedFromUrl.filters]);
+    setSelectedCategoryHandles(
+      resolvedFromUrl.category ? [resolvedFromUrl.category] : [],
+    );
+  }, [
+    resolvedFromUrl.category,
+    resolvedFromUrl.filters.join("\u0001"),
+  ]);
 
   const router = useRouter();
 
@@ -121,11 +147,18 @@ export function ShopPageClient({
   };
 
   const toggleCategory = (handle: string) => {
+    const isSameHandle = (a: string, b: string) =>
+      a.toLowerCase() === b.toLowerCase();
     // Already on this category (e.g. arrived from Explore). Second tap used to clear → /shop; keep URL.
-    if (selectedCategoryHandles.length === 1 && selectedCategoryHandles[0] === handle) {
+    if (
+      selectedCategoryHandles.length === 1 &&
+      isSameHandle(selectedCategoryHandles[0]!, handle)
+    ) {
       return;
     }
-    const next = selectedCategoryHandles.includes(handle) ? [] : [handle];
+    const next = selectedCategoryHandles.some((h) => isSameHandle(h, handle))
+      ? []
+      : [handle];
     setSelectedCategoryHandles(next);
     setSelectedFilterValues([]);
     if (next.length === 0) {
@@ -139,7 +172,9 @@ export function ShopPageClient({
     selectedCategoryHandles.length === 0
       ? collectionSections
       : collectionSections.filter((s) =>
-          selectedCategoryHandles.includes(s.collectionHandle),
+          selectedCategoryHandles.some(
+            (h) => h.toLowerCase() === s.collectionHandle.toLowerCase(),
+          ),
         );
 
   const hasSelection =

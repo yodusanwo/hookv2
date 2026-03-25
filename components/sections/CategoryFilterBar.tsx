@@ -13,6 +13,15 @@ const INACTIVE_BG = "var(--filter-pill-inactive-bg)";
 const CLEAR_LINK_COLOR = "#498CCB";
 const SECTION_ID_PREFIX = "shop-section-";
 
+function selectionIncludes(
+  selected: string[],
+  value: string,
+): boolean {
+  return selected.some(
+    (s) => s === value || s.toLowerCase() === value.toLowerCase(),
+  );
+}
+
 type PillItem =
   | { type: "filter"; value: string; label: string }
   | { type: "category"; value: string; label: string };
@@ -140,8 +149,12 @@ export function CategoryFilterBar({
                 className={FILTER_BUTTON_BASE}
                 style={{
                   ...FILTER_BUTTON_LAYOUT,
-                  backgroundColor: selectedValues.includes(item.value) ? ACTIVE_BG : INACTIVE_BG,
-                  color: selectedValues.includes(item.value) ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
+                  backgroundColor: selectionIncludes(selectedValues, item.value)
+                    ? ACTIVE_BG
+                    : INACTIVE_BG,
+                  color: selectionIncludes(selectedValues, item.value)
+                    ? "var(--filter-pill-active-color)"
+                    : "var(--filter-pill-inactive-color)",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
                 }}
               >
@@ -155,8 +168,15 @@ export function CategoryFilterBar({
                 className={FILTER_BUTTON_BASE}
                 style={{
                   ...FILTER_BUTTON_LAYOUT,
-                  backgroundColor: selectedCategoryHandles.includes(item.value) ? ACTIVE_BG : INACTIVE_BG,
-                  color: selectedCategoryHandles.includes(item.value) ? "var(--filter-pill-active-color)" : "var(--filter-pill-inactive-color)",
+                  backgroundColor: selectionIncludes(
+                    selectedCategoryHandles,
+                    item.value,
+                  )
+                    ? ACTIVE_BG
+                    : INACTIVE_BG,
+                  color: selectionIncludes(selectedCategoryHandles, item.value)
+                    ? "var(--filter-pill-active-color)"
+                    : "var(--filter-pill-inactive-color)",
                   fontFamily: "Inter, var(--font-inter), sans-serif",
                 }}
               >

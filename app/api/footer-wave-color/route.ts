@@ -45,7 +45,8 @@ export async function GET(request: Request) {
           : slug.startsWith("products/")
             ? PRODUCT_PAGE_STRIP_BG
             : (data?.color ?? null);
-    const hideHeaderWave = data?.hideHeaderWave === true;
+    /** Shop routes: keep wave margin stable so Sanity toggles do not cause CLS after client fetch. */
+    const hideHeaderWave = isShopRoute ? false : data?.hideHeaderWave === true;
     return NextResponse.json({ color, hideHeaderWave });
   } catch (e) {
     console.warn("footer-wave-color fetch failed:", e);

@@ -1,5 +1,5 @@
 import "server-only";
-import { shopifyFetch } from "@/lib/shopify";
+import { shopifyFetch, STOREFRONT_FETCH_REVALIDATE } from "@/lib/shopify";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import type { ApiProductForCarousel } from "@/lib/types";
@@ -107,6 +107,7 @@ export async function getCollectionProductsForCarousel(
     const data = await shopifyFetch<CollectionProductsResponse>({
       query,
       variables: { handle: trimmed, first },
+      next: STOREFRONT_FETCH_REVALIDATE,
     });
 
     const edges = data.collection?.products?.edges ?? [];

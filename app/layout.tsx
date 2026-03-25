@@ -1,35 +1,11 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Geist, Geist_Mono, Inter, Mulish } from "next/font/google";
+import { Geist_Mono, Inter, Mulish } from "next/font/google";
 import "./globals.css";
-
-const zamenhofOutline = localFont({
-  src: "../public/fonts/zamenhof_outline.otf",
-  variable: "--font-zamenhof",
-  display: "swap",
-});
-
-const zamenhofInverse = localFont({
-  src: "../public/fonts/zamenhof_inverse.otf",
-  variable: "--font-zamenhof-inverse",
-  display: "swap",
-});
-
-const zamenhofInline = localFont({
-  src: "../public/fonts/zamenhof_inline.otf",
-  variable: "--font-zamenhof-inline",
-  display: "swap",
-});
 
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanityImage";
 import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -114,7 +90,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${mulish.variable} ${zamenhofOutline.variable} ${zamenhofInverse.variable} ${zamenhofInline.variable} antialiased`}
+        className={`${geistMono.variable} ${inter.variable} ${mulish.variable} antialiased`}
       >
         <SiteLayout
           headerLogoUrl={headerLogoUrl}

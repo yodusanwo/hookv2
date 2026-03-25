@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { shopifyFetch } from "@/lib/shopify";
+import { Suspense } from "react";
+import { shopifyFetch, STOREFRONT_FETCH_REVALIDATE } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { ProductVariantProvider } from "@/app/components/ProductVariantContext";
 import { ProductVariantSubtitle } from "@/app/components/ProductVariantSubtitle";
@@ -8,20 +9,17 @@ import { RecentlyViewedTracker } from "@/app/components/SearchModal";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ScrollToTop } from "./ScrollToTop";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
-import { ReviewsCarousel } from "@/components/sections/ReviewsCarousel";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import {
-  getKlaviyoReviewsForSection,
-  getKlaviyoReviewsSummary,
-  getKlaviyoReviewsForProduct,
-  getKlaviyoReviewSummaryForProduct,
-} from "@/lib/klaviyoReviews";
-import { aggregatesFromShopifyReviewMetafields } from "@/lib/shopifyProductReviewAggregates";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
-import { fetchPdpRecipeCards, type PdpRecipeCard } from "@/lib/pdpProductRecipes";
 import { isPetProductPage } from "@/lib/isPetProductPage";
-import { urlFor } from "@/lib/sanityImage";
+import { PdpHeroReviewCount } from "./PdpHeroReviewCount";
+import { PdpReviewsSection } from "./PdpReviewsSection";
+import { PdpRecipesSection } from "./PdpRecipesSection";
+import {
+  PdpRecipesSectionSkeleton,
+  PdpReviewsSectionSkeleton,
+} from "./PdpBelowFoldSkeletons";
 import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import { renderShopifyRichText, splitWhatYouGetMetafield } from "@/lib/shopifyRichText";
 import Link from "next/link";
@@ -248,7 +246,7 @@ export async function generateMetadata({
     }>({
       query: PRODUCT_METADATA_QUERY,
       variables: { handle },
-      next: { revalidate: 60 },
+      next: STOREFRONT_FETCH_REVALIDATE,
     });
     const p = data?.productByHandle;
     if (!p) return { title: "Product | Hook Point" };
@@ -303,41 +301,63 @@ export default async function ProductPage({
   };
   let otherProducts: OtherProduct[] = [];
 
-  try {
-    data = await shopifyFetch<ProductByHandleResponse, { handle: string }>({
-      query: buildProductByHandleQuery(),
-      variables: { handle },
-      cache: "no-store",
-    });
-    const currentId = data.productByHandle?.id ?? null;
-
-    type RecNode = {
-      id: string;
-      title: string;
-      handle: string;
-      productType: string;
-      priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
-      images: {
-        edges: Array<{ node: { url: string; altText: string | null } }>;
-      };
-      variants: {
-        edges: Array<{
-          node: {
-            id: string;
-            price: { amount: string; currencyCode: string };
-            selectedOptions: Array<{ name: string; value: string }>;
-          };
-        }>;
-      };
+  type RecNode = {
+    id: string;
+    title: string;
+    handle: string;
+    productType: string;
+    priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+    images: {
+      edges: Array<{ node: { url: string; altText: string | null } }>;
     };
-    const recResponse = await shopifyFetch<
-      { productRecommendations: RecNode[] },
-      { productHandle: string }
-    >({
-      query: PRODUCT_RECOMMENDATIONS_QUERY,
-      variables: { productHandle: handle },
-      cache: "no-store",
-    }).catch(() => ({ productRecommendations: [] }));
+    variants: {
+      edges: Array<{
+        node: {
+          id: string;
+          price: { amount: string; currencyCode: string };
+          selectedOptions: Array<{ name: string; value: string }>;
+        };
+      }>;
+    };
+  };
+
+  type SiteSettingsForPdp = {
+    freeShippingMessage?: string | null;
+    estimatedDeliveryProcessingDays?: number | null;
+    estimatedDeliveryTransitDays?: string | null;
+    estimatedDeliveryCutoffTime?: string | null;
+    estimatedDeliveryFrozenProcessingDays?: number | null;
+    estimatedDeliveryFrozenTransitDays?: string | null;
+  };
+
+  let siteSettings: SiteSettingsForPdp | null = null;
+
+  try {
+    const [dataResult, recResponse, settingsResult] = await Promise.all([
+      shopifyFetch<ProductByHandleResponse, { handle: string }>({
+        query: buildProductByHandleQuery(),
+        variables: { handle },
+        next: STOREFRONT_FETCH_REVALIDATE,
+      }),
+      shopifyFetch<
+        { productRecommendations: RecNode[] },
+        { productHandle: string }
+      >({
+        query: PRODUCT_RECOMMENDATIONS_QUERY,
+        variables: { productHandle: handle },
+        next: STOREFRONT_FETCH_REVALIDATE,
+      }).catch(() => ({ productRecommendations: [] as RecNode[] })),
+      client
+        ? client.fetch<SiteSettingsForPdp>(SITE_SETTINGS_QUERY, {}, {
+            next: { revalidate: 60 },
+          })
+        : Promise.resolve(null),
+    ]);
+
+    data = dataResult;
+    siteSettings = settingsResult;
+
+    const currentId = data.productByHandle?.id ?? null;
 
     const recs = recResponse.productRecommendations ?? [];
     const mapNodeToOther = (node: RecNode): OtherProduct => {
@@ -392,7 +412,7 @@ export default async function ProductPage({
       }>({
         query: OTHER_PRODUCTS_QUERY,
         variables: { first: 20 },
-        cache: "no-store",
+        next: STOREFRONT_FETCH_REVALIDATE,
       }).catch(() => ({ products: { edges: [] } }));
       const existingIds = new Set(otherProducts.map((p) => p.id));
       const extra = (otherData.products?.edges ?? [])
@@ -463,35 +483,6 @@ export default async function ProductPage({
   });
   const heroTeaser = heroTeaserFromDescription(product.description);
 
-  const [
-    sectionReviews,
-    storeReviewSummary,
-    productReviewsForCarousel,
-    productScopedReviewSummary,
-    siteSettings,
-  ] = await Promise.all([
-    getKlaviyoReviewsForSection(),
-    getKlaviyoReviewsSummary(),
-    getKlaviyoReviewsForProduct(product.id),
-    getKlaviyoReviewSummaryForProduct(product.id),
-    client
-      ? client.fetch<{
-            freeShippingMessage?: string | null;
-            estimatedDeliveryProcessingDays?: number | null;
-            estimatedDeliveryTransitDays?: string | null;
-            estimatedDeliveryCutoffTime?: string | null;
-            estimatedDeliveryFrozenProcessingDays?: number | null;
-            estimatedDeliveryFrozenTransitDays?: string | null;
-          }>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } })
-      : Promise.resolve(null),
-  ]);
-
-  const shopifyReviewAgg = aggregatesFromShopifyReviewMetafields(product);
-  /** Klaviyo product-scoped count when present; else Shopify standard aggregates (theme / review apps). */
-  const productReviewCount =
-    productScopedReviewSummary.totalCount > 0
-      ? productScopedReviewSummary.totalCount
-      : shopifyReviewAgg.count;
   const freeShippingMessage =
     siteSettings?.freeShippingMessage?.trim() ||
     "Free shipping for orders over $50";
@@ -532,35 +523,6 @@ export default async function ProductPage({
     tags: product.tags ?? [],
     collections: product.collections,
   });
-
-  let recipesToShow: PdpRecipeCard[] = [];
-  if (client && !hideRecipesSection) {
-    try {
-      recipesToShow = await fetchPdpRecipeCards(client, handle);
-    } catch {
-      recipesToShow = [];
-    }
-  }
-
-  /** Product-scoped Klaviyo reviews when present; otherwise same pool as home (store-wide fallback). */
-  const reviewsToShow =
-    productReviewsForCarousel.length > 0
-      ? productReviewsForCarousel
-      : sectionReviews;
-  const productReviewSummary =
-    productReviewsForCarousel.length > 0
-      ? productScopedReviewSummary.totalCount > 0 ||
-        productScopedReviewSummary.averageRating > 0
-        ? productScopedReviewSummary
-        : null
-      : shopifyReviewAgg.count > 0 || shopifyReviewAgg.averageRating > 0
-        ? {
-            totalCount: shopifyReviewAgg.count,
-            averageRating: shopifyReviewAgg.averageRating,
-          }
-        : storeReviewSummary.totalCount > 0 || storeReviewSummary.averageRating > 0
-          ? storeReviewSummary
-          : null;
 
   const firstImageUrl = images[0]?.url;
 
@@ -629,8 +591,15 @@ export default async function ProductPage({
                   ))}
                 </span>
                 <span className="text-slate-700">
-                  {productReviewCount}{" "}
-                  {productReviewCount === 1 ? "review" : "reviews"}
+                  <Suspense
+                    fallback={
+                      <span className="inline-block min-w-[4ch] animate-pulse rounded bg-slate-200/80">
+                        &nbsp;
+                      </span>
+                    }
+                  >
+                    <PdpHeroReviewCount product={product} />
+                  </Suspense>
                 </span>
               </div>
 
@@ -822,33 +791,9 @@ export default async function ProductPage({
       {/* Wave between product content and reviews — same as shop page collection dividers */}
       <ShopSectionWave />
 
-      {/* Reviews — same section and carousel as home page; extra top padding clears the wave above. */}
-      <section
-        className="flex min-h-0 flex-col justify-center pb-12 md:pb-14 pt-28 md:pt-[clamp(5rem,12vw,8rem)]"
-        style={{
-          backgroundColor: "#F8F8F8",
-          ["--section-bg" as string]: "#F8F8F8",
-        }}
-      >
-        <div className="mx-auto max-w-6xl px-6 md:px-4">
-          <SectionHeading
-            title="Reviews"
-            description="What our customers are saying."
-            variant="section"
-          />
-          {reviewsToShow.length > 0 ? (
-            <ReviewsCarousel
-              reviews={reviewsToShow}
-              reviewSummary={productReviewSummary}
-              expandFirstReviewFullText
-            />
-          ) : (
-            <p className="mt-10 text-center section-description-block">
-              No reviews yet. Be the first to leave a review after your purchase.
-            </p>
-          )}
-        </div>
-      </section>
+      <Suspense fallback={<PdpReviewsSectionSkeleton />}>
+        <PdpReviewsSection product={product} />
+      </Suspense>
 
       {/* You Might Also Like — light blue, product carousel */}
       <section
@@ -931,88 +876,16 @@ export default async function ProductPage({
         </div>
       </section>
 
-      {!hideRecipesSection ? (
-        <>
-          {/* Wave between You Might Also Like and Recipes */}
-          <ShopSectionWave />
-
-          {/* Wild Flavor Starts Here — recipes promo, light blue; extra bottom padding fills area above footer wave */}
-          <section
-            className="px-4 py-12 md:py-16"
-            style={{
-              backgroundColor: LIGHT_BG,
-              paddingTop: "clamp(8rem, 16vw, 12rem)",
-              paddingBottom: "clamp(6rem, 14vw, 10rem)",
-              ["--section-bg" as string]: LIGHT_BG,
-            }}
-          >
-            <div className="mx-auto max-w-6xl px-6 md:px-4">
-              <SectionHeading
-                title="Wild Flavor Starts Here"
-                description="Get inspired with simple, delicious ways to prepare your catch."
-                variant="section"
-              />
-              {recipesToShow.length > 0 ? (
-                <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-                  {recipesToShow.map((r) => {
-                    const img = urlFor(r.mainImage);
-                    const slug = r.slug?.trim();
-                    return (
-                      <Link
-                        key={r._id}
-                        href={slug ? `/recipes/${slug}` : "/recipes"}
-                        className="section-card overflow-hidden transition-all duration-200 hover:scale-[1.02]"
-                        style={{ backgroundColor: "var(--section-bg)" }}
-                      >
-                        <div className="aspect-square overflow-hidden" style={{ backgroundColor: "var(--section-bg)" }}>
-                          {img ? (
-                            <img
-                              src={img.width(400).url()}
-                              alt=""
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <div className="h-full w-full" style={{ backgroundColor: "var(--section-bg)" }} />
-                          )}
-                        </div>
-                        <p
-                          className="recipe-card-title p-3 text-center"
-                          style={{ backgroundColor: "var(--section-bg)" }}
-                        >
-                          {r.title ?? "Recipe"}
-                        </p>
-                      </Link>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="mt-8 text-center text-sm text-slate-600">
-                  Check out our recipes for inspiration.
-                </p>
-              )}
-              <p className="mt-6 text-center">
-                <Link
-                  href="/recipes"
-                  className="inline-flex items-center justify-center gap-1.5 hover:underline"
-                  style={{
-                    color: "#498CCB",
-                    fontFamily: "var(--font-inter), Inter, sans-serif",
-                    fontSize: "1rem",
-                    fontStyle: "normal",
-                    fontWeight: 500,
-                    lineHeight: "normal",
-                  }}
-                >
-                  Show more recipes
-                  <svg width="29" height="13" viewBox="0 0 29 13" fill="#498CCB" xmlns="http://www.w3.org/2000/svg" aria-hidden className="shrink-0">
-                    <path d="M22.0383 12.3065L21.1121 11.4128L25.8492 6.76284H0V5.51281H25.8908L21.1217 0.89375L22.0063 0L28.3333 6.13762L22.0383 12.3065Z" />
-                  </svg>
-                </Link>
-              </p>
-            </div>
-          </section>
-        </>
-      ) : null}
+      <Suspense
+        fallback={
+          hideRecipesSection ? null : <PdpRecipesSectionSkeleton />
+        }
+      >
+        <PdpRecipesSection
+          handle={handle}
+          hideRecipesSection={hideRecipesSection}
+        />
+      </Suspense>
     </main>
     </>
   );

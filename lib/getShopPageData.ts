@@ -15,8 +15,12 @@ const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
   { label: "Pet Treats, Merch, Gift Cards", collectionHandle: "pet-treats" },
 ];
 
-const GRID_FIRST = 50;
-const CAROUSEL_FIRST = 24;
+/**
+ * Prefetch size per collection section on the shop page. Larger grids (e.g. Seafood) pay more
+ * TTFB than smaller ones (e.g. Pet Treats); profile before lowering these.
+ */
+export const SHOP_SECTION_GRID_FIRST = 50;
+export const SHOP_SECTION_CAROUSEL_FIRST = 24;
 
 type ShopPageSettingsRaw = {
   promoBanner?: string | null;
@@ -170,7 +174,10 @@ export async function getShopPageData(
 
     const prefetchHandles = collectionSections.map((s) => ({
       handle: s.collectionHandle,
-      first: s.layout === "carousel" ? CAROUSEL_FIRST : GRID_FIRST,
+      first:
+        s.layout === "carousel"
+          ? SHOP_SECTION_CAROUSEL_FIRST
+          : SHOP_SECTION_GRID_FIRST,
     }));
 
     if (prefetchHandles.length > 0) {

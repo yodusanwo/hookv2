@@ -509,3 +509,32 @@ export async function getKlaviyoReviewCountForProduct(
 
   return total;
 }
+
+/**
+ * All Klaviyo review fetches needed for the PDP (section pool, store summary, product-scoped list + summary).
+ * Call once per product page; pairs with {@link derivePdpReviewCarouselState} for display props.
+ */
+export async function getPdpReviewData(shopifyProductGid: string): Promise<{
+  sectionReviews: MappedReview[];
+  storeReviewSummary: ReviewsSummary;
+  productReviewsForCarousel: MappedReview[];
+  productScopedReviewSummary: ReviewsSummary;
+}> {
+  const [
+    sectionReviews,
+    storeReviewSummary,
+    productReviewsForCarousel,
+    productScopedReviewSummary,
+  ] = await Promise.all([
+    getKlaviyoReviewsForSection(),
+    getKlaviyoReviewsSummary(),
+    getKlaviyoReviewsForProduct(shopifyProductGid),
+    getKlaviyoReviewSummaryForProduct(shopifyProductGid),
+  ]);
+  return {
+    sectionReviews,
+    storeReviewSummary,
+    productReviewsForCarousel,
+    productScopedReviewSummary,
+  };
+}

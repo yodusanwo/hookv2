@@ -1,12 +1,18 @@
+import {
+  ROUTE_HERO_TOP_PADDING_CLASSES,
+  ROUTE_LIGHT_BLUE_CSS_VAR,
+  ROUTE_MAIN_MIN_HEIGHT_CLASSES,
+} from "@/components/loading/routeLoadingShell";
+
 /**
- * PDP shell while product + reviews + Sanity data resolve. Min-height avoids an empty
- * main region that makes the footer jump into view during load.
+ * PDP shell while product + below-the-fold data stream. Matches hero padding/background
+ * (see app/products/[handle]/page.tsx) to reduce CLS; min-height keeps the footer below the fold.
  */
 export default function ProductLoading() {
   return (
     <main
-      className="min-h-[calc(100dvh-7rem)] mx-auto max-w-6xl px-4 py-10 sm:py-14"
-      style={{ backgroundColor: "#F2F2F5" }}
+      className={`mx-auto max-w-6xl px-4 ${ROUTE_MAIN_MIN_HEIGHT_CLASSES} ${ROUTE_HERO_TOP_PADDING_CLASSES}`}
+      style={{ backgroundColor: ROUTE_LIGHT_BLUE_CSS_VAR }}
       aria-busy="true"
       aria-label="Loading product"
     >

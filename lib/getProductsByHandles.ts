@@ -1,5 +1,5 @@
 import "server-only";
-import { shopifyFetch } from "@/lib/shopify";
+import { shopifyFetch, STOREFRONT_FETCH_REVALIDATE } from "@/lib/shopify";
 import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import type { ApiProductForCarousel } from "@/lib/types";
 
@@ -100,6 +100,7 @@ export async function getProductsByHandles(
         shopifyFetch<ProductByHandleResponse, { handle: string }>({
           query: PRODUCT_BY_HANDLE_QUERY,
           variables: { handle },
+          next: STOREFRONT_FETCH_REVALIDATE,
         })
       )
     );

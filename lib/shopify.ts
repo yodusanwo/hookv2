@@ -1,5 +1,8 @@
 import "server-only";
 
+/** Single source for Storefront API ISR-style caching on read-heavy routes (PDP product queries, etc.). */
+export const STOREFRONT_FETCH_REVALIDATE = { revalidate: 60 } as const;
+
 type ShopifyFetchOptions<TVariables> = {
   query: string;
   variables?: TVariables;

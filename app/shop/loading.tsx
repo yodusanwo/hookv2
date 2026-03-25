@@ -1,3 +1,9 @@
+import {
+  ROUTE_HERO_TOP_PADDING_CLASSES,
+  ROUTE_LIGHT_BLUE_CSS_VAR,
+  ROUTE_MAIN_MIN_HEIGHT_CLASSES,
+} from "@/components/loading/routeLoadingShell";
+
 /**
  * Shown while the /shop RSC payload streams. Tall min-height keeps the layout footer
  * below the fold so users don’t see the footer wave before shop content.
@@ -5,8 +11,8 @@
 export default function ShopLoading() {
   return (
     <main
-      className="min-h-[calc(100dvh-7rem)] pt-[140px] pb-12 sm:min-h-[calc(100dvh-8rem)] sm:pt-[170px] md:min-h-[calc(100dvh-9rem)] md:pt-[230px]"
-      style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
+      className={`pb-12 ${ROUTE_MAIN_MIN_HEIGHT_CLASSES} ${ROUTE_HERO_TOP_PADDING_CLASSES}`}
+      style={{ backgroundColor: ROUTE_LIGHT_BLUE_CSS_VAR }}
       aria-busy="true"
       aria-label="Loading shop"
     >
