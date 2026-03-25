@@ -19,16 +19,64 @@ export function normalizeIngredientShopSegment(
   return first;
 }
 
-/** Builds the `/shop/[segment]` path piece for a collection handle or Shopify product-type filter value. */
+/**
+ * Known Explore card labels → Shopify/Site Settings collection handles when editors omit `collectionHandle`.
+ * Keys: lowercase, single spaces (see ExploreProductsSection + Sanity).
+ */
+const EXPLORE_LABEL_TO_COLLECTION_HANDLE: Record<string, string> = {
+  seafood: "seafood",
+  "smoked & specialty": "smoked-specialty",
+  "smoked & speciality": "smoked-specialty",
+  "pet treats, merch, gift cards": "pet-treats",
+  "pet treats": "pet-treats",
+};
+
+/**
+ * Resolves the shop URL segment handle for an Explore category card when `collectionHandle`
+ * is missing in CMS (label-only rows otherwise link to `/shop` and show no active pill).
+ */
+export function exploreCollectionHandleFromFields(options: {
+  collectionHandle?: string | null;
+  label?: string | null;
+}): string {
+  const raw = options.collectionHandle?.trim();
+  if (raw) return raw;
+  const label = options.label?.trim();
+  if (!label) return "";
+  const key = label.toLowerCase().replace(/\s+/g, " ").trim();
+  if (EXPLORE_LABEL_TO_COLLECTION_HANDLE[key]) {
+    return EXPLORE_LABEL_TO_COLLECTION_HANDLE[key]!;
+  }
+  return label
+    .toLowerCase()
+    .replace(/,/g, " ")
+    .replace(/&/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+/**
+ * Builds the `/shop/[segment]` path piece for a collection handle or filter value.
+ * Normalizes case, whitespace, and underscores (Shopify handles often use `_` while Explore links use `-`).
+ */
 export function shopPathSegmentFromValue(value: string): string {
-  return encodeURIComponent(
-    value.trim().toLowerCase().replace(/\s+/g, "-"),
-  );
+  const normalized = value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/_/g, "-");
+  return encodeURIComponent(normalized);
 }
 
 /**
  * Resolves a URL segment to either a collection section or a product-type filter from Sanity.
- * Collection handles are checked first, then filter values (case- and hyphen-insensitive).
+ * Prefer the same canonical encoding as {@link shopPathSegmentFromValue} (used by Explore → /shop links)
+ * so `seafood`, `smoked-specialty`, and handles with `_` vs `-` all match Site Settings.
+ * Collections are checked before filters when both could match.
  */
 export function resolveShopPathSegment(
   rawSegment: string,
@@ -43,31 +91,48 @@ export function resolveShopPathSegment(
   }
   if (!decoded) return null;
 
-  const exactColl = collectionSections.find((s) => s.collectionHandle === decoded);
-  if (exactColl) return { kind: "collection", handle: exactColl.collectionHandle };
+  /** Same string Explore uses in hrefs — must match shopPathSegmentFromValue(collectionHandle). */
+  const targetSeg = shopPathSegmentFromValue(decoded);
 
-  const collCi = collectionSections.find(
-    (s) => s.collectionHandle.toLowerCase() === decoded.toLowerCase(),
+  const byCanonicalColl = collectionSections.find(
+    (s) => shopPathSegmentFromValue(s.collectionHandle) === targetSeg,
   );
-  if (collCi) return { kind: "collection", handle: collCi.collectionHandle };
+  if (byCanonicalColl) {
+    return { kind: "collection", handle: byCanonicalColl.collectionHandle };
+  }
 
-  const exactFilter = filterOptions.find((f) => f.value === decoded);
-  if (exactFilter) return { kind: "filter", value: exactFilter.value };
-
-  const filterCi = filterOptions.find(
-    (f) => f.value.toLowerCase() === decoded.toLowerCase(),
+  const byCanonicalFilter = filterOptions.find(
+    (f) => shopPathSegmentFromValue(f.value) === targetSeg,
   );
-  if (filterCi) return { kind: "filter", value: filterCi.value };
+  if (byCanonicalFilter) {
+    return { kind: "filter", value: byCanonicalFilter.value };
+  }
 
-  const decNorm = decoded.toLowerCase().replace(/-/g, " ").replace(/\s+/g, " ").trim();
+  const decNorm = decoded
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/-/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
   const fuzzyColl = collectionSections.find((s) => {
-    const h = s.collectionHandle.toLowerCase().replace(/-/g, " ").replace(/\s+/g, " ").trim();
+    const h = s.collectionHandle
+      .toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/-/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     return h === decNorm;
   });
   if (fuzzyColl) return { kind: "collection", handle: fuzzyColl.collectionHandle };
 
   const fuzzyFilter = filterOptions.find((f) => {
-    const fv = f.value.toLowerCase().replace(/\s+/g, " ").trim();
+    const fv = f.value
+      .toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/-/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     return fv === decNorm;
   });
   if (fuzzyFilter) return { kind: "filter", value: fuzzyFilter.value };

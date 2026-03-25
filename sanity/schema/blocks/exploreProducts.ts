@@ -38,7 +38,7 @@ export const exploreProductsBlock = defineType({
               type: "string",
               title: "Shop category or filter slug",
               description:
-                "Must match a collection handle OR product-type filter value from Site Settings → Shop Page (same slug as the /shop/… URL, e.g. seafood, salmon, pet-treats).",
+                "Must match a collection handle OR product-type filter value from Site Settings → Shop Page (same slug as the /shop/… URL, e.g. seafood, smoked-specialty, pet-treats). If empty, the site infers a slug from the label for common names (Seafood, Smoked & Specialty, Pet Treats…); prefer filling this field so links stay reliable.",
             },
             defineField({
               name: "image",

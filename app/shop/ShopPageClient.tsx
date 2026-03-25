@@ -72,11 +72,12 @@ export function ShopPageClient({
   /** Dynamic segment from `/shop/[category]` — source of truth on client navigations (Explore → shop). */
   const pathSegmentFromUrl = useMemo(() => {
     const raw = params?.category;
-    if (typeof raw !== "string" || !raw.trim()) return null;
+    const segment = Array.isArray(raw) ? raw[0] : raw;
+    if (typeof segment !== "string" || !segment.trim()) return null;
     try {
-      return decodeURIComponent(raw).trim();
+      return decodeURIComponent(segment).trim();
     } catch {
-      return raw.trim();
+      return segment.trim();
     }
   }, [params?.category]);
 

@@ -9,7 +9,10 @@ import { ExploreProductsCategoryCarousel } from "./ExploreProductsCategoryCarous
 import { isLightBackgroundColor } from "@/lib/theme";
 import { urlForExploreCategoryImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
-import { shopPathSegmentFromValue } from "@/lib/shopPathSegment";
+import {
+  exploreCollectionHandleFromFields,
+  shopPathSegmentFromValue,
+} from "@/lib/shopPathSegment";
 import type { FilterItem } from "@/lib/types";
 
 /** Explore Products filter item with optional Sanity image reference. */
@@ -84,7 +87,10 @@ export function ExploreProductsSection({
         : DEFAULT_FILTER_COLLECTIONS;
 
   const categories = filterCollections.map((f) => {
-    const handle = f.collectionHandle?.trim();
+    const handle = exploreCollectionHandleFromFields({
+      collectionHandle: f.collectionHandle,
+      label: f.label,
+    });
     /** Direct `/shop/[segment]` avoids `/shop?category=` → redirect (extra round trip). */
     const href = handle ? `/shop/${shopPathSegmentFromValue(handle)}` : "/shop";
     let imageUrl: string | null = null;
@@ -97,7 +103,7 @@ export function ExploreProductsSection({
       label: f.label ?? "Shop",
       href,
       imageUrl,
-      collectionHandle: (f.collectionHandle ?? "").trim().toLowerCase(),
+      collectionHandle: handle.toLowerCase(),
     };
   });
 
