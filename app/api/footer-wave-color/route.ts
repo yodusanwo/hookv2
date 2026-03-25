@@ -36,10 +36,11 @@ export async function GET(request: Request) {
     // /shop: strip is grey when no search; light blue when search params (q, search, or s) are present
     // /products/[handle]: strip is light blue to match Wild Flavor section (no white gap above wave)
     // /cart: strip is white above the footer wave
+    const isShopRoute = slug === "shop" || slug.startsWith("shop/");
     const color =
       slug === "cart"
         ? CART_PAGE_STRIP_BG
-        : slug === "shop"
+        : isShopRoute
           ? (search ? SHOP_PAGE_SEARCH_STRIP_BG : SHOP_PAGE_STRIP_BG)
           : slug.startsWith("products/")
             ? PRODUCT_PAGE_STRIP_BG

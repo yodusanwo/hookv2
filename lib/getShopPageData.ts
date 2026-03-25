@@ -18,31 +18,6 @@ const DEFAULT_FILTER_COLLECTIONS: FilterItem[] = [
 const GRID_FIRST = 50;
 const CAROUSEL_FIRST = 24;
 
-// #region agent log
-function agentLogShop(
-  message: string,
-  data: Record<string, unknown>,
-  hypothesisId: string,
-) {
-  fetch("http://127.0.0.1:7629/ingest/9e235f25-64da-41ce-bdea-8ecf5d2d5b75", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "8950d6",
-    },
-    body: JSON.stringify({
-      sessionId: "8950d6",
-      location: "getShopPageData.ts",
-      message,
-      data,
-      timestamp: Date.now(),
-      hypothesisId,
-      runId: "pre-fix",
-    }),
-  }).catch(() => {});
-}
-// #endregion
-
 type ShopPageSettingsRaw = {
   promoBanner?: string | null;
   promoBannerUrl?: string | null;
@@ -104,15 +79,6 @@ export async function getShopPageData(
   let productCarouselInitialProducts: ApiProductForCarousel[] = [];
   let initialSectionProductsByHandle: Record<string, ApiProductForCarousel[]> = {};
 
-  // #region agent log
-  const shopT0 = Date.now();
-  agentLogShop(
-    "getShopPageData start",
-    { pathCategory: pathCategory ?? null, hasQueryCategory: Boolean(fromQuery) },
-    "H3",
-  );
-  // #endregion
-
   if (!client) {
     return {
       promoBanner,
@@ -132,14 +98,6 @@ export async function getShopPageData(
       client.fetch<ShopPageSettingsRaw | null>(SHOP_PAGE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } }),
       client.fetch<CatchOfTheDayBlockRaw | null>(CATCH_OF_THE_DAY_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
     ]);
-
-    // #region agent log
-    agentLogShop(
-      "sanity settings+catch parallel done",
-      { elapsedMs: Date.now() - shopT0 },
-      "H1",
-    );
-    // #endregion
 
     promoBanner = settings?.promoBanner ?? null;
     promoBannerUrl = settings?.promoBannerUrl ?? null;
@@ -178,17 +136,6 @@ export async function getShopPageData(
         }
       }
     }
-
-    // #region agent log
-    agentLogShop(
-      "carousel product batch done",
-      {
-        elapsedMs: Date.now() - shopT0,
-        carouselMode: productCarouselBlock?.selectedProductsMode ? "by-handle" : "first-collection",
-      },
-      "H2",
-    );
-    // #endregion
 
     const rawFilters = settings?.shopFilterOptions ?? [];
     filterOptions = rawFilters
@@ -239,17 +186,6 @@ export async function getShopPageData(
         bundles.map(({ handle, products }) => [handle, products]),
       );
     }
-
-    // #region agent log
-    agentLogShop(
-      "section prefetch done",
-      {
-        elapsedMs: Date.now() - shopT0,
-        sectionCount: prefetchHandles.length,
-      },
-      "H4",
-    );
-    // #endregion
   } catch (e) {
     console.warn("Shop page data fetch failed:", e);
   }
@@ -268,14 +204,6 @@ export async function getShopPageData(
       initialFilterValuesFromUrl = [resolved.value];
     }
   }
-
-  // #region agent log
-  agentLogShop(
-    "getShopPageData return",
-    { elapsedMs: Date.now() - shopT0, pathCategory: pathCategory ?? null },
-    "H3",
-  );
-  // #endregion
 
   return {
     promoBanner,

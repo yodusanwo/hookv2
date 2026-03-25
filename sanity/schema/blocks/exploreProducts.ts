@@ -36,8 +36,9 @@ export const exploreProductsBlock = defineType({
             {
               name: "collectionHandle",
               type: "string",
-              title: "Collection Handle",
-              description: "Shopify collection handle. Used for link URL.",
+              title: "Shop category or filter slug",
+              description:
+                "Must match a collection handle OR product-type filter value from Site Settings → Shop Page (same slug as the /shop/… URL, e.g. seafood, salmon, pet-treats).",
             },
             defineField({
               name: "image",

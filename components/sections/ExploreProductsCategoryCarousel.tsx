@@ -73,6 +73,7 @@ export function ExploreProductsCategoryCarousel({
     <Link
       key={idx}
       href={cat.href}
+      prefetch
       className="group flex flex-col items-center outline-none focus:outline-none w-full md:w-auto md:shrink-0 md:snap-start"
     >
       <div className="section-card overflow-hidden w-full md:w-[331px] transition-all duration-200 shrink-0 hover:scale-[1.02] active:scale-[0.98] active:opacity-95 border-0 border-none ring-0 bg-transparent">

@@ -35,9 +35,11 @@ export function Footer({
   footerWaveBackgroundColor?: string | null;
 }) {
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
+  /** Match `/shop` and `/shop/seafood` (etc.) so the strip isn’t unstyled until `/api/footer-wave-color` returns. */
+  const isShopRoute = pathname === "/shop" || pathname?.startsWith("/shop/");
   const waveBg =
     footerWaveBackgroundColor ??
-    (pathname === "/shop" ? SHOP_PAGE_WAVE_BG : pathname === "/contact" ? CONTACT_PAGE_FOOTER_BG : undefined);
+    (isShopRoute ? SHOP_PAGE_WAVE_BG : pathname === "/contact" ? CONTACT_PAGE_FOOTER_BG : undefined);
   const isRecipesPage = pathname === "/recipes" || pathname?.startsWith("/recipes/");
   const waveStripPadding = isRecipesPage ? "pt-0" : "pt-6 sm:pt-8";
   return (
@@ -47,6 +49,9 @@ export function Footer({
         <img
           src="/wavefooter.png"
           alt=""
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
           className="w-full h-auto block align-bottom navy-wave-outline-top"
         />
       </div>

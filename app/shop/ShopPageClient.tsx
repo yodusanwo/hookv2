@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFooterWaveOverride } from "@/app/context/FooterWaveOverride";
 import { PromoBanner } from "@/components/PromoBanner";
@@ -12,6 +12,37 @@ import type { CategorySectionBlockData } from "@/components/sections/CategorySec
 import type { ApiProductForCarousel } from "@/lib/types";
 import type { ShopProductCarouselBlock } from "./ShopProductCarousel";
 import { shopPathSegmentFromValue } from "@/lib/shopPathSegment";
+
+function resolveCategoryFromUrl(
+  raw: string | null | undefined,
+  sections: CategorySectionBlockData[],
+): string | null {
+  if (!raw?.trim()) return null;
+  const t = raw.trim();
+  const exact = sections.find((s) => s.collectionHandle === t);
+  if (exact) return exact.collectionHandle;
+  const ci = sections.find(
+    (s) => s.collectionHandle.toLowerCase() === t.toLowerCase(),
+  );
+  return ci?.collectionHandle ?? null;
+}
+
+function resolveFiltersFromUrl(
+  urls: string[] | undefined,
+  options: Array<{ value: string }>,
+): string[] {
+  if (!urls?.length) return [];
+  return urls
+    .map((raw) => {
+      const t = raw.trim();
+      const exact = options.find((f) => f.value === t);
+      if (exact) return exact.value;
+      return options.find(
+        (f) => f.value.toLowerCase() === t.toLowerCase(),
+      )?.value;
+    })
+    .filter((v): v is string => Boolean(v));
+}
 
 export function ShopPageClient({
   promoBanner,
@@ -47,23 +78,34 @@ export function ShopPageClient({
     value: s.collectionHandle,
     label: s.title.replace(/\s+/g, " ").trim() || s.collectionHandle,
   }));
-  const validCategoryHandles = new Set(categoryOptions.map((o) => o.value));
-  const initialCategory =
-    initialCategoryFromUrl && validCategoryHandles.has(initialCategoryFromUrl)
-      ? initialCategoryFromUrl
-      : null;
 
-  const validFilterValues = new Set(filterOptions.map((f) => f.value));
-  const initialFiltersFromUrl = (initialFilterValuesFromUrl ?? []).filter((v) =>
-    validFilterValues.has(v),
+  const resolvedCategory = useMemo(
+    () => resolveCategoryFromUrl(initialCategoryFromUrl, collectionSections),
+    [initialCategoryFromUrl, collectionSections],
+  );
+
+  const resolvedFilters = useMemo(
+    () => resolveFiltersFromUrl(initialFilterValuesFromUrl, filterOptions),
+    [initialFilterValuesFromUrl, filterOptions],
   );
 
   const [selectedFilterValues, setSelectedFilterValues] = useState<string[]>(
-    () => (initialFiltersFromUrl.length > 0 ? initialFiltersFromUrl : []),
+    () => resolvedFilters,
   );
   const [selectedCategoryHandles, setSelectedCategoryHandles] = useState<
     string[]
-  >(initialCategory ? [initialCategory] : []);
+  >(() => (resolvedCategory ? [resolvedCategory] : []));
+
+  const urlCategoryKey = initialCategoryFromUrl ?? "";
+  const urlFiltersKey = (initialFilterValuesFromUrl ?? []).join("\u0001");
+
+  /** When CMS data streams in, resolvedCategory can go from null → handle without URL changing; must resync or pills stay empty and the next click toggles off → router.push("/shop"). */
+  const resolvedFiltersKey = resolvedFilters.join("\u0001");
+
+  useEffect(() => {
+    setSelectedFilterValues([...resolvedFilters]);
+    setSelectedCategoryHandles(resolvedCategory ? [resolvedCategory] : []);
+  }, [urlCategoryKey, urlFiltersKey, resolvedCategory, resolvedFiltersKey]);
 
   const router = useRouter();
 
@@ -79,13 +121,17 @@ export function ShopPageClient({
   };
 
   const toggleCategory = (handle: string) => {
+    // Already on this category (e.g. arrived from Explore). Second tap used to clear → /shop; keep URL.
+    if (selectedCategoryHandles.length === 1 && selectedCategoryHandles[0] === handle) {
+      return;
+    }
     const next = selectedCategoryHandles.includes(handle) ? [] : [handle];
     setSelectedCategoryHandles(next);
     setSelectedFilterValues([]);
     if (next.length === 0) {
       router.push("/shop", { scroll: false });
     } else {
-      router.push(`/shop/${encodeURIComponent(handle)}`, { scroll: false });
+      router.push(`/shop/${shopPathSegmentFromValue(handle)}`, { scroll: false });
     }
   };
 
@@ -117,7 +163,7 @@ export function ShopPageClient({
 
   return (
     <main
-      className="pt-[140px] pb-0 sm:pt-[170px] md:pt-[230px]"
+      className="min-h-[50vh] pt-[140px] pb-0 sm:pt-[170px] md:pt-[230px]"
       style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
     >
       <CategoryFilterBar

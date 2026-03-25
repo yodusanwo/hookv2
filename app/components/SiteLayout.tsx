@@ -45,7 +45,7 @@ function SiteLayoutInner({
     let cancelled = false;
     const path = pathname === "/" ? "/" : pathname;
     const isShopSearch =
-      pathname === "/shop" &&
+      (pathname === "/shop" || pathname?.startsWith("/shop/")) &&
       (searchParams.has("q") || searchParams.has("search") || searchParams.has("s"));
     const url = `/api/footer-wave-color?path=${encodeURIComponent(path)}${isShopSearch ? "&search=1" : ""}`;
     fetch(url)

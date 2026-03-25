@@ -145,6 +145,7 @@ export function HomePageFallback({
                   <Link
                     key={product.id}
                     href={`/products/${product.handle}`}
+                    prefetch
                     className="group rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 overflow-hidden"
                   >
                     <div className="relative aspect-[4/3] overflow-hidden rounded-t-xl bg-slate-100">

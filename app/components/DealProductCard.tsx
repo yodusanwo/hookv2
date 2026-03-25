@@ -98,6 +98,7 @@ export function DealProductCard({
     <>
       <Link
         href={`/products/${product.handle}`}
+        prefetch
         className="group relative block rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 w-full min-w-0 overflow-hidden"
       >
         <div

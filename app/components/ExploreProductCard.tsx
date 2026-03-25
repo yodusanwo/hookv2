@@ -64,6 +64,7 @@ export function ExploreProductCard({
   return (
     <Link
       href={`/products/${product.handle}`}
+      prefetch
       className="group flex flex-col items-center w-full shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02]"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >
