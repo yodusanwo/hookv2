@@ -32,6 +32,13 @@ type CartGetResponse = {
         node: {
           id: string;
           quantity: number;
+          cost: {
+            totalAmount: { amount: string; currencyCode: string };
+            amountPerQuantity: { amount: string; currencyCode: string };
+          };
+          sellingPlanAllocation: {
+            sellingPlan: { name: string };
+          } | null;
           merchandise: {
             id: string;
             title: string;
@@ -67,6 +74,15 @@ const CART_QUERY = `
           node {
             id
             quantity
+            cost {
+              totalAmount { amount currencyCode }
+              amountPerQuantity { amount currencyCode }
+            }
+            sellingPlanAllocation {
+              sellingPlan {
+                name
+              }
+            }
             merchandise {
               ... on ProductVariant {
                 id

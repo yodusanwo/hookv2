@@ -91,6 +91,13 @@ function ReturnIcon({ className }: { className?: string }) {
 type CartLine = {
   id: string;
   quantity: number;
+  /** Actual line totals from Shopify (includes subscription / selling-plan pricing). */
+  cost?: {
+    totalAmount: { amount: string; currencyCode: string };
+    amountPerQuantity: { amount: string; currencyCode: string };
+  };
+  /** Present when the line was added with a subscription selling plan. */
+  sellingPlanAllocation: { sellingPlan: { name: string } } | null;
   merchandise: {
     id: string;
     title: string;
@@ -238,13 +245,16 @@ export default function CartPage() {
   }, [cart?.id, cart?.lines.edges.length]);
 
   const recomputeCost = React.useCallback((lines: CartLine[]) => {
-    const currencyCode = lines[0]?.merchandise?.price?.currencyCode ?? "USD";
-    const total = lines.reduce(
-      (sum, l) =>
-        sum +
-        parseFloat(l.merchandise.price.amount) * l.quantity,
-      0
-    );
+    const currencyCode =
+      lines[0]?.cost?.totalAmount?.currencyCode ??
+      lines[0]?.merchandise?.price?.currencyCode ??
+      "USD";
+    const total = lines.reduce((sum, l) => {
+      if (l.cost?.totalAmount?.amount) {
+        return sum + parseFloat(l.cost.totalAmount.amount);
+      }
+      return sum + parseFloat(l.merchandise.price.amount) * l.quantity;
+    }, 0);
     return {
       totalAmount: {
         amount: total.toFixed(2),
@@ -253,12 +263,58 @@ export default function CartPage() {
     };
   }, []);
 
+  const scaleLineCostForQuantity = React.useCallback(
+    (line: CartLine, newQty: number): CartLine => {
+      const q = Math.max(1, line.quantity);
+      const listUnit = parseFloat(line.merchandise.price.amount);
+      const cc =
+        line.cost?.totalAmount?.currencyCode ??
+        line.merchandise.price.currencyCode;
+      if (!line.cost?.totalAmount?.amount) {
+        return {
+          ...line,
+          quantity: newQty,
+          cost: {
+            totalAmount: {
+              amount: (listUnit * newQty).toFixed(2),
+              currencyCode: cc,
+            },
+            amountPerQuantity: {
+              amount: listUnit.toFixed(2),
+              currencyCode: cc,
+            },
+          },
+        };
+      }
+      const perUnit =
+        line.cost.amountPerQuantity?.amount != null
+          ? parseFloat(line.cost.amountPerQuantity.amount)
+          : parseFloat(line.cost.totalAmount.amount) / q;
+      const newTotal = (perUnit * newQty).toFixed(2);
+      return {
+        ...line,
+        quantity: newQty,
+        cost: {
+          totalAmount: { amount: newTotal, currencyCode: cc },
+          amountPerQuantity: {
+            amount: perUnit.toFixed(2),
+            currencyCode: cc,
+          },
+        },
+      };
+    },
+    [],
+  );
+
   const updateQuantity = React.useCallback(
     async (lineId: string, quantity: number) => {
       if (!cartId || !cart) return;
       const optimisticLines = cart.lines.edges.map((e) => {
         if (e.node.id === lineId) {
-          return { ...e, node: { ...e.node, quantity } };
+          return {
+            ...e,
+            node: scaleLineCostForQuantity(e.node, quantity),
+          };
         }
         return e;
       });
@@ -301,7 +357,7 @@ export default function CartPage() {
         });
       }
     },
-    [cartId, cart, fetchCart, recomputeCost]
+    [cartId, cart, fetchCart, recomputeCost, scaleLineCostForQuantity]
   );
 
   const removeLine = React.useCallback(
@@ -427,8 +483,12 @@ export default function CartPage() {
 
             <ul className="divide-y divide-slate-200">
               {lines.map((line) => {
-                const unitPrice = parseFloat(line.merchandise.price.amount);
-                const lineTotal = unitPrice * line.quantity;
+                const lineTotal =
+                  line.cost?.totalAmount?.amount != null
+                    ? parseFloat(line.cost.totalAmount.amount)
+                    : parseFloat(line.merchandise.price.amount) * line.quantity;
+                const planName =
+                  line.sellingPlanAllocation?.sellingPlan?.name?.trim() ?? "";
                 return (
                   <li
                     key={line.id}
@@ -473,6 +533,16 @@ export default function CartPage() {
                             {line.merchandise.title}
                           </p>
                         )}
+                        {planName ? (
+                          <p className="mt-2 max-w-md text-sm leading-snug text-green-800">
+                            <span className="font-semibold">
+                              Subscribe &amp; save
+                            </span>
+                            {" · "}
+                            {planName}. This line uses your subscription rate
+                            (not the one-time price).
+                          </p>
+                        ) : null}
                       </div>
                     </div>
 
@@ -540,6 +610,15 @@ export default function CartPage() {
           <div className="rounded-card border border-slate-200 bg-slate-50/50 p-6 lg:sticky lg:top-28">
             <h2 className="text-lg font-bold text-black">Order Summary</h2>
             <div className="mt-4 space-y-2">
+              {lines.some((l) => l.sellingPlanAllocation?.sellingPlan?.name) ? (
+                <p className="text-xs leading-relaxed text-slate-600">
+                  Subtotal includes{" "}
+                  <span className="font-medium text-green-800">
+                    subscribe &amp; save
+                  </span>{" "}
+                  pricing on subscription items.
+                </p>
+              ) : null}
               <div className="flex justify-between text-sm">
                 <span className="text-slate-600">Subtotal</span>
                 <span className="font-medium text-black">

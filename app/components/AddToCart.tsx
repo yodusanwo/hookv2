@@ -270,55 +270,6 @@ export function AddToCart({
   if (variant === "productPage") {
     return (
       <div className="space-y-6 bg-[#d4f2ff]">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              void onBuyNow();
-            }}
-            disabled={
-              !selectedVariant.availableForSale ||
-              buyNowLoading ||
-              status === "loading"
-            }
-            className="inline-flex h-12 w-full min-w-0 items-center justify-center rounded-md border-2 border-[var(--brand-navy)] bg-white px-4 text-sm font-semibold text-[var(--brand-navy)] transition-opacity hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {buyNowLoading ? "Redirecting…" : "Buy now"}
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              onAdd();
-            }}
-            disabled={
-              !selectedVariant.availableForSale || status === "loading"
-            }
-            className="inline-flex h-12 w-full min-w-0 items-center justify-center rounded-md px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-            style={{
-              backgroundColor:
-                selectedVariant.availableForSale
-                  ? "var(--brand-green)"
-                  : "var(--brand-navy, #1e3a5f)",
-            }}
-          >
-            {status === "loading"
-              ? "Adding…"
-              : status === "success"
-                ? "Added!"
-                : !selectedVariant.availableForSale
-                  ? "Sold out"
-                  : "Add to cart"}
-          </button>
-        </div>
-
-        {buyNowError ? (
-          <p className="text-sm font-medium text-red-700" role="alert">
-            {buyNowError}
-          </p>
-        ) : null}
-
         {options.length > 0 ? (
           <div className="space-y-3">
             {options.map((opt) => (
@@ -472,6 +423,55 @@ export function AddToCart({
             </span>
           )}
         </div>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              void onBuyNow();
+            }}
+            disabled={
+              !selectedVariant.availableForSale ||
+              buyNowLoading ||
+              status === "loading"
+            }
+            className="inline-flex h-12 w-full min-w-0 items-center justify-center rounded-md border-2 border-[var(--brand-navy)] bg-white px-4 text-sm font-semibold text-[var(--brand-navy)] transition-opacity hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {buyNowLoading ? "Redirecting…" : "Buy now"}
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onAdd();
+            }}
+            disabled={
+              !selectedVariant.availableForSale || status === "loading"
+            }
+            className="inline-flex h-12 w-full min-w-0 items-center justify-center rounded-md px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              backgroundColor:
+                selectedVariant.availableForSale
+                  ? "var(--brand-green)"
+                  : "var(--brand-navy, #1e3a5f)",
+            }}
+          >
+            {status === "loading"
+              ? "Adding…"
+              : status === "success"
+                ? "Added!"
+                : !selectedVariant.availableForSale
+                  ? "Sold out"
+                  : "Add to cart"}
+          </button>
+        </div>
+
+        {buyNowError ? (
+          <p className="text-sm font-medium text-red-700" role="alert">
+            {buyNowError}
+          </p>
+        ) : null}
 
         {status === "success" ? (
           <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
