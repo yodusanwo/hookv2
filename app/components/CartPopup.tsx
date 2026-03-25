@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { subscriptionCartLineNote } from "@/lib/cartSubscriptionLineNote";
 
 const CART_ID_KEY = "shopify_cart_id";
 const CART_POPUP_OPEN_EVENT = "open-cart-popup";
@@ -401,8 +402,7 @@ export function CartPopup() {
                       ? parseFloat(line.cost.totalAmount.amount)
                       : parseFloat(line.merchandise.price.amount) *
                         line.quantity;
-                  const planName =
-                    line.sellingPlanAllocation?.sellingPlan?.name?.trim() ?? "";
+                  const subNote = subscriptionCartLineNote(line);
                   return (
                     <li
                       key={line.id}
@@ -436,14 +436,9 @@ export function CartPopup() {
                               {line.merchandise.title}
                             </p>
                           )}
-                          {planName ? (
+                          {subNote ? (
                             <p className="mt-2 max-w-md text-sm leading-snug text-green-800">
-                              <span className="font-semibold">
-                                Subscribe &amp; save
-                              </span>
-                              {" · "}
-                              {planName}. This line uses your subscription rate
-                              (not the one-time price).
+                              {subNote}
                             </p>
                           ) : null}
                         </div>
