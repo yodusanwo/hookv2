@@ -529,32 +529,44 @@ export function CartPopup() {
                     aria-label="Order special instructions"
                   />
                 </div>
-                {/* Discount code / gift card — half width */}
-                <form
-                  onSubmit={applyDiscount}
-                  className="mb-4 flex w-full max-w-[50%] flex-wrap items-center gap-2 sm:flex-nowrap"
-                >
-                  <input
-                    type="text"
-                    value={discountInput}
-                    onChange={(e) => {
-                      setDiscountInput(e.target.value);
-                      setDiscountError(null);
-                    }}
-                    placeholder="Discount Code or Gift Card"
-                    disabled={discountLoading}
-                    className="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60"
-                    aria-label="Discount code or gift card"
-                  />
-                  <button
-                    type="submit"
-                    disabled={discountLoading || !discountInput.trim()}
-                    className="shrink-0 rounded-md px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-                    style={{ background: "#069400" }}
+                {/* Discount code / gift card — two-line label so mobile isn’t clipped; short placeholder */}
+                <div className="mb-4 w-full">
+                  <label
+                    htmlFor="cart-discount-code"
+                    className="block text-left text-sm font-medium text-slate-900"
                   >
-                    {discountLoading ? "Applying…" : "Apply"}
-                  </button>
-                </form>
+                    <span className="block">Discount code</span>
+                    <span className="mt-0.5 block text-xs font-normal text-slate-600">
+                      or gift card
+                    </span>
+                  </label>
+                  <form
+                    onSubmit={applyDiscount}
+                    className="mt-1.5 flex w-full flex-row items-stretch gap-2 sm:gap-3"
+                  >
+                    <input
+                      id="cart-discount-code"
+                      type="text"
+                      value={discountInput}
+                      onChange={(e) => {
+                        setDiscountInput(e.target.value);
+                        setDiscountError(null);
+                      }}
+                      placeholder="Enter code"
+                      disabled={discountLoading}
+                      className="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60"
+                      autoComplete="off"
+                    />
+                    <button
+                      type="submit"
+                      disabled={discountLoading || !discountInput.trim()}
+                      className="shrink-0 rounded-md px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                      style={{ background: "#069400" }}
+                    >
+                      {discountLoading ? "Applying…" : "Apply"}
+                    </button>
+                  </form>
+                </div>
                 {discountError && (
                   <p className="mb-2 text-sm text-red-600" role="alert">
                     {discountError}
