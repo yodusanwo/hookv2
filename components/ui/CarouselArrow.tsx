@@ -8,11 +8,20 @@ const ARROW_SIZE_PX = 38.4;
 const ARROW_OFFSET_PX = 70;
 const ARROW_INSET_PX = 12;
 
-const arrowStyleWhite = {
+/** Dark sections: white arrow via mask (same mechanism as light theme; avoids img vs mask preload warnings). */
+const arrowStyleDark = {
   width: ARROW_SIZE_PX,
   height: ARROW_SIZE_PX,
-  filter: "brightness(0) invert(1)" as const,
-};
+  backgroundColor: "#ffffff",
+  WebkitMaskImage: `url(${ARROW_FORWARD_SRC})`,
+  maskImage: `url(${ARROW_FORWARD_SRC})`,
+  WebkitMaskSize: "contain",
+  maskSize: "contain",
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
+  WebkitMaskPosition: "center",
+  maskPosition: "center",
+} as React.CSSProperties;
 
 /** Dark arrow for light backgrounds – exact #1E1E1E via mask. */
 const LIGHT_ARROW_COLOR = "#1E1E1E";
@@ -111,12 +120,10 @@ export function CarouselArrow({
           aria-hidden
         />
       ) : (
-        <img
-          src={ARROW_FORWARD_SRC}
-          alt=""
+        <span
+          className={`block ${isPrev ? "rotate-180" : ""}`}
+          style={arrowStyleDark}
           aria-hidden
-          className={`max-w-full ${isPrev ? "rotate-180" : ""}`}
-          style={arrowStyleWhite}
         />
       )}
     </button>
