@@ -9,6 +9,7 @@ import { ExploreProductsCategoryCarousel } from "./ExploreProductsCategoryCarous
 import { isLightBackgroundColor } from "@/lib/theme";
 import { urlForExploreCategoryImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
+import { shopPathSegmentFromValue } from "@/lib/shopPathSegment";
 import type { FilterItem } from "@/lib/types";
 
 /** Explore Products filter item with optional Sanity image reference. */
@@ -84,9 +85,8 @@ export function ExploreProductsSection({
 
   const categories = filterCollections.map((f) => {
     const handle = f.collectionHandle?.trim();
-    const href = handle
-      ? `/shop?category=${encodeURIComponent(handle)}`
-      : "/shop";
+    /** Direct `/shop/[segment]` avoids `/shop?category=` → redirect (extra round trip). */
+    const href = handle ? `/shop/${shopPathSegmentFromValue(handle)}` : "/shop";
     let imageUrl: string | null = null;
     try {
       imageUrl = urlForExploreCategoryImage(f.image) ?? null;
