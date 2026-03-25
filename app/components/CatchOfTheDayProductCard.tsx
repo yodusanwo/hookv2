@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import { shopifyImageUrlForWidth } from "@/lib/shopifyImage";
+import type { SellingPlanBrief } from "@/lib/types";
 import { AddToCartModal } from "./AddToCartModal";
+import { QuickShopSubscriptionModal } from "./QuickShopSubscriptionModal";
 
 /** Request width for Shopify CDN (card max ~387px at 2x DPR). */
 const CARD_IMAGE_REQUEST_WIDTH = 800;
@@ -35,6 +37,8 @@ export type CatchOfTheDayProductCardProduct = {
   variantId: string | null;
   availableForSale: boolean;
   sizeOrDescription?: string | null;
+  requiresSellingPlan?: boolean;
+  sellingPlans?: SellingPlanBrief[];
 };
 
 const SECTION_BG = "var(--brand-light-blue-bg)";
@@ -59,15 +63,24 @@ export function CatchOfTheDayProductCard({
   sectionBackgroundColor?: string | null;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [quickShopOpen, setQuickShopOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
   const [adding, setAdding] = React.useState(false);
   const abortRef = React.useRef<AbortController | null>(null);
+
+  const needsQuickShop = Boolean(
+    product.sellingPlans && product.sellingPlans.length > 0,
+  );
 
   const handleAddToCart = React.useCallback(
     async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       if (!product.variantId || !product.availableForSale || adding) return;
+      if (needsQuickShop) {
+        setQuickShopOpen(true);
+        return;
+      }
 
       setAdding(true);
       const controller = new AbortController();
@@ -106,7 +119,7 @@ export function CatchOfTheDayProductCard({
         if (!controller.signal.aborted) setAdding(false);
       }
     },
-    [product.variantId, product.availableForSale, adding],
+    [product.variantId, product.availableForSale, adding, needsQuickShop],
   );
 
   React.useEffect(() => {
@@ -331,6 +344,25 @@ export function CatchOfTheDayProductCard({
           </Link>
         </div>
       </div>
+
+      {needsQuickShop && product.variantId && product.sellingPlans ? (
+        <QuickShopSubscriptionModal
+          isOpen={quickShopOpen}
+          onClose={() => setQuickShopOpen(false)}
+          productTitle={product.title}
+          basePrice={{
+            amount: product.price,
+            currencyCode: product.currencyCode ?? "USD",
+          }}
+          variantId={product.variantId}
+          requiresSellingPlan={Boolean(product.requiresSellingPlan)}
+          sellingPlans={product.sellingPlans}
+          onSuccess={(url) => {
+            setCheckoutUrl(url);
+            setModalOpen(true);
+          }}
+        />
+      ) : null}
 
       <AddToCartModal
         isOpen={modalOpen}

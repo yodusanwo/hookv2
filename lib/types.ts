@@ -16,6 +16,20 @@ export function carouselProductRowKey(p: {
   return p.variantId ?? p.id;
 }
 
+/** Money from Storefront `MoneyV2`. */
+export type MoneyBrief = { amount: string; currencyCode: string };
+
+/** Selling plan from Storefront `sellingPlanAllocations` (subscriptions / Appstle). */
+export type SellingPlanBrief = {
+  id: string;
+  name: string;
+  /**
+   * Effective price per delivery with this plan (first `priceAdjustments` entry).
+   * When absent, UI falls back to the variant’s one-time price.
+   */
+  perDeliveryPrice?: MoneyBrief;
+};
+
 export type ApiProductForCarousel = {
   /** Shopify product GID (stable product identity). */
   id: string;
@@ -34,4 +48,8 @@ export type ApiProductForCarousel = {
   compareAtPrice?: string | null;
   availableForSale?: boolean;
   sizeOrDescription?: string | null;
+  /** From `Product.requiresSellingPlan` — subscription-only when true. */
+  requiresSellingPlan?: boolean;
+  /** Plans available for this variant (quick shop / PDP). */
+  sellingPlans?: SellingPlanBrief[];
 };

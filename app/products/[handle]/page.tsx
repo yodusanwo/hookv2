@@ -21,9 +21,13 @@ import {
   client,
   SITE_SETTINGS_QUERY,
   RECIPES_BY_PRODUCT_HANDLE_QUERY,
+  RECIPES_BY_FILTER_CATEGORY_SLUG_QUERY,
   RECIPES_LIST_QUERY,
 } from "@/lib/sanity";
+import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
+import { recipeCategorySlugFromProduct } from "@/lib/recipeCategorySlugFromProduct";
 import { urlFor } from "@/lib/sanityImage";
+import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import { renderShopifyRichText, splitWhatYouGetMetafield } from "@/lib/shopifyRichText";
 import Link from "next/link";
 
@@ -46,6 +50,8 @@ type ProductByHandleResponse = {
     /** Standard Shopify review count string. */
     reviewsRatingCount: { value: string } | null;
     productType: string;
+    /** Optional: same metafield as /shop filters; used to match Recipe Category slugs. */
+    filterCategory?: { value: string } | null;
     /** Subscription-only product (Storefront API: Product.requiresSellingPlan). */
     requiresSellingPlan: boolean;
     featuredImage: { url: string; altText: string | null } | null;
@@ -61,7 +67,12 @@ type ProductByHandleResponse = {
           price: { amount: string; currencyCode: string };
           sellingPlanAllocations: {
             edges: Array<{
-              node: { sellingPlan: { id: string; name: string } };
+              node: {
+                sellingPlan: { id: string; name: string };
+                priceAdjustments?: Array<{
+                  perDeliveryPrice?: { amount: string; currencyCode: string } | null;
+                }> | null;
+              };
             }>;
           };
         };
@@ -80,7 +91,12 @@ const PRODUCT_METADATA_QUERY = `
   }
 `;
 
-const PRODUCT_BY_HANDLE_QUERY = `
+function buildProductByHandleQuery(): string {
+  const meta = getFilterMetafieldConfigEscaped();
+  const filterMetafieldLine = meta
+    ? `filterCategory: metafield(namespace: "${meta.namespace}", key: "${meta.key}") { value }`
+    : "";
+  return `
   query ProductByHandle($handle: String!) {
     productByHandle(handle: $handle) {
       id
@@ -94,6 +110,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       reviewsRating: metafield(namespace: "reviews", key: "rating") { value }
       reviewsRatingCount: metafield(namespace: "reviews", key: "rating_count") { value }
       productType
+      ${filterMetafieldLine}
       requiresSellingPlan
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
@@ -113,6 +130,12 @@ const PRODUCT_BY_HANDLE_QUERY = `
                     id
                     name
                   }
+                  priceAdjustments {
+                    perDeliveryPrice {
+                      amount
+                      currencyCode
+                    }
+                  }
                 }
               }
             }
@@ -122,6 +145,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
     }
   }
 `;
+}
 
 const PRODUCT_RECOMMENDATIONS_QUERY = `
   query ProductRecommendations($productHandle: String!) {
@@ -274,7 +298,7 @@ export default async function ProductPage({
 
   try {
     data = await shopifyFetch<ProductByHandleResponse, { handle: string }>({
-      query: PRODUCT_BY_HANDLE_QUERY,
+      query: buildProductByHandleQuery(),
       variables: { handle },
       cache: "no-store",
     });
@@ -419,13 +443,7 @@ export default async function ProductPage({
   });
   const variants = product.variants.edges.map((e) => {
     const node = e.node;
-    const sellingPlans =
-      node.sellingPlanAllocations?.edges
-        ?.map((edge) => ({
-          id: edge.node.sellingPlan.id,
-          name: edge.node.sellingPlan.name,
-        }))
-        .filter((p) => p.id) ?? [];
+    const sellingPlans = sellingPlansFromVariantNode(node);
     return {
       id: node.id,
       title: node.title,
@@ -433,7 +451,7 @@ export default async function ProductPage({
       selectedOptions: node.selectedOptions,
       price: node.price,
       requiresSellingPlan: product.requiresSellingPlan,
-      ...(sellingPlans.length > 0 ? { sellingPlans } : {}),
+      ...(sellingPlans?.length ? { sellingPlans } : {}),
     };
   });
   const heroTeaser = heroTeaserFromDescription(product.description);
@@ -506,15 +524,26 @@ export default async function ProductPage({
     slug?: string;
     mainImage?: { asset?: { _ref?: string } };
   };
+  const recipeCategorySlug = recipeCategorySlugFromProduct({
+    filterMetafieldValue: product.filterCategory?.value,
+    productType: product.productType,
+  });
+
   let recipesToShow: RecipeCard[] = [];
   if (client) {
     try {
-      recipesToShow = await client.fetch<RecipeCard[]>(
-        RECIPES_BY_PRODUCT_HANDLE_QUERY,
-        {
-          productHandle: handle,
-        },
-      );
+      if (recipeCategorySlug) {
+        recipesToShow = await client.fetch<RecipeCard[]>(
+          RECIPES_BY_FILTER_CATEGORY_SLUG_QUERY,
+          { categorySlug: recipeCategorySlug },
+        );
+      }
+      if (recipesToShow.length === 0) {
+        recipesToShow = await client.fetch<RecipeCard[]>(
+          RECIPES_BY_PRODUCT_HANDLE_QUERY,
+          { productHandle: handle },
+        );
+      }
       if (recipesToShow.length === 0) {
         const all = await client.fetch<RecipeCard[]>(RECIPES_LIST_QUERY);
         recipesToShow = all.slice(0, 3);

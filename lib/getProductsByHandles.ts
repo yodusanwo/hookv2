@@ -1,5 +1,6 @@
 import "server-only";
 import { shopifyFetch } from "@/lib/shopify";
+import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import type { ApiProductForCarousel } from "@/lib/types";
 
 type VariantNode = {
@@ -8,12 +9,23 @@ type VariantNode = {
   price: { amount: string; currencyCode: string };
   compareAtPrice: { amount: string; currencyCode: string } | null;
   selectedOptions: Array<{ name: string; value: string }>;
+  sellingPlanAllocations: {
+    edges: Array<{
+      node: {
+        sellingPlan: { id: string; name: string };
+        priceAdjustments?: Array<{
+          perDeliveryPrice?: { amount: string; currencyCode: string } | null;
+        }> | null;
+      };
+    }>;
+  };
 };
 
 type ProductByHandleNode = {
   id: string;
   title: string;
   handle: string;
+  requiresSellingPlan: boolean;
   images: { edges: Array<{ node: { url: string; altText: string | null } }> };
   variants: { edges: Array<{ node: VariantNode }> };
   priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } };
@@ -29,6 +41,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       id
       title
       handle
+      requiresSellingPlan
       priceRange { minVariantPrice { amount currencyCode } }
       images(first: 1) { edges { node { url altText } } }
       variants(first: 250) {
@@ -39,6 +52,16 @@ const PRODUCT_BY_HANDLE_QUERY = `
             price { amount currencyCode }
             compareAtPrice { amount currencyCode }
             selectedOptions { name value }
+            sellingPlanAllocations(first: 10) {
+              edges {
+                node {
+                  sellingPlan { id name }
+                  priceAdjustments {
+                    perDeliveryPrice { amount currencyCode }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -104,6 +127,7 @@ export async function getProductsByHandles(
           compareAtPrice: null,
           availableForSale: false,
           sizeOrDescription: null,
+          requiresSellingPlan: node.requiresSellingPlan,
         });
       } else {
         for (const ve of variantEdges) {
@@ -114,6 +138,7 @@ export async function getProductsByHandles(
             : null;
           const sizeOrDescription =
             variant.selectedOptions?.map((o) => o.value).join(" / ") || null;
+          const sellingPlans = sellingPlansFromVariantNode(variant);
           products.push({
             id: node.id,
             title: node.title,
@@ -128,6 +153,8 @@ export async function getProductsByHandles(
             compareAtPrice: compareAtPrice?.amount ?? null,
             availableForSale: variant.availableForSale ?? false,
             sizeOrDescription,
+            requiresSellingPlan: node.requiresSellingPlan,
+            ...(sellingPlans ? { sellingPlans } : {}),
           });
         }
       }

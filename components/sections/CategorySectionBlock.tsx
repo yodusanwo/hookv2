@@ -35,6 +35,8 @@ function mapApiToCard(p: ApiProductForCarousel): CatchOfTheDayProductCardProduct
     variantId: p.variantId ?? null,
     availableForSale: p.availableForSale ?? false,
     sizeOrDescription: p.sizeOrDescription ?? null,
+    requiresSellingPlan: p.requiresSellingPlan,
+    ...(p.sellingPlans?.length ? { sellingPlans: p.sellingPlans } : {}),
   };
 }
 

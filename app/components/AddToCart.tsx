@@ -7,6 +7,10 @@ import {
   getVariantByOptions,
   type ProductVariantOption,
 } from "@/lib/productVariantSelection";
+import {
+  effectiveSubscriptionUnitPrice,
+  unitPriceIsLowerThan,
+} from "@/lib/effectiveSubscriptionUnitPrice";
 import { useOptionalProductVariant } from "@/app/components/ProductVariantContext";
 
 type Variant = ProductVariantOption;
@@ -219,10 +223,27 @@ export function AddToCart({
     );
   }
 
+  const unitForDisplay = effectiveSubscriptionUnitPrice(selectedVariant.price, {
+    requiresSellingPlan: selectedVariant.requiresSellingPlan,
+    sellingPlans: selectedVariant.sellingPlans,
+    purchaseKind,
+    planId: planIdForSubscribe,
+  });
   const priceDisplay = formatMoney(
-    selectedVariant.price.amount,
-    selectedVariant.price.currencyCode
+    String(Number(unitForDisplay.amount) * qty),
+    unitForDisplay.currencyCode,
   );
+  const baseTotalDisplay = formatMoney(
+    String(Number(selectedVariant.price.amount) * qty),
+    selectedVariant.price.currencyCode,
+  );
+  const subscriptionPriceActive =
+    Boolean(selectedVariant.sellingPlans?.length) &&
+    (Boolean(selectedVariant.requiresSellingPlan) ||
+      purchaseKind === "subscribe");
+  const showSubscriptionDiscount =
+    subscriptionPriceActive &&
+    unitPriceIsLowerThan(unitForDisplay, selectedVariant.price);
 
   if (variant === "recipeIngredient") {
     return (
@@ -430,9 +451,26 @@ export function AddToCart({
               +
             </button>
           </div>
-          <span className="text-lg font-semibold text-[var(--brand-navy)]">
-            {priceDisplay}
-          </span>
+          {showSubscriptionDiscount ? (
+            <span
+              className="inline-flex flex-wrap items-baseline gap-2"
+              aria-label={`Sale price ${priceDisplay}, was ${baseTotalDisplay}`}
+            >
+              <span
+                className="text-base font-medium text-slate-500 line-through decoration-slate-400"
+                aria-hidden
+              >
+                {baseTotalDisplay}
+              </span>
+              <span className="text-lg font-bold text-[var(--brand-green,#069400)]">
+                {priceDisplay}
+              </span>
+            </span>
+          ) : (
+            <span className="text-lg font-semibold text-[var(--brand-navy)]">
+              {priceDisplay}
+            </span>
+          )}
         </div>
 
         {status === "success" ? (

@@ -1,8 +1,7 @@
+import type { SellingPlanBrief } from "@/lib/types";
+
 /** Shopify subscription selling plan (e.g. Appstle) linked to a variant via sellingPlanAllocations. */
-export type SellingPlanOption = {
-  id: string;
-  name: string;
-};
+export type SellingPlanOption = SellingPlanBrief;
 
 export type ProductVariantOption = {
   id: string;

@@ -193,6 +193,17 @@ export const RECIPES_BY_PRODUCT_HANDLE_QUERY = `*[_type == "recipe" && $productH
   "mainImage": images[0] { asset-> }
 }`;
 
+/**
+ * Recipes in a Recipe Category (ingredient filter category), same rule as /recipes client filter.
+ * Use with $categorySlug matching Sanity recipeCategory.slug.current (e.g. "salmon").
+ */
+export const RECIPES_BY_FILTER_CATEGORY_SLUG_QUERY = `*[_type == "recipe" && $categorySlug in ingredients[].filterCategory->slug.current] | order(coalesce(sortOrder, 9999) asc, title asc) [0...3] {
+  _id,
+  title,
+  "slug": slug.current,
+  "mainImage": images[0] { asset-> }
+}`;
+
 /** GROQ query for a single recipe by slug. Use with $slug (e.g. "salmon-piccata"). */
 export const RECIPE_BY_SLUG_QUERY = `*[_type == "recipe" && slug.current == $slug][0] {
   _id,
