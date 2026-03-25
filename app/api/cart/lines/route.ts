@@ -8,7 +8,7 @@ function isValidShopifyGid(value: string): boolean {
 }
 
 function toShopifyGid(
-  type: "Cart" | "ProductVariant" | "CartLine",
+  type: "Cart" | "ProductVariant" | "CartLine" | "SellingPlan",
   value: string
 ): string {
   const trimmed = value.trim();
@@ -68,7 +68,13 @@ const CART_LINES_REMOVE_MUTATION = `
 
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as
-    | { cartId?: string; merchandiseId?: string; quantity?: number }
+    | {
+        cartId?: string;
+        merchandiseId?: string;
+        quantity?: number;
+        /** Shopify Selling Plan GID (Subscribe & save / Appstle). */
+        sellingPlanId?: string | null;
+      }
     | null;
 
   const cartId =
@@ -93,8 +99,18 @@ export async function POST(req: Request) {
 
   const quantity = Math.min(50, Math.max(1, Math.floor(Number(body?.quantity) || 1)));
 
+  const sellingPlanRaw =
+    typeof body?.sellingPlanId === "string"
+      ? body.sellingPlanId.trim()
+      : body?.sellingPlanId != null
+        ? String(body.sellingPlanId).trim()
+        : "";
+
   const normalizedCartId = toShopifyGid("Cart", cartId);
   const normalizedMerchandiseId = toShopifyGid("ProductVariant", merchandiseId);
+  const normalizedSellingPlanId = sellingPlanRaw
+    ? toShopifyGid("SellingPlan", sellingPlanRaw)
+    : "";
 
   if (!isValidShopifyGid(normalizedCartId) || !isValidShopifyGid(normalizedMerchandiseId)) {
     return NextResponse.json(
@@ -102,13 +118,31 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  if (sellingPlanRaw && !isValidShopifyGid(normalizedSellingPlanId)) {
+    return NextResponse.json(
+      { error: "Invalid sellingPlanId format." },
+      { status: 400 }
+    );
+  }
+
+  const lineInput: {
+    merchandiseId: string;
+    quantity: number;
+    sellingPlanId?: string;
+  } = {
+    merchandiseId: normalizedMerchandiseId,
+    quantity,
+  };
+  if (normalizedSellingPlanId) {
+    lineInput.sellingPlanId = normalizedSellingPlanId;
+  }
 
   try {
     const data = await shopifyFetch<CartLinesAddResponse, Record<string, unknown>>({
       query: CART_LINES_ADD_MUTATION,
       variables: {
         cartId: normalizedCartId,
-        lines: [{ merchandiseId: normalizedMerchandiseId, quantity }],
+        lines: [lineInput],
       },
     });
 

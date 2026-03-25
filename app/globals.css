@@ -69,7 +69,8 @@
   /* Section cards (recipe, product, reviews, etc.) – 10px radius, no box shadow by default; shadow on hover */
   --card-radius: 10px;
   --section-card-shadow: none;
-  --section-card-shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --section-card-shadow-hover:
+    0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
   /* Recipes wave */
   --wave-recipes-translate: 90%;
@@ -250,7 +251,7 @@ h2.section-title,
   display: inline-block;
   padding: 0.125rem 0.375rem;
   border-radius: 4px;
-  background-color: #1E1E1E;
+  background-color: #1e1e1e;
   font-weight: 700;
   font-size: 1.0625rem;
   color: #fff;
@@ -343,7 +344,9 @@ h2.section-title,
   border: 1px solid #fff;
   background: transparent;
   color: #fff;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
 }
 .product-carousel-filter:hover {
   background: rgba(255, 255, 255, 0.15);

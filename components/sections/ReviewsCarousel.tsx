@@ -106,7 +106,10 @@ function ReviewCard({
   const text = r.text ?? "";
   const isLong = !showFullText && text.length > REVIEW_PREVIEW_LENGTH;
   const [expanded, setExpanded] = React.useState(false);
-  const displayText = isLong && !expanded ? `${text.slice(0, REVIEW_PREVIEW_LENGTH).trim()}…` : text;
+  const displayText =
+    isLong && !expanded
+      ? `${text.slice(0, REVIEW_PREVIEW_LENGTH).trim()}…`
+      : text;
 
   return (
     <div
@@ -225,7 +228,10 @@ export function ReviewsCarousel({
   const canNext = reviews.length > 1 && index < reviews.length - 1;
 
   const summary: ReviewSummary = React.useMemo(() => {
-    if (reviewSummary && (reviewSummary.totalCount > 0 || reviewSummary.averageRating > 0))
+    if (
+      reviewSummary &&
+      (reviewSummary.totalCount > 0 || reviewSummary.averageRating > 0)
+    )
       return reviewSummary;
     const total = reviews.length;
     const withStars = reviews.filter((r) => r.stars != null && r.stars > 0);
@@ -271,7 +277,17 @@ export function ReviewsCarousel({
               className="flex min-h-[44px] min-w-[44px] shrink-0 touch-manipulation items-center justify-center self-center rounded-full bg-transparent text-[#333333] disabled:pointer-events-none disabled:opacity-30 hover:opacity-80"
               aria-label="Previous review"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
@@ -287,12 +303,24 @@ export function ReviewsCarousel({
             </div>
             <button
               type="button"
-              onClick={() => setIndex((i) => Math.min(reviews.length - 1, i + 1))}
+              onClick={() =>
+                setIndex((i) => Math.min(reviews.length - 1, i + 1))
+              }
               disabled={!canNext}
               className="flex min-h-[44px] min-w-[44px] shrink-0 touch-manipulation items-center justify-center self-center rounded-full bg-transparent text-[#333333] disabled:pointer-events-none disabled:opacity-30 hover:opacity-80"
               aria-label="Next review"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </button>

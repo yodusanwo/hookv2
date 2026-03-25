@@ -8,7 +8,7 @@ function isValidShopifyGid(value: string): boolean {
 }
 
 function toShopifyGid(
-  type: "Cart" | "ProductVariant",
+  type: "Cart" | "ProductVariant" | "SellingPlan",
   value: string,
 ): string {
   const trimmed = value.trim();
@@ -56,7 +56,11 @@ const CART_LINES_ADD_MUTATION = `
  */
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as
-    | { merchandiseId?: string; quantity?: number }
+    | {
+        merchandiseId?: string;
+        quantity?: number;
+        sellingPlanId?: string | null;
+      }
     | null;
 
   const merchandiseId =
@@ -78,12 +82,41 @@ export async function POST(req: Request) {
     Math.max(1, Math.floor(Number(body?.quantity) || 1)),
   );
 
+  const sellingPlanRaw =
+    typeof body?.sellingPlanId === "string"
+      ? body.sellingPlanId.trim()
+      : body?.sellingPlanId != null
+        ? String(body.sellingPlanId).trim()
+        : "";
+
   const normalizedVariantId = toShopifyGid("ProductVariant", merchandiseId);
+  const normalizedSellingPlanId = sellingPlanRaw
+    ? toShopifyGid("SellingPlan", sellingPlanRaw)
+    : "";
+
   if (!isValidShopifyGid(normalizedVariantId)) {
     return NextResponse.json(
       { error: "Invalid merchandiseId format." },
       { status: 400 },
     );
+  }
+  if (sellingPlanRaw && !isValidShopifyGid(normalizedSellingPlanId)) {
+    return NextResponse.json(
+      { error: "Invalid sellingPlanId format." },
+      { status: 400 },
+    );
+  }
+
+  const lineInput: {
+    merchandiseId: string;
+    quantity: number;
+    sellingPlanId?: string;
+  } = {
+    merchandiseId: normalizedVariantId,
+    quantity,
+  };
+  if (normalizedSellingPlanId) {
+    lineInput.sellingPlanId = normalizedSellingPlanId;
   }
 
   const created = await shopifyFetch<CartCreateResponse>({
@@ -102,7 +135,7 @@ export async function POST(req: Request) {
     query: CART_LINES_ADD_MUTATION,
     variables: {
       cartId,
-      lines: [{ merchandiseId: normalizedVariantId, quantity }],
+      lines: [lineInput],
     },
   });
 

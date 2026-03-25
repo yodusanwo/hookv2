@@ -46,6 +46,8 @@ type ProductByHandleResponse = {
     /** Standard Shopify review count string. */
     reviewsRatingCount: { value: string } | null;
     productType: string;
+    /** Subscription-only product (Storefront API: Product.requiresSellingPlan). */
+    requiresSellingPlan: boolean;
     featuredImage: { url: string; altText: string | null } | null;
     images: { edges: Array<{ node: { url: string; altText: string | null } }> };
     options: Array<{ name: string; values: string[] }>;
@@ -57,6 +59,11 @@ type ProductByHandleResponse = {
           availableForSale: boolean;
           selectedOptions: Array<{ name: string; value: string }>;
           price: { amount: string; currencyCode: string };
+          sellingPlanAllocations: {
+            edges: Array<{
+              node: { sellingPlan: { id: string; name: string } };
+            }>;
+          };
         };
       }>;
     };
@@ -87,6 +94,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       reviewsRating: metafield(namespace: "reviews", key: "rating") { value }
       reviewsRatingCount: metafield(namespace: "reviews", key: "rating_count") { value }
       productType
+      requiresSellingPlan
       featuredImage { url altText }
       images(first: 10) { edges { node { url altText } } }
       options { name values }
@@ -98,6 +106,16 @@ const PRODUCT_BY_HANDLE_QUERY = `
             availableForSale
             selectedOptions { name value }
             price { amount currencyCode }
+            sellingPlanAllocations(first: 10) {
+              edges {
+                node {
+                  sellingPlan {
+                    id
+                    name
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -399,7 +417,25 @@ export default async function ProductPage({
     seenUrls.add(img.url);
     return true;
   });
-  const variants = product.variants.edges.map((e) => e.node);
+  const variants = product.variants.edges.map((e) => {
+    const node = e.node;
+    const sellingPlans =
+      node.sellingPlanAllocations?.edges
+        ?.map((edge) => ({
+          id: edge.node.sellingPlan.id,
+          name: edge.node.sellingPlan.name,
+        }))
+        .filter((p) => p.id) ?? [];
+    return {
+      id: node.id,
+      title: node.title,
+      availableForSale: node.availableForSale,
+      selectedOptions: node.selectedOptions,
+      price: node.price,
+      requiresSellingPlan: product.requiresSellingPlan,
+      ...(sellingPlans.length > 0 ? { sellingPlans } : {}),
+    };
+  });
   const heroTeaser = heroTeaserFromDescription(product.description);
 
   const [
@@ -538,7 +574,7 @@ export default async function ProductPage({
               options={product.options}
               initialVariantId={variantFromUrl}
             >
-              <div className="order-1 min-w-0 lg:sticky lg:top-28 lg:z-20 lg:col-start-2 lg:row-start-1 lg:self-start lg:bg-[#d4f2ff] lg:-ml-6 lg:pl-6">
+              <div className="order-1 min-w-0 lg:col-start-2 lg:row-start-1 lg:self-start lg:bg-[#d4f2ff] lg:-ml-6 lg:pl-6">
                 <h1
                 style={{
                   color: "var(--Text-Color, #1E1E1E)",
@@ -594,7 +630,7 @@ export default async function ProductPage({
                 <ProductImageGallery images={images} productTitle={product.title} />
               </div>
 
-              <div className="order-3 min-w-0 lg:col-start-2 lg:row-start-2 lg:pt-8 lg:relative lg:z-0">
+              <div className="order-3 min-w-0 overflow-visible lg:col-start-2 lg:row-start-2 lg:pt-8">
                 {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
                 {product.summary?.value?.trim() || heroTeaser ? (
                   <p

@@ -74,12 +74,43 @@ export function AddToCart({
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
   const [buyNowLoading, setBuyNowLoading] = React.useState(false);
   const [buyNowError, setBuyNowError] = React.useState<string | null>(null);
+  const [purchaseKind, setPurchaseKind] = React.useState<
+    "one-time" | "subscribe"
+  >("one-time");
+  const [planIdForSubscribe, setPlanIdForSubscribe] = React.useState("");
+
+  React.useEffect(() => {
+    const first = selectedVariant?.sellingPlans?.[0]?.id ?? "";
+    setPlanIdForSubscribe(first);
+    if (
+      selectedVariant?.requiresSellingPlan &&
+      selectedVariant?.sellingPlans &&
+      selectedVariant.sellingPlans.length > 0
+    ) {
+      setPurchaseKind("subscribe");
+    } else {
+      setPurchaseKind("one-time");
+    }
+  }, [selectedVariant?.id]);
 
   const onAdd = React.useCallback(async () => {
     if (!selectedVariant?.id) return;
     setStatus("loading");
     setError(null);
     try {
+      const plans = selectedVariant.sellingPlans;
+      const mustUseSellingPlan =
+        Boolean(selectedVariant.requiresSellingPlan) && Boolean(plans?.length);
+      let sellingPlanId: string | undefined;
+      if (
+        plans?.length &&
+        (mustUseSellingPlan || purchaseKind === "subscribe")
+      ) {
+        sellingPlanId =
+          plans.length === 1
+            ? plans[0]!.id
+            : planIdForSubscribe || plans[0]!.id;
+      }
       const cartId = await ensureCartId();
       const res = await fetch("/api/cart/lines", {
         method: "POST",
@@ -88,6 +119,7 @@ export function AddToCart({
           cartId,
           merchandiseId: selectedVariant.id,
           quantity: qty,
+          ...(sellingPlanId ? { sellingPlanId } : {}),
         }),
       });
       const json = (await res.json().catch(() => ({}))) as {
@@ -112,7 +144,12 @@ export function AddToCart({
         }
       }
     }
-  }, [selectedVariant, qty]);
+  }, [
+    selectedVariant,
+    qty,
+    purchaseKind,
+    planIdForSubscribe,
+  ]);
 
   // Reset to idle when user changes qty or variant so they can add again
   React.useEffect(() => {
@@ -131,12 +168,26 @@ export function AddToCart({
     setBuyNowError(null);
     setBuyNowLoading(true);
     try {
+      const plans = selectedVariant.sellingPlans;
+      const mustUseSellingPlan =
+        Boolean(selectedVariant.requiresSellingPlan) && Boolean(plans?.length);
+      let sellingPlanId: string | undefined;
+      if (
+        plans?.length &&
+        (mustUseSellingPlan || purchaseKind === "subscribe")
+      ) {
+        sellingPlanId =
+          plans.length === 1
+            ? plans[0]!.id
+            : planIdForSubscribe || plans[0]!.id;
+      }
       const res = await fetch("/api/checkout/buy-now", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           merchandiseId: selectedVariant.id,
           quantity: qty,
+          ...(sellingPlanId ? { sellingPlanId } : {}),
         }),
       });
       const json = (await res.json().catch(() => ({}))) as {
@@ -158,7 +209,7 @@ export function AddToCart({
     } finally {
       setBuyNowLoading(false);
     }
-  }, [selectedVariant, qty, buyNowLoading]);
+  }, [selectedVariant, qty, buyNowLoading, purchaseKind, planIdForSubscribe]);
 
   if (!selectedVariant) {
     return (
@@ -278,6 +329,72 @@ export function AddToCart({
                 </div>
               </div>
             ))}
+          </div>
+        ) : null}
+
+        {selectedVariant.sellingPlans && selectedVariant.sellingPlans.length > 0 ? (
+          <div className="space-y-3 rounded-lg border border-slate-200 bg-white/90 p-4">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+              {selectedVariant.requiresSellingPlan
+                ? "Subscription"
+                : "Purchase type"}
+            </div>
+            {selectedVariant.requiresSellingPlan ? (
+              <p className="text-sm text-slate-700">
+                This product is available as a subscription only. Choose a
+                delivery frequency below.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <label className="flex cursor-pointer items-start gap-2 text-sm text-slate-800">
+                  <input
+                    type="radio"
+                    name="purchase-kind"
+                    checked={purchaseKind === "one-time"}
+                    onChange={() => setPurchaseKind("one-time")}
+                    className="mt-1"
+                  />
+                  <span>One-time purchase</span>
+                </label>
+                <label className="flex cursor-pointer items-start gap-2 text-sm text-slate-800">
+                  <input
+                    type="radio"
+                    name="purchase-kind"
+                    checked={purchaseKind === "subscribe"}
+                    onChange={() => setPurchaseKind("subscribe")}
+                    className="mt-1"
+                  />
+                  <span>Subscribe &amp; save</span>
+                </label>
+              </div>
+            )}
+            {(selectedVariant.requiresSellingPlan ||
+              purchaseKind === "subscribe") &&
+            selectedVariant.sellingPlans.length > 1 ? (
+              <div>
+                <label htmlFor="selling-plan" className="sr-only">
+                  Delivery frequency
+                </label>
+                <select
+                  id="selling-plan"
+                  value={planIdForSubscribe}
+                  onChange={(e) => setPlanIdForSubscribe(e.target.value)}
+                  className="mt-1 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
+                >
+                  {selectedVariant.sellingPlans.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : null}
+            {selectedVariant.requiresSellingPlan &&
+            selectedVariant.sellingPlans.length === 1 ? (
+              <p className="text-sm font-medium text-slate-800">
+                {selectedVariant.sellingPlans[0]!.name}
+              </p>
+            ) : null}
           </div>
         ) : null}
 

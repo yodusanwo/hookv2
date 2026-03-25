@@ -1,9 +1,22 @@
+/** Shopify subscription selling plan (e.g. Appstle) linked to a variant via sellingPlanAllocations. */
+export type SellingPlanOption = {
+  id: string;
+  name: string;
+};
+
 export type ProductVariantOption = {
   id: string;
   title: string;
   availableForSale: boolean;
   selectedOptions: Array<{ name: string; value: string }>;
   price: { amount: string; currencyCode: string };
+  /** When set, customer can choose Subscribe & save (Storefront `sellingPlanId` on cart line). */
+  sellingPlans?: SellingPlanOption[];
+  /**
+   * From Storefront API `Product.requiresSellingPlan` (same for all variants on the product).
+   * When true, the product cannot be sold without a selling plan — hide one-time purchase.
+   */
+  requiresSellingPlan?: boolean;
 };
 
 export function getVariantByOptions(
