@@ -103,23 +103,45 @@ export async function POST(req: Request) {
     );
   }
 
-  const data = await shopifyFetch<CartLinesAddResponse, Record<string, unknown>>({
-    query: CART_LINES_ADD_MUTATION,
-    variables: {
-      cartId: normalizedCartId,
-      lines: [{ merchandiseId: normalizedMerchandiseId, quantity }],
-    },
-  });
+  try {
+    const data = await shopifyFetch<CartLinesAddResponse, Record<string, unknown>>({
+      query: CART_LINES_ADD_MUTATION,
+      variables: {
+        cartId: normalizedCartId,
+        lines: [{ merchandiseId: normalizedMerchandiseId, quantity }],
+      },
+    });
 
-  const err = data.cartLinesAdd.userErrors?.[0];
-  if (!data.cartLinesAdd.cart || err) {
+    const userErrors = data.cartLinesAdd.userErrors ?? [];
+    const messageFromShopify = userErrors
+      .map((e) => e.message?.trim())
+      .filter(Boolean)
+      .join("; ");
+    if (!data.cartLinesAdd.cart || userErrors.length > 0) {
+      return NextResponse.json(
+        {
+          error:
+            messageFromShopify ||
+            (!data.cartLinesAdd.cart
+              ? "Cart could not be updated. Try clearing site data for this domain and adding again, or confirm Storefront API scopes include unauthenticated_write_checkouts."
+              : "Failed to add item to cart."),
+          userErrors,
+        },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(data.cartLinesAdd.cart);
+  } catch (err) {
+    console.error("cart/lines POST:", err);
     return NextResponse.json(
-      { error: err?.message ?? "Failed to add item to cart." },
-      { status: 400 }
+      {
+        error:
+          err instanceof Error ? err.message : "Failed to add item to cart.",
+      },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json(data.cartLinesAdd.cart);
 }
 
 export async function PATCH(req: Request) {
