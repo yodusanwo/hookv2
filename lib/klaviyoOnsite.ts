@@ -3,8 +3,26 @@
  * Requires {@link https://developers.klaviyo.com/en/docs/installing-onsite-js Klaviyo.js} on the page
  * and the form set to display on a custom trigger in Klaviyo.
  */
+function ensureKlaviyoOnsiteScript(): void {
+  if (typeof document === "undefined") return;
+  const companyId = process.env.NEXT_PUBLIC_KLAVIYO_COMPANY_ID?.trim();
+  if (!companyId) return;
+  if (
+    document.querySelector(
+      'script[src*="static.klaviyo.com/onsite/js/klaviyo.js"]',
+    )
+  ) {
+    return;
+  }
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = `https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=${encodeURIComponent(companyId)}`;
+  document.head.appendChild(s);
+}
+
 export function openKlaviyoForm(formId: string): void {
   if (typeof window === "undefined" || !formId.trim()) return;
+  ensureKlaviyoOnsiteScript();
   const w = window as Window & { _klOnsite?: unknown[] };
   const q = w._klOnsite ?? [];
   w._klOnsite = q;

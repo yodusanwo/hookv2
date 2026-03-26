@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { openKlaviyoForm, parseKlaviyoPromoUrl } from "@/lib/klaviyoOnsite";
-import { safeHref } from "@/lib/urlValidation";
+import { isValidHref, safeHref } from "@/lib/urlValidation";
 
 export function PromoBanner({ text, href }: { text: string; href?: string | null }) {
   const defaultHeadline = "Subscribe to get 10% off your first order";
@@ -12,10 +12,18 @@ export function PromoBanner({ text, href }: { text: string; href?: string | null
   const parsed = parseKlaviyoPromoUrl(href);
   const envCompany = process.env.NEXT_PUBLIC_KLAVIYO_COMPANY_ID?.trim();
   const envFormId = process.env.NEXT_PUBLIC_KLAVIYO_COUPON_FORM_ID?.trim();
+  const envReady = !!envCompany && !!envFormId;
 
-  /** Explicit `klaviyo` / `klaviyo:Id` in Sanity, or empty URL + both env vars set → open popup instead of defaulting to /contact */
+  /**
+   * Use Klaviyo when env is set and: URL is `klaviyo` / `klaviyo:Id`, empty (default popup),
+   * or non-empty but not a valid path/URL (e.g. accidental label text in Sanity — otherwise
+   * `safeHref` becomes `#` and the banner “does nothing”).
+   */
   const useKlaviyoButton =
-    parsed.mode === "klaviyo" || (explicit === "" && !!envCompany && !!envFormId);
+    envReady &&
+    (parsed.mode === "klaviyo" ||
+      explicit === "" ||
+      (explicit !== "" && !isValidHref(explicit)));
 
   const formId =
     parsed.mode === "klaviyo"

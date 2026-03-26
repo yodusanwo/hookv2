@@ -50,7 +50,7 @@ export const siteSettings = defineType({
       type: "string",
       title: "Promo Banner Link",
       description:
-        'Destination when tapped: a path or URL (e.g. /contact), or klaviyo to open the Klaviyo coupon popup (requires NEXT_PUBLIC_KLAVIYO_COMPANY_ID and NEXT_PUBLIC_KLAVIYO_COUPON_FORM_ID on the site). Use klaviyo:FormId to override the form ID. In Klaviyo, set the form to “Show on custom trigger” and add this headless domain under targeting.',
+        'Leave empty or set to klaviyo (or klaviyo:FormId) for the Klaviyo signup popup when NEXT_PUBLIC_KLAVIYO_* env vars are set. Use a path like /contact only if you want a link instead. Invalid text (not a URL) is treated as Klaviyo when env is set. In Klaviyo: custom trigger + add your production and *.vercel.app domains to form targeting.',
       group: "header",
     }),
     defineField({
