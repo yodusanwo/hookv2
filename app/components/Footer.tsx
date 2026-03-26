@@ -205,7 +205,7 @@ export function Footer({
             </div>
             <div className="flex gap-3 justify-center md:justify-start">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/HookPointAlaska/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex min-h-[44px] min-w-[44px] items-center justify-center transition-colors hover:opacity-90 rounded-[10px]"
@@ -215,7 +215,7 @@ export function Footer({
                 <img src="/Facebook.svg" alt="" className="h-[22px] w-[22px] object-contain" aria-hidden />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/hookpointalaska"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex min-h-[44px] min-w-[44px] items-center justify-center transition-colors hover:opacity-90 rounded-[10px]"
