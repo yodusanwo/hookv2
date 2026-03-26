@@ -49,7 +49,8 @@ export const siteSettings = defineType({
       name: "promoBannerUrl",
       type: "string",
       title: "Promo Banner Link",
-      description: 'Where the banner goes when tapped (e.g. /contact). Leave empty to keep banner non-clickable.',
+      description:
+        'Destination when tapped: a path or URL (e.g. /contact), or klaviyo to open the Klaviyo coupon popup (requires NEXT_PUBLIC_KLAVIYO_COMPANY_ID and NEXT_PUBLIC_KLAVIYO_COUPON_FORM_ID on the site). Use klaviyo:FormId to override the form ID. In Klaviyo, set the form to “Show on custom trigger” and add this headless domain under targeting.',
       group: "header",
     }),
     defineField({
