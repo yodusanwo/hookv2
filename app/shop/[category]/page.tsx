@@ -29,15 +29,6 @@ export default async function ShopCategoryPage({
   const { category: raw } = await params;
   const category = decodeURIComponent(raw).trim();
   const data = await getShopPageData(searchParams, category);
-
-  console.log("shop [category] debug:", {
-    category,
-    initialCategoryFromUrl: data.initialCategoryFromUrl,
-    initialFilterValuesFromUrl: data.initialFilterValuesFromUrl,
-    collectionSections: data.collectionSections.map((s) => s.collectionHandle),
-    filterOptions: data.filterOptions.map((f) => f.value),
-  });
-
   const valid =
     data.initialCategoryFromUrl != null ||
     data.initialFilterValuesFromUrl.length > 0;
