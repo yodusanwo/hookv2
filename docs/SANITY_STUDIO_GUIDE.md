@@ -87,7 +87,7 @@ To get something live quickly:
    - Headline: `Alaska's Fresh Catch Awaits — Taste the Adventure`
    - Subline: `Wild-caught • Family-run • Sustainably sourced`
    - CTA: label `Get Fresh Fish`, href `#shop`
-   - Upload 1–2 images (or use existing `/1A4A6336.jpeg`, `/1A4A6382.jpeg`)
+   - Upload 1–2 hero images (managed in Sanity; if none are set, the site uses lightweight stock placeholders)
 3. Add **Our Story** section with title and body text from Figma
 4. Add **Deal & Promotions** — add 2–3 product handles from your Shopify store
 5. **Publish**

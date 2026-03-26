@@ -12,19 +12,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PromoBanner } from "@/components/PromoBanner";
 import { Carousel } from "@/app/components/Carousel";
 import { HeroCarousel } from "@/app/components/HeroCarousel";
+import { PLACEHOLDER_HERO_CAROUSEL_ITEMS } from "@/lib/homeHeroPreloadUrl";
 import type { ShopifyHomeProductsResponse } from "@/lib/shopifyHomeProductsQuery";
 
-const HERO_IMG =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
 const ABOUT_IMG =
   "https://images.unsplash.com/photo-1520975869018-1d9d275b4020?auto=format&fit=crop&w=1200&q=80";
-
-/** Unique slides only (no duplicate asset URLs). */
-const FALLBACK_HERO_ITEMS: Array<{ src: string; alt: string }> = [
-  { src: HERO_IMG, alt: "Coastal Alaska landscape" },
-  { src: "/1A4A6382.jpeg", alt: "Fresh catch on dock" },
-  { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
-];
 
 type Props = {
   products: ShopifyHomeProductsResponse["products"]["edges"];
@@ -56,7 +48,7 @@ export function HomePageFallback({
         subline={"Wild-caught  •  Family-run  •  Sustainably sourced"}
         ctaLabel={"Get Fresh Fish"}
         ctaHref={"#shop"}
-        items={FALLBACK_HERO_ITEMS}
+        items={PLACEHOLDER_HERO_CAROUSEL_ITEMS}
       />
       {promoBanner && <PromoBanner text={promoBanner} href={promoBannerUrl} />}
 

@@ -52,39 +52,32 @@ export function HeroCarousel({
             : "relative w-full overflow-hidden h-[min(75vh,560px)] sm:h-[min(70vh,580px)] md:h-[760px]"
         }
       >
-        {/* Stack one Image per slide (stable key by index) so slides don’t remount; cross-fade via opacity. */}
+        {/* One hero image at a time (mobile LCP: avoid loading every slide’s full-res asset up front). */}
         {safeItems.some((it) => it.src) ? (
-          safeItems.map((item, i) =>
-            item.src ? (
-              <Image
-                key={i}
-                src={item.src}
-                alt={item.alt}
-                fill
-                priority={i === 0}
-                sizes="100vw"
-                className={`${IMAGE_LAYER} object-cover transition-opacity duration-500 ${
-                  idx === i
-                    ? "z-[1] opacity-100"
-                    : "z-0 opacity-0 pointer-events-none"
-                }`}
-                aria-hidden={idx !== i}
-                style={
-                  variant === "story"
-                    ? {
-                        ...IMAGE_LAYER_STYLE,
-                        objectPosition: "center 100%",
-                        transform: "translateY(12%)",
-                      }
-                    : {
-                        ...IMAGE_LAYER_STYLE,
-                        objectPosition: "center 100%",
-                        transform: "translateY(12%)",
-                      }
-                }
-              />
-            ) : null,
-          )
+          active.src ? (
+            <Image
+              key={active.src}
+              src={active.src}
+              alt={active.alt}
+              fill
+              priority={idx === 0}
+              sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
+              className={`${IMAGE_LAYER} z-[1] object-cover transition-opacity duration-500 opacity-100`}
+              style={
+                variant === "story"
+                  ? {
+                      ...IMAGE_LAYER_STYLE,
+                      objectPosition: "center 100%",
+                      transform: "translateY(12%)",
+                    }
+                  : {
+                      ...IMAGE_LAYER_STYLE,
+                      objectPosition: "center 100%",
+                      transform: "translateY(12%)",
+                    }
+              }
+            />
+          ) : null
         ) : (
           <div
             className={`${IMAGE_LAYER} bg-slate-200`}

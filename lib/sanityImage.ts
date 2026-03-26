@@ -11,11 +11,11 @@ export function urlFor(source: { _ref?: string; asset?: { _ref?: string } } | un
 
 type SanityImageSource = { _ref?: string; asset?: { _ref?: string } } | undefined;
 
-/** Full-bleed hero / large backgrounds: cap width, modern format, reasonable quality. */
+/** Full-bleed hero / large backgrounds: cap width (matches HeroCarousel `sizes`), WebP/AVIF via Sanity, moderate quality. */
 export function urlForHeroImage(source: SanityImageSource): string | null {
   const b = urlFor(source);
   if (!b) return null;
-  return b.width(1920).quality(82).auto("format").url();
+  return b.width(1600).quality(78).auto("format").url();
 }
 
 /** Explore Products category cards (~331px wide @2x). */

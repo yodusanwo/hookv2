@@ -6,6 +6,7 @@ import {
   STORY_PAGE_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
 } from "@/lib/sanity";
+import { FALLBACK_HOME_HERO_PRELOAD_URL } from "@/lib/homeHeroPreloadUrl";
 import { shopifyFetch } from "@/lib/shopify";
 import { Carousel } from "@/app/components/Carousel";
 import { HeroCarousel } from "@/app/components/HeroCarousel";
@@ -171,8 +172,6 @@ export default async function Story() {
 
     const products = data.products.edges;
 
-    const heroImg =
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
     const aboutImg =
       "https://images.unsplash.com/photo-1520975869018-1d9d275b4020?auto=format&fit=crop&w=1200&q=80";
 
@@ -195,12 +194,8 @@ export default async function Story() {
           headlineLine2={""}
           subline={"Tradition  •  Quality  •  Respect for the ocean"}
           items={[
-            { src: heroImg, alt: "Coastal Alaska landscape" },
-            { src: "/1A4A6382.jpeg", alt: "Fresh catch on dock" },
-            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
-            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
-            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
-            { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
+            { src: FALLBACK_HOME_HERO_PRELOAD_URL, alt: "Coastal Alaska landscape" },
+            ...carouselItems,
           ]}
         />
 

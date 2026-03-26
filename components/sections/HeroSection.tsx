@@ -1,5 +1,6 @@
 import { HeroCarousel } from "@/app/components/HeroCarousel";
 import { PromoBanner } from "../PromoBanner";
+import { PLACEHOLDER_HERO_CAROUSEL_ITEMS } from "@/lib/homeHeroPreloadUrl";
 import { urlForHeroImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
@@ -55,11 +56,8 @@ export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: Her
       })
       .filter((x): x is { src: string; alt: string } => Boolean(x)) ?? [];
 
-  const defaultImages = [
-    { src: "/1A4A6382.jpeg", alt: "Fresh catch on dock" },
-    { src: "/1A4A6336.jpeg", alt: "Fresh catch on dock" },
-  ];
-  const carouselItems = items.length > 0 ? items : defaultImages;
+  const carouselItems =
+    items.length > 0 ? items : PLACEHOLDER_HERO_CAROUSEL_ITEMS;
 
   return (
     <>
