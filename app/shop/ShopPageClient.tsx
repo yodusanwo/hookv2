@@ -26,9 +26,8 @@ function resolveFiltersFromUrl(
       const t = raw.trim();
       const exact = options.find((f) => f.value === t);
       if (exact) return exact.value;
-      return options.find(
-        (f) => f.value.toLowerCase() === t.toLowerCase(),
-      )?.value;
+      return options.find((f) => f.value.toLowerCase() === t.toLowerCase())
+        ?.value;
     })
     .filter((v): v is string => Boolean(v));
 }
@@ -84,6 +83,10 @@ export function ShopPageClient({
   /**
    * Match server-side `getShopPageData` + `resolveShopPathSegment` (fuzzy hyphen/space, filter vs collection).
    * Prefer the URL segment when present so pills stay in sync after client transitions; fall back to SSR props.
+   *
+   * Fix: when a segment resolves as `kind: "collection"` but that handle also exists as a filter pill,
+   * treat it as a filter instead. This ensures the pill highlights navy AND product filtering works
+   * via selectedFilterValues (e.g. "smoked-specialty" which exists in both collectionSections and filterOptions).
    */
   const resolvedFromUrl = useMemo(() => {
     const segment =
@@ -91,7 +94,10 @@ export function ShopPageClient({
     if (!segment) {
       return {
         category: null as string | null,
-        filters: resolveFiltersFromUrl(initialFilterValuesFromUrl, filterOptions),
+        filters: resolveFiltersFromUrl(
+          initialFilterValuesFromUrl,
+          filterOptions,
+        ),
       };
     }
     const r = resolveShopPathSegment(
@@ -100,6 +106,16 @@ export function ShopPageClient({
       filterOptions,
     );
     if (r?.kind === "collection") {
+      // If this collection handle also exists as a filter pill, prefer the filter path
+      // so the pill highlights AND selectedFilterValues drives product display.
+      const asFilter = filterOptions.find(
+        (f) =>
+          shopPathSegmentFromValue(f.value) ===
+          shopPathSegmentFromValue(r.handle),
+      );
+      if (asFilter) {
+        return { category: null as string | null, filters: [asFilter.value] };
+      }
       return { category: r.handle, filters: [] as string[] };
     }
     if (r?.kind === "filter") {
@@ -129,10 +145,7 @@ export function ShopPageClient({
     setSelectedCategoryHandles(
       resolvedFromUrl.category ? [resolvedFromUrl.category] : [],
     );
-  }, [
-    resolvedFromUrl.category,
-    resolvedFromUrl.filters.join("\u0001"),
-  ]);
+  }, [resolvedFromUrl.category, resolvedFromUrl.filters.join("\u0001")]);
 
   const router = useRouter();
 
@@ -165,7 +178,9 @@ export function ShopPageClient({
     if (next.length === 0) {
       router.push("/shop", { scroll: false });
     } else {
-      router.push(`/shop/${shopPathSegmentFromValue(handle)}`, { scroll: false });
+      router.push(`/shop/${shopPathSegmentFromValue(handle)}`, {
+        scroll: false,
+      });
     }
   };
 
@@ -213,7 +228,9 @@ export function ShopPageClient({
         onClearAll={clearAll}
       />
 
-      {promoBanner ? <PromoBanner text={promoBanner} href={promoBannerUrl} /> : null}
+      {promoBanner ? (
+        <PromoBanner text={promoBanner} href={promoBannerUrl} />
+      ) : null}
 
       {visibleSections.map((block, idx) => (
         <Fragment key={`${block.collectionHandle}-${idx}`}>
@@ -221,7 +238,9 @@ export function ShopPageClient({
             block={block}
             selectedFilterValues={selectedFilterValues}
             hasWaveAbove={!hasSelection && idx > 0}
-            initialProducts={initialSectionProductsByHandle[block.collectionHandle]}
+            initialProducts={
+              initialSectionProductsByHandle[block.collectionHandle]
+            }
           />
           {!hasSelection && idx < visibleSections.length - 1 ? (
             <ShopSectionWave />
