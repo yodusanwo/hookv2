@@ -3,6 +3,11 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  cartDisplayCurrencyCode,
+  cartLineDisplayAmount,
+  sumCartLineDisplayAmounts,
+} from "@/lib/cartLineTotals";
 import { subscriptionCartLineNote } from "@/lib/cartSubscriptionLineNote";
 
 const CART_ID_KEY = "shopify_cart_id";
@@ -66,10 +71,6 @@ export function CartPopup() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [updatingIds, setUpdatingIds] = React.useState<Set<string>>(new Set());
-  const [discountInput, setDiscountInput] = React.useState("");
-  const [discountLoading, setDiscountLoading] = React.useState(false);
-  const [discountError, setDiscountError] = React.useState<string | null>(null);
-  const [discountSuccess, setDiscountSuccess] = React.useState(false);
   const [orderNote, setOrderNote] = React.useState("");
   const [noteSaving, setNoteSaving] = React.useState(false);
   const noteSyncedFromCart = React.useRef(false);
@@ -94,8 +95,6 @@ export function CartPopup() {
     const data = await res.json();
     setCart(data);
     setError(null);
-    setDiscountError(null);
-    setDiscountSuccess(false);
     if (data.note != null) {
       setOrderNote(data.note);
       noteSyncedFromCart.current = true;
@@ -128,22 +127,6 @@ export function CartPopup() {
   }, [fetchCart]);
 
   const close = React.useCallback(() => setIsOpen(false), []);
-
-  const recomputeCost = React.useCallback((lines: CartLine[]) => {
-    const currencyCode =
-      lines[0]?.cost?.totalAmount?.currencyCode ??
-      lines[0]?.merchandise?.price?.currencyCode ??
-      "USD";
-    const total = lines.reduce((sum, l) => {
-      if (l.cost?.totalAmount?.amount) {
-        return sum + parseFloat(l.cost.totalAmount.amount);
-      }
-      return sum + parseFloat(l.merchandise.price.amount) * l.quantity;
-    }, 0);
-    return {
-      totalAmount: { amount: total.toFixed(2), currencyCode },
-    };
-  }, []);
 
   const scaleLineCostForQuantity = React.useCallback(
     (line: CartLine, newQty: number): CartLine => {
@@ -199,10 +182,10 @@ export function CartPopup() {
             }
           : e
       );
+      // Keep cart.cost from Shopify until PATCH completes — do not derive totals from lines only.
       setCart({
         ...cart,
         lines: { edges: optimisticLines },
-        cost: recomputeCost(optimisticLines.map((e) => e.node)),
       });
       setError(null);
       setUpdatingIds((prev) => new Set(prev).add(lineId));
@@ -231,7 +214,7 @@ export function CartPopup() {
         });
       }
     },
-    [cartId, cart, fetchCart, recomputeCost, scaleLineCostForQuantity]
+    [cartId, cart, fetchCart, scaleLineCostForQuantity]
   );
 
   const removeLine = React.useCallback(
@@ -241,7 +224,6 @@ export function CartPopup() {
       setCart({
         ...cart,
         lines: { edges: optimisticEdges },
-        cost: recomputeCost(optimisticEdges.map((e) => e.node)),
       });
       setError(null);
       setUpdatingIds((prev) => new Set(prev).add(lineId));
@@ -270,44 +252,14 @@ export function CartPopup() {
         });
       }
     },
-    [cartId, cart, fetchCart, recomputeCost]
+    [cartId, cart, fetchCart]
   );
 
   const lines = cart?.lines?.edges?.map((e) => e.node) ?? [];
-
-  const applyDiscount = React.useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      const code = discountInput.trim();
-      if (!code || !cartId || !cart) return;
-      setDiscountError(null);
-      setDiscountSuccess(false);
-      setDiscountLoading(true);
-      try {
-        const res = await fetch("/api/cart/discount", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ cartId, discountCodes: [code] }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) {
-          setDiscountError(data?.error ?? "Could not apply code.");
-          return;
-        }
-        if (data.cart && cartId) {
-          await fetchCart(cartId);
-          setDiscountSuccess(true);
-          setDiscountInput("");
-          window.dispatchEvent(new CustomEvent("cart-updated"));
-        }
-      } catch {
-        setDiscountError("Network error. Please try again.");
-      } finally {
-        setDiscountLoading(false);
-      }
-    },
-    [cartId, cart, discountInput, fetchCart]
-  );
+  const displaySubtotal = sumCartLineDisplayAmounts(lines);
+  const displayCurrency = cart
+    ? cartDisplayCurrencyCode(lines, cart.cost.totalAmount.currencyCode)
+    : "USD";
 
   const saveNote = React.useCallback(
     async (noteValue: string) => {
@@ -401,11 +353,7 @@ export function CartPopup() {
               {/* Line items */}
               <ul className="divide-y divide-slate-200">
                 {lines.map((line) => {
-                  const lineTotal =
-                    line.cost?.totalAmount?.amount != null
-                      ? parseFloat(line.cost.totalAmount.amount)
-                      : parseFloat(line.merchandise.price.amount) *
-                        line.quantity;
+                  const lineTotal = cartLineDisplayAmount(line);
                   const subNote = subscriptionCartLineNote(line);
                   return (
                     <li
@@ -529,54 +477,6 @@ export function CartPopup() {
                     aria-label="Order special instructions"
                   />
                 </div>
-                {/* Discount code / gift card — two-line label so mobile isn’t clipped; short placeholder */}
-                <div className="mb-4 w-full">
-                  <label
-                    htmlFor="cart-discount-code"
-                    className="block text-left text-sm font-medium text-slate-900"
-                  >
-                    <span className="block">Discount code</span>
-                    <span className="mt-0.5 block text-xs font-normal text-slate-600">
-                      or gift card
-                    </span>
-                  </label>
-                  <form
-                    onSubmit={applyDiscount}
-                    className="mt-1.5 flex w-full flex-row items-stretch gap-2 sm:gap-3"
-                  >
-                    <input
-                      id="cart-discount-code"
-                      type="text"
-                      value={discountInput}
-                      onChange={(e) => {
-                        setDiscountInput(e.target.value);
-                        setDiscountError(null);
-                      }}
-                      placeholder="Enter code"
-                      disabled={discountLoading}
-                      className="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60"
-                      autoComplete="off"
-                    />
-                    <button
-                      type="submit"
-                      disabled={discountLoading || !discountInput.trim()}
-                      className="shrink-0 rounded-md px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-                      style={{ background: "#069400" }}
-                    >
-                      {discountLoading ? "Applying…" : "Apply"}
-                    </button>
-                  </form>
-                </div>
-                {discountError && (
-                  <p className="mb-2 text-sm text-red-600" role="alert">
-                    {discountError}
-                  </p>
-                )}
-                {discountSuccess && (
-                  <p className="mb-2 text-sm text-green-700" role="status">
-                    Discount applied.
-                  </p>
-                )}
                 <div className="flex flex-col items-end">
                 {lines.some((l) => l.sellingPlanAllocation?.sellingPlan?.name) ? (
                   <p className="mb-2 max-w-md text-right text-xs leading-relaxed text-slate-600">
@@ -589,9 +489,7 @@ export function CartPopup() {
                 ) : null}
                 <p className="text-sm text-slate-600">Estimated total</p>
                 <p className="mt-1 text-lg font-semibold text-slate-900">
-                  $
-                  {parseFloat(cart.cost.totalAmount.amount).toFixed(2)}{" "}
-                  {cart.cost.totalAmount.currencyCode}
+                  ${displaySubtotal.toFixed(2)} {displayCurrency}
                 </p>
                 <a
                   href={cart.checkoutUrl}

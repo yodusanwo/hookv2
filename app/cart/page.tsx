@@ -2,6 +2,11 @@
 
 import * as React from "react";
 import Link from "next/link";
+import {
+  cartDisplayCurrencyCode,
+  cartLineDisplayAmount,
+  sumCartLineDisplayAmounts,
+} from "@/lib/cartLineTotals";
 import { subscriptionCartLineNote } from "@/lib/cartSubscriptionLineNote";
 
 const CART_ID_KEY = "shopify_cart_id";
@@ -249,25 +254,6 @@ export default function CartPage() {
     };
   }, [cart?.id, cart?.lines.edges.length]);
 
-  const recomputeCost = React.useCallback((lines: CartLine[]) => {
-    const currencyCode =
-      lines[0]?.cost?.totalAmount?.currencyCode ??
-      lines[0]?.merchandise?.price?.currencyCode ??
-      "USD";
-    const total = lines.reduce((sum, l) => {
-      if (l.cost?.totalAmount?.amount) {
-        return sum + parseFloat(l.cost.totalAmount.amount);
-      }
-      return sum + parseFloat(l.merchandise.price.amount) * l.quantity;
-    }, 0);
-    return {
-      totalAmount: {
-        amount: total.toFixed(2),
-        currencyCode,
-      },
-    };
-  }, []);
-
   const scaleLineCostForQuantity = React.useCallback(
     (line: CartLine, newQty: number): CartLine => {
       const q = Math.max(1, line.quantity);
@@ -323,12 +309,10 @@ export default function CartPage() {
         }
         return e;
       });
-      const optimisticCart: Cart = {
+      setCart({
         ...cart,
         lines: { edges: optimisticLines },
-        cost: recomputeCost(optimisticLines.map((e) => e.node)),
-      };
-      setCart(optimisticCart);
+      });
       setError(null);
       setUpdatingIds((prev) => new Set(prev).add(lineId));
       try {
@@ -362,20 +346,17 @@ export default function CartPage() {
         });
       }
     },
-    [cartId, cart, fetchCart, recomputeCost, scaleLineCostForQuantity]
+    [cartId, cart, fetchCart, scaleLineCostForQuantity]
   );
 
   const removeLine = React.useCallback(
     async (lineId: string) => {
       if (!cartId || !cart) return;
       const optimisticEdges = cart.lines.edges.filter((e) => e.node.id !== lineId);
-      const optimisticLines = optimisticEdges.map((e) => e.node);
-      const optimisticCart: Cart = {
+      setCart({
         ...cart,
         lines: { edges: optimisticEdges },
-        cost: recomputeCost(optimisticLines),
-      };
-      setCart(optimisticCart);
+      });
       setError(null);
       setUpdatingIds((prev) => new Set(prev).add(lineId));
       try {
@@ -406,7 +387,7 @@ export default function CartPage() {
         });
       }
     },
-    [cartId, cart, fetchCart, recomputeCost]
+    [cartId, cart, fetchCart]
   );
 
   const lines = cart?.lines?.edges?.map((e) => e.node) ?? [];
@@ -443,8 +424,11 @@ export default function CartPage() {
     );
   }
 
-  const subtotal = parseFloat(cart.cost.totalAmount.amount);
-  const currencyCode = cart.cost.totalAmount.currencyCode ?? "USD";
+  const subtotal = sumCartLineDisplayAmounts(lines);
+  const currencyCode = cartDisplayCurrencyCode(
+    lines,
+    cart.cost.totalAmount.currencyCode ?? "USD"
+  );
   const threshold = shippingSettings?.freeShippingThreshold ?? null;
   const amountLeft = threshold != null ? Math.max(0, threshold - subtotal) : 0;
   const progressPercent =
@@ -488,10 +472,7 @@ export default function CartPage() {
 
             <ul className="divide-y divide-slate-200">
               {lines.map((line) => {
-                const lineTotal =
-                  line.cost?.totalAmount?.amount != null
-                    ? parseFloat(line.cost.totalAmount.amount)
-                    : parseFloat(line.merchandise.price.amount) * line.quantity;
+                const lineTotal = cartLineDisplayAmount(line);
                 const subNote = subscriptionCartLineNote(line);
                 return (
                   <li
