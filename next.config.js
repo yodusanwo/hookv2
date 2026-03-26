@@ -4,8 +4,10 @@ const csp = [
   // Klaviyo may load scripts from subdomains; `*.klaviyo.com` matches their guidance for CSP.
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com",
   "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com data:",
+  // Klaviyo onsite injects stylesheets from static.klaviyo.com (forms / chunks); blocked style-src caused "Loading chunk … styles.*.js failed" on Vercel. Dev skips CSP — see headers() below.
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.klaviyo.com https://*.klaviyo.com",
+  "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.klaviyo.com https://*.klaviyo.com",
+  "font-src 'self' https://fonts.gstatic.com data: https://static.klaviyo.com https://*.klaviyo.com",
   "img-src 'self' data: https: blob:",
   "connect-src 'self' https://*.sanity.net https://*.sanity.io https://*.api.sanity.io wss://*.api.sanity.io https://core.sanity.com https://core.sanity-cdn.com https://*.shopify.com https://*.klaviyo.com wss: https:",
   "frame-src 'self' https://*.shopify.com https://checkout.shopify.com https://*.sanity.io https://*.sanity.net https://www.youtube.com https://www.youtube-nocookie.com https://*.klaviyo.com",
