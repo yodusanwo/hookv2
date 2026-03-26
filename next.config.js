@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com",
-  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com",
+  // Klaviyo may load scripts from subdomains; `*.klaviyo.com` matches their guidance for CSP.
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com",
+  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: https: blob:",
