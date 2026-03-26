@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { client, RECIPE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
 import { normalizeIngredientShopSegment } from "@/lib/shopPathSegment";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { shopifyFetch } from "@/lib/shopify";
 import { AddToCart } from "@/app/components/AddToCart";
 import { ExploreProductsSection } from "@/components/sections/ExploreProductsSection";
@@ -158,12 +158,13 @@ export default async function RecipePage({
     }
   }
 
-  const imageUrls: Array<{ url: string; altText: string | null }> = [];
+  const imageUrls: Array<{ url: string; thumbUrl: string; altText: string | null }> = [];
   const rawImages = recipe.images ?? [];
   for (const img of rawImages) {
     try {
-      const u = urlFor(img);
-      if (u) imageUrls.push({ url: u.url(), altText: null });
+      const url = urlForSizedImage(img, 1400);
+      const thumbUrl = urlForSizedImage(img, 400);
+      if (url && thumbUrl) imageUrls.push({ url, thumbUrl, altText: null });
     } catch {
       // skip
     }
@@ -180,10 +181,11 @@ export default async function RecipePage({
   if (directionsImageRef) {
     try {
       /** builder.image() requires { asset: { _ref } }, not a GROQ-dereferenced asset document. */
-      const b = urlFor({ asset: { _ref: directionsImageRef } });
-      if (b) {
-        directionsImageUrl = b.width(1200).quality(88).auto("format").url();
-      }
+      directionsImageUrl = urlForSizedImage(
+        { asset: { _ref: directionsImageRef } },
+        1200,
+        88,
+      );
     } catch {
       // skip invalid image
     }

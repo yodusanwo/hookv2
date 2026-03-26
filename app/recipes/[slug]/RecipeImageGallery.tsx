@@ -6,7 +6,7 @@ export function RecipeImageGallery({
   images,
   recipeTitle,
 }: {
-  images: Array<{ url: string; altText: string | null }>;
+  images: Array<{ url: string; thumbUrl: string; altText: string | null }>;
   recipeTitle: string;
 }) {
   const validImages = images.filter((img) => img.url?.trim());
@@ -64,7 +64,7 @@ export function RecipeImageGallery({
                 <span
                   className="block h-full w-full overflow-hidden rounded-[10px]"
                   style={{
-                    background: `url(${img.url}) lightgray 50% / cover no-repeat`,
+                    background: `url(${img.thumbUrl}) lightgray 50% / cover no-repeat`,
                   }}
                   aria-hidden
                 />

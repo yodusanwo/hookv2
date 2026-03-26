@@ -3,7 +3,7 @@
  * Light blue background, two-column layout. Optional "Learn more" CTA below the points.
  */
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type WhyWildMattersPoint = {
@@ -53,8 +53,7 @@ export function WhyWildMattersSection({
   const points = block.points?.length ? block.points : DEFAULT_POINTS;
   let imageUrl: string | null = null;
   try {
-    const img = urlFor(block.image);
-    imageUrl = img ? img.url() : null;
+    imageUrl = block.image ? urlForSizedImage(block.image, 1200) : null;
   } catch {
     imageUrl = null;
   }
@@ -97,8 +96,7 @@ export function WhyWildMattersSection({
             {points.map((point, idx) => {
               let iconUrl: string | null = null;
               try {
-                const img = urlFor(point.icon);
-                iconUrl = img ? img.url() : null;
+                iconUrl = point.icon ? urlForSizedImage(point.icon, 160) : null;
               } catch {
                 iconUrl = null;
               }

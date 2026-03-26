@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 
 type BasicItem = {
   _id: string;
@@ -23,8 +23,7 @@ export function BasicsPageClient({
         const href = b.slug ? `/basics/${encodeURIComponent(b.slug)}` : "#";
         let imageUrl: string | null = null;
         try {
-          const img = urlFor(b.mainImage);
-          imageUrl = img ? img.url() : null;
+          imageUrl = b.mainImage ? urlForSizedImage(b.mainImage, 800) : null;
         } catch {
           imageUrl = null;
         }

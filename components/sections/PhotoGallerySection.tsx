@@ -1,4 +1,4 @@
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 
 type GalleryImage = {
   image?: { asset?: { _ref?: string } };
@@ -97,7 +97,7 @@ export function PhotoGallerySection({
                       const idx = startIdx + i;
                       const item = gridImages[idx];
                       if (!item) return null;
-                      const img = item.image ? urlFor(item.image) : null;
+                      const imgUrl = item.image ? urlForSizedImage(item.image, 700) : null;
                       const alt = item.alt?.trim() || `Gallery image ${idx + 1}`;
                       const badge = item.badge?.trim();
                       const isTall = count === 1 && [0, 3, 4].includes(startIdx);
@@ -112,9 +112,9 @@ export function PhotoGallerySection({
                           key={idx}
                           className={`relative overflow-hidden rounded-[10px] bg-white shadow-md ${aspectClass}`}
                         >
-                          {img ? (
+                          {imgUrl ? (
                             <img
-                              src={img.url()}
+                              src={imgUrl}
                               alt={alt}
                               className="w-full h-full object-cover block"
                               loading="lazy"
@@ -177,7 +177,7 @@ export function PhotoGallerySection({
               }}
             >
             {gridImages.map((item, idx) => {
-              const img = item.image ? urlFor(item.image) : null;
+              const imgUrl = item.image ? urlForSizedImage(item.image, 700) : null;
               const alt = item.alt?.trim() || `Gallery image ${idx + 1}`;
               const badge = item.badge?.trim();
               const gridArea = GRID_AREAS[idx];
@@ -209,9 +209,9 @@ export function PhotoGallerySection({
                     ...offsetStyle,
                   }}
                 >
-                  {img ? (
+                  {imgUrl ? (
                     <img
-                      src={img.url()}
+                      src={imgUrl}
                       alt={alt}
                       className="w-full h-full object-cover block"
                       loading="lazy"

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 
 const DEFAULT_CATEGORY_FILTERS = [
   { label: "Salmon", value: "salmon" },
@@ -103,8 +103,7 @@ export function RecipesPageClient({
             const href = slug ? `/recipes/${slug}` : "#";
             let imageUrl: string | null = null;
             try {
-              const u = urlFor(r.mainImage);
-              if (u) imageUrl = u.url();
+              imageUrl = r.mainImage ? urlForSizedImage(r.mainImage, 800) : null;
             } catch {
               // ignore
             }

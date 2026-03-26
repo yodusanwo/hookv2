@@ -1,6 +1,6 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 function MapPinIcon({ className }: { className?: string }) {
@@ -71,14 +71,14 @@ export function LocalFoodsCoopsSection({
         />
         <div className="mt-2 grid grid-cols-2 gap-3 md:flex md:flex-wrap items-center justify-center">
           {items.map((item, idx) => {
-            const logoImg = urlFor(item.logo);
+            const logoImg = item.logo ? urlForSizedImage(item.logo, 256) : null;
             const safeUrl = safeHref(item.url);
             const showBorder = item.bordered ?? false;
             const wrapperClass = `flex items-center justify-center gap-2 bg-transparent px-3 py-2 ${showBorder ? "rounded border border-slate-300/80" : ""}`;
 
             const content = logoImg ? (
               <img
-                src={logoImg.url()}
+                src={logoImg}
                 alt={item.label ?? ""}
                 className="h-12 w-auto max-w-full max-h-14 object-contain"
               />

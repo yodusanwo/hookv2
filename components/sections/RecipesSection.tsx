@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 const RECIPES_TOP_PADDING_PX = 56;
@@ -60,7 +60,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
             className="flex overflow-x-auto overflow-y-hidden gap-4 snap-x snap-mandatory scroll-smooth scrollbar-hide md:contents"
           >
           {recipes.map((r, idx) => {
-            const img = urlFor(r.image);
+            const cardUrl = r.image ? urlForSizedImage(r.image, 800) : null;
             let raw = (r.url ?? "").trim();
             // Avoid double-prefix: "recipes" → "/recipes", "recipes/slug" → "/recipes/slug"
             if (raw && !raw.startsWith("/") && !raw.startsWith("#") && !raw.startsWith("http")) {
@@ -89,12 +89,12 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
                     height: 320,
                     alignSelf: "stretch",
                     borderRadius: 10,
-                    background: img
-                      ? `url(${img.url()}) lightgray 50% / cover no-repeat`
+                    background: cardUrl
+                      ? `url(${cardUrl}) lightgray 50% / cover no-repeat`
                       : "lightgray",
                   }}
-                  role={img ? undefined : "img"}
-                  aria-label={img ? undefined : (r.title ?? "Recipe")}
+                  role={cardUrl ? undefined : "img"}
+                  aria-label={cardUrl ? undefined : (r.title ?? "Recipe")}
                 />
                 <div
                   className="px-4 py-3"

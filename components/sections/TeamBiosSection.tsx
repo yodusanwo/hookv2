@@ -2,7 +2,7 @@
  * Team Bios (Our Crew) section: title, description, and a gallery of team members
  * with circular photos, names, and roles. Layout: 5 per row (2 rows for 10 members).
  */
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 
 type TeamMember = {
@@ -84,7 +84,7 @@ export function TeamBiosSection({
             className="mt-14 flex flex-wrap justify-center gap-x-6 gap-y-12 md:gap-x-8 md:gap-y-16"
           >
             {members.map((member, idx) => {
-              const img = member.image ? urlFor(member.image) : null;
+              const avatarUrl = member.image ? urlForSizedImage(member.image, 480) : null;
               const name = (member.name ?? "").trim() || `Team member ${idx + 1}`;
               const role = (member.role ?? "").trim();
               const stableKey = member._key ?? `member-${idx}`;
@@ -98,9 +98,9 @@ export function TeamBiosSection({
                     className="h-[160px] w-[160px] overflow-hidden rounded-full bg-gray-300 md:h-[211px] md:w-[211px]"
                     style={{ aspectRatio: "1" }}
                   >
-                    {img ? (
+                    {avatarUrl ? (
                       <img
-                        src={img.url()}
+                        src={avatarUrl}
                         alt=""
                         className="h-full w-full object-cover"
                         loading="lazy"

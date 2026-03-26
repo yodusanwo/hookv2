@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 
 type TheBasicsItem = {
   image?: { _ref?: string; asset?: { _ref?: string } };
@@ -60,8 +60,7 @@ export function TheBasicsSection({
           {items.map((item, idx) => {
             let imageUrl: string | null = null;
             try {
-              const img = urlFor(item.image);
-              imageUrl = img ? img.url() : null;
+              imageUrl = item.image ? urlForSizedImage(item.image, 800) : null;
             } catch {
               imageUrl = null;
             }

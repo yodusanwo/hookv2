@@ -1,7 +1,7 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 import { PortableText } from "next-sanity";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type OurStoryBlock = {
@@ -98,7 +98,7 @@ export function OurStorySection({
 }) {
   const title = block.title ?? "We are Hook Point";
   const subheading = block.subheading ?? "Who We Are";
-  const img = urlFor(block.image);
+  const imageUrl = block.image ? urlForSizedImage(block.image, 1200) : null;
   const hasCtaFromSanity =
     !!block.cta && (!!block.cta.label?.trim() || !!block.cta.href?.trim());
   const rawCtaLabel = block.cta?.label ?? "Meet your fishermen";
@@ -151,9 +151,9 @@ export function OurStorySection({
           <div
             className={`min-w-0 overflow-hidden rounded-card bg-slate-200 ${isStoryPage ? "w-full h-[259.875px] md:w-[86.625%] md:h-[363.825px] md:ml-[4.5625rem]" : "h-[300px] md:h-[420px]"}`}
           >
-            {img ? (
+            {imageUrl ? (
               <img
-                src={img.url()}
+                src={imageUrl}
                 alt={hideTitle ? (block.title ?? "Our story") : title}
                 className={
                   isStoryPage

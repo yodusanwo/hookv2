@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 import { CalendarEventsListWithFilter } from "./CalendarEventsListWithFilter";
 
@@ -73,8 +73,8 @@ export function UpcomingEventsSection({
             {/* Mobile: one image only */}
             <div className="mt-10 flex justify-center gap-6 md:hidden">
               {images.slice(0, 1).map((imgRef, idx) => {
-                const img = urlFor(imgRef);
-                if (!img) return null;
+                const src = urlForSizedImage(imgRef, 720);
+                if (!src) return null;
                 return (
                   <div
                     key={idx}
@@ -82,7 +82,7 @@ export function UpcomingEventsSection({
                     style={{ backgroundColor: bgColor }}
                   >
                     <img
-                      src={img.url()}
+                      src={src}
                       alt=""
                       className="h-full w-full max-w-full object-cover"
                       loading="lazy"
@@ -94,8 +94,8 @@ export function UpcomingEventsSection({
             {/* Desktop: up to two images */}
             <div className="mt-10 hidden justify-center gap-6 md:flex">
               {images.slice(0, 2).map((imgRef, idx) => {
-                const img = urlFor(imgRef);
-                if (!img) return null;
+                const src = urlForSizedImage(imgRef, 720);
+                if (!src) return null;
                 return (
                   <div
                     key={idx}
@@ -103,7 +103,7 @@ export function UpcomingEventsSection({
                     style={{ backgroundColor: bgColor }}
                   >
                     <img
-                      src={img.url()}
+                      src={src}
                       alt=""
                       className="h-full w-full max-w-full object-cover"
                       loading="lazy"

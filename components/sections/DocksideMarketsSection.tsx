@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type MarketItem = {
@@ -64,7 +64,7 @@ export function DocksideMarketsSection({
   }
 
   function renderMarketCell(item: MarketItem, idx: number, cellClassExtra = "") {
-    const img = urlFor(item.logo);
+    const logoUrl = item.logo ? urlForSizedImage(item.logo, 400) : null;
     const logoW = item.logoWidth ?? 115;
     const logoH = item.logoHeight ?? 115;
     const logoAspect = item.logoAspectRatio ?? "1/1";
@@ -74,7 +74,7 @@ export function DocksideMarketsSection({
     const scale = Math.max(25, Math.min(200, item.logoScalePercent ?? 100)) / 100;
     const w = Math.min(logoW * scale, maxLogoW);
     const h = Math.min(logoH * scale, maxLogoH);
-    const content = img ? (
+    const content = logoUrl ? (
       <div
         role="img"
         aria-label={item.label ?? ""}
@@ -88,7 +88,7 @@ export function DocksideMarketsSection({
         }}
       >
         <img
-          src={img.url()}
+          src={logoUrl}
           alt=""
           className="max-w-full max-h-full w-auto h-auto object-contain"
           style={{ display: "block" }}
@@ -99,7 +99,7 @@ export function DocksideMarketsSection({
     );
     const safeUrl = safeHref(item.url);
     const cellClass = `flex shrink-0 items-center justify-center p-0 ${cellClassExtra}`.trim();
-    const cellStyle = { backgroundColor: img ? bgColor : "#FAFAFC" };
+    const cellStyle = { backgroundColor: logoUrl ? bgColor : "#FAFAFC" };
     return safeUrl !== "#" ? (
       <a
         key={idx}
@@ -215,7 +215,7 @@ export function DocksideMarketsSection({
               >
                 {items.length > 0
                   ? items.map((item, idx) => {
-                      const img = urlFor(item.logo);
+                      const logoUrl = item.logo ? urlForSizedImage(item.logo, 400) : null;
                       const logoW = item.logoWidth ?? 115;
                       const logoH = item.logoHeight ?? 115;
                       const logoAspect = item.logoAspectRatio ?? "1/1";
@@ -227,7 +227,7 @@ export function DocksideMarketsSection({
                         Math.max(25, Math.min(200, item.logoScalePercent ?? 100)) / 100;
                       const w = Math.min(logoW * scale, maxLogoW);
                       const h = Math.min(logoH * scale, maxLogoH);
-                      const content = img ? (
+                      const content = logoUrl ? (
                         <div
                           role="img"
                           aria-label={item.label ?? ""}
@@ -241,7 +241,7 @@ export function DocksideMarketsSection({
                           }}
                         >
                           <img
-                            src={img.url()}
+                            src={logoUrl}
                             alt=""
                             className="max-w-full max-h-full w-auto h-auto object-contain"
                             style={{ display: "block" }}
@@ -255,7 +255,7 @@ export function DocksideMarketsSection({
                       const safeUrl = safeHref(item.url);
                       const cellClass =
                         "flex shrink-0 items-center justify-center p-0 w-[calc((100%-7*0.125rem)/8)] min-w-[72px]";
-                      const cellStyle = { backgroundColor: img ? bgColor : "#FAFAFC" };
+                      const cellStyle = { backgroundColor: logoUrl ? bgColor : "#FAFAFC" };
                       return safeUrl !== "#" ? (
                         <a
                           key={idx}

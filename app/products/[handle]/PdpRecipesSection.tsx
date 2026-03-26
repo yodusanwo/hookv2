@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { client } from "@/lib/sanity";
 import { fetchPdpRecipeCards } from "@/lib/pdpProductRecipes";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ShopSectionWave } from "@/app/shop/ShopSectionWave";
 
@@ -47,7 +47,7 @@ export async function PdpRecipesSection({
           {recipesToShow.length > 0 ? (
             <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
               {recipesToShow.map((r) => {
-                const img = urlFor(r.mainImage);
+                const cardUrl = r.mainImage ? urlForSizedImage(r.mainImage, 480) : null;
                 const slug = r.slug?.trim();
                 return (
                   <Link
@@ -60,9 +60,9 @@ export async function PdpRecipesSection({
                       className="aspect-square overflow-hidden"
                       style={{ backgroundColor: "var(--section-bg)" }}
                     >
-                      {img ? (
+                      {cardUrl ? (
                         <img
-                          src={img.width(400).url()}
+                          src={cardUrl}
                           alt=""
                           className="h-full w-full object-cover"
                         />

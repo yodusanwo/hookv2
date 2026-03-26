@@ -1,6 +1,6 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PortableText } from "next-sanity";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 /**
@@ -60,7 +60,7 @@ export function OurStoryExtendedReversedSection({
   block: OurStoryExtendedReversedBlock;
 }) {
   const subheading = block.subheading ?? "Who We Are";
-  const img = urlFor(block.image);
+  const imageUrl = block.image ? urlForSizedImage(block.image, 900) : null;
   const rawCtaLabel = block.cta?.label ?? "Meet your fishermen";
   const ctaLabel =
     rawCtaLabel.length > 0
@@ -187,9 +187,9 @@ export function OurStoryExtendedReversedSection({
             className="min-w-0 w-full overflow-hidden shrink-0 aspect-square rounded-[10px] md:min-w-[440.8px] md:w-[440.8px] order-1 lg:order-2 lg:justify-self-end"
             style={{ background: "lightgray" }}
           >
-            {img ? (
+            {imageUrl ? (
               <img
-                src={img.url()}
+                src={imageUrl}
                 alt={block.title ?? "Our story"}
                 className="w-full h-full object-cover"
                 style={{ objectPosition: "50% 50%" }}

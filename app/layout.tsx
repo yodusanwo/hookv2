@@ -4,7 +4,7 @@ import "./globals.css";
 
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
 
 const geistMono = Geist_Mono({
@@ -74,8 +74,7 @@ export default async function RootLayout({
         headerBackgroundColor?: string;
         navLinks?: Array<{ label?: string; href?: string }>;
       } | null>(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60 } });
-      const img = urlFor(settings?.headerLogo);
-      if (img) headerLogoUrl = img.url();
+      headerLogoUrl = urlForSizedImage(settings?.headerLogo, 320);
       if (settings?.navLinks && settings.navLinks.length > 0) {
         navLinks = settings.navLinks;
       }

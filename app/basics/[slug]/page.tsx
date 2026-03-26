@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { client, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
-import { urlFor } from "@/lib/sanityImage";
+import { urlForSizedImage } from "@/lib/sanityImage";
 import { PortableText } from "next-sanity";
 import { youtubePortableTextComponents } from "@/components/portableText/youtubePortableText";
 import { ExploreProductsSection } from "@/components/sections/ExploreProductsSection";
@@ -90,8 +90,7 @@ function BasicSectionBlock({
   const hasList = section.listItems && section.listItems.length > 0;
   const hasBody =
     section.body && Array.isArray(section.body) && section.body.length > 0;
-  const img = section.image ? urlFor(section.image) : null;
-  const imageUrl = img ? img.url() : null;
+  const imageUrl = section.image ? urlForSizedImage(section.image, 924) : null;
 
   return (
     <div className="mb-10 last:mb-0">
@@ -191,9 +190,7 @@ export default async function BasicDetailPage({
   }
   if (!basic) notFound();
 
-  const heroImageUrl = basic.image
-    ? (urlFor(basic.image)?.url() ?? null)
-    : null;
+  const heroImageUrl = basic.image ? urlForSizedImage(basic.image, 1200) : null;
   const sections = basic.sections ?? [];
   const topSections = sections.filter((s) => (s.row ?? "top") === "top");
   const bottomLeftSections = sections.filter(
