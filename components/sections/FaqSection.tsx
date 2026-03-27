@@ -61,7 +61,11 @@ export function FaqSection({ block }: { block: FaqBlock }) {
   let flatIdx = 0;
 
   return (
-    <section id="faq" className="py-12 md:py-14" style={{ backgroundColor: bgColor }}>
+    <section
+      id="faq"
+      className="scroll-mt-[110px] py-12 sm:scroll-mt-[140px] md:py-14"
+      style={{ backgroundColor: bgColor }}
+    >
       <div className="mx-auto w-full px-6 md:px-4">
         <SectionHeading
           title={title}

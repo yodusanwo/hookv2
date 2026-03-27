@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FooterHomeLogoLink } from "./FooterHomeLogoLink";
 
 const FALLBACK_LOGO = "/Hook_Point_Shirt_White_Letters_042acd76-dff8-4246-874a-1df73d011a24%201.png";
 
@@ -60,8 +61,7 @@ export function Footer({
         <div className="flex flex-col gap-0 md:grid md:gap-12 md:[grid-template-columns:1fr_1.15fr_0.5fr_3fr]">
           {/* Column 1: Logo + copyright — on mobile order-last so it appears at bottom */}
           <div className="order-last flex flex-col items-center text-center md:order-none md:items-start md:text-left">
-            <Link
-              href="/"
+            <FooterHomeLogoLink
               className="block border-0 outline-none ring-0 shrink-0"
               aria-label="Hook Point home"
               style={{
@@ -127,36 +127,66 @@ export function Footer({
             <div className="flex flex-row gap-8 justify-center md:contents">
               <ul className="flex flex-col list-none m-0 p-0 [&>li]:m-0 [&>li]:p-0" style={{ gap: "1px" }}>
                 <li>
-                  <a href="/shop" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                  <Link
+                    href="/shop"
+                    scroll
+                    className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors"
+                    style={footerNavLinkStyle}
+                  >
                     Shop
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#about" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                  <Link
+                    href="/story"
+                    scroll
+                    className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors"
+                    style={footerNavLinkStyle}
+                  >
                     Our Story
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#recipes" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                  <Link
+                    href="/recipes"
+                    scroll
+                    className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors"
+                    style={footerNavLinkStyle}
+                  >
                     Recipes
-                  </a>
+                  </Link>
                 </li>
               </ul>
               <ul className="flex flex-col list-none m-0 p-0 [&>li]:m-0 [&>li]:p-0" style={{ gap: "1px" }}>
                 <li>
-                  <a href="#calendar" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                  <Link
+                    href="/calendar"
+                    scroll
+                    className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors"
+                    style={footerNavLinkStyle}
+                  >
                     Calendar
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#faq" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                  <Link
+                    href="/faq"
+                    scroll
+                    className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors"
+                    style={footerNavLinkStyle}
+                  >
                     FAQ
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/contact" className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors" style={footerNavLinkStyle}>
+                  <Link
+                    href="/contact"
+                    scroll
+                    className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors"
+                    style={footerNavLinkStyle}
+                  >
                     Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

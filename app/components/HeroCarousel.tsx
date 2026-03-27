@@ -9,6 +9,9 @@ type CarouselItem = { src: string; alt: string };
 const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 top-0 w-full h-full";
 const IMAGE_LAYER_STYLE = { top: 0 } as const;
 const FONT_INTER = "[font-family:var(--font-inter),Inter,sans-serif]";
+/** Subline (tagline under headline): +0.25rem on viewports below `sm`, match prior fluid size from sm up */
+const HERO_SUBLINE_TEXT =
+  "max-sm:text-[calc(0.25rem+clamp(0.75rem,1.5vw+0.5rem,1.5rem))] sm:text-[clamp(0.75rem,1.5vw+0.5rem,1.5rem)]";
 
 export function HeroCarousel({
   variant = "default",
@@ -142,15 +145,12 @@ export function HeroCarousel({
             ) : null}
           </h1>
           <p
-            className={
-              variant === "story"
-                ? `${FONT_INTER} max-w-[740px] font-semibold sm:font-medium`
-                : `${FONT_INTER} max-w-[920px] font-semibold sm:font-medium`
-            }
+            className={`${FONT_INTER} font-semibold sm:font-medium ${HERO_SUBLINE_TEXT} ${
+              variant === "story" ? "max-w-[740px]" : "max-w-[920px]"
+            }`}
             style={{
               color: "#FFF",
               fontFamily: "Inter, var(--font-inter), sans-serif",
-              fontSize: "clamp(0.75rem, 1.5vw + 0.5rem, 1.5rem)",
               fontStyle: "normal",
               lineHeight: "normal",
               ...(variant === "default"

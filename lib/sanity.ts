@@ -79,6 +79,48 @@ export const CONTACT_PAGE_QUERY = `*[_type == "page" && slug.current == "contact
   }
 }`;
 
+/** GROQ query for dedicated FAQ page (page with slug "faq") — used by `app/faq/page.tsx` */
+export const FAQ_PAGE_QUERY = `*[_type == "page" && slug.current == "faq"][0] {
+  _id,
+  title,
+  slug,
+  sections[] {
+    _type,
+    _key,
+    ...,
+    cta { label, href },
+    images[] { asset-> },
+    galleryImages[] { image, alt, caption, badge },
+    teamMembers[] { _key, image, name, role },
+    image { asset-> },
+    body,
+    "productRefs": productRefs[] { shopifyHandle, featuredImageIndex },
+    "filterCollections": filterCollections[] { label, collectionHandle, image }
+  }
+}`;
+
+/** First FAQ block from the home page — fallback content for `/faq` when no `faq` page doc exists */
+export const HOMEPAGE_FAQ_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "faqBlock"][0] {
+  _type,
+  _key,
+  backgroundColor,
+  title,
+  description,
+  faqs[] { categoryTitle, question, answer },
+  showMoreUrl
+}`;
+
+/** First Upcoming Events block from the home page — fallback copy/images for `/calendar` when no `calendar` page doc exists */
+export const HOMEPAGE_UPCOMING_EVENTS_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "upcomingEventsBlock"][0] {
+  _type,
+  _key,
+  backgroundColor,
+  title,
+  description,
+  images[] { asset-> },
+  showAllUrl
+}`;
+
 /** GROQ query for story page (page with slug "story") */
 export const STORY_PAGE_QUERY = `*[_type == "page" && slug.current == "story"][0] {
   _id,

@@ -41,7 +41,7 @@ export function RecipesSection({ block }: { block: RecipesBlock }) {
   return (
     <section
       id="recipes"
-      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start pb-12 md:pb-0"
+      className="relative z-10 mx-auto flex min-w-0 flex-col justify-start scroll-mt-[110px] pb-12 sm:scroll-mt-[140px] md:pb-0"
       style={{ backgroundColor: bgColor, width: "100%", minHeight: 433 }}
     >
       <div

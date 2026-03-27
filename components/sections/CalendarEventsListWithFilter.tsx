@@ -68,7 +68,7 @@ export function CalendarEventsListWithFilter({
   /** Run after React commits and the browser paints — fixes mobile Safari where immediate scrollIntoView from a click often does nothing. */
   const scrollEventsSectionIntoView = React.useCallback(() => {
     const run = () => {
-      const el = document.getElementById("events");
+      const el = document.getElementById("calendar");
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
         return;

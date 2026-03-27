@@ -52,7 +52,7 @@ export function HomePageFallback({
       />
       {promoBanner && <PromoBanner text={promoBanner} href={promoBannerUrl} />}
 
-      <section id="about" className="bg-white py-14">
+      <section id="about" className="scroll-mt-[110px] bg-white py-14 sm:scroll-mt-[140px]">
         <div className="mx-auto max-w-6xl px-4">
           <SectionHeading title="We are Hook Point" variant="display" theme="light" />
           <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-center">

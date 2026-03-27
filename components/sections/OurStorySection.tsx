@@ -115,7 +115,7 @@ export function OurStorySection({
   return (
     <section
       id="about"
-      className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible pt-0 pb-0"
+      className="relative z-10 flex min-h-0 flex-col justify-end overflow-visible scroll-mt-[110px] pt-0 pb-0 sm:scroll-mt-[140px]"
       style={{
         backgroundColor: isStoryPage
           ? "#171730"
