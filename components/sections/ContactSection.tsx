@@ -27,10 +27,9 @@ export function ContactSection({ block }: { block: ContactBlock }) {
       <div className="mx-auto max-w-[782px] px-6 md:px-4 text-center">
         {title && (
           <h1
-            className="font-semibold uppercase leading-normal text-[#111827]"
+            className="page-h1 font-semibold uppercase leading-normal text-[#111827]"
             style={{
               fontFamily: "var(--font-inter), Inter, sans-serif",
-              fontSize: "3rem",
               lineHeight: 1,
             }}
           >

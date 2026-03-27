@@ -7,6 +7,7 @@ import { Header } from "./Header";
 import { HeaderWave } from "./HeaderWave";
 import { Footer } from "./Footer";
 import { CartPopup } from "./CartPopup";
+import { GtmRouteChange } from "./GtmRouteChange";
 
 type SiteLayoutProps = {
   children: React.ReactNode;
@@ -77,6 +78,7 @@ function SiteLayoutInner({
 
   return (
     <FooterWaveOverrideProvider value={{ setOverride }}>
+      <GtmRouteChange />
       <Header
         logoUrl={headerLogoUrl}
         navLinks={navLinks}
@@ -115,6 +117,7 @@ function SiteLayoutFallback({
   const pathname = usePathname();
   return (
     <>
+      <GtmRouteChange />
       <Header
         logoUrl={headerLogoUrl}
         navLinks={navLinks}

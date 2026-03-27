@@ -2,15 +2,16 @@
 const csp = [
   "default-src 'self'",
   // Klaviyo may load scripts from subdomains; `*.klaviyo.com` matches their guidance for CSP.
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com",
-  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com",
+  // Google Tag Manager + GA4 (see `app/components/GoogleTagManager.tsx`).
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
   // Klaviyo onsite injects stylesheets from static.klaviyo.com (forms / chunks); blocked style-src caused "Loading chunk … styles.*.js failed" on Vercel. Dev skips CSP — see headers() below.
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.klaviyo.com https://*.klaviyo.com",
   "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.klaviyo.com https://*.klaviyo.com",
   "font-src 'self' https://fonts.gstatic.com data: https://static.klaviyo.com https://*.klaviyo.com",
   "img-src 'self' data: https: blob:",
-  "connect-src 'self' https://*.sanity.net https://*.sanity.io https://*.api.sanity.io wss://*.api.sanity.io https://core.sanity.com https://core.sanity-cdn.com https://*.shopify.com https://*.klaviyo.com wss: https:",
-  "frame-src 'self' https://*.shopify.com https://checkout.shopify.com https://*.sanity.io https://*.sanity.net https://www.youtube.com https://www.youtube-nocookie.com https://*.klaviyo.com",
+  "connect-src 'self' https://*.sanity.net https://*.sanity.io https://*.api.sanity.io wss://*.api.sanity.io https://core.sanity.com https://core.sanity-cdn.com https://*.shopify.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://stats.g.doubleclick.net https://www.google.com https://www.googleadservices.com wss: https:",
+  "frame-src 'self' https://*.shopify.com https://checkout.shopify.com https://*.sanity.io https://*.sanity.net https://www.youtube.com https://www.youtube-nocookie.com https://*.klaviyo.com https://www.googletagmanager.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self' https://*.klaviyo.com https://a.klaviyo.com",

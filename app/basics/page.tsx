@@ -59,11 +59,10 @@ export default async function BasicsIndexPage() {
       <div className="w-full pb-10" style={{ backgroundColor: bgColor }}>
         <div className="mx-auto w-full max-w-[1200px] px-4">
           <h1
-            className="mb-2 text-center"
+            className="page-h1 mb-2 text-center"
             style={{
               color: "#111827",
               fontFamily: "Inter, sans-serif",
-              fontSize: "3rem",
               fontStyle: "normal",
               fontWeight: 600,
               lineHeight: "normal",

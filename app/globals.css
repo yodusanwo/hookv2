@@ -32,6 +32,8 @@
   --section-heading-line-height: auto;
   --section-heading-letter-spacing: 0%;
   --section-title-size: 3rem;
+  /* Page hero H1 (Contact, Recipes index, Basics index, CMS contact): 2rem mobile, 3rem md+ */
+  --page-h1-size: 3rem;
   --section-title-weight: 600;
   --section-title-color: #111827;
   --section-description-size: 1rem;
@@ -63,11 +65,27 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@media (max-width: 767px) {
+  :root {
+    --page-h1-size: 2rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* Page H1 – large marketing titles (e.g. Contact Us, Recipes/The Basics headings). Uses --page-h1-size (2rem mobile, 3rem md+). */
+h1.page-h1 {
+  font-size: var(--page-h1-size);
+}
+
+/* Team bios section title (Our Crew) — same scale as page-h1 */
+h2.team-bios-heading {
+  font-size: var(--page-h1-size);
 }
 
 html,

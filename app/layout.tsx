@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Inter, Mulish } from "next/font/google";
 import "./globals.css";
 
+import { GoogleTagManager } from "./components/GoogleTagManager";
 import { KlaviyoOnsiteScript } from "./components/KlaviyoOnsiteScript";
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
@@ -92,6 +93,7 @@ export default async function RootLayout({
       <body
         className={`${geistMono.variable} ${inter.variable} ${mulish.variable} antialiased`}
       >
+        <GoogleTagManager />
         <KlaviyoOnsiteScript />
         <SiteLayout
           headerLogoUrl={headerLogoUrl}
