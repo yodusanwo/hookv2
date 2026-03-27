@@ -391,7 +391,11 @@ export function AddToCart({
                   Math.min(50, Math.max(1, Math.floor(Number(e.target.value) || 1)))
                 )
               }
-              className="h-10 w-14 border-0 bg-transparent text-center text-sm outline-none [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="h-10 w-14 border-0 bg-transparent text-center text-base font-semibold text-slate-900 outline-none [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [color-scheme:light]"
+              style={{
+                color: "#111827",
+                WebkitTextFillColor: "#111827",
+              }}
             />
             <button
               type="button"
@@ -569,7 +573,11 @@ export function AddToCart({
           max={50}
           value={qty}
           onChange={(e) => setQty(Math.min(50, Math.max(1, Math.floor(Number(e.target.value) || 1))))}
-          className="h-10 w-20 rounded-md border border-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-sky-700"
+          className="h-10 w-20 rounded-md border border-slate-200 px-3 text-base font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-sky-700 [color-scheme:light]"
+          style={{
+            color: "#111827",
+            WebkitTextFillColor: "#111827",
+          }}
         />
       </div>
 
