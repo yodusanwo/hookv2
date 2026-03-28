@@ -9,4 +9,8 @@ export const ROUTE_MAIN_MIN_HEIGHT_CLASSES =
 export const ROUTE_HERO_TOP_PADDING_CLASSES =
   "pt-[140px] pb-10 sm:pt-[170px] md:pt-[230px] md:pb-10";
 
+/** Matches `/shop` main in ShopPageClient — top padding only; main uses pb-0 (not PDP hero pb). */
+export const ROUTE_SHOP_MAIN_PADDING_CLASSES =
+  "pt-[140px] pb-0 sm:pt-[170px] md:pt-[230px]";
+
 export const ROUTE_LIGHT_BLUE_CSS_VAR = "var(--brand-light-blue-bg)";
