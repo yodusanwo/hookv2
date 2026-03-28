@@ -175,7 +175,7 @@ Holistic pass over **~200 TS/TSX files**, `app/api/*`, `lib/*`, `next.config.js`
 
 | Topic | Note |
 |-------|------|
-| **CSP** | Includes `'unsafe-inline'` and `'unsafe-eval'` (Sanity Studio / Klaviyo / dev ergonomics). Acceptable tradeoff for many stacks; narrows defense-in-depth if a new HTML injection bug appears. |
+| **CSP** | Production: main app has **no** `'unsafe-eval'` (only `/studio` does, for embedded Sanity Studio). `'unsafe-inline'` remains on `script-src` for GTM’s inline bootstrap ([`GoogleTagManager.tsx`](app/components/GoogleTagManager.tsx)); removing it needs nonces or a non-inline load. Snyk may still flag `unsafe-inline`. |
 | **CMS → CSS injection** | **Mitigated (Mar 2026):** [`sanitizeCssCustomPropertyValue`](lib/sanitizeCssCustomPropertyValue.ts) wraps Dockside `--dockside-pt` / `--dockside-pb` values before `<style>` injection. |
 | **HTML from Shopify** | PDP `descriptionHtml` / rich text uses `dangerouslySetInnerHTML` — **trusted** Shopify content; lower risk than CMS user HTML. |
 | **Public `/api/events`** | Returns sheet events to any caller — fine for public schedules; revisit if the sheet ever holds non-public data. |

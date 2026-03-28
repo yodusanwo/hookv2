@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
-const csp = [
+
+/**
+ * Shared CSP directives (everything except script-src / script-src-elem variants).
+ * Klaviyo: `*.klaviyo.com`, styles from static.klaviyo.com (see Klaviyo CSP docs).
+ * GTM + GA4: `app/components/GoogleTagManager.tsx`.
+ */
+const cspShared = [
   "default-src 'self'",
-  // Klaviyo may load scripts from subdomains; `*.klaviyo.com` matches their guidance for CSP.
-  // Google Tag Manager + GA4 (see `app/components/GoogleTagManager.tsx`).
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
-  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
-  // Klaviyo onsite injects stylesheets from static.klaviyo.com (forms / chunks); blocked style-src caused "Loading chunk … styles.*.js failed" on Vercel. Dev skips CSP — see headers() below.
+  // Klaviyo onsite injects stylesheets; blocking style-src caused "Loading chunk … styles.*.js failed" on Vercel.
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.klaviyo.com https://*.klaviyo.com",
   "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.klaviyo.com https://*.klaviyo.com",
   "font-src 'self' https://fonts.gstatic.com data: https://static.klaviyo.com https://*.klaviyo.com",
@@ -16,6 +18,28 @@ const csp = [
   "base-uri 'self'",
   "form-action 'self' https://*.klaviyo.com https://a.klaviyo.com",
   "object-src 'none'",
+];
+
+/**
+ * Main site (not /studio): no unsafe-eval — not required for Next/React in production
+ * (see Next.js CSP docs). Keeps `unsafe-inline` for the GTM inline `next/script` snippet;
+ * removing it needs per-request nonces + dynamic rendering or a non-inline GTM load.
+ */
+const cspMainProduction = [
+  ...cspShared.slice(0, 1),
+  "script-src 'self' 'unsafe-inline' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "script-src-elem 'self' 'unsafe-inline' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
+  ...cspShared.slice(1),
+].join("; ");
+
+/**
+ * Embedded Sanity Studio (`/studio`) — keep unsafe-eval (and inline) for the Studio bundle / tooling.
+ */
+const cspStudioProduction = [
+  ...cspShared.slice(0, 1),
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
+  ...cspShared.slice(1),
 ].join("; ");
 
 const baseSecurityHeaders = [
@@ -53,12 +77,17 @@ const nextConfig = {
     ];
   },
   async headers() {
-    /** CSP is skipped in dev to avoid chunk/HMR issues (e.g. “Loading chunk … styles.*.js failed”). Production still enforces CSP. */
-    const headers =
-      process.env.NODE_ENV === "production"
-        ? [...baseSecurityHeaders, { key: "Content-Security-Policy", value: csp }]
-        : baseSecurityHeaders;
-    return [{ source: "/:path*", headers }];
+    /** CSP skipped in dev to avoid chunk/HMR issues. Production: stricter CSP on main site; full policy on /studio. */
+    if (process.env.NODE_ENV !== "production") {
+      return [{ source: "/:path*", headers: baseSecurityHeaders }];
+    }
+    const cspStudio = [...baseSecurityHeaders, { key: "Content-Security-Policy", value: cspStudioProduction }];
+    const cspMain = [...baseSecurityHeaders, { key: "Content-Security-Policy", value: cspMainProduction }];
+    return [
+      { source: "/studio", headers: cspStudio },
+      { source: "/studio/:path*", headers: cspStudio },
+      { source: "/:path*", headers: cspMain },
+    ];
   },
 };
 
