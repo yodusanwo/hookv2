@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
+import { safeHref } from "@/lib/urlValidation";
 
 export type ExploreCategoryItem = {
   label?: string;
@@ -72,7 +73,7 @@ export function ExploreProductsCategoryCarousel({
   const cardContent = (cat: ExploreCategoryItem, idx: number) => (
     <Link
       key={idx}
-      href={cat.href}
+      href={safeHref(cat.href) || "/shop"}
       prefetch
       className="group flex flex-col items-center outline-none focus:outline-none w-full md:w-auto md:shrink-0 md:snap-start"
     >

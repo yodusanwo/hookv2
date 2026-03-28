@@ -1,5 +1,7 @@
 import { Resend } from "resend";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { isContactRateLimited } from "@/lib/contactRateLimit";
 
 const MAX_NAME = 200;
 const MAX_MESSAGE = 10_000;
@@ -23,6 +25,17 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Email delivery is not configured." },
       { status: 503 },
+    );
+  }
+
+  const h = await headers();
+  const forwarded = h.get("x-forwarded-for");
+  const clientKey =
+    forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
+  if (isContactRateLimited(clientKey)) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again in a minute." },
+      { status: 429 },
     );
   }
 

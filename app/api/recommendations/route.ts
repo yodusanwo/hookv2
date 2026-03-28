@@ -60,6 +60,13 @@ export async function GET(req: Request) {
     );
   }
 
+  if (!/^[a-zA-Z0-9-]+$/.test(productHandle)) {
+    return NextResponse.json(
+      { error: "Invalid product handle." },
+      { status: 400 }
+    );
+  }
+
   try {
     const data = await shopifyFetch<
       ProductRecommendationsResponse,

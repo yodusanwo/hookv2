@@ -1,191 +1,217 @@
 # Code Review – Hook Point Shopify Store
 
-**Date:** January 2026  
+**Original review:** January 2026  
+**Last synced to repo:** March 2026  
 **Scope:** Bugs, race conditions, security, and performance
+
+Use this file as a **checklist**. Re-run the “How to verify” steps after major changes.
+
+---
+
+## Status overview (March 2026)
+
+Many January items are **implemented** in the current tree. What remains is mostly **audits** (URL usage), **hardening** (PDP errors), and **optional** polish (AbortController on deal card).
+
+| Area                         | Status |
+|-----------------------------|--------|
+| Products API `first` / NaN  | **Resolved** — see §3 |
+| Cart quantity + GID format  | **Resolved** — see §4–5 |
+| Collection handle validation| **Resolved** — see §13 |
+| Hero `normalizeHeadline`    | **Resolved** — see §12 |
+| URL helper in codebase      | **Exists** — `lib/urlValidation.ts`; **audit** call sites — see §2 |
+| `get-token.js`              | **Not in repo** — see §1 |
+| PDP error handling          | **Resolved** — try/catch + friendly UI — see §11 |
+| DealProductCard fetch cancel| **Open** — see §9 |
 
 ---
 
 ## Critical – Security
 
-### 1. Hardcoded secrets in `get-token.js`
+### 1. `get-token.js` (hardcoded secrets)
 
-**File:** [get-token.js](get-token.js)
+**File:** [get-token.js](get-token.js) (referenced in original review)
 
-**Issue:** Lines 3–5 contain hardcoded `ADMIN_API_KEY` and `ADMIN_API_SECRET`.
+**March 2026:** This file is **not present** in the repository. Treat as either removed or never added here.
 
-**Risk:** If this file is ever committed (e.g. before it was added to `.gitignore`), these secrets may exist in git history and could be exposed.
-
-**Recommendation:**
-- Move credentials into environment variables and load them via `process.env`.
-- If the file is not needed, consider removing it.
-- If it was ever committed, rotate the exposed credentials in Shopify and use `git filter-branch` or BFG to remove them from history.
+**If it ever existed in git:** Rotate Shopify Admin API credentials and consider history scrubbing (`git filter-repo` / BFG). Any new local scripts should use `process.env` only and stay out of version control (e.g. `.gitignore`).
 
 ---
 
-### 2. Unvalidated URLs from Sanity (potential XSS / open redirect)
+### 2. Unvalidated URLs from Sanity (XSS / open redirect)
 
-**Files:**
-- [components/sections/FaqSection.tsx](components/sections/FaqSection.tsx) – `showMoreUrl`
-- [components/sections/OurStorySection.tsx](components/sections/OurStorySection.tsx) – `ctaHref`
-- [components/sections/ExploreProductsGrid.tsx](components/sections/ExploreProductsGrid.tsx) – `cta.href`
-- [components/sections/RecipesSection.tsx](components/sections/RecipesSection.tsx) – `href`, `showMoreUrl`
-- [components/sections/LocalFoodsCoopsSection.tsx](components/sections/LocalFoodsCoopsSection.tsx) – `lb.url`
-- [components/sections/DocksideMarketsSection.tsx](components/sections/DocksideMarketsSection.tsx) – `item.url`
-- [app/components/Header.tsx](app/components/Header.tsx) – nav `href` from Sanity
+**Context:** [`lib/urlValidation.ts`](lib/urlValidation.ts) defines `isValidHref` and `safeHref` (same rules as the original snippet in this doc). Several sections already use `safeHref`.
 
-**Issue:** URLs from Sanity are used in `href` without validation. A malicious or misconfigured entry (e.g. `javascript:...`, `data:...`, or an open-redirect URL) could lead to XSS or open redirects.
+**Remaining risk:** Any `href` built from CMS without `safeHref` is still vulnerable. Examples to audit (non-exhaustive):
 
-**Recommendation:** Add a URL validation helper and use it wherever Sanity URLs are used:
+- [`components/sections/RecipesSection.tsx`](components/sections/RecipesSection.tsx) — recipe card `href` (verify sanitization path).
+- [`components/sections/ExploreProductsCategoryCarousel.tsx`](components/sections/ExploreProductsCategoryCarousel.tsx) / [`ExploreProductsCarousel.tsx`](components/sections/ExploreProductsCarousel.tsx) — `cat.href`.
+- [`components/sections/OurStorySection.tsx`](components/sections/OurStorySection.tsx) / extended story blocks — `ctaHref` (confirm it always passes through validation).
+- [`components/sections/TheBasicsSection.tsx`](components/sections/TheBasicsSection.tsx) — `href`.
+- [`app/components/Header.tsx`](app/components/Header.tsx) — nav links (uses `safeHref` in places; re-check on change).
 
-```typescript
-function isValidHref(href: string): boolean {
-  if (!href || typeof href !== "string") return false;
-  const trimmed = href.trim();
-  if (trimmed.startsWith("/") || trimmed.startsWith("#")) return true;
-  try {
-    const u = new URL(trimmed);
-    return u.protocol === "https:" || u.protocol === "http:";
-  } catch {
-    return false;
-  }
-}
-```
+**How to verify:** `rg 'href=\{' components/sections app/components` and ensure CMS-driven values use `safeHref` or equivalent.
 
 ---
 
 ## High – Bugs
 
-### 3. Products API: `first` can be `NaN`
+### 3. Products API: `first` can be `NaN` — **resolved**
 
-**File:** [app/api/products/route.ts](app/api/products/route.ts), line 34
+**File:** [`app/api/products/route.ts`](app/api/products/route.ts)
 
-**Issue:**
-```typescript
-const first = Math.min(24, Math.max(1, parseInt(searchParams.get("first") ?? "9", 10)));
-```
-If the query string has `first=abc`, `parseInt` returns `NaN`, and `Math.max(1, NaN)` / `Math.min(24, NaN)` also return `NaN`. The GraphQL variable can then be invalid.
-
-**Recommendation:**
-```typescript
-const parsed = parseInt(searchParams.get("first") ?? "9", 10);
-const first = Number.isNaN(parsed) ? 9 : Math.min(24, Math.max(1, parsed));
-```
+**Current behavior:** `parseInt` result is guarded with `Number.isNaN(parsed) ? 9 : …` before `Math.min` / `Math.max`.
 
 ---
 
-### 4. Cart API: no upper bound on quantity
+### 4. Cart API: quantity upper bound — **resolved** (cap 50)
 
-**File:** [app/api/cart/lines/route.ts](app/api/cart/lines/route.ts)
+**File:** [`app/api/cart/lines/route.ts`](app/api/cart/lines/route.ts)
 
-**Issue:** `quantity` is only checked with `Number.isFinite`. A client can send very large values (e.g. `999999`) and create unrealistic or abusive cart states.
+**Current behavior:** `POST` and `PATCH` clamp quantity with `Math.min(50, Math.max(1, …))`.
 
-**Recommendation:** Enforce a maximum (e.g. 10) and ensure it is a positive integer:
-
-```typescript
-const quantity = Math.min(10, Math.max(1, Math.floor(Number(body.quantity) || 1)));
-```
+**Note:** Original review suggested `10`; product UI uses **`max={50}`** in [`AddToCart.tsx`](app/components/AddToCart.tsx). Keep server and client caps aligned if you change business rules.
 
 ---
 
-### 5. Cart API: no format validation for IDs
+### 5. Cart API: ID format validation — **resolved**
 
-**File:** [app/api/cart/lines/route.ts](app/api/cart/lines/route.ts)
+**File:** [`app/api/cart/lines/route.ts`](app/api/cart/lines/route.ts)
 
-**Issue:** `cartId` and `merchandiseId` are passed to Shopify without validation of format or length. Malformed values can cause unnecessary Shopify API errors and may leak internal error details.
-
-**Recommendation:** Validate that IDs match expected Shopify formats (e.g. GID-like strings) before sending them to the API.
+**Current behavior:** `isValidShopifyGid` + normalization before Storefront API calls.
 
 ---
 
 ## Medium – Race conditions and data consistency
 
-### 6. ExploreProductsGrid – resolved
+### 6. ExploreProductsGrid — **resolved**
 
-**File:** [components/sections/ExploreProductsGrid.tsx](components/sections/ExploreProductsGrid.tsx)
+AbortController cancels stale filter requests; safe to leave as-is unless the fetch contract changes.
 
-**Status:** Previously vulnerable to filter-switch races. Current implementation uses `AbortController` to cancel in-flight fetches and correctly ignores aborted responses when updating state. No change needed.
+### 7. ExploreFilters — **resolved**
 
----
+`active` synced with `activeIndex` via `useEffect`.
 
-### 7. ExploreFilters – resolved
+### 8. Hero carousel interval
 
-**File:** [components/sections/ExploreFilters.tsx](components/sections/ExploreFilters.tsx)
+**File:** [`app/components/HeroCarousel.tsx`](app/components/HeroCarousel.tsx)
 
-**Status:** `active` state is now kept in sync with `activeIndex` via `useEffect`. No change needed.
+Effect cleanup clears the interval; optional **manual** check after rapid route changes (home ↔ story).
 
----
+### 9. DealProductCard – request cancellation on unmount
 
-## Medium – Performance
+**File:** [`app/components/DealProductCard.tsx`](app/components/DealProductCard.tsx)
 
-### 8. Hero carousel interval not cleaned on unmount
+Add-to-cart fetch may complete after unmount. **Low priority** with React 18; consider `AbortController` if you see console warnings or flaky UI.
 
-**File:** [app/components/HeroCarousel.tsx](app/components/HeroCarousel.tsx)
+### 10. AddToCart – client quantity cap — **aligned with API**
 
-**Issue:** `setInterval` is cleared in the effect cleanup, but the dependency array may cause subtle re-runs. The current logic looks correct; worth a quick visual pass to ensure no extra intervals persist on rapid navigation.
+**File:** [`app/components/AddToCart.tsx`](app/components/AddToCart.tsx)
 
----
-
-### 9. DealProductCard – no request cancellation on unmount
-
-**File:** [app/components/DealProductCard.tsx](app/components/DealProductCard.tsx)
-
-**Issue:** Add-to-cart requests are not aborted when the user navigates away or the component unmounts. State updates may run after unmount, though React 18+ generally tolerates this.
-
-**Recommendation:** Use `AbortController` for the fetch and abort in a cleanup, similar to `ExploreProductsGrid`, if the component can unmount during the request.
-
----
-
-### 10. AddToCart – no quantity cap on client
-
-**File:** [app/components/AddToCart.tsx](app/components/AddToCart.tsx)
-
-**Issue:** User can set quantity via input without an enforced maximum. Combined with the server fix in #4, adding a client-side cap (e.g. `min={1} max={10}`) improves UX and consistency.
+Inputs use `min={1}` and `max={50}` to match the cart API.
 
 ---
 
 ## Low – Code quality and robustness
 
-### 11. Product page: no error boundary
+### 11. Product page: error handling — **resolved**
 
-**File:** [app/products/[handle]/page.tsx](app/products/[handle]/page.tsx)
+**File:** [`app/products/[handle]/page.tsx`](app/products/[handle]/page.tsx)
 
-**Issue:** If `shopifyFetch` throws (network, Shopify outage), the page can fail with an unhandled error and no user-friendly fallback.
+The main product fetch is wrapped in `try/catch`; failures render “Something went wrong” with copy to retry later. **`generateMetadata`** also catches errors and falls back to a generic title. Optional: add [`error.tsx`](app/products/[handle]/error.tsx) for unexpected errors outside that block.
 
-**Recommendation:** Wrap the fetch in try/catch and render an error UI, or add an error boundary for the route.
+### 12. `normalizeHeadline` discarding custom copy — **resolved**
 
----
+**File:** [`components/sections/HeroSection.tsx`](components/sections/HeroSection.tsx)
 
-### 12. normalizeHeadline – custom headlines discarded
+Headlines **without** “Alaska” are kept as `{ line1: trimmed, line2: "" }`; fallback copy is only used when the field is empty/invalid.
 
-**File:** [components/sections/HeroSection.tsx](components/sections/HeroSection.tsx)
+### 13. Collection handle validation — **resolved**
 
-**Issue:** `normalizeHeadline` returns a fallback whenever the headline does not include `"Alaska"`. Any other brand or campaign headline would be replaced.
+**File:** [`app/api/collections/[handle]/products/route.ts`](app/api/collections/[handle]/products/route.ts)
 
-**Recommendation:** Only apply the two-line normalization when the content matches known patterns; otherwise preserve the original string and render it as a single line.
-
----
-
-### 13. Collection handle: possible injection
-
-**File:** [app/api/collections/[handle]/products/route.ts](app/api/collections/[handle]/products/route.ts)
-
-**Issue:** `handle` from the URL is trimmed and passed to Shopify. GraphQL variables are parameterized, so injection risk is low, but very long or odd strings could still cause odd behavior.
-
-**Recommendation:** Restrict to alphanumeric characters and hyphens (e.g. `/^[a-zA-Z0-9-]+$/`) and return 400 for invalid handles.
+Invalid handles return `400` with `/^[a-zA-Z0-9-]+$/`.
 
 ---
 
-## Summary
+## Summary (March 2026)
 
-| Severity | Count |
-|----------|-------|
-| Critical | 2     |
-| High     | 3     |
-| Medium   | 5     |
-| Low      | 3     |
+| Severity | Open | Resolved / note |
+|----------|------|------------------|
+| Critical | 0* | §1 file absent; §2 audit remaining `href` |
+| High     | 0    | §3–5 fixed in code |
+| Medium   | 1–2  | §9 optional; §8 spot-check |
+| Low      | 0–1  | Optional `error.tsx` on PDP |
 
-**Suggested order of work:**
-1. Remove or secure `get-token.js` (rotate keys if they were ever committed).
-2. Add URL validation for all Sanity-sourced links.
-3. Fix `first` and `quantity` validation in the products and cart APIs.
-4. Add collection handle validation and client/server quantity limits.
+\*Treat §2 as ongoing hygiene whenever new CMS-driven links ship.
+
+**Suggested order of work (updated):**
+
+1. Grep audit: all Sanity-sourced `href` values → `safeHref` (or document why not).
+2. (Optional) PDP `error.tsx` for uncaught errors in the segment.
+3. (Optional) AbortController on `DealProductCard` add-to-cart.
+4. If `get-token.js` ever lived in git, rotate keys and clean history.
+
+---
+
+## Full repository review (March 27, 2026)
+
+Holistic pass over **~200 TS/TSX files**, `app/api/*`, `lib/*`, `next.config.js`, and key CMS sections. Complements the checklist above.
+
+### Architecture (healthy)
+
+- **Next.js App Router** with server components for pages; **Sanity** for content; **Shopify Storefront API** via [`lib/shopify.ts`](lib/shopify.ts) (`import "server-only"` — tokens stay server-side).
+- **No `middleware.ts`** — auth/rate limits are not centralized (see gaps).
+- **API surface:** cart (create/get/lines/discount/note/count), products, collections, search, recommendations, contact (Resend), events (sheet), reviews (Klaviyo), revalidate (secret), checkout buy-now, footer-wave-color, shipping-settings.
+
+### Security — strengths
+
+- **Revalidate** requires `SANITY_REVALIDATE_SECRET` query match ([`app/api/revalidate/route.ts`](app/api/revalidate/route.ts)).
+- **Contact** uses honeypot + `escapeHtml` for email bodies ([`app/api/contact/route.ts`](app/api/contact/route.ts)).
+- **Cart / buy-now / discount:** GID normalization + `isValidShopifyGid` before Shopify calls.
+- **Collection products** and **products** list: bounded `first` / handle validation where implemented.
+- **CSP + security headers** in production ([`next.config.js`](next.config.js)).
+
+### Security / abuse — gaps & notes
+
+| Topic | Note |
+|-------|------|
+| **CSP** | Includes `'unsafe-inline'` and `'unsafe-eval'` (Sanity Studio / Klaviyo / dev ergonomics). Acceptable tradeoff for many stacks; narrows defense-in-depth if a new HTML injection bug appears. |
+| **CMS → CSS injection** | **Mitigated (Mar 2026):** [`sanitizeCssCustomPropertyValue`](lib/sanitizeCssCustomPropertyValue.ts) wraps Dockside `--dockside-pt` / `--dockside-pb` values before `<style>` injection. |
+| **HTML from Shopify** | PDP `descriptionHtml` / rich text uses `dangerouslySetInnerHTML` — **trusted** Shopify content; lower risk than CMS user HTML. |
+| **Public `/api/events`** | Returns sheet events to any caller — fine for public schedules; revisit if the sheet ever holds non-public data. |
+| **Rate limiting** | **Contact:** best-effort in-memory limit (10/min/IP) in [`contactRateLimit.ts`](lib/contactRateLimit.ts). **Search** and other Storefront routes still unbounded — add Vercel Firewall / Redis for strict limits. |
+| **`/api/recommendations`** | **Mitigated:** handle validated with `/^[a-zA-Z0-9-]+$/` before Shopify (aligned with collections API). |
+
+### URL hygiene (Sanity)
+
+- [`RecipesSection`](components/sections/RecipesSection.tsx) builds `href` with **`safeHref`** — good.
+- [`ExploreProductsCategoryCarousel`](components/sections/ExploreProductsCategoryCarousel.tsx) uses **`safeHref(cat.href)`** with `/shop` fallback; parents still build `/shop/...` from handles — **safe path**. Re-audit if new call sites pass raw CMS URLs.
+- Keep running: `rg 'href=\{' components app` when adding sections.
+
+### Reliability & UX
+
+- **PDP:** try/catch + “not found” vs “something went wrong” — good.
+- **No automated test script** in `package.json` — consider smoke tests for `urlValidation`, cart validation, or critical API handlers when the team has bandwidth.
+
+### Performance (spot check)
+
+- **ISR / revalidate** used on many fetches (`revalidate: 60`) — sensible for catalog content.
+- **`/api/events`** is `force-dynamic` — appropriate for live sheet data.
+
+### Suggested follow-ups (prioritized)
+
+1. ~~**Dockside** `<style>`~~ — **Done (Mar 2026):** [`lib/sanitizeCssCustomPropertyValue.ts`](lib/sanitizeCssCustomPropertyValue.ts) + Dockside section.
+2. ~~**Contact rate limit**~~ — **Done (Mar 2026):** [`lib/contactRateLimit.ts`](lib/contactRateLimit.ts) (best-effort in-memory; add Vercel Firewall / Redis for strict multi-instance limits).
+3. ~~**Recommendations** `productHandle`~~ — **Done:** `/^[a-zA-Z0-9-]+$/` in [`app/api/recommendations/route.ts`](app/api/recommendations/route.ts).
+4. ~~**PDP `error.tsx`**~~ — **Done:** [`app/products/[handle]/error.tsx`](app/products/[handle]/error.tsx).
+5. **Category carousels** — **Done:** `safeHref` on [`ExploreProductsCategoryCarousel`](components/sections/ExploreProductsCategoryCarousel.tsx) / [`ExploreProductsCarousel`](components/sections/ExploreProductsCarousel.tsx).
+6. **DealProductCard** — Already used `AbortController` + unmount abort; no change.
+7. **Stricter limits** — Vercel WAF / Upstash for production-grade rate limits and `/api/search` abuse.
+
+---
+
+## Maintaining this document
+
+- Bump **Last synced to repo** when you verify items against `main`.
+- Prefer **file links** over fragile line numbers.
+- Move fixed items to a short “Resolved” subsection or delete them to reduce noise; keep a one-line changelog if the team wants history.

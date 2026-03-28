@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
 import { urlForSizedImage } from "@/lib/sanityImage";
+import { sanitizeCssCustomPropertyValue } from "@/lib/sanitizeCssCustomPropertyValue";
 import { safeHref } from "@/lib/urlValidation";
 
 type MarketItem = {
@@ -118,8 +119,11 @@ export function DocksideMarketsSection({
     );
   }
 
-  const sectionPt = topPadding ?? DEFAULT_TOP_PADDING;
-  const sectionPb = bottomPadding ?? "0";
+  const sectionPt = sanitizeCssCustomPropertyValue(
+    topPadding,
+    DEFAULT_TOP_PADDING,
+  );
+  const sectionPb = sanitizeCssCustomPropertyValue(bottomPadding, "0");
   return (
     <>
       <style

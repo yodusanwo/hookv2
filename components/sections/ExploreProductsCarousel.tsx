@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import * as React from "react";
+import { safeHref } from "@/lib/urlValidation";
 
 export type CategoryItem = {
   label?: string;
@@ -34,7 +35,7 @@ export function ExploreProductsCarousel({
         {categories.map((cat, idx) => (
           <Link
             key={idx}
-            href={cat.href}
+            href={safeHref(cat.href) || "/shop"}
             className="group shrink-0 snap-start w-[200px] sm:w-[220px] overflow-hidden transition-all duration-200 hover:scale-[1.02]"
           >
             <div className="overflow-hidden rounded-card border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
