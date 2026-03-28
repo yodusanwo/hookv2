@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 
 function toShopifyCartGid(value: string): string {
@@ -106,6 +107,9 @@ const CART_QUERY = `
 `;
 
 export async function GET(req: NextRequest) {
+  const limited = enforceApiRateLimit(req, "cart");
+  if (limited) return limited;
+
   const cartId = req.nextUrl.searchParams.get("cartId")?.trim() ?? "";
   if (!cartId) {
     return NextResponse.json(
@@ -142,7 +146,10 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST() {
+export async function POST(req: Request) {
+  const limited = enforceApiRateLimit(req, "cart");
+  if (limited) return limited;
+
   const data = await shopifyFetch<CartCreateResponse>({ query: CART_CREATE_MUTATION });
   const err = data.cartCreate.userErrors?.[0];
   if (!data.cartCreate.cart || err) {

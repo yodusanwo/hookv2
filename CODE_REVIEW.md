@@ -165,7 +165,7 @@ Holistic pass over **~200 TS/TSX files**, `app/api/*`, `lib/*`, `next.config.js`
 
 ### Security — strengths
 
-- **Revalidate** requires `SANITY_REVALIDATE_SECRET` query match ([`app/api/revalidate/route.ts`](app/api/revalidate/route.ts)).
+- **Revalidate** requires a **strong** `SANITY_REVALIDATE_SECRET` (≥32 chars), timing-safe compare, query or `Authorization: Bearer`, structured logs ([`app/api/revalidate/route.ts`](app/api/revalidate/route.ts), [`lib/sanityRevalidateAuth.ts`](lib/sanityRevalidateAuth.ts)).
 - **Contact** uses honeypot + `escapeHtml` for email bodies ([`app/api/contact/route.ts`](app/api/contact/route.ts)).
 - **Cart / buy-now / discount:** GID normalization + `isValidShopifyGid` before Shopify calls.
 - **Collection products** and **products** list: bounded `first` / handle validation where implemented.
@@ -179,7 +179,7 @@ Holistic pass over **~200 TS/TSX files**, `app/api/*`, `lib/*`, `next.config.js`
 | **CMS → CSS injection** | **Mitigated (Mar 2026):** [`sanitizeCssCustomPropertyValue`](lib/sanitizeCssCustomPropertyValue.ts) wraps Dockside `--dockside-pt` / `--dockside-pb` values before `<style>` injection. |
 | **HTML from Shopify** | PDP `descriptionHtml` / rich text uses `dangerouslySetInnerHTML` — **trusted** Shopify content; lower risk than CMS user HTML. |
 | **Public `/api/events`** | Returns sheet events to any caller — fine for public schedules; revisit if the sheet ever holds non-public data. |
-| **Rate limiting** | **Contact:** best-effort in-memory limit (10/min/IP) in [`contactRateLimit.ts`](lib/contactRateLimit.ts). **Search** and other Storefront routes still unbounded — add Vercel Firewall / Redis for strict limits. |
+| **Rate limiting** | **Public API routes:** best-effort per-route in-memory limits (per IP) in [`lib/apiRateLimit.ts`](lib/apiRateLimit.ts). **Secret-gated** [`/api/revalidate`](app/api/revalidate/route.ts) is not limited here. For strict multi-instance limits, add Vercel Firewall / Redis (e.g. Upstash). |
 | **`/api/recommendations`** | **Mitigated:** handle validated with `/^[a-zA-Z0-9-]+$/` before Shopify (aligned with collections API). |
 
 ### URL hygiene (Sanity)
@@ -201,7 +201,7 @@ Holistic pass over **~200 TS/TSX files**, `app/api/*`, `lib/*`, `next.config.js`
 ### Suggested follow-ups (prioritized)
 
 1. ~~**Dockside** `<style>`~~ — **Done (Mar 2026):** [`lib/sanitizeCssCustomPropertyValue.ts`](lib/sanitizeCssCustomPropertyValue.ts) + Dockside section.
-2. ~~**Contact rate limit**~~ — **Done (Mar 2026):** [`lib/contactRateLimit.ts`](lib/contactRateLimit.ts) (best-effort in-memory; add Vercel Firewall / Redis for strict multi-instance limits).
+2. ~~**API rate limits**~~ — **Done (Mar 2026):** [`lib/apiRateLimit.ts`](lib/apiRateLimit.ts) on public `app/api` handlers (best-effort in-memory per instance; add Vercel Firewall / Redis for strict multi-instance limits).
 3. ~~**Recommendations** `productHandle`~~ — **Done:** `/^[a-zA-Z0-9-]+$/` in [`app/api/recommendations/route.ts`](app/api/recommendations/route.ts).
 4. ~~**PDP `error.tsx`**~~ — **Done:** [`app/products/[handle]/error.tsx`](app/products/[handle]/error.tsx).
 5. **Category carousels** — **Done:** `safeHref` on [`ExploreProductsCategoryCarousel`](components/sections/ExploreProductsCategoryCarousel.tsx) / [`ExploreProductsCarousel`](components/sections/ExploreProductsCarousel.tsx).

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 
 function isValidShopifyGid(value: string): boolean {
@@ -67,6 +68,9 @@ const CART_LINES_REMOVE_MUTATION = `
 `;
 
 export async function POST(req: Request) {
+  const limited = enforceApiRateLimit(req, "cartLines");
+  if (limited) return limited;
+
   const body = (await req.json().catch(() => null)) as
     | {
         cartId?: string;
@@ -179,6 +183,9 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
+  const limited = enforceApiRateLimit(req, "cartLines");
+  if (limited) return limited;
+
   const body = (await req.json().catch(() => null)) as
     | { cartId?: string; lines?: Array<{ id: string; quantity: number }> }
     | null;
@@ -226,6 +233,9 @@ export async function PATCH(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const limited = enforceApiRateLimit(req, "cartLines");
+  if (limited) return limited;
+
   const body = (await req.json().catch(() => null)) as
     | { cartId?: string; lineIds?: string[] }
     | null;

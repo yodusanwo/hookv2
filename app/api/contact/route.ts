@@ -1,7 +1,6 @@
 import { Resend } from "resend";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { isContactRateLimited } from "@/lib/contactRateLimit";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 
 const MAX_NAME = 200;
 const MAX_MESSAGE = 10_000;
@@ -28,16 +27,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const h = await headers();
-  const forwarded = h.get("x-forwarded-for");
-  const clientKey =
-    forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
-  if (isContactRateLimited(clientKey)) {
-    return NextResponse.json(
-      { error: "Too many requests. Please try again in a minute." },
-      { status: 429 },
-    );
-  }
+  const limited = enforceApiRateLimit(request, "contact");
+  if (limited) return limited;
 
   let body: unknown;
   try {

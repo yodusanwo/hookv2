@@ -3,6 +3,8 @@
  * Use only server-side (API route or server component). Never expose KLAVIYO_PRIVATE_API_KEY to the client.
  */
 
+import { cache } from "react";
+
 export type MappedReview = {
   stars: number;
   text: string;
@@ -377,8 +379,10 @@ export async function getKlaviyoReviewsForProduct(
 /**
  * Total count and average rating for published Klaviyo reviews linked to one Shopify product.
  * Uses the same `item.id` filter as {@link getKlaviyoReviewsForProduct}. Cached via fetch revalidate.
+ * Wrapped with React `cache()` so parallel PDP calls (hero count + reviews section) dedupe per request.
  */
-export async function getKlaviyoReviewSummaryForProduct(
+export const getKlaviyoReviewSummaryForProduct = cache(
+  async function getKlaviyoReviewSummaryForProduct(
   shopifyProductGid: string,
 ): Promise<ReviewsSummary> {
   const numericId = shopifyProductIdFromGid(shopifyProductGid);
@@ -453,7 +457,7 @@ export async function getKlaviyoReviewSummaryForProduct(
       : 0;
 
   return { totalCount, averageRating };
-}
+});
 
 const COUNT_PAGE_SIZE = 100;
 

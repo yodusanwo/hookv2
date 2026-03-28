@@ -544,7 +544,7 @@ export default async function ProductPage({
       <main style={{ backgroundColor: LIGHT_BG_HEX }}>
       {/* Main product section — light blue; pt clears the header wave */}
       <section
-        className="px-4 pt-[140px] pb-10 sm:pt-[170px] md:py-14 lg:pt-[230px]"
+        className="px-4 pt-[140px] pb-10 sm:pt-[170px] md:pt-[230px] md:pb-10"
         style={{ backgroundColor: LIGHT_BG_HEX }}
       >
         <div className="mx-auto max-w-6xl">

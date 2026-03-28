@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
@@ -94,6 +95,9 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<{ handle: string }> },
 ) {
+  const limited = enforceApiRateLimit(req, "collectionProducts");
+  if (limited) return limited;
+
   const { handle } = await params;
   const trimmed = handle?.trim() ?? "";
   if (!trimmed || !/^[a-zA-Z0-9-]+$/.test(trimmed)) {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 
 function toShopifyCartGid(value: string): string {
@@ -71,6 +72,9 @@ const CART_DISCOUNT_CODES_UPDATE_MUTATION = `
 `;
 
 export async function POST(req: NextRequest) {
+  const limited = enforceApiRateLimit(req, "cartDiscount");
+  if (limited) return limited;
+
   try {
     const body = await req.json().catch(() => ({}));
     const cartId = (body.cartId ?? "").trim();

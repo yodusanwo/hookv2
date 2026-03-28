@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { client, PAGE_LAYOUT_SETTINGS_QUERY } from "@/lib/sanity";
 
 // Cache per path for 60s so client navigations don't trigger a Sanity fetch every time (reduces CPU spike).
@@ -17,6 +18,9 @@ const PRODUCT_PAGE_STRIP_BG = "#D4F2FF"; // light blue to match Wild Flavor sect
 const CART_PAGE_STRIP_BG = "#FFFFFF"; // white above footer wave on /cart
 
 export async function GET(request: Request) {
+  const limited = enforceApiRateLimit(request, "footerWaveColor");
+  if (limited) return limited;
+
   const { searchParams } = new URL(request.url);
   const path = searchParams.get("path") ?? "";
   const search = searchParams.get("search") === "1" || searchParams.get("search") === "true";

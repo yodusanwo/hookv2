@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 
 type SearchProductNode = {
@@ -64,6 +65,9 @@ export type SearchProduct = {
 };
 
 export async function GET(req: Request) {
+  const limited = enforceApiRateLimit(req, "search");
+  if (limited) return limited;
+
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q")?.trim() ?? "";
   const first = Math.min(24, Math.max(1, parseInt(searchParams.get("first") ?? "12", 10) || 12));

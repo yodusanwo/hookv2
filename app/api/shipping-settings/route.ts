@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { client } from "@/lib/sanity";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,10 @@ const DEFAULT_FREE_SHIPPING_THRESHOLD = 50;
  * GET /api/shipping-settings
  * Returns { freeShippingThreshold: number | null, freeShippingMessage: string | null } for the cart page.
  */
-export async function GET() {
+export async function GET(req: Request) {
+  const limited = enforceApiRateLimit(req, "shippingSettings");
+  if (limited) return limited;
+
   if (!client) {
     return NextResponse.json({
       freeShippingThreshold: DEFAULT_FREE_SHIPPING_THRESHOLD,

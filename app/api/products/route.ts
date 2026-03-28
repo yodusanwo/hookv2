@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 import type { ApiProductForCarousel } from "@/lib/types";
 
@@ -50,6 +51,9 @@ const PRODUCTS_QUERY = `
 `;
 
 export async function GET(req: Request) {
+  const limited = enforceApiRateLimit(req, "products");
+  if (limited) return limited;
+
   const { searchParams } = new URL(req.url);
   const parsed = parseInt(searchParams.get("first") ?? "9", 10);
   const first = Number.isNaN(parsed) ? 9 : Math.min(24, Math.max(1, parsed));

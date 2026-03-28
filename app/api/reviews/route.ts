@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { getKlaviyoReviews } from "@/lib/klaviyoReviews";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const limited = enforceApiRateLimit(req, "reviews");
+  if (limited) return limited;
+
   try {
     const reviews = await getKlaviyoReviews();
     return NextResponse.json({ reviews });

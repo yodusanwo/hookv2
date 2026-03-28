@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 
 function isValidShopifyGid(value: string): boolean {
@@ -55,6 +56,9 @@ const CART_LINES_ADD_MUTATION = `
  * Does not use the browser's persisted cart id so checkout starts clean for this flow.
  */
 export async function POST(req: Request) {
+  const limited = enforceApiRateLimit(req, "buyNow");
+  if (limited) return limited;
+
   const body = (await req.json().catch(() => null)) as
     | {
         merchandiseId?: string;

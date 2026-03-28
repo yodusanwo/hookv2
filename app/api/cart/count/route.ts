@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 
 function toShopifyCartGid(value: string): string {
@@ -27,6 +28,9 @@ const CART_COUNT_QUERY = `
 `;
 
 export async function GET(req: NextRequest) {
+  const limited = enforceApiRateLimit(req, "cartCount");
+  if (limited) return limited;
+
   const cartId = req.nextUrl.searchParams.get("cartId")?.trim() ?? "";
   if (!cartId) {
     return NextResponse.json(

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 import type { ApiProductForCarousel } from "@/lib/types";
 
@@ -50,6 +51,9 @@ const PRODUCT_RECOMMENDATIONS_QUERY = `
  * Intent defaults to RELATED ("You may also like"). Pass intent=COMPLEMENTARY for "Pair it with" style.
  */
 export async function GET(req: Request) {
+  const limited = enforceApiRateLimit(req, "recommendations");
+  if (limited) return limited;
+
   const { searchParams } = new URL(req.url);
   const productHandle = searchParams.get("productHandle")?.trim() ?? "";
 
