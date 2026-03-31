@@ -40,8 +40,7 @@ export const heroBlock = defineType({
         {
           type: "image",
           options: { accept: IMAGE_ACCEPT },
-          validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
-            Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE) as import("sanity").SchemaValidationValue,
+          validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
         },
       ],
       options: { layout: "grid" },
@@ -72,8 +71,7 @@ export const heroBlock = defineType({
       title: "Video poster image",
       description: "Shown before the video loads and used as the preload image for video-first heroes.",
       options: { accept: IMAGE_ACCEPT },
-      validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
-        Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE) as import("sanity").SchemaValidationValue,
+      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
     }),
   ],
   preview: {
