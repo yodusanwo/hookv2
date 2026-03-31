@@ -85,7 +85,7 @@ export function CategoryFilterBar({
   const pills = buildPillOrder(filterOptions, categoryOptions);
 
   const toggle = (value: string) => {
-    if (selectedValues.includes(value)) {
+    if (selectionIncludes(selectedValues, value)) {
       onChange([]);
     } else {
       onChange([value]);

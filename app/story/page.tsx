@@ -180,11 +180,12 @@ export default async function Story() {
         const img = p.node.images.edges[0]?.node;
         if (!img?.url) return null;
         return {
+          type: "image" as const,
           src: img.url,
           alt: img.altText ?? p.node.title,
         };
       })
-      .filter(Boolean) as Array<{ src: string; alt: string }>;
+      .filter(Boolean) as Array<{ type: "image"; src: string; alt: string }>;
 
     return (
       <main className="bg-white">
@@ -194,7 +195,7 @@ export default async function Story() {
           headlineLine2={""}
           subline={"Tradition  •  Quality  •  Respect for the ocean"}
           items={[
-            { src: FALLBACK_HOME_HERO_PRELOAD_URL, alt: "Coastal Alaska landscape" },
+            { type: "image", src: FALLBACK_HOME_HERO_PRELOAD_URL, alt: "Coastal Alaska landscape" },
             ...carouselItems,
           ]}
         />

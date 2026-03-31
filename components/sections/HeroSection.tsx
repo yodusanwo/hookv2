@@ -9,8 +9,15 @@ type HeroBlock = {
   headline?: string;
   subline?: string;
   cta?: { label?: string; href?: string };
+  mediaMode?: "images-only" | "video-only" | "video-and-images";
   images?: Array<{ asset?: { _ref?: string } }>;
+  video?: { asset?: { url?: string | null; originalFilename?: string | null } | null } | null;
+  videoPosterImage?: { asset?: { _ref?: string } };
 };
+
+type HeroMediaItem =
+  | { type: "image"; src: string; alt: string }
+  | { type: "video"; src: string; alt: string; poster?: string };
 
 function normalizeHeadline(raw: string | undefined): { line1: string; line2: string } {
   const fallback = { line1: "From Alaska's Waters to Your Table", line2: "" };
@@ -47,17 +54,40 @@ export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: Her
     ? (block.cta?.href?.trim() ? safeHref(block.cta.href!.trim()) : "#shop")
     : undefined;
 
-  const items: Array<{ src: string; alt: string }> =
+  const imageItems: HeroMediaItem[] =
     block.images
       ?.map((img) => {
         const src = urlForHeroImage(img);
         if (!src) return null;
-        return { src, alt: `${headline.line1} ${headline.line2}` };
+        return { type: "image", src, alt: `${headline.line1} ${headline.line2}` };
       })
-      .filter((x): x is { src: string; alt: string } => Boolean(x)) ?? [];
+      .filter((x): x is HeroMediaItem => Boolean(x)) ?? [];
 
-  const carouselItems =
-    items.length > 0 ? items : PLACEHOLDER_HERO_CAROUSEL_ITEMS;
+  const videoSrc = block.video?.asset?.url?.trim() || "";
+  const videoPoster = urlForHeroImage(block.videoPosterImage);
+  const videoItem: HeroMediaItem[] = videoSrc
+    ? [
+        {
+          type: "video",
+          src: videoSrc,
+          alt: `${headline.line1} ${headline.line2}`,
+          ...(videoPoster ? { poster: videoPoster } : {}),
+        },
+      ]
+    : [];
+
+  const carouselItems: HeroMediaItem[] =
+    block.mediaMode === "video-only"
+      ? (videoItem.length ? videoItem : imageItems)
+      : block.mediaMode === "video-and-images"
+        ? [...videoItem, ...imageItems]
+        : imageItems;
+
+  const fallbackItems: HeroMediaItem[] = PLACEHOLDER_HERO_CAROUSEL_ITEMS.map((item) => ({
+    type: "image",
+    src: item.src,
+    alt: item.alt,
+  }));
 
   return (
     <>
@@ -68,7 +98,7 @@ export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: Her
         subline={subline}
         ctaLabel={ctaLabel}
         ctaHref={ctaHref}
-        items={carouselItems}
+        items={carouselItems.length > 0 ? carouselItems : fallbackItems}
       />
       {promoBanner && <PromoBanner text={promoBanner} href={promoBannerUrl} />}
     </>

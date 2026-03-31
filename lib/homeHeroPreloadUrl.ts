@@ -23,13 +23,27 @@ export function getFirstHeroImagePreloadUrlFromSections(
   for (const section of sections) {
     const s = section as {
       _type?: string;
+      mediaMode?: "images-only" | "video-only" | "video-and-images";
       images?: Array<{ asset?: { _ref?: string }; _ref?: string } | undefined>;
+      video?: { asset?: { url?: string | null } | null } | null;
+      videoPosterImage?: { asset?: { _ref?: string } } | undefined;
     };
-    if (s._type !== "heroBlock" || !s.images?.length) continue;
-    const first = s.images[0];
-    if (!first) continue;
-    const src = urlForHeroImage(first);
-    if (src) return src;
+    if (s._type !== "heroBlock") continue;
+
+    const prefersVideo =
+      s.mediaMode === "video-only" || s.mediaMode === "video-and-images";
+
+    if (prefersVideo && s.video?.asset?.url) {
+      const posterSrc = urlForHeroImage(s.videoPosterImage);
+      if (posterSrc) return posterSrc;
+    }
+
+    if (s.images?.length) {
+      const first = s.images[0];
+      if (!first) continue;
+      const src = urlForHeroImage(first);
+      if (src) return src;
+    }
   }
   return null;
 }

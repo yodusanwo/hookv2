@@ -20,6 +20,80 @@ function plainTextFromRichTextNode(node: unknown): string {
   return "";
 }
 
+function hasRenderableRichTextContent(node: unknown): boolean {
+  if (node == null || typeof node !== "object") return false;
+  const n = node as { type?: string; value?: string; children?: unknown[] };
+  if (n.type === "text") return typeof n.value === "string" && n.value.length > 0;
+  return Array.isArray(n.children) && n.children.some(hasRenderableRichTextContent);
+}
+
+function splitRichTextNodeAtFirstLineBreak(
+  node: unknown,
+): { before: unknown | null; after: unknown | null; foundBreak: boolean } {
+  if (node == null || typeof node !== "object") {
+    return { before: null, after: null, foundBreak: false };
+  }
+
+  const n = node as { type?: string; value?: string; children?: unknown[]; [key: string]: unknown };
+
+  if (n.type === "text" && typeof n.value === "string") {
+    const match = n.value.match(/\r?\n/);
+    if (!match || match.index == null) {
+      return { before: node, after: null, foundBreak: false };
+    }
+    const beforeValue = n.value.slice(0, match.index);
+    const afterValue = n.value.slice(match.index + match[0].length);
+    return {
+      before: beforeValue ? { ...n, value: beforeValue } : null,
+      after: afterValue ? { ...n, value: afterValue } : null,
+      foundBreak: true,
+    };
+  }
+
+  if (!Array.isArray(n.children)) {
+    return { before: node, after: null, foundBreak: false };
+  }
+
+  const beforeChildren: unknown[] = [];
+  const afterChildren: unknown[] = [];
+  let foundBreak = false;
+
+  for (const child of n.children) {
+    if (!foundBreak) {
+      const split = splitRichTextNodeAtFirstLineBreak(child);
+      if (split.foundBreak) {
+        foundBreak = true;
+        if (split.before && hasRenderableRichTextContent(split.before)) {
+          beforeChildren.push(split.before);
+        }
+        if (split.after && hasRenderableRichTextContent(split.after)) {
+          afterChildren.push(split.after);
+        }
+      } else {
+        beforeChildren.push(child);
+      }
+    } else {
+      afterChildren.push(child);
+    }
+  }
+
+  if (!foundBreak) {
+    return { before: node, after: null, foundBreak: false };
+  }
+
+  return {
+    before:
+      beforeChildren.length > 0
+        ? { ...n, children: beforeChildren }
+        : null,
+    after:
+      afterChildren.length > 0
+        ? { ...n, children: afterChildren }
+        : null,
+    foundBreak: true,
+  };
+}
+
 export type WhatYouGetSplit = {
   /** First line/block used as the section heading; null means use default “What You Get”. */
   sectionTitle: string | null;
@@ -123,20 +197,13 @@ export function splitWhatYouGetMetafield(
 
     /** One paragraph/heading with a title line then body (line breaks inside the block). */
     if (onlyType === "paragraph" || onlyType === "heading") {
-      const full = plainTextFromRichTextNode(only).trim();
-      const lines = full.split(/\r?\n/);
-      if (lines.length >= 2) {
-        const titleLine = lines[0].trim();
-        const restText = lines.slice(1).join("\n").trim();
-        if (titleLine && restText) {
+      const split = splitRichTextNodeAtFirstLineBreak(only);
+      if (split.foundBreak && split.before && split.after) {
+        const titleLine = plainTextFromRichTextNode(split.before).trim();
+        if (titleLine && hasRenderableRichTextContent(split.after)) {
           const restRoot = {
             type: "root" as const,
-            children: [
-              {
-                type: "paragraph",
-                children: [{ type: "text", value: restText }],
-              },
-            ],
+            children: [split.after],
           };
           return {
             sectionTitle: titleLine,

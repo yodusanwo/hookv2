@@ -4,7 +4,9 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-type CarouselItem = { src: string; alt: string };
+type CarouselItem =
+  | { type: "image"; src: string; alt: string }
+  | { type: "video"; src: string; alt: string; poster?: string };
 
 const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 top-0 w-full h-full";
 const IMAGE_LAYER_STYLE = { top: 0 } as const;
@@ -33,7 +35,8 @@ export function HeroCarousel({
   intervalMs?: number;
 }) {
   const [idx, setIdx] = React.useState(0);
-  const safeItems = items.length ? items : [{ src: "", alt: "" }];
+  const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  const safeItems = items.length ? items : [{ type: "image" as const, src: "", alt: "" }];
 
   React.useEffect(() => {
     if (safeItems.length <= 1) return;
@@ -45,6 +48,19 @@ export function HeroCarousel({
 
   const active = safeItems[idx]!;
 
+  React.useEffect(() => {
+    if (active.type !== "video") return;
+    const el = videoRef.current;
+    if (!el) return;
+    el.currentTime = 0;
+    const playPromise = el.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        // If autoplay is blocked, the poster/first frame still renders safely.
+      });
+    }
+  }, [active]);
+
   return (
     <section className="relative -mt-[40px] w-full min-w-0 max-w-full overflow-visible">
       {/* Hero image area: responsive height, 760px on desktop; story variant taller */}
@@ -55,9 +71,37 @@ export function HeroCarousel({
             : "relative w-full overflow-hidden h-[min(75vh,560px)] sm:h-[min(70vh,580px)] md:h-[760px]"
         }
       >
-        {/* One hero image at a time (mobile LCP: avoid loading every slide’s full-res asset up front). */}
+        {/* One hero media item at a time (mobile LCP: avoid loading every slide’s full-res asset up front). */}
         {safeItems.some((it) => it.src) ? (
           active.src ? (
+            active.type === "video" ? (
+              <video
+                key={active.src}
+                ref={videoRef}
+                className={`${IMAGE_LAYER} z-[1] object-cover`}
+                style={
+                  variant === "story"
+                    ? {
+                        ...IMAGE_LAYER_STYLE,
+                        objectPosition: "center 100%",
+                        transform: "translateY(calc(12% - 16px))",
+                      }
+                    : {
+                        ...IMAGE_LAYER_STYLE,
+                        objectPosition: "center 100%",
+                        transform: "translateY(calc(12% - 16px))",
+                      }
+                }
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                poster={active.poster}
+                src={active.src}
+              >
+              </video>
+            ) : (
             <Image
               key={active.src}
               src={active.src}
@@ -80,6 +124,7 @@ export function HeroCarousel({
                     }
               }
             />
+            )
           ) : null
         ) : (
           <div

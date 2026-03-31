@@ -34,11 +34,12 @@ export function HomePageFallback({
       const img = p.node.images.edges[0]?.node;
       if (!img?.url) return null;
       return {
+        type: "image" as const,
         src: img.url,
         alt: img.altText ?? p.node.title,
       };
     })
-    .filter(Boolean) as Array<{ src: string; alt: string }>;
+    .filter(Boolean) as Array<{ type: "image"; src: string; alt: string }>;
 
   return (
     <main className="bg-white">
@@ -48,7 +49,7 @@ export function HomePageFallback({
         subline={"Wild-caught  •  Family-run  •  Sustainably sourced"}
         ctaLabel={"Get Fresh Fish"}
         ctaHref={"#shop"}
-        items={PLACEHOLDER_HERO_CAROUSEL_ITEMS}
+        items={PLACEHOLDER_HERO_CAROUSEL_ITEMS.map((item) => ({ type: "image" as const, ...item }))}
       />
       {promoBanner && <PromoBanner text={promoBanner} href={promoBannerUrl} />}
 

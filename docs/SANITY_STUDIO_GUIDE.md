@@ -36,7 +36,7 @@ Add sections in this order to match the Figma design. Use the **Add item** butto
 
 | # | Section (Block Type) | What to Fill In |
 |---|----------------------|-----------------|
-| 1 | **Hero** | Headline, subline, CTA (label + href), upload 2–3 hero images |
+| 1 | **Hero** | Headline, subline, CTA (label + href), choose media mode, upload hero video/poster if needed, and optionally upload 2–3 hero images |
 | 2 | **Explore Our Products** | Title, description, add categories (label, collection handle, image) |
 | 3 | **Our Story** | Title, body text, image, subheading (“Why Wild Matters”), CTA |
 | 4 | **Deal & Promotions** | Title, description, add product refs (Shopify product handles) |

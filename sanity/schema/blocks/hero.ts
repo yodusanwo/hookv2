@@ -46,6 +46,35 @@ export const heroBlock = defineType({
       ],
       options: { layout: "grid" },
     }),
+    defineField({
+      name: "mediaMode",
+      type: "string",
+      title: "Hero media mode",
+      initialValue: "images-only",
+      options: {
+        list: [
+          { title: "Images only", value: "images-only" },
+          { title: "Video only", value: "video-only" },
+          { title: "Video + images carousel", value: "video-and-images" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
+      name: "video",
+      type: "file",
+      title: "Hero video",
+      options: { accept: "video/mp4,video/webm,video/quicktime" },
+    }),
+    defineField({
+      name: "videoPosterImage",
+      type: "image",
+      title: "Video poster image",
+      description: "Shown before the video loads and used as the preload image for video-first heroes.",
+      options: { accept: IMAGE_ACCEPT },
+      validation: (Rule: { custom: (fn: (v: unknown) => true | string) => { error: (m: string) => unknown } }) =>
+        Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE) as import("sanity").SchemaValidationValue,
+    }),
   ],
   preview: {
     select: { headline: "headline" },
