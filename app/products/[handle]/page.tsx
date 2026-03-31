@@ -209,21 +209,6 @@ const LIGHT_BG = "var(--brand-light-blue-bg)";
 const LIGHT_BG_HEX = "#d4f2ff";
 const NAVY = "var(--brand-navy)";
 
-/** Returns hero teaser: second paragraph if present, else first, else full description. */
-function heroTeaserFromDescription(
-  description: string | null | undefined,
-): string | null {
-  if (!description?.trim()) return null;
-  const paragraphs = description
-    .trim()
-    .split(/\n\n+/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-  if (paragraphs.length >= 2) return paragraphs[1]!;
-  if (paragraphs.length === 1) return paragraphs[0]!;
-  return description.trim();
-}
-
 function truncateForMeta(text: string, maxLen: number): string {
   const trimmed = text.trim().replace(/\s+/g, " ");
   if (trimmed.length <= maxLen) return trimmed;
@@ -481,7 +466,9 @@ export default async function ProductPage({
       ...(sellingPlans?.length ? { sellingPlans } : {}),
     };
   });
-  const heroTeaser = heroTeaserFromDescription(product.description);
+  const productSummary = product.summary?.value?.trim()
+    ? truncateForMeta(product.summary.value, 220)
+    : null;
 
   const freeShippingMessage =
     siteSettings?.freeShippingMessage?.trim() ||
@@ -618,8 +605,8 @@ export default async function ProductPage({
               </div>
 
               <div className="order-3 min-w-0 overflow-visible lg:col-start-2 lg:row-start-2 lg:pt-8">
-                {/* Short unique summary from metafield (custom.short_summary_under_images); fallback to hero teaser from description */}
-                {product.summary?.value?.trim() || heroTeaser ? (
+                {/* Short unique summary from Shopify metafield only. */}
+                {productSummary ? (
                   <p
                     className="mt-4 mb-[3.75rem] w-full max-w-full line-clamp-3 lg:mt-0"
                     style={{
@@ -631,7 +618,7 @@ export default async function ProductPage({
                       lineHeight: "1.6rem",
                     }}
                   >
-                    {product.summary?.value?.trim() || heroTeaser}
+                    {productSummary}
                   </p>
                 ) : null}
 
