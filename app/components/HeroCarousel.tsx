@@ -71,12 +71,12 @@ export function HeroCarousel({
                   ? {
                       ...IMAGE_LAYER_STYLE,
                       objectPosition: "center 100%",
-                      transform: "translateY(12%)",
+                      transform: "translateY(calc(12% - 16px))",
                     }
                   : {
                       ...IMAGE_LAYER_STYLE,
                       objectPosition: "center 100%",
-                      transform: "translateY(12%)",
+                      transform: "translateY(calc(12% - 16px))",
                     }
               }
             />
