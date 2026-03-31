@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import { openCartPopup } from "./CartPopup";
 
 export function AddToCartModal({
@@ -13,9 +14,16 @@ export function AddToCartModal({
   onClose: () => void;
   checkoutUrl: string | null;
 }) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = React.useState(false);
 
-  return (
+  React.useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       role="dialog"
@@ -97,6 +105,7 @@ export function AddToCartModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

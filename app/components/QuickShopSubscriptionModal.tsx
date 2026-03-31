@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import type { MoneyBrief, SellingPlanBrief } from "@/lib/types";
 import {
   effectiveSubscriptionUnitPrice,
@@ -62,12 +63,18 @@ export function QuickShopSubscriptionModal({
   sellingPlans,
   onSuccess,
 }: Props) {
+  const [mounted, setMounted] = React.useState(false);
   const [purchaseKind, setPurchaseKind] = React.useState<"one-time" | "subscribe">(
     "one-time",
   );
   const [planIdForSubscribe, setPlanIdForSubscribe] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -164,9 +171,9 @@ export function QuickShopSubscriptionModal({
     onClose,
   ]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[110] flex items-center justify-center p-4"
       role="dialog"
@@ -309,6 +316,7 @@ export function QuickShopSubscriptionModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
