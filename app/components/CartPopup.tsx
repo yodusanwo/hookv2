@@ -533,8 +533,6 @@ export function CartPopup() {
                 </p>
                 <a
                   href={cart.checkoutUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   onClick={() =>
                     trackBeginCheckoutFromCart({
                       currency: displayCurrency,
@@ -547,7 +545,7 @@ export function CartPopup() {
                     borderRadius: 6.551,
                     background: "#069400",
                   }}
-                  aria-label="Check out (opens in new tab)"
+                  aria-label="Check out"
                 >
                   Check Out
                 </a>

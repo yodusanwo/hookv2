@@ -516,8 +516,6 @@ export function AddToCart({
             {checkoutUrl ? (
               <a
                 href={checkoutUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex h-10 min-w-[100px] items-center justify-center rounded-md px-4 text-sm font-semibold text-white hover:opacity-90"
                 style={{ backgroundColor: "var(--brand-green)" }}
               >

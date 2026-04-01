@@ -677,11 +677,9 @@ export default function CartPage() {
 
             <a
               href={cart.checkoutUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: "var(--brand-green)" }}
-              aria-label="Secure checkout (opens in new tab)"
+              aria-label="Secure checkout"
             >
               <LockIcon className="h-5 w-5 shrink-0" />
               Secure Checkout
