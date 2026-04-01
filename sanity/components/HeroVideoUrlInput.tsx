@@ -14,17 +14,12 @@ type LegacyVideoValue =
   | null
   | undefined;
 
-type HeroVideoUrlInputProps = {
-  value?: LegacyVideoValue;
-  onChange: (patch: ReturnType<typeof set> | ReturnType<typeof unset>) => void;
-  renderDefault: (props: HeroVideoUrlInputProps & { value?: string }) => React.ReactNode;
-};
-
-export function HeroVideoUrlInput(props: HeroVideoUrlInputProps) {
+export function HeroVideoUrlInput(props: any) {
   const hasMigrated = useRef(false);
+  const value = props.value as LegacyVideoValue;
   const legacyUrl =
-    props.value && typeof props.value === "object"
-      ? props.value.asset?.url?.trim() || ""
+    value && typeof value === "object"
+      ? value.asset?.url?.trim() || ""
       : "";
 
   useEffect(() => {
@@ -35,7 +30,7 @@ export function HeroVideoUrlInput(props: HeroVideoUrlInputProps) {
   }, [legacyUrl, props]);
 
   const displayValue =
-    typeof props.value === "string" ? props.value : legacyUrl || undefined;
+    typeof value === "string" ? value : legacyUrl || undefined;
 
   return (
     <Stack space={3}>
