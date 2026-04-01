@@ -93,6 +93,7 @@ export async function generateMetadata({
 type ProductForCart = {
   id: string;
   title: string;
+  productType?: string | null;
   options: Array<{ name: string; values: string[] }>;
   variants: {
     edges: Array<{
