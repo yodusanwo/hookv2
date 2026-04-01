@@ -1,7 +1,6 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
-import { HeroVideoUrlInput } from "../../components/HeroVideoUrlInput";
 
 export const heroBlock = defineType({
   name: "heroBlock",
@@ -62,22 +61,12 @@ export const heroBlock = defineType({
     }),
     defineField({
       name: "video",
-      type: "url",
-      title: "Hero video URL",
-      components: {
-        input: HeroVideoUrlInput,
+      type: "file",
+      title: "Hero video",
+      description: "Upload an .mp4 or .webm file for the hero carousel.",
+      options: {
+        accept: "video/mp4,video/webm,.mp4,.webm",
       },
-      description:
-        "Paste a direct video file URL that ends in .mp4 or .webm, for example https://cdn.example.com/hero-video.mp4. Do not paste a YouTube, Vimeo, Google Drive, or Dropbox page URL here.",
-      validation: (Rule) =>
-        Rule.uri({
-          scheme: ["http", "https"],
-        }).custom((value) => {
-          if (!value) return true;
-          return /\.(mp4|webm)(\?.*)?$/i.test(value)
-            ? true
-            : "Use a direct .mp4 or .webm file URL.";
-        }),
     }),
     defineField({
       name: "videoPosterImage",

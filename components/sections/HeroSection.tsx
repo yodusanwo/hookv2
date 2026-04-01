@@ -11,23 +11,13 @@ type HeroBlock = {
   cta?: { label?: string; href?: string };
   mediaMode?: "images-only" | "video-only" | "video-and-images";
   images?: Array<{ asset?: { _ref?: string } }>;
-  video?: string | { asset?: { url?: string | null } | null } | null;
+  video?: { asset?: { url?: string | null; originalFilename?: string | null } | null } | null;
   videoPosterImage?: { asset?: { _ref?: string } };
 };
 
 type HeroMediaItem =
   | { type: "image"; src: string; alt: string }
   | { type: "video"; src: string; alt: string; poster?: string };
-
-function getHeroVideoSrc(
-  video: HeroBlock["video"],
-): string {
-  if (typeof video === "string") return video.trim();
-  if (video && typeof video === "object") {
-    return video.asset?.url?.trim() || "";
-  }
-  return "";
-}
 
 function normalizeHeadline(raw: string | undefined): { line1: string; line2: string } {
   const fallback = { line1: "From Alaska's Waters to Your Table", line2: "" };
@@ -73,7 +63,7 @@ export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: Her
       })
       .filter((x): x is HeroMediaItem => Boolean(x)) ?? [];
 
-  const videoSrc = getHeroVideoSrc(block.video);
+  const videoSrc = block.video?.asset?.url?.trim() || "";
   const videoPoster = urlForHeroImage(block.videoPosterImage);
   const videoItem: HeroMediaItem[] = videoSrc
     ? [
