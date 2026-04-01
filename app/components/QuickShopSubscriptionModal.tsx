@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
+import { trackAddToCart } from "@/app/lib/ga4Ecommerce";
 import type { MoneyBrief, SellingPlanBrief } from "@/lib/types";
 import {
   effectiveSubscriptionUnitPrice,
@@ -41,6 +42,8 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   productTitle: string;
+  productType?: string | null;
+  variantTitle?: string | null;
   /** Variant one-time (base) price; subscription uses per-plan `perDeliveryPrice` when present. */
   basePrice: MoneyBrief;
   variantId: string;
@@ -57,6 +60,8 @@ export function QuickShopSubscriptionModal({
   isOpen,
   onClose,
   productTitle,
+  productType,
+  variantTitle,
   basePrice,
   variantId,
   requiresSellingPlan,
@@ -143,6 +148,16 @@ export function QuickShopSubscriptionModal({
         checkoutUrl?: string;
       };
       if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
+      trackAddToCart({
+        productTitle,
+        productType: productType ?? undefined,
+        variant: {
+          id: variantId,
+          title: variantTitle ?? undefined,
+          price: unitForDisplay,
+        },
+        quantity: 1,
+      });
       onSuccess(json.checkoutUrl ?? null);
       onClose();
       window.dispatchEvent(new CustomEvent("cart-updated"));
@@ -161,6 +176,10 @@ export function QuickShopSubscriptionModal({
       setSubmitting(false);
     }
   }, [
+    productTitle,
+    productType,
+    variantTitle,
+    unitForDisplay,
     variantId,
     submitting,
     requiresSellingPlan,

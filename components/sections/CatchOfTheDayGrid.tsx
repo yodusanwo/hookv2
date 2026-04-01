@@ -9,6 +9,7 @@ import {
   CatchOfTheDayProductCard,
   type CatchOfTheDayProductCardProduct,
 } from "@/app/components/CatchOfTheDayProductCard";
+import { trackViewItemList } from "@/app/lib/ga4Ecommerce";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
 import {
   type ApiProductForCarousel,
@@ -25,12 +26,14 @@ function SelectedProductsLayout({
   darkSection,
   sectionBackgroundColor,
   blendWhiteWithSectionBackground,
+  itemListName,
 }: {
   products: CatchOfTheDayProductCardProduct[];
   count: 2 | 3 | 4 | 5;
   darkSection: boolean;
   sectionBackgroundColor?: string | null;
   blendWhiteWithSectionBackground?: boolean;
+  itemListName: string;
 }) {
   const card = (product: CatchOfTheDayProductCardProduct, index: number) => (
     <div key={carouselProductRowKey(product)} className={CARD_CLASS}>
@@ -40,6 +43,8 @@ function SelectedProductsLayout({
         priority={index < 3}
         sectionBackgroundColor={sectionBackgroundColor ?? undefined}
         blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
+        itemListName={itemListName}
+        itemIndex={index}
       />
     </div>
   );
@@ -110,6 +115,7 @@ function mapApiProductToCard(
     imageUrl: img?.url ?? null,
     price,
     currencyCode,
+    productType: p.productType ?? null,
     compareAtPrice: p.compareAtPrice ?? null,
     variantId: p.variantId ?? null,
     availableForSale: p.availableForSale ?? false,
@@ -146,6 +152,7 @@ export function CatchOfTheDayGrid({
   blendWhiteWithSectionBackground = false,
   carouselArrowTheme = "dark",
   carouselArrowColor,
+  itemListName = "Product List",
 }: {
   filterCollections: FilterItem[];
   /** Pre-fetched products for the first collection or selected product refs (avoids "Loading products…" on hard refresh). */
@@ -170,6 +177,7 @@ export function CatchOfTheDayGrid({
   carouselArrowTheme?: "light" | "dark";
   /** Override arrow color (e.g. #1E1E1E). When set, overrides carouselArrowTheme. */
   carouselArrowColor?: string | null;
+  itemListName?: string;
 }) {
   const collections = filterCollections ?? [];
   const effectiveCollections = hideCollectionTabs && collections.length > 0
@@ -288,13 +296,53 @@ export function CatchOfTheDayGrid({
     setPageIndex(0);
   }, [selectedProductTypeFilter]);
 
-  const pageCount = Math.max(1, Math.ceil(displayProducts.length / ITEMS_PER_PAGE));
-  const currentPageProducts = displayProducts.slice(
-    pageIndex * ITEMS_PER_PAGE,
-    pageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
+  const pageCount = React.useMemo(
+    () => Math.max(1, Math.ceil(displayProducts.length / ITEMS_PER_PAGE)),
+    [displayProducts]
+  );
+  const currentPageProducts = React.useMemo(
+    () =>
+      displayProducts.slice(
+        pageIndex * ITEMS_PER_PAGE,
+        pageIndex * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
+      ),
+    [displayProducts, pageIndex]
   );
   const canGoPrev = pageIndex > 0;
   const canGoNext = pageIndex < pageCount - 1;
+  const lastTrackedListKey = React.useRef<string | null>(null);
+  const visibleItems = React.useMemo(
+    () => (selectedProductsMode ? displayProducts : currentPageProducts),
+    [selectedProductsMode, displayProducts, currentPageProducts]
+  );
+  const visibleItemsKey = React.useMemo(
+    () =>
+      `${itemListName}:${visibleItems
+        .map((product) => carouselProductRowKey(product))
+        .join("|")}`,
+    [itemListName, visibleItems]
+  );
+
+  React.useEffect(() => {
+    if (visibleItems.length === 0) return;
+    if (lastTrackedListKey.current === visibleItemsKey) return;
+    lastTrackedListKey.current = visibleItemsKey;
+    trackViewItemList({
+      itemListName,
+      items: visibleItems.map((product) => ({
+        id: product.id,
+        title: product.title,
+        productType: product.productType ?? undefined,
+        variantId: product.variantId ?? undefined,
+        variantTitle:
+          product.sizeOrDescription && product.sizeOrDescription !== "Default Title"
+            ? product.sizeOrDescription
+            : undefined,
+        price: product.price,
+        currencyCode: product.currencyCode,
+      })),
+    });
+  }, [itemListName, visibleItems, visibleItemsKey]);
 
   const goToPage = (dir: -1 | 1) => {
     setPageIndex((prev) => Math.max(0, Math.min(pageCount - 1, prev + dir)));
@@ -367,6 +415,7 @@ export function CatchOfTheDayGrid({
               darkSection={darkSection}
               sectionBackgroundColor={sectionBackgroundColor}
               blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
+              itemListName={itemListName}
             />
           ) : displayProducts.length > 0 ? (
             <div className="relative flex items-center justify-center gap-6">
@@ -394,6 +443,8 @@ export function CatchOfTheDayGrid({
                       priority={index < 3}
                       sectionBackgroundColor={sectionBackgroundColor ?? undefined}
                       blendWhiteWithSectionBackground={blendWhiteWithSectionBackground}
+                      itemListName={itemListName}
+                      itemIndex={pageIndex * ITEMS_PER_PAGE + index}
                     />
                   </div>
                 ))}

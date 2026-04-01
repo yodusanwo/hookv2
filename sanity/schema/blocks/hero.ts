@@ -61,9 +61,19 @@ export const heroBlock = defineType({
     }),
     defineField({
       name: "video",
-      type: "file",
-      title: "Hero video",
-      options: { accept: "video/mp4,video/webm,video/quicktime" },
+      type: "url",
+      title: "Hero video URL",
+      description:
+        "Paste a direct video file URL that ends in .mp4 or .webm, for example https://cdn.example.com/hero-video.mp4. Do not paste a YouTube, Vimeo, Google Drive, or Dropbox page URL here.",
+      validation: (Rule) =>
+        Rule.uri({
+          scheme: ["http", "https"],
+        }).custom((value) => {
+          if (!value) return true;
+          return /\.(mp4|webm)(\?.*)?$/i.test(value)
+            ? true
+            : "Use a direct .mp4 or .webm file URL.";
+        }),
     }),
     defineField({
       name: "videoPosterImage",

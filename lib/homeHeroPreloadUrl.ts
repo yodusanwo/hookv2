@@ -25,7 +25,7 @@ export function getFirstHeroImagePreloadUrlFromSections(
       _type?: string;
       mediaMode?: "images-only" | "video-only" | "video-and-images";
       images?: Array<{ asset?: { _ref?: string }; _ref?: string } | undefined>;
-      video?: { asset?: { url?: string | null } | null } | null;
+      video?: string | null;
       videoPosterImage?: { asset?: { _ref?: string } } | undefined;
     };
     if (s._type !== "heroBlock") continue;
@@ -33,7 +33,7 @@ export function getFirstHeroImagePreloadUrlFromSections(
     const prefersVideo =
       s.mediaMode === "video-only" || s.mediaMode === "video-and-images";
 
-    if (prefersVideo && s.video?.asset?.url) {
+    if (prefersVideo && s.video?.trim()) {
       const posterSrc = urlForHeroImage(s.videoPosterImage);
       if (posterSrc) return posterSrc;
     }

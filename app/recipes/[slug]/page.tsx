@@ -299,6 +299,7 @@ export default async function RecipePage({
                       {product && variants.length > 0 && (
                         <AddToCart
                           productTitle={product.title}
+                          productType={product.productType ?? undefined}
                           options={options}
                           variants={variants}
                           variant="recipeIngredient"

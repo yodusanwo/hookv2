@@ -2,6 +2,7 @@
 
 /** Card for the first "Catch of the day" (Explore Products) section only. Sizing is independent of Product Carousel. */
 import Link from "next/link";
+import { trackSelectItem } from "@/app/lib/ga4Ecommerce";
 
 export type ExploreProductCardProduct = {
   id: string;
@@ -10,6 +11,8 @@ export type ExploreProductCardProduct = {
   imageUrl: string | null;
   price: string;
   currencyCode: string;
+  productType?: string | null;
+  variantId?: string | null;
   rating?: number;
 };
 
@@ -54,10 +57,14 @@ function StarIcon({ filled }: { filled?: boolean }) {
 export function ExploreProductCard({
   product,
   priority = false,
+  itemListName,
+  itemIndex,
 }: {
   product: ExploreProductCardProduct;
   /** When true, load image with high priority (eager + fetchPriority high) for LCP. Use for first visible card. */
   priority?: boolean;
+  itemListName?: string;
+  itemIndex?: number;
 }) {
   const rating = product.rating ?? 5;
 
@@ -65,6 +72,21 @@ export function ExploreProductCard({
     <Link
       href={`/products/${product.handle}`}
       prefetch
+      onClick={() => {
+        if (!itemListName || typeof itemIndex !== "number") return;
+        trackSelectItem({
+          itemListName,
+          index: itemIndex,
+          item: {
+            id: product.id,
+            title: product.title,
+            productType: product.productType ?? undefined,
+            variantId: product.variantId ?? undefined,
+            price: product.price,
+            currencyCode: product.currencyCode,
+          },
+        });
+      }}
       className="group flex flex-col items-center w-full shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02]"
       style={{ backgroundColor: "var(--brand-navy)" }}
     >

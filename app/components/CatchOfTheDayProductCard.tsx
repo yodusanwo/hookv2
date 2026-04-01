@@ -4,6 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import { trackSelectItem } from "@/app/lib/ga4Ecommerce";
 import { shopifyImageUrlForWidth } from "@/lib/shopifyImage";
 import type { SellingPlanBrief } from "@/lib/types";
 import { AddToCartModal } from "./AddToCartModal";
@@ -34,6 +35,7 @@ export type CatchOfTheDayProductCardProduct = {
   price: string;
   compareAtPrice?: string | null;
   currencyCode: string;
+  productType?: string | null;
   variantId: string | null;
   availableForSale: boolean;
   sizeOrDescription?: string | null;
@@ -51,6 +53,8 @@ export function CatchOfTheDayProductCard({
   darkSection = false,
   priority = false,
   sectionBackgroundColor,
+  itemListName,
+  itemIndex,
 }: {
   product: CatchOfTheDayProductCardProduct;
   /** When true, white areas in the image blend with the section background (CSS multiply; use on colored sections). */
@@ -61,6 +65,8 @@ export function CatchOfTheDayProductCard({
   priority?: boolean;
   /** Explicit section background (e.g. #d4f2ff). When set, card uses this instead of var(--section-bg) so all cards match. */
   sectionBackgroundColor?: string | null;
+  itemListName?: string;
+  itemIndex?: number;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [quickShopOpen, setQuickShopOpen] = React.useState(false);
@@ -174,6 +180,39 @@ export function CatchOfTheDayProductCard({
     product.sizeOrDescription !== "Default Title"
       ? product.sizeOrDescription
       : null;
+  const productId = product.id;
+  const productName = product.title;
+  const productCategory = product.productType ?? undefined;
+  const variantId = product.variantId ?? undefined;
+  const price = product.price;
+  const currencyCode = product.currencyCode;
+
+  const trackSelect = React.useCallback(() => {
+    if (!itemListName || typeof itemIndex !== "number") return;
+    trackSelectItem({
+      itemListName,
+      index: itemIndex,
+      item: {
+        id: productId,
+        title: productName,
+        productType: productCategory,
+        variantId,
+        variantTitle: subtitle ?? undefined,
+        price,
+        currencyCode,
+      },
+    });
+  }, [
+    currencyCode,
+    itemIndex,
+    itemListName,
+    price,
+    productCategory,
+    productId,
+    productName,
+    subtitle,
+    variantId,
+  ]);
 
   return (
     <>
@@ -225,6 +264,7 @@ export function CatchOfTheDayProductCard({
             href={productHref}
             className="absolute inset-0 z-[1]"
             aria-label={`View ${product.title}`}
+            onClick={trackSelect}
           />
           {!product.imageUrl && (
             <div
@@ -304,6 +344,7 @@ export function CatchOfTheDayProductCard({
               href={productHref}
               className="hover:underline"
               style={{ color: "inherit" }}
+              onClick={trackSelect}
             >
               {displayTitle}
             </Link>
@@ -328,6 +369,7 @@ export function CatchOfTheDayProductCard({
           <Link
             href={productHref}
             className="mt-2 inline-flex items-center gap-1 hover:underline"
+            onClick={trackSelect}
             style={{
               color: darkSection
                 ? "rgba(255,255,255,0.85)"
@@ -350,6 +392,8 @@ export function CatchOfTheDayProductCard({
           isOpen={quickShopOpen}
           onClose={() => setQuickShopOpen(false)}
           productTitle={product.title}
+          productType={product.productType}
+          variantTitle={subtitle}
           basePrice={{
             amount: product.price,
             currencyCode: product.currencyCode ?? "USD",

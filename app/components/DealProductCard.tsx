@@ -3,6 +3,7 @@
 import Link from "next/link";
 import * as React from "react";
 import { AddToCartModal } from "./AddToCartModal";
+import { trackSelectItem } from "@/app/lib/ga4Ecommerce";
 
 async function ensureCartId(): Promise<string> {
   const existing =
@@ -25,6 +26,7 @@ export type DealProductCardProduct = {
   imageUrl: string | null;
   price: string;
   currencyCode: string;
+  productType?: string | null;
   availableForSale: boolean;
   variantId: string | null;
 };
@@ -32,9 +34,13 @@ export type DealProductCardProduct = {
 export function DealProductCard({
   product,
   size,
+  itemListName,
+  itemIndex,
 }: {
   product: DealProductCardProduct;
   size: "top" | "bottom";
+  itemListName?: string;
+  itemIndex?: number;
 }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [checkoutUrl, setCheckoutUrl] = React.useState<string | null>(null);
@@ -99,6 +105,21 @@ export function DealProductCard({
       <Link
         href={`/products/${product.handle}`}
         prefetch
+        onClick={() => {
+          if (!itemListName || typeof itemIndex !== "number") return;
+          trackSelectItem({
+            itemListName,
+            index: itemIndex,
+            item: {
+              id: product.id,
+              title: product.title,
+              productType: product.productType ?? undefined,
+              variantId: product.variantId ?? undefined,
+              price: product.price,
+              currencyCode: product.currencyCode,
+            },
+          });
+        }}
         className="group relative block rounded-card border border-black/5 bg-white shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 w-full min-w-0 overflow-hidden"
       >
         <div

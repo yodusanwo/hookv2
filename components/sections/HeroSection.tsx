@@ -11,7 +11,7 @@ type HeroBlock = {
   cta?: { label?: string; href?: string };
   mediaMode?: "images-only" | "video-only" | "video-and-images";
   images?: Array<{ asset?: { _ref?: string } }>;
-  video?: { asset?: { url?: string | null; originalFilename?: string | null } | null } | null;
+  video?: string | null;
   videoPosterImage?: { asset?: { _ref?: string } };
 };
 
@@ -63,7 +63,7 @@ export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: Her
       })
       .filter((x): x is HeroMediaItem => Boolean(x)) ?? [];
 
-  const videoSrc = block.video?.asset?.url?.trim() || "";
+  const videoSrc = block.video?.trim() || "";
   const videoPoster = urlForHeroImage(block.videoPosterImage);
   const videoItem: HeroMediaItem[] = videoSrc
     ? [

@@ -12,6 +12,10 @@ import {
   unitPriceIsLowerThan,
 } from "@/lib/effectiveSubscriptionUnitPrice";
 import { useOptionalProductVariant } from "@/app/components/ProductVariantContext";
+import {
+  trackAddToCart,
+  trackBeginCheckoutFromVariant,
+} from "@/app/lib/ga4Ecommerce";
 
 type Variant = ProductVariantOption;
 
@@ -45,11 +49,13 @@ async function ensureCartId(): Promise<string> {
 
 export function AddToCart({
   productTitle,
+  productType,
   options,
   variants,
   variant = "default",
 }: {
   productTitle: string;
+  productType?: string;
   options: Array<{ name: string; values: string[] }>;
   variants: Variant[];
   /** "productPage" = inline quantity stepper, price beside it, green Add to cart button, no card wrapper */
@@ -132,6 +138,12 @@ export function AddToCart({
       };
       if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
       setCheckoutUrl(json.checkoutUrl ?? null);
+      trackAddToCart({
+        productTitle,
+        productType,
+        variant: selectedVariant,
+        quantity: qty,
+      });
       setStatus("success");
       window.dispatchEvent(new CustomEvent("cart-updated"));
     } catch (e) {
@@ -149,6 +161,8 @@ export function AddToCart({
       }
     }
   }, [
+    productTitle,
+    productType,
     selectedVariant,
     qty,
     purchaseKind,
@@ -202,6 +216,12 @@ export function AddToCart({
         throw new Error(json.error ?? "Could not start checkout.");
       }
       if (json.checkoutUrl) {
+        trackBeginCheckoutFromVariant({
+          productTitle,
+          productType,
+          variant: selectedVariant,
+          quantity: qty,
+        });
         window.location.assign(json.checkoutUrl);
         return;
       }
@@ -213,7 +233,15 @@ export function AddToCart({
     } finally {
       setBuyNowLoading(false);
     }
-  }, [selectedVariant, qty, buyNowLoading, purchaseKind, planIdForSubscribe]);
+  }, [
+    productTitle,
+    productType,
+    selectedVariant,
+    qty,
+    buyNowLoading,
+    purchaseKind,
+    planIdForSubscribe,
+  ]);
 
   if (!selectedVariant) {
     return (

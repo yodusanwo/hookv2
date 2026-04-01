@@ -7,6 +7,10 @@ import {
   cartLineDisplayAmount,
   sumCartLineDisplayAmounts,
 } from "@/lib/cartLineTotals";
+import {
+  trackRemoveFromCart,
+  trackViewCart,
+} from "@/app/lib/ga4Ecommerce";
 import { subscriptionCartLineNote } from "@/lib/cartSubscriptionLineNote";
 
 const CART_ID_KEY = "shopify_cart_id";
@@ -110,6 +114,7 @@ type CartLine = {
     product: {
       title: string;
       handle: string;
+      productType?: string;
       requiresSellingPlan?: boolean;
     };
     price: { amount: string; currencyCode: string };
@@ -149,6 +154,7 @@ export default function CartPage() {
   const [shippingSettings, setShippingSettings] = React.useState<ShippingSettings | null>(null);
   const [recommendations, setRecommendations] = React.useState<RecommendationProduct[]>([]);
   const [recommendationsLoading, setRecommendationsLoading] = React.useState(false);
+  const lastTrackedViewCartKey = React.useRef<string | null>(null);
 
   const fetchCart = React.useCallback(async (id: string) => {
     const res = await fetch(`/api/cart?cartId=${encodeURIComponent(id)}`);
@@ -352,6 +358,7 @@ export default function CartPage() {
   const removeLine = React.useCallback(
     async (lineId: string) => {
       if (!cartId || !cart) return;
+      const removedLine = cart.lines.edges.find((e) => e.node.id === lineId)?.node;
       const optimisticEdges = cart.lines.edges.filter((e) => e.node.id !== lineId);
       setCart({
         ...cart,
@@ -370,6 +377,9 @@ export default function CartPage() {
           await fetchCart(cartId);
           setError(data?.error ?? "Failed to remove.");
           return;
+        }
+        if (removedLine) {
+          trackRemoveFromCart({ line: removedLine });
         }
         await fetchCart(cartId);
         setError(null);
@@ -390,7 +400,30 @@ export default function CartPage() {
     [cartId, cart, fetchCart]
   );
 
-  const lines = cart?.lines?.edges?.map((e) => e.node) ?? [];
+  const lines = React.useMemo(
+    () => cart?.lines?.edges?.map((e) => e.node) ?? [],
+    [cart?.lines?.edges]
+  );
+  const viewCartKey = React.useMemo(
+    () =>
+      cart
+        ? `${cart.id}:${cart.cost.totalAmount.currencyCode}:${cart.cost.totalAmount.amount}:${lines
+            .map((line) => `${line.id}:${line.quantity}`)
+            .join("|")}`
+        : "",
+    [cart, lines]
+  );
+
+  React.useEffect(() => {
+    if (!cart || lines.length === 0) return;
+    if (lastTrackedViewCartKey.current === viewCartKey) return;
+    lastTrackedViewCartKey.current = viewCartKey;
+    trackViewCart({
+      currency: cart.cost.totalAmount.currencyCode,
+      value: Number(cart.cost.totalAmount.amount) || 0,
+      lines,
+    });
+  }, [cart, lines, viewCartKey]);
 
   if (loading) {
     return (

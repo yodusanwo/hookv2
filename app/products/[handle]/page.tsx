@@ -16,6 +16,7 @@ import { isPetProductPage } from "@/lib/isPetProductPage";
 import { PdpHeroReviewCount } from "./PdpHeroReviewCount";
 import { PdpReviewsSection } from "./PdpReviewsSection";
 import { PdpRecipesSection } from "./PdpRecipesSection";
+import { ProductViewTracker } from "./ProductViewTracker";
 import {
   PdpRecipesSectionSkeleton,
   PdpReviewsSectionSkeleton,
@@ -541,6 +542,10 @@ export default async function ProductPage({
               options={product.options}
               initialVariantId={variantFromUrl}
             >
+              <ProductViewTracker
+                productTitle={product.title}
+                productType={product.productType}
+              />
               <div className="order-1 min-w-0 lg:col-start-2 lg:row-start-1 lg:self-start lg:bg-[#d4f2ff] lg:-ml-6 lg:pl-6">
                 <h1
                 style={{
@@ -593,6 +598,7 @@ export default async function ProductPage({
               <div className="mt-4 mb-[3.3125rem] w-full min-w-0 max-w-full lg:mb-0">
                 <AddToCart
                   productTitle={product.title}
+                  productType={product.productType}
                   options={product.options}
                   variants={variants}
                   variant="productPage"

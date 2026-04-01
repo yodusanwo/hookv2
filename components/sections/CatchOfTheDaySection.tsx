@@ -98,6 +98,7 @@ export async function CatchOfTheDaySection({
         initialProducts={initialProducts}
         hideCollectionTabs={useSelectedProducts || hideCollectionTabs}
         selectedProductsMode={useSelectedProducts}
+        itemListName={title}
         darkSection={!isLightBg}
         sectionBackgroundColor={resolvedSectionBg}
         blendWhiteWithSectionBackground

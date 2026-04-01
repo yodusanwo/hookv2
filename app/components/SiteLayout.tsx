@@ -7,7 +7,6 @@ import { Header } from "./Header";
 import { HeaderWave } from "./HeaderWave";
 import { Footer } from "./Footer";
 import { CartPopup } from "./CartPopup";
-import { GtmRouteChange } from "./GtmRouteChange";
 
 type SiteLayoutProps = {
   children: React.ReactNode;
@@ -35,6 +34,7 @@ function SiteLayoutInner({
 }: SiteLayoutProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const search = searchParams?.toString() ?? "";
   const [footerWaveColor, setFooterWaveColor] = useState<string | null>(null);
   const [footerWaveOverride, setFooterWaveOverride] = useState<string | null>(null);
   const [hideHeaderWave, setHideHeaderWave] = useState(false);
@@ -48,9 +48,10 @@ function SiteLayoutInner({
     }
     let cancelled = false;
     const path = pathname === "/" ? "/" : pathname;
+    const queryParams = new URLSearchParams(search);
     const isShopSearch =
       (pathname === "/shop" || pathname?.startsWith("/shop/")) &&
-      (searchParams.has("q") || searchParams.has("search") || searchParams.has("s"));
+      (queryParams.has("q") || queryParams.has("search") || queryParams.has("s"));
     const url = `/api/footer-wave-color?path=${encodeURIComponent(path)}${isShopSearch ? "&search=1" : ""}`;
     fetch(url)
       .then((res) => res.json())
@@ -72,13 +73,12 @@ function SiteLayoutInner({
     return () => {
       cancelled = true;
     };
-  }, [pathname, searchParams]);
+  }, [pathname, search]);
 
   const effectiveWaveColor = footerWaveOverride ?? footerWaveColor;
 
   return (
     <FooterWaveOverrideProvider value={{ setOverride }}>
-      <GtmRouteChange />
       <Header
         logoUrl={headerLogoUrl}
         navLinks={navLinks}
@@ -117,7 +117,6 @@ function SiteLayoutFallback({
   const pathname = usePathname();
   return (
     <>
-      <GtmRouteChange />
       <Header
         logoUrl={headerLogoUrl}
         navLinks={navLinks}

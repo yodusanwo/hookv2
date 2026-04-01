@@ -72,6 +72,7 @@ export function ShopProductCarousel({
         initialProducts={initialProducts}
         hideCollectionTabs
         selectedProductsMode={selectedProductsMode}
+        itemListName={title}
         selectedProductTypeFilter={selectedFilterValues}
         matchProductTypesAsCommaSeparated
         darkSection={!isLightBg}

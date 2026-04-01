@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Geist_Mono, Inter, Mulish } from "next/font/google";
 import "./globals.css";
 
-import { GoogleTagManager } from "./components/GoogleTagManager";
+import { AnalyticsProvider } from "./components/AnalyticsProvider";
 import { KlaviyoOnsiteScript } from "./components/KlaviyoOnsiteScript";
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
@@ -54,6 +56,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim() || null;
   let headerLogoUrl: string | null = null;
   let navLinks: { label?: string; href?: string }[] = [];
   let headerBackgroundColor: string | null = null;
@@ -90,10 +93,15 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      {gtmId ? (
+        <GoogleTagManager gtmId={gtmId} />
+      ) : null}
       <body
         className={`${geistMono.variable} ${inter.variable} ${mulish.variable} antialiased`}
       >
-        <GoogleTagManager />
+        <Suspense fallback={null}>
+          <AnalyticsProvider />
+        </Suspense>
         <KlaviyoOnsiteScript />
         <SiteLayout
           headerLogoUrl={headerLogoUrl}

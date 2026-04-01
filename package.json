@@ -12,6 +12,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.2",
     "@thebeyondgroup/shopify-rich-text-renderer": "^2.1.2",
     "next": "16.1.6",
     "next-sanity": "^12.1.0",

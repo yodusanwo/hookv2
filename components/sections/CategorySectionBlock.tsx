@@ -5,6 +5,7 @@ import {
   CatchOfTheDayProductCard,
   type CatchOfTheDayProductCardProduct,
 } from "@/app/components/CatchOfTheDayProductCard";
+import { trackViewItemList } from "@/app/lib/ga4Ecommerce";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CarouselArrow } from "@/components/ui/CarouselArrow";
 import {
@@ -31,6 +32,7 @@ function mapApiToCard(p: ApiProductForCarousel): CatchOfTheDayProductCardProduct
     imageUrl: img?.url ?? null,
     price,
     currencyCode,
+    productType: p.productType ?? null,
     compareAtPrice: p.compareAtPrice ?? null,
     variantId: p.variantId ?? null,
     availableForSale: p.availableForSale ?? false,
@@ -83,6 +85,7 @@ export function CategorySectionBlock({
   const [loading, setLoading] = React.useState(() => !hasServerProducts);
   const [error, setError] = React.useState<string | null>(null);
   const [carouselPage, setCarouselPage] = React.useState(0);
+  const lastTrackedListKey = React.useRef<string | null>(null);
 
   React.useEffect(() => {
     if (hasServerProducts) return;
@@ -117,17 +120,60 @@ export function CategorySectionBlock({
       ),
     [products, selectedFilterValues]
   );
-  const cards = filtered.map(mapApiToCard);
+  const cards = React.useMemo(
+    () => filtered.map(mapApiToCard),
+    [filtered]
+  );
 
   React.useEffect(() => {
     setCarouselPage(0);
   }, [selectedFilterValues]);
 
-  const carouselPageCount = Math.max(1, Math.ceil(cards.length / CAROUSEL_PAGE_SIZE));
-  const carouselSlice = cards.slice(
-    carouselPage * CAROUSEL_PAGE_SIZE,
-    carouselPage * CAROUSEL_PAGE_SIZE + CAROUSEL_PAGE_SIZE
+  const carouselPageCount = React.useMemo(
+    () => Math.max(1, Math.ceil(cards.length / CAROUSEL_PAGE_SIZE)),
+    [cards]
   );
+  const carouselSlice = React.useMemo(
+    () =>
+      cards.slice(
+        carouselPage * CAROUSEL_PAGE_SIZE,
+        carouselPage * CAROUSEL_PAGE_SIZE + CAROUSEL_PAGE_SIZE
+      ),
+    [cards, carouselPage]
+  );
+  const visibleCards = React.useMemo(
+    () => (layout === "carousel" ? carouselSlice : cards),
+    [layout, carouselSlice, cards]
+  );
+  const visibleCardsKey = React.useMemo(
+    () =>
+      `${title || collectionHandle}:${visibleCards
+        .map((p) => carouselProductRowKey(p))
+        .join("|")}`,
+    [collectionHandle, title, visibleCards]
+  );
+
+  React.useEffect(() => {
+    if (visibleCards.length === 0) return;
+    const listName = title || collectionHandle;
+    if (lastTrackedListKey.current === visibleCardsKey) return;
+    lastTrackedListKey.current = visibleCardsKey;
+    trackViewItemList({
+      itemListName: listName,
+      items: visibleCards.map((product) => ({
+        id: product.id,
+        title: product.title,
+        productType: product.productType ?? undefined,
+        variantId: product.variantId ?? undefined,
+        variantTitle:
+          product.sizeOrDescription && product.sizeOrDescription !== "Default Title"
+            ? product.sizeOrDescription
+            : undefined,
+        price: product.price,
+        currencyCode: product.currencyCode,
+      })),
+    });
+  }, [collectionHandle, title, visibleCards, visibleCardsKey]);
 
   // Hide section when a product-type filter is active and no products match
   if (selectedFilterValues.length > 0 && !loading && cards.length === 0) {
@@ -209,7 +255,14 @@ export function CategorySectionBlock({
                     key={carouselProductRowKey(product)}
                     className="min-w-0 w-[387px] max-w-full"
                   >
-                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} sectionBackgroundColor={LIGHT_BG_HEX} />
+                    <CatchOfTheDayProductCard
+                      product={product}
+                      blendWhiteWithSectionBackground={blendWhiteWithBackground}
+                      priority={index === 0}
+                      sectionBackgroundColor={LIGHT_BG_HEX}
+                      itemListName={title || collectionHandle}
+                      itemIndex={carouselPage * CAROUSEL_PAGE_SIZE + index}
+                    />
                   </div>
                 ))}
               </div>
@@ -236,7 +289,14 @@ export function CategorySectionBlock({
                     key={carouselProductRowKey(product)}
                     className="w-full max-w-[387px] mx-auto"
                   >
-                    <CatchOfTheDayProductCard product={product} blendWhiteWithSectionBackground={blendWhiteWithBackground} priority={index === 0} sectionBackgroundColor={LIGHT_BG_HEX} />
+                    <CatchOfTheDayProductCard
+                      product={product}
+                      blendWhiteWithSectionBackground={blendWhiteWithBackground}
+                      priority={index === 0}
+                      sectionBackgroundColor={LIGHT_BG_HEX}
+                      itemListName={title || collectionHandle}
+                      itemIndex={index}
+                    />
                   </div>
                 ))
               )}

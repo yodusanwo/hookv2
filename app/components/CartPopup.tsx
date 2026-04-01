@@ -8,6 +8,11 @@ import {
   cartLineDisplayAmount,
   sumCartLineDisplayAmounts,
 } from "@/lib/cartLineTotals";
+import {
+  trackBeginCheckoutFromCart,
+  trackRemoveFromCart,
+  trackViewCart,
+} from "@/app/lib/ga4Ecommerce";
 import { subscriptionCartLineNote } from "@/lib/cartSubscriptionLineNote";
 
 const CART_ID_KEY = "shopify_cart_id";
@@ -49,6 +54,7 @@ type CartLine = {
     product: {
       title: string;
       handle: string;
+      productType?: string;
       requiresSellingPlan?: boolean;
     };
     price: { amount: string; currencyCode: string };
@@ -74,6 +80,7 @@ export function CartPopup() {
   const [orderNote, setOrderNote] = React.useState("");
   const [noteSaving, setNoteSaving] = React.useState(false);
   const noteSyncedFromCart = React.useRef(false);
+  const lastTrackedViewCartKey = React.useRef<string | null>(null);
 
   const fetchCart = React.useCallback(async (id: string) => {
     const res = await fetch(`/api/cart?cartId=${encodeURIComponent(id)}`);
@@ -220,6 +227,7 @@ export function CartPopup() {
   const removeLine = React.useCallback(
     async (lineId: string) => {
       if (!cartId || !cart) return;
+      const removedLine = cart.lines.edges.find((e) => e.node.id === lineId)?.node;
       const optimisticEdges = cart.lines.edges.filter((e) => e.node.id !== lineId);
       setCart({
         ...cart,
@@ -239,6 +247,9 @@ export function CartPopup() {
           setError(data?.error ?? "Failed to remove.");
           return;
         }
+        if (removedLine) {
+          trackRemoveFromCart({ line: removedLine });
+        }
         await fetchCart(cartId);
         window.dispatchEvent(new CustomEvent("cart-updated"));
       } catch {
@@ -255,11 +266,40 @@ export function CartPopup() {
     [cartId, cart, fetchCart]
   );
 
-  const lines = cart?.lines?.edges?.map((e) => e.node) ?? [];
-  const displaySubtotal = sumCartLineDisplayAmounts(lines);
-  const displayCurrency = cart
-    ? cartDisplayCurrencyCode(lines, cart.cost.totalAmount.currencyCode)
-    : "USD";
+  const lines = React.useMemo(
+    () => cart?.lines?.edges?.map((e) => e.node) ?? [],
+    [cart?.lines?.edges]
+  );
+  const displaySubtotal = React.useMemo(
+    () => sumCartLineDisplayAmounts(lines),
+    [lines]
+  );
+  const displayCurrency = React.useMemo(
+    () =>
+      cart
+        ? cartDisplayCurrencyCode(lines, cart.cost.totalAmount.currencyCode)
+        : "USD",
+    [cart, lines]
+  );
+  const trackedCartTotal = React.useMemo(() => {
+    if (!cart) return displaySubtotal;
+    const amount = Number(cart.cost.totalAmount.amount);
+    return Number.isFinite(amount) ? amount : displaySubtotal;
+  }, [cart, displaySubtotal]);
+
+  React.useEffect(() => {
+    if (!isOpen || !cart || lines.length === 0) return;
+    const key = `${cart.id}:${cart.cost.totalAmount.currencyCode}:${trackedCartTotal}:${lines
+      .map((line) => `${line.id}:${line.quantity}`)
+      .join("|")}`;
+    if (lastTrackedViewCartKey.current === key) return;
+    lastTrackedViewCartKey.current = key;
+    trackViewCart({
+      currency: cart.cost.totalAmount.currencyCode,
+      value: trackedCartTotal,
+      lines,
+    });
+  }, [isOpen, cart, lines, trackedCartTotal]);
 
   const saveNote = React.useCallback(
     async (noteValue: string) => {
@@ -495,6 +535,13 @@ export function CartPopup() {
                   href={cart.checkoutUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackBeginCheckoutFromCart({
+                      currency: displayCurrency,
+                      value: trackedCartTotal,
+                      lines,
+                    })
+                  }
                   className="mt-4 inline-flex shrink-0 items-center justify-center px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                   style={{
                     borderRadius: 6.551,
