@@ -288,7 +288,11 @@ export function CartPopup() {
   }, [cart, displaySubtotal]);
 
   React.useEffect(() => {
-    if (!isOpen || !cart || lines.length === 0) return;
+    if (!isOpen) {
+      lastTrackedViewCartKey.current = null;
+      return;
+    }
+    if (!cart || lines.length === 0) return;
     const key = `${cart.id}:${cart.cost.totalAmount.currencyCode}:${trackedCartTotal}:${lines
       .map((line) => `${line.id}:${line.quantity}`)
       .join("|")}`;

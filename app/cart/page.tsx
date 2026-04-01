@@ -414,7 +414,6 @@ export default function CartPage() {
         : "",
     [cart, lines]
   );
-
   React.useEffect(() => {
     if (!cart || lines.length === 0) return;
     if (lastTrackedViewCartKey.current === viewCartKey) return;
