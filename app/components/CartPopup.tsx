@@ -534,13 +534,17 @@ export function CartPopup() {
                 </p>
                 <a
                   href={cart.checkoutUrl}
-                  onClick={() =>
+                  onClick={(e) => {
+                    e.preventDefault();
                     trackBeginCheckoutFromCart({
                       currency: displayCurrency,
                       value: trackedCartTotal,
                       lines,
-                    })
-                  }
+                    });
+                    window.setTimeout(() => {
+                      window.location.assign(cart.checkoutUrl);
+                    }, 150);
+                  }}
                   className="mt-4 inline-flex shrink-0 items-center justify-center px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                   style={{
                     borderRadius: 6.551,

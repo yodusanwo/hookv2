@@ -668,13 +668,17 @@ export default function CartPage() {
 
             <a
               href={cart.checkoutUrl}
-              onClick={() =>
+              onClick={(e) => {
+                e.preventDefault();
                 trackBeginCheckoutFromCart({
                   currency: currencyCode,
                   value: subtotal,
                   lines,
-                })
-              }
+                });
+                window.setTimeout(() => {
+                  window.location.assign(cart.checkoutUrl);
+                }, 150);
+              }}
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: "var(--brand-green)" }}
               aria-label="Secure checkout"
