@@ -1,6 +1,7 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
 import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
+import { HeroVideoUrlInput } from "../../components/HeroVideoUrlInput";
 
 export const heroBlock = defineType({
   name: "heroBlock",
@@ -63,6 +64,9 @@ export const heroBlock = defineType({
       name: "video",
       type: "url",
       title: "Hero video URL",
+      components: {
+        input: HeroVideoUrlInput,
+      },
       description:
         "Paste a direct video file URL that ends in .mp4 or .webm, for example https://cdn.example.com/hero-video.mp4. Do not paste a YouTube, Vimeo, Google Drive, or Dropbox page URL here.",
       validation: (Rule) =>
