@@ -405,25 +405,16 @@ export default function CartPage() {
     () => cart?.lines?.edges?.map((e) => e.node) ?? [],
     [cart?.lines?.edges]
   );
-  const viewCartKey = React.useMemo(
-    () =>
-      cart
-        ? `${cart.id}:${cart.cost.totalAmount.currencyCode}:${cart.cost.totalAmount.amount}:${lines
-            .map((line) => `${line.id}:${line.quantity}`)
-            .join("|")}`
-        : "",
-    [cart, lines]
-  );
   React.useEffect(() => {
     if (!cart || lines.length === 0) return;
-    if (lastTrackedViewCartKey.current === viewCartKey) return;
-    lastTrackedViewCartKey.current = viewCartKey;
+    if (lastTrackedViewCartKey.current === cart.id) return;
+    lastTrackedViewCartKey.current = cart.id;
     trackViewCart({
       currency: cart.cost.totalAmount.currencyCode,
       value: Number(cart.cost.totalAmount.amount) || 0,
       lines,
     });
-  }, [cart, lines, viewCartKey]);
+  }, [cart, lines]);
 
   if (loading) {
     return (

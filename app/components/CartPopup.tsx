@@ -293,11 +293,8 @@ export function CartPopup() {
       return;
     }
     if (!cart || lines.length === 0) return;
-    const key = `${cart.id}:${cart.cost.totalAmount.currencyCode}:${trackedCartTotal}:${lines
-      .map((line) => `${line.id}:${line.quantity}`)
-      .join("|")}`;
-    if (lastTrackedViewCartKey.current === key) return;
-    lastTrackedViewCartKey.current = key;
+    if (lastTrackedViewCartKey.current === cart.id) return;
+    lastTrackedViewCartKey.current = cart.id;
     trackViewCart({
       currency: cart.cost.totalAmount.currencyCode,
       value: trackedCartTotal,
