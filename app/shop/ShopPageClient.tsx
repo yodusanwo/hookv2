@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useFooterWaveOverride } from "@/app/context/FooterWaveOverride";
 import { PromoBanner } from "@/components/PromoBanner";
@@ -202,7 +202,8 @@ export function ShopPageClient({
   };
 
   const setFooterWaveOverride = useFooterWaveOverride();
-  useEffect(() => {
+  /** useLayoutEffect: apply footer strip color before paint (avoids flash with Suspense + context). */
+  useLayoutEffect(() => {
     if (!setFooterWaveOverride) return;
     if (hasSelection) {
       setFooterWaveOverride.setOverride("#D4F2FF");

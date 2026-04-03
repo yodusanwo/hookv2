@@ -1,6 +1,6 @@
 /**
  * Klaviyo Reviews API helpers. Use only server-side; never expose KLAVIYO_PRIVATE_API_KEY to the client.
- * Carousels use reviews with status **featured** (mark in Klaviyo Reviews as Featured).
+ * Site-wide section carousels use status **featured**. PDP carousel uses **published** reviews for that product (newest first).
  */
 
 import { cache } from "react";
@@ -317,21 +317,14 @@ function publishedReviewsFilterForShopifyProduct(numericShopifyProductId: string
   return `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
 }
 
-/** Featured-only filter for review carousels (Klaviyo → mark review as Featured). */
-function featuredReviewsFilterForShopifyProduct(numericShopifyProductId: string): string {
-  const itemId = shopifyProductReviewItemId(numericShopifyProductId);
-  return `and(equals(status,'featured'),equals(item.id,"${itemId}"))`;
-}
-
-const PRODUCT_REVIEWS_PAGE_SIZE = 6;
+/** Newest N published reviews for the PDP carousel (aligned with hero review count). */
+const PDP_PUBLISHED_PRODUCT_REVIEWS_LIMIT = 3;
 
 /**
- * Fetches **featured** Klaviyo reviews for a single product.
+ * Fetches **published** Klaviyo reviews for a single product — newest first, capped for the PDP carousel.
  * @param shopifyProductGid - Shopify product GID from Storefront API (e.g. gid://shopify/Product/123).
- * @returns Up to PRODUCT_REVIEWS_PAGE_SIZE featured reviews for that product, sorted by created desc.
- * Call only from server (API route or server component).
  */
-export async function getKlaviyoReviewsForProduct(
+export async function getKlaviyoPublishedProductReviewsForPdp(
   shopifyProductGid: string,
 ): Promise<MappedReview[]> {
   const numericId = shopifyProductIdFromGid(shopifyProductGid);
@@ -340,12 +333,12 @@ export async function getKlaviyoReviewsForProduct(
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
   if (!apiKey) return [];
 
-  const filter = featuredReviewsFilterForShopifyProduct(numericId);
+  const filter = publishedReviewsFilterForShopifyProduct(numericId);
 
   const params = new URLSearchParams({
     filter,
     "fields[review]": "rating,author,content,title,created,review_type,status",
-    "page[size]": String(PRODUCT_REVIEWS_PAGE_SIZE),
+    "page[size]": String(PDP_PUBLISHED_PRODUCT_REVIEWS_LIMIT),
     sort: "-created",
   });
 
@@ -362,7 +355,7 @@ export async function getKlaviyoReviewsForProduct(
 
   if (!res.ok) {
     console.warn(
-      "Klaviyo product reviews fetch failed:",
+      "Klaviyo published product reviews fetch failed:",
       res.status,
       await res.text(),
     );
@@ -379,12 +372,12 @@ export async function getKlaviyoReviewsForProduct(
     const t2 = b.createdAt ?? "";
     return t2.localeCompare(t1);
   });
-  return mapped;
+  return mapped.slice(0, PDP_PUBLISHED_PRODUCT_REVIEWS_LIMIT);
 }
 
 /**
  * Total count and average rating for published Klaviyo reviews linked to one Shopify product.
- * Uses the same `item.id` filter as {@link getKlaviyoReviewsForProduct}. Cached via fetch revalidate.
+ * Uses the same `item.id` filter as {@link getKlaviyoPublishedProductReviewsForPdp}. Cached via fetch revalidate.
  * Wrapped with React `cache()` so parallel PDP calls (hero count + reviews section) dedupe per request.
  */
 export const getKlaviyoReviewSummaryForProduct = cache(
@@ -538,7 +531,7 @@ export async function getPdpReviewData(shopifyProductGid: string): Promise<{
   ] = await Promise.all([
     getKlaviyoReviewsForSection(),
     getKlaviyoReviewsSummary(),
-    getKlaviyoReviewsForProduct(shopifyProductGid),
+    getKlaviyoPublishedProductReviewsForPdp(shopifyProductGid),
     getKlaviyoReviewSummaryForProduct(shopifyProductGid),
   ]);
   return {

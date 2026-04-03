@@ -17,6 +17,11 @@ type SiteLayoutProps = {
   useHeadlessAccount?: boolean;
 };
 
+/** Passed from SiteLayout when footer wave override state is lifted (shop strip color). */
+type SiteLayoutShellProps = SiteLayoutProps & {
+  footerWaveOverride?: string | null;
+};
+
 /**
  * Inner layout that uses useSearchParams. Must be wrapped in Suspense so static
  * pages (e.g. 404) can prerender without access to search params.
@@ -31,14 +36,13 @@ function SiteLayoutInner({
   headerBackgroundColor,
   accountUrl,
   useHeadlessAccount,
-}: SiteLayoutProps) {
+  footerWaveOverride = null,
+}: SiteLayoutShellProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams?.toString() ?? "";
   const [footerWaveColor, setFooterWaveColor] = useState<string | null>(null);
-  const [footerWaveOverride, setFooterWaveOverride] = useState<string | null>(null);
   const [hideHeaderWave, setHideHeaderWave] = useState(false);
-  const setOverride = useCallback((color: string | null) => setFooterWaveOverride(color), []);
 
   useEffect(() => {
     if (!pathname) {
@@ -78,7 +82,7 @@ function SiteLayoutInner({
   const effectiveWaveColor = footerWaveOverride ?? footerWaveColor;
 
   return (
-    <FooterWaveOverrideProvider value={{ setOverride }}>
+    <>
       <Header
         logoUrl={headerLogoUrl}
         navLinks={navLinks}
@@ -99,7 +103,7 @@ function SiteLayoutInner({
         footerWaveBackgroundColor={effectiveWaveColor}
       />
       <CartPopup />
-    </FooterWaveOverrideProvider>
+    </>
   );
 }
 
@@ -113,7 +117,8 @@ function SiteLayoutFallback({
   headerBackgroundColor,
   accountUrl,
   useHeadlessAccount,
-}: SiteLayoutProps) {
+  footerWaveOverride = null,
+}: SiteLayoutShellProps) {
   const pathname = usePathname();
   return (
     <>
@@ -130,7 +135,7 @@ function SiteLayoutFallback({
       <Footer
         logoUrl={headerLogoUrl}
         pathname={pathname ?? undefined}
-        footerWaveBackgroundColor={null}
+        footerWaveBackgroundColor={footerWaveOverride ?? null}
       />
       <CartPopup />
     </>
@@ -144,14 +149,27 @@ function SiteLayoutFallback({
 export function SiteLayout(props: SiteLayoutProps) {
   const pathname = usePathname();
   const isStudio = pathname?.startsWith("/studio");
+  const [footerWaveOverride, setFooterWaveOverride] = useState<string | null>(
+    null,
+  );
+  const setOverride = useCallback(
+    (color: string | null) => setFooterWaveOverride(color),
+    [],
+  );
 
   if (isStudio) {
     return <>{props.children}</>;
   }
 
   return (
-    <Suspense fallback={<SiteLayoutFallback {...props} />}>
-      <SiteLayoutInner {...props} />
-    </Suspense>
+    <FooterWaveOverrideProvider value={{ setOverride }}>
+      <Suspense
+        fallback={
+          <SiteLayoutFallback {...props} footerWaveOverride={footerWaveOverride} />
+        }
+      >
+        <SiteLayoutInner {...props} footerWaveOverride={footerWaveOverride} />
+      </Suspense>
+    </FooterWaveOverrideProvider>
   );
 }
