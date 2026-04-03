@@ -283,8 +283,8 @@ h2.section-title,
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 9999px;
   background-color: #069400;
   color: white;
@@ -294,8 +294,8 @@ h2.section-title,
   background-color: #057a00;
 }
 .product-card-cart-badge img {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
   object-fit: contain;
 }
 
