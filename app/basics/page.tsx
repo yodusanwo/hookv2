@@ -1,4 +1,4 @@
-import { client, BASICS_LIST_QUERY, BASICS_PAGE_CONTENT_QUERY, PAGE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
+import { client, BASICS_LIST_QUERY, BASICS_PAGE_CONTENT_QUERY, PAGE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY, HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY } from "@/lib/sanity";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { BasicsPageClient } from "./BasicsPageClient";
 
@@ -27,13 +27,15 @@ export default async function BasicsIndexPage() {
   let pageContent: BasicsPageContent = null;
   let sanityPage: { sections?: unknown[] } | null = null;
   let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
+  let canonicalDocksideMarketsBlock: Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"] = null;
   if (client) {
     try {
-      [basicsRaw, pageContent, sanityPage, canonicalExploreProductsBlock] = await Promise.all([
+      [basicsRaw, pageContent, sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock] = await Promise.all([
         client.fetch<BasicFromSanity[]>(BASICS_LIST_QUERY),
         client.fetch<BasicsPageContent>(BASICS_PAGE_CONTENT_QUERY),
         client.fetch<{ sections?: unknown[] } | null>(PAGE_BY_SLUG_QUERY, { slug: "basics" }).then((p) => p ?? null),
         client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+        client.fetch<Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]>(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
       ]);
     } catch {
       basicsRaw = [];
@@ -92,6 +94,7 @@ export default async function BasicsIndexPage() {
           sections={restSections as Parameters<typeof PageBuilder>[0]["sections"]}
           promoBanner={null}
           canonicalExploreProductsBlock={canonicalExploreProductsBlock}
+          canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
         />
       )}
     </main>

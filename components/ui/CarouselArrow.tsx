@@ -51,6 +51,8 @@ export function CarouselArrow({
   insetNoBackground = false,
   arrowColor,
   showOnMobile = false,
+  /** Flex-row layout: no absolute positioning; keeps arrows in side gutters (e.g. Dockside Markets). */
+  inline = false,
 }: {
   direction: "prev" | "next";
   disabled: boolean;
@@ -66,24 +68,37 @@ export function CarouselArrow({
   arrowColor?: string;
   /** When true, arrows are visible on mobile (default hidden on small screens) */
   showOnMobile?: boolean;
+  inline?: boolean;
 }) {
   const isPrev = direction === "prev";
   const isLight = theme === "light";
 
-  const positionStyle = inset
-    ? (isPrev ? { left: ARROW_INSET_PX } : { right: ARROW_INSET_PX })
-    : (isPrev ? { left: -ARROW_OFFSET_PX } : { right: -ARROW_OFFSET_PX });
+  const positionStyle = inline
+    ? {}
+    : inset
+      ? (isPrev ? { left: ARROW_INSET_PX } : { right: ARROW_INSET_PX })
+      : (isPrev ? { left: -ARROW_OFFSET_PX } : { right: -ARROW_OFFSET_PX });
 
   const isInset = inset;
   const showInsetBackground = isInset && !insetNoBackground;
   const buttonSize = isInset ? ARROW_SIZE_PX + 8 : ARROW_SIZE_PX;
+
+  const visibilityClass = inline
+    ? "flex"
+    : showOnMobile
+      ? "flex"
+      : "hidden md:flex";
+
+  const positionClass = inline
+    ? "relative z-10 flex shrink-0 items-center justify-center self-center"
+    : "absolute top-1/2 z-10 -translate-y-1/2 shrink-0 items-center justify-center";
 
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`absolute top-1/2 z-10 -translate-y-1/2 shrink-0 items-center justify-center disabled:opacity-30 disabled:pointer-events-none ${showOnMobile ? "flex" : "hidden md:flex"} ${
+      className={`${positionClass} disabled:opacity-30 disabled:pointer-events-none ${visibilityClass} ${
         showInsetBackground
           ? "rounded-full bg-white/95 shadow-md hover:bg-white hover:shadow-lg"
           : "bg-transparent hover:opacity-90"

@@ -5,6 +5,7 @@ import {
   FAQ_PAGE_QUERY,
   HOMEPAGE_FAQ_BLOCK_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
+  HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { getEventsFromSheet } from "@/lib/googleSheets";
 
@@ -45,7 +46,7 @@ export default async function FaqPage() {
   }
 
   try {
-    const [sanityPage, canonicalExploreProductsBlock, homeFaqBlock] =
+    const [sanityPage, canonicalExploreProductsBlock, homeFaqBlock, canonicalDocksideMarketsBlock] =
       await Promise.all([
         client.fetch<{ title?: string; sections?: unknown[] } | null>(
           FAQ_PAGE_QUERY,
@@ -60,6 +61,9 @@ export default async function FaqPage() {
           {},
           { next: { revalidate: 60 } },
         ),
+        client.fetch<
+          Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
+        >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
       ]);
 
     if (
@@ -100,6 +104,7 @@ export default async function FaqPage() {
             promoBanner={null}
             pageSlug="faq"
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
+            canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
           />
         </main>
       );

@@ -1,4 +1,4 @@
-import { client, RECIPES_LIST_QUERY, RECIPES_PAGE_CONTENT_QUERY, RECIPE_CATEGORIES_QUERY, PAGE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
+import { client, RECIPES_LIST_QUERY, RECIPES_PAGE_CONTENT_QUERY, RECIPE_CATEGORIES_QUERY, PAGE_BY_SLUG_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY, HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY } from "@/lib/sanity";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { RecipesPageClient } from "./RecipesPageClient";
 
@@ -43,14 +43,16 @@ export default async function RecipesIndexPage() {
   let categoryOptions: RecipeCategoryOption[] = [];
   let sanityPage: { sections?: unknown[] } | null = null;
   let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
+  let canonicalDocksideMarketsBlock: Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"] = null;
   if (client) {
     try {
-      [recipesRaw, pageContent, categoryOptions, sanityPage, canonicalExploreProductsBlock] = await Promise.all([
+      [recipesRaw, pageContent, categoryOptions, sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock] = await Promise.all([
         client.fetch<RecipeFromSanity[]>(RECIPES_LIST_QUERY),
         client.fetch<RecipesPageContent>(RECIPES_PAGE_CONTENT_QUERY),
         client.fetch<RecipeCategoryOption[]>(RECIPE_CATEGORIES_QUERY).then((list) => list ?? []),
         client.fetch<{ sections?: unknown[] } | null>(PAGE_BY_SLUG_QUERY, { slug: "recipes" }).then((p) => p ?? null),
         client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+        client.fetch<Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]>(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
       ]);
     } catch {
       recipesRaw = [];
@@ -135,6 +137,7 @@ export default async function RecipesIndexPage() {
           promoBanner={null}
           pageSlug="recipes"
           canonicalExploreProductsBlock={canonicalExploreProductsBlock}
+          canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
         />
       )}
     </main>

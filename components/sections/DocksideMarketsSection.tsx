@@ -153,7 +153,7 @@ export function DocksideMarketsSection({
         <div className="relative mt-8 pb-0">
           {/* Mobile: 2x2 grid with arrows and dot pagination */}
           <div className="relative md:hidden">
-            <div className="grid grid-cols-2 gap-3 px-10 min-h-[200px]">
+            <div className="grid grid-cols-2 gap-3 px-14 min-h-[200px] sm:px-16">
               {items.length > 0
                 ? mobilePageItems.map((item, idx) => (
                     <div key={mobilePage * ITEMS_PER_MOBILE_PAGE + idx} className="aspect-square flex items-center justify-center p-2 rounded-none">
@@ -210,13 +210,23 @@ export function DocksideMarketsSection({
             </div>
           </div>
 
-          {/* Desktop: horizontal scroll carousel */}
-          <div className="hidden md:block relative flex items-center justify-center">
-            <div className="mx-auto w-full max-w-[1363px]">
-              <div
-                ref={scrollRef}
-                className="scrollbar-hide flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth pl-6 pr-6 md:pl-14 md:pr-14 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
+          {/* Desktop: arrows in side gutters (inline) so they never overlap logo strip */}
+          <div className="hidden md:flex w-full max-w-[1363px] mx-auto items-center gap-2 sm:gap-3 md:gap-4">
+            <CarouselArrow
+              direction="prev"
+              onClick={() => scrollByDir(-1)}
+              disabled={false}
+              ariaLabel="Previous"
+              theme="light"
+              inset
+              insetNoBackground
+              arrowColor={arrowColor}
+              inline
+            />
+            <div
+              ref={scrollRef}
+              className="scrollbar-hide min-w-0 flex-1 flex flex-nowrap gap-0.5 overflow-x-auto scroll-smooth px-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
                 {items.length > 0
                   ? items.map((item, idx) => {
                       const logoUrl = item.logo ? urlForSizedImage(item.logo, 400) : null;
@@ -293,29 +303,17 @@ export function DocksideMarketsSection({
                       </div>
                     ))}
               </div>
-            </div>
-            <div className="absolute inset-y-0 left-0 right-0 flex pointer-events-none [&_button]:pointer-events-auto">
-              <CarouselArrow
-                direction="prev"
-                onClick={() => scrollByDir(-1)}
-                disabled={false}
-                ariaLabel="Previous"
-                theme="light"
-                inset
-                insetNoBackground
-                arrowColor={arrowColor}
-              />
-              <CarouselArrow
-                direction="next"
-                onClick={() => scrollByDir(1)}
-                disabled={false}
-                ariaLabel="Next"
-                theme="light"
-                inset
-                insetNoBackground
-                arrowColor={arrowColor}
-              />
-            </div>
+            <CarouselArrow
+              direction="next"
+              onClick={() => scrollByDir(1)}
+              disabled={false}
+              ariaLabel="Next"
+              theme="light"
+              inset
+              insetNoBackground
+              arrowColor={arrowColor}
+              inline
+            />
           </div>
         </div>
       </div>

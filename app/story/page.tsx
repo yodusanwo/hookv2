@@ -5,6 +5,7 @@ import {
   client,
   STORY_PAGE_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
+  HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { FALLBACK_HOME_HERO_PRELOAD_URL } from "@/lib/homeHeroPreloadUrl";
 import { shopifyFetch } from "@/lib/shopify";
@@ -100,18 +101,25 @@ export default async function Story() {
     let canonicalExploreProductsBlock: Parameters<
       typeof PageBuilder
     >[0]["canonicalExploreProductsBlock"] = null;
+    let canonicalDocksideMarketsBlock: Parameters<
+      typeof PageBuilder
+    >[0]["canonicalDocksideMarketsBlock"] = null;
     if (hasSanity) {
       try {
-        [sanityPage, canonicalExploreProductsBlock] = await Promise.all([
-          client.fetch<{ sections?: unknown[] } | null>(
-            STORY_PAGE_QUERY,
-            {},
-            { next: { revalidate: 60 } },
-          ),
-          client.fetch<
-            Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
-          >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-        ]);
+        [sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock] =
+          await Promise.all([
+            client.fetch<{ sections?: unknown[] } | null>(
+              STORY_PAGE_QUERY,
+              {},
+              { next: { revalidate: 60 } },
+            ),
+            client.fetch<
+              Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
+            >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+            client.fetch<
+              Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
+            >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+          ]);
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
@@ -160,6 +168,7 @@ export default async function Story() {
             hideOurStoryCta
             ourStoryVariant="story-page"
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
+            canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
           />
         </main>
       );

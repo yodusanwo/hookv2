@@ -5,6 +5,7 @@ import {
   PAGE_BY_SLUG_QUERY,
   HOMEPAGE_UPCOMING_EVENTS_BLOCK_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
+  HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { getEventsFromSheet } from "@/lib/googleSheets";
 
@@ -37,7 +38,7 @@ export default async function CalendarPage() {
   }
 
   try {
-    const [sanityPage, canonicalExploreProductsBlock, homeEventsBlock] =
+    const [sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock, homeEventsBlock] =
       await Promise.all([
         client.fetch<{ title?: string; sections?: unknown[] } | null>(
           PAGE_BY_SLUG_QUERY,
@@ -47,6 +48,9 @@ export default async function CalendarPage() {
         client.fetch<
           Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
         >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+        client.fetch<
+          Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
+        >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
         client.fetch<Record<string, unknown> | null>(
           HOMEPAGE_UPCOMING_EVENTS_BLOCK_QUERY,
           {},
@@ -91,6 +95,7 @@ export default async function CalendarPage() {
             promoBanner={null}
             pageSlug="calendar"
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
+            canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
           />
         </main>
       );

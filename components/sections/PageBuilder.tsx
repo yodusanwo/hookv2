@@ -9,6 +9,8 @@
  * - `promoBanner` / `promoBannerUrl` — Only passed into `heroBlock` → `HeroSection`.
  * - `canonicalExploreProductsBlock` — When set, merged into each `exploreProductsBlock` so
  *   non-home pages can reuse the home Explore copy/collections; see `case "exploreProductsBlock"`.
+ * - `canonicalDocksideMarketsBlock` — When set, merged into each `docksideMarketsBlock` so title,
+ *   description, and market logos match Home; the page block can still override `backgroundColor`.
  * - `upcomingEventsBlock` — Google Sheet rows are NOT loaded here; the parent injects `events`
  *   and `eventsLimit` (e.g. `app/page.tsx` for home) before sections reach PageBuilder.
  */
@@ -78,6 +80,25 @@ export type CanonicalExploreProductsBlock = {
   [key: string]: unknown;
 };
 
+/** Home Dockside / Farmers Markets block; merged into each `docksideMarketsBlock` when passed. */
+export type CanonicalDocksideMarketsBlock = {
+  _type?: string;
+  _key?: string;
+  title?: string | null;
+  description?: string | null;
+  backgroundColor?: string | null;
+  items?: Array<{
+    label?: string | null;
+    logo?: { asset?: { _ref?: string; url?: string } };
+    url?: string | null;
+    logoWidth?: number | null;
+    logoHeight?: number | null;
+    logoAspectRatio?: string | null;
+    logoScalePercent?: number | null;
+  }> | null;
+  [key: string]: unknown;
+};
+
 export function PageBuilder({
   sections,
   promoBanner,
@@ -95,6 +116,7 @@ export function PageBuilder({
   hideOurStoryWave,
   ourStoryVariant,
   canonicalExploreProductsBlock,
+  canonicalDocksideMarketsBlock,
   promoBannerUrl,
 }: {
   sections?: PageSection[];
@@ -128,6 +150,8 @@ export function PageBuilder({
   ourStoryVariant?: "default" | "story-page";
   /** When set, any Explore Our Products block on this page uses this content (from home page) so description, categories, images and /shop links match the home page. Page-level block can still override backgroundColor and hideWave. */
   canonicalExploreProductsBlock?: CanonicalExploreProductsBlock | null;
+  /** When set, Dockside / Farmers Markets blocks use Home’s title, description, and logos; page block can still override backgroundColor (e.g. Calendar keeps its own section background). */
+  canonicalDocksideMarketsBlock?: CanonicalDocksideMarketsBlock | null;
 }) {
   const items = sections ?? [];
 
@@ -377,11 +401,25 @@ export function PageBuilder({
             const docksideMinHeight =
               docksideMarketsMinHeight ??
               (pageSlug === "calendar" ? 331 : undefined);
+            const pageDockside = block as {
+              backgroundColor?: string;
+              [key: string]: unknown;
+            };
+            const mergedDocksideBlock = canonicalDocksideMarketsBlock
+              ? {
+                  ...canonicalDocksideMarketsBlock,
+                  backgroundColor:
+                    pageDockside.backgroundColor ??
+                    canonicalDocksideMarketsBlock.backgroundColor,
+                }
+              : pageDockside;
             return (
               <DocksideMarketsSection
                 key={key}
                 block={
-                  block as Parameters<typeof DocksideMarketsSection>[0]["block"]
+                  mergedDocksideBlock as Parameters<
+                    typeof DocksideMarketsSection
+                  >[0]["block"]
                 }
                 topPadding={docksideTop}
                 bottomPadding={docksideBottom}

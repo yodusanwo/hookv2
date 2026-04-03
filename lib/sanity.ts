@@ -180,6 +180,24 @@ export const EXPLORE_PRODUCTS_BLOCK_QUERY = `*[_type == "page" && slug.current =
   "filterCollections": filterCollections[] { label, collectionHandle, image { asset-> } }
 }`;
 
+/** First Dockside / Farmers Markets block on Home — logos and copy are merged site-wide when a page passes `canonicalDocksideMarketsBlock`; each page can still override `backgroundColor`. */
+export const HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "docksideMarketsBlock"][0] {
+  _type,
+  _key,
+  backgroundColor,
+  title,
+  description,
+  "items": items[] {
+    label,
+    url,
+    logoWidth,
+    logoHeight,
+    logoAspectRatio,
+    logoScalePercent,
+    logo { asset-> }
+  }
+}`;
+
 /** Recipe cards from the home page `recipesBlock` (manual title/image/url). Used to pad PDP recipe grid to 3. */
 export const HOMEPAGE_RECIPES_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "recipesBlock"][0] {
   "recipes": recipes[] {

@@ -1,6 +1,6 @@
 import { ContactForm } from "./ContactForm";
 import { PageBuilder } from "@/components/sections/PageBuilder";
-import { client, CONTACT_PAGE_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY } from "@/lib/sanity";
+import { client, CONTACT_PAGE_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY, HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY } from "@/lib/sanity";
 
 export const metadata = {
   title: "Contact | Hook Point",
@@ -15,15 +15,17 @@ export default async function ContactPage() {
     !!process.env.NEXT_PUBLIC_SANITY_DATASET;
 
   let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
+  let canonicalDocksideMarketsBlock: Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"] = null;
   if (hasSanity) {
     try {
-      [sanityPage, canonicalExploreProductsBlock] = await Promise.all([
+      [sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock] = await Promise.all([
         client.fetch<{ sections?: unknown[] } | null>(
           CONTACT_PAGE_QUERY,
           {},
           { next: { revalidate: 60 } }
         ),
         client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+        client.fetch<Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]>(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
       ]);
     } catch {
       // Use fallback below
@@ -41,6 +43,7 @@ export default async function ContactPage() {
           sections={sanityPage.sections as Parameters<typeof PageBuilder>[0]["sections"]}
           promoBanner={null}
           canonicalExploreProductsBlock={canonicalExploreProductsBlock}
+          canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
         />
       </main>
     );

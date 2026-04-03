@@ -25,6 +25,7 @@ import {
   HOMEPAGE_QUERY,
   SITE_SETTINGS_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
+  HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { fetchHomeFallbackProducts } from "@/lib/fetchHomeFallbackProducts";
 import { HeroImagePreload } from "@/app/components/HeroImagePreload";
@@ -46,27 +47,37 @@ export default async function Home() {
     let canonicalExploreProductsBlock: Parameters<
       typeof PageBuilder
     >[0]["canonicalExploreProductsBlock"] = null;
+    let canonicalDocksideMarketsBlock: Parameters<
+      typeof PageBuilder
+    >[0]["canonicalDocksideMarketsBlock"] = null;
 
     if (hasSanity) {
       try {
-        // Homepage document, global promo settings, shared Explore Products block (used by PageBuilder).
-        const [homePage, settings, canonicalExplore] = await Promise.all([
-          client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
-          client.fetch<{ promoBanner?: string; promoBannerUrl?: string } | null>(
-            SITE_SETTINGS_QUERY,
-            {},
-            { next: { revalidate: 60 } },
-          ),
-          client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(
-            EXPLORE_PRODUCTS_BLOCK_QUERY,
-            {},
-            { next: { revalidate: 60 } },
-          ),
-        ]);
+        // Homepage document, promo, shared Explore + Dockside blocks (merged on other routes via PageBuilder).
+        const [homePage, settings, canonicalExplore, canonicalDockside] =
+          await Promise.all([
+            client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
+            client.fetch<{ promoBanner?: string; promoBannerUrl?: string } | null>(
+              SITE_SETTINGS_QUERY,
+              {},
+              { next: { revalidate: 60 } },
+            ),
+            client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(
+              EXPLORE_PRODUCTS_BLOCK_QUERY,
+              {},
+              { next: { revalidate: 60 } },
+            ),
+            client.fetch<Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]>(
+              HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+              {},
+              { next: { revalidate: 60 } },
+            ),
+          ]);
         sanityPage = homePage;
         promoBanner = settings?.promoBanner ?? null;
         promoBannerUrl = settings?.promoBannerUrl ?? null;
         canonicalExploreProductsBlock = canonicalExplore ?? null;
+        canonicalDocksideMarketsBlock = canonicalDockside ?? null;
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
@@ -94,6 +105,7 @@ export default async function Home() {
             promoBanner={promoBanner}
             promoBannerUrl={promoBannerUrl}
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
+            canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
           />
         </main>
         </>
