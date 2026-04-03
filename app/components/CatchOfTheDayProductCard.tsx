@@ -148,12 +148,13 @@ export function CatchOfTheDayProductCard({
   /**
    * Multiply blend tints the photo toward `effectiveBg`. Only on **light** sections: on navy, multiply
    * darkens the entire bitmap (not just white edges), so dark sections use a normal photo layer.
+   * Use `mix-blend-multiply` on the image (not `background-image` + `background-blend-mode`): unquoted
+   * CSS `url()` breaks when Shopify CDN paths contain `)`, `(`, or spaces.
    */
   const useMultiplyBlend =
     Boolean(product.imageUrl) &&
     blendWhiteWithSectionBackground &&
     !darkSection;
-  const showPhotoImg = Boolean(product.imageUrl) && !useMultiplyBlend;
   const sizedImageUrl = product.imageUrl
     ? shopifyImageUrlForWidth(product.imageUrl, CARD_IMAGE_REQUEST_WIDTH)
     : null;
@@ -233,28 +234,19 @@ export function CatchOfTheDayProductCard({
           style={{
             height: 320,
             alignSelf: "stretch",
-            ...(product.imageUrl && useMultiplyBlend && sizedImageUrl
-              ? {
-                  backgroundImage: `url(${sizedImageUrl})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  /** Light sections only — multiply on navy crushes the whole product image. */
-                  backgroundColor: effectiveBg,
-                  backgroundBlendMode: "multiply",
-                }
-              : { backgroundColor: effectiveBg }),
+            backgroundColor: effectiveBg,
           }}
-          role={product.imageUrl && useMultiplyBlend ? "img" : undefined}
-          aria-label={product.imageUrl && useMultiplyBlend ? product.title : undefined}
         >
-          {/* No mix-blend-mode on dark navy: "lighten" could composite to blank on some desktop browsers. */}
-          {showPhotoImg && sizedImageUrl ? (
+          {sizedImageUrl ? (
             <Image
               src={sizedImageUrl}
               alt={product.title}
               fill
-              className="absolute inset-0 z-0 object-cover"
+              className={
+                useMultiplyBlend
+                  ? "absolute inset-0 z-0 object-cover mix-blend-multiply"
+                  : "absolute inset-0 z-0 object-cover"
+              }
               sizes="(max-width: 640px) 100vw, 387px"
               priority={priority}
               decoding="async"

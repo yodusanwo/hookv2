@@ -160,22 +160,34 @@ export function ExploreProductsCategoryCarousel({
         </div>
       </div>
 
-      <CarouselArrow
-        direction="prev"
-        disabled={!canScrollPrev}
-        onClick={() => scroll(-1)}
-        ariaLabel="Scroll left"
-        theme={textTheme}
-        arrowColor={arrowColor ?? "#FFFFFF"}
-      />
-      <CarouselArrow
-        direction="next"
-        disabled={!canScrollNext}
-        onClick={() => scroll(1)}
-        ariaLabel="Scroll right"
-        theme={textTheme}
-        arrowColor={arrowColor ?? "#FFFFFF"}
-      />
+      {/* Desktop arrows only when more than three categories — otherwise all cards fit without scrolling */}
+      {categories.length > 3 ? (
+        <>
+          {/*
+            inset: arrows sit inside the carousel bounds. Default positioning uses negative
+            left/right (outside the container) and gets clipped by SiteLayout overflow-x-clip,
+            so clicks/visuals break on the home page.
+          */}
+          <CarouselArrow
+            direction="prev"
+            disabled={!canScrollPrev}
+            onClick={() => scroll(-1)}
+            ariaLabel="Scroll left"
+            theme={textTheme}
+            arrowColor={arrowColor ?? "#FFFFFF"}
+            inset
+          />
+          <CarouselArrow
+            direction="next"
+            disabled={!canScrollNext}
+            onClick={() => scroll(1)}
+            ariaLabel="Scroll right"
+            theme={textTheme}
+            arrowColor={arrowColor ?? "#FFFFFF"}
+            inset
+          />
+        </>
+      ) : null}
     </div>
   );
 }

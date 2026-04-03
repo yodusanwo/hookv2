@@ -50,7 +50,9 @@ export async function CatchOfTheDaySection({
   let initialProducts: Awaited<ReturnType<typeof getCollectionProductsForCarousel>> = [];
   if (useSelectedProducts) {
     const handles = productRefs.map((r) => (r.shopifyHandle as string).trim());
-    initialProducts = await getProductsByHandles(handles);
+    initialProducts = await getProductsByHandles(handles, {
+      oneVariantPerProduct: true,
+    });
   } else {
     const filterCollections =
       block.filterCollections && block.filterCollections.length > 0

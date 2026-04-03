@@ -114,7 +114,9 @@ export async function getShopPageData(
 
       if (useSelectedProducts) {
         const handles = productRefs.map((r) => (r.shopifyHandle as string).trim());
-        productCarouselInitialProducts = await getProductsByHandles(handles);
+        productCarouselInitialProducts = await getProductsByHandles(handles, {
+          oneVariantPerProduct: true,
+        });
         productCarouselBlock = {
           backgroundColor: catchData.backgroundColor ?? undefined,
           title: catchData.title ?? undefined,

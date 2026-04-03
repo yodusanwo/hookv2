@@ -82,13 +82,29 @@ export function normalizeShopifyProductHandle(raw: string): string {
 }
 
 /**
+ * For Product Carousel “selected products” from Sanity, only one card per product is desired.
+ * Otherwise one row per variant inflates the list and breaks the 2–5 layout / pagination UX.
+ */
+function pickPrimaryVariantEdge(
+  edges: Array<{ node: VariantNode }>,
+): { node: VariantNode } | undefined {
+  const available = edges.find((e) => e.node.availableForSale);
+  return available ?? edges[0];
+}
+
+/**
  * Fetches products by Shopify handle (server-only).
  * Returns array in the same order as handles; missing products are omitted.
  * On Storefront API failure (missing token, 401, network), returns [] so prerender/build can finish.
+ *
+ * @param oneVariantPerProduct — when true (Sanity Product Carousel picks), emit one row per handle
+ *   using the first available-for-sale variant, or the first variant if none are available.
  */
 export async function getProductsByHandles(
-  handles: string[]
+  handles: string[],
+  options?: { oneVariantPerProduct?: boolean },
 ): Promise<ApiProductForCarousel[]> {
+  const oneVariantPerProduct = Boolean(options?.oneVariantPerProduct);
   const trimmed = handles
     .map((h) => (typeof h === "string" ? normalizeShopifyProductHandle(h) : ""))
     .filter((h) => h.length > 0 && /^[a-zA-Z0-9-_]+$/.test(h));
@@ -131,7 +147,13 @@ export async function getProductsByHandles(
           requiresSellingPlan: node.requiresSellingPlan,
         });
       } else {
-        for (const ve of variantEdges) {
+        const edgesToIterate = oneVariantPerProduct
+          ? (() => {
+              const primary = pickPrimaryVariantEdge(variantEdges);
+              return primary ? [primary] : [];
+            })()
+          : variantEdges;
+        for (const ve of edgesToIterate) {
           const variant = ve.node;
           const price = variant.price ?? defaultPrice;
           const compareAtPrice = variant.compareAtPrice?.amount
