@@ -127,6 +127,8 @@ export function ReviewsCarousel({
   const [index, setIndex] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
   const L = Math.max(1, reviews.length);
+  /** How many cards to show in the desktop row — never more than we have, or we repeat the same review (e.g. 1 review × 3 columns). */
+  const desktopSlotCount = Math.min(3, reviews.length);
   const current = reviews[index % L];
   const canPrev = reviews.length > 1 && index > 0;
   const canNext = reviews.length > 1 && index < reviews.length - 1;
@@ -134,7 +136,8 @@ export function ReviewsCarousel({
   React.useEffect(() => {
     if (reviews.length <= 1 || isPaused) return;
     const id = setInterval(() => {
-      setIndex((i) => (i + 3) % reviews.length);
+      /** +1 rotates the desktop window by one review. +3 matched a 3-card “page” step but (i+3)%L === i when L divides 3 (e.g. L=3), freezing the carousel. */
+      setIndex((i) => (i + 1) % reviews.length);
     }, AUTO_SCROLL_INTERVAL_MS);
     return () => clearInterval(id);
   }, [reviews.length, isPaused]);
@@ -205,9 +208,17 @@ export function ReviewsCarousel({
         </div>
       </div>
 
-      {/* Desktop: 3 auto-scrolling review cards */}
-      <div className="mx-auto mt-10 hidden w-full min-w-0 max-w-6xl gap-4 md:grid md:grid-cols-3 md:justify-items-center md:gap-6 lg:gap-8">
-        {[0, 1, 2].map((offset) => {
+      {/* Desktop: up to 3 auto-scrolling cards — only as many as we have reviews (no duplicate columns). */}
+      <div
+        className={`mx-auto mt-10 hidden w-full min-w-0 max-w-6xl gap-4 md:grid md:justify-items-center md:gap-6 lg:gap-8 ${
+          desktopSlotCount === 1
+            ? "md:grid-cols-1 md:max-w-[355px]"
+            : desktopSlotCount === 2
+              ? "md:grid-cols-2"
+              : "md:grid-cols-3"
+        }`}
+      >
+        {Array.from({ length: desktopSlotCount }).map((_, offset) => {
           const i = (index + offset) % L;
           const r = reviews[i];
           return (

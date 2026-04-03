@@ -54,12 +54,12 @@ export function LocalFoodsCoopsSection({
 
   return (
     <section
-      className={`relative z-20 flex min-h-0 flex-col justify-center pt-12 pb-12 md:pt-[60px] ${bottomPaddingClass ? bottomPaddingClass : "md:pb-0"}`.trim()}
+      className={`relative z-20 flex min-h-0 flex-col justify-center pt-12 pb-12 md:pt-[3.75rem] ${bottomPaddingClass ? bottomPaddingClass : "md:pb-0"}`.trim()}
       style={{ backgroundColor: block.backgroundColor ?? "#FAFAFC" }}
     >
       <div
         className="mx-auto w-full px-4 text-center"
-        style={{ maxWidth: 1440 }}
+        style={{ maxWidth: "90rem" }}
       >
         <SectionHeading
           title={title}
@@ -69,19 +69,23 @@ export function LocalFoodsCoopsSection({
           titleColor="#111827"
           descriptionColor="#1E1E1E"
         />
-        <div className="mt-2 grid grid-cols-2 gap-3 md:flex md:flex-wrap items-center justify-center">
+        <div className="mt-2 flex w-full min-w-0 flex-row flex-nowrap items-center justify-center gap-3 overflow-x-auto overflow-y-hidden py-2 [scrollbar-gutter:stable] sm:gap-4 md:gap-5">
           {items.map((item, idx) => {
-            const logoImg = item.logo ? urlForSizedImage(item.logo, 256) : null;
+            const logoImg = item.logo ? urlForSizedImage(item.logo, 400) : null;
             const safeUrl = safeHref(item.url);
             const showBorder = item.bordered ?? false;
-            const wrapperClass = `flex items-center justify-center gap-2 bg-transparent px-3 py-2 ${showBorder ? "rounded border border-slate-300/80" : ""}`;
+            /** `inline-flex shrink-0` keeps logos in one horizontal row; `w-full` on children was forcing a vertical stack under `md:flex`. */
+            const wrapperClass = `inline-flex shrink-0 min-w-0 items-center justify-center gap-2 bg-transparent px-2 py-2 sm:px-3 sm:py-2 ${showBorder ? "rounded border border-slate-300/80" : ""}`;
 
             const content = logoImg ? (
-              <img
-                src={logoImg}
-                alt={item.label ?? ""}
-                className="h-12 w-auto max-w-full max-h-14 object-contain"
-              />
+              <div className="flex h-[3.63rem] shrink-0 max-w-[13.75rem] items-center justify-center sm:h-[3.75rem] sm:max-w-[17.5rem] md:h-[4rem] md:max-w-[21.25rem]">
+                <img
+                  src={logoImg}
+                  alt={item.label ?? ""}
+                  className="max-h-full max-w-full h-auto w-auto object-contain object-center"
+                  loading="lazy"
+                />
+              </div>
             ) : (
               <>
                 <MapPinIcon className="h-6 w-6 shrink-0 text-emerald-600" />
@@ -117,7 +121,7 @@ export function LocalFoodsCoopsSection({
       </div>
       {!hideWave && (
         <div
-          className="relative top-[60px] -mt-12 pb-0 -mb-2.5 w-full shrink-0 md:top-[100px] md:-mt-0"
+          className="relative top-[3.75rem] -mt-12 pb-0 -mb-2.5 w-full shrink-0 md:top-[6.25rem] md:-mt-0"
           style={{ transform: "scaleX(1.10) rotate(-5deg) translateZ(0)" }}
         >
           <WaveDivider
