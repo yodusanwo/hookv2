@@ -4,6 +4,7 @@
  * Shared CSP directives (everything except script-src / script-src-elem variants).
  * Klaviyo: `*.klaviyo.com`, styles from static.klaviyo.com (see Klaviyo CSP docs).
  * GTM + GA4: `app/components/GoogleTagManager.tsx`.
+ * Facebook Pixel (often injected via GTM): `https://connect.facebook.net` → `fbevents.js`.
  */
 const cspShared = [
   "default-src 'self'",
@@ -28,8 +29,8 @@ const cspShared = [
  */
 const cspMainProduction = [
   ...cspShared.slice(0, 1),
-  "script-src 'self' 'unsafe-inline' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
-  "script-src-elem 'self' 'unsafe-inline' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "script-src 'self' 'unsafe-inline' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
+  "script-src-elem 'self' 'unsafe-inline' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
   ...cspShared.slice(1),
 ].join("; ");
 
@@ -38,8 +39,8 @@ const cspMainProduction = [
  */
 const cspStudioProduction = [
   ...cspShared.slice(0, 1),
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
-  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
+  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity.com https://core.sanity-cdn.com https://static.klaviyo.com https://*.klaviyo.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
   ...cspShared.slice(1),
 ].join("; ");
 

@@ -1,6 +1,7 @@
 /**
  * Klaviyo Reviews API helpers. Use only server-side; never expose KLAVIYO_PRIVATE_API_KEY to the client.
- * Site-wide section carousels use status **featured**. PDP carousel uses **published** reviews for that product (newest first).
+ * Site-wide section carousels use status **featured**. PDP carousel prefers **published**
+ * reviews for that product (newest first); if there are fewer than three, it pads with **featured** reviews so the carousel can show three cards when data exists.
  */
 
 import { cache } from "react";

@@ -10,8 +10,8 @@
  * Cross-cutting:
  * - `upcomingEventsBlock` sections get `events` from Google Sheets (`getEventsFromSheet`)
  *   and `eventsLimit: 3` injected here (Studio does not store sheet rows).
- * - `HeroImagePreload` injects `<link rel="preload">` for LCP; URL comes from the first
- *   hero image in Sanity sections, or a constant for the fallback path.
+ * - Hero LCP: first slide uses `priority` on `next/image` in `HeroCarousel` (do not add a
+ *   raw-CDN `<link rel="preload">` — it won’t match `/_next/image` URLs and Chrome warns).
  * - Promo banner text/link come from `SITE_SETTINGS_QUERY` when Sanity is available.
  *
  * Queries use `revalidate: 60` (ISR-ish caching). Sheet fetch uses its own revalidation
@@ -28,11 +28,6 @@ import {
   HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { fetchHomeFallbackProducts } from "@/lib/fetchHomeFallbackProducts";
-import { HeroImagePreload } from "@/app/components/HeroImagePreload";
-import {
-  FALLBACK_HOME_HERO_PRELOAD_URL,
-  getFirstHeroImagePreloadUrlFromSections,
-} from "@/lib/homeHeroPreloadUrl";
 
 export default async function Home() {
   try {
@@ -94,11 +89,7 @@ export default async function Home() {
         }
         return section;
       });
-      const heroPreloadUrl =
-        getFirstHeroImagePreloadUrlFromSections(sectionsWithEvents);
       return (
-        <>
-          <HeroImagePreload href={heroPreloadUrl} />
         <main className="bg-white">
           <PageBuilder
             sections={sectionsWithEvents as Parameters<typeof PageBuilder>[0]["sections"]}
@@ -108,7 +99,6 @@ export default async function Home() {
             canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
           />
         </main>
-        </>
       );
     }
 
@@ -116,14 +106,11 @@ export default async function Home() {
     const data = await fetchHomeFallbackProducts();
 
     return (
-      <>
-        <HeroImagePreload href={FALLBACK_HOME_HERO_PRELOAD_URL} />
-        <HomePageFallback
-          products={data.products.edges}
-          promoBanner={promoBanner}
-          promoBannerUrl={promoBannerUrl}
-        />
-      </>
+      <HomePageFallback
+        products={data.products.edges}
+        promoBanner={promoBanner}
+        promoBannerUrl={promoBannerUrl}
+      />
     );
   } catch (error) {
     // Sanity/sheet or other unexpected failures (Shopify fallback is non-throwing — see `fetchHomeFallbackProducts`).

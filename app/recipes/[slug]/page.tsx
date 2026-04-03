@@ -11,6 +11,7 @@ import { ExploreProductsSection } from "@/components/sections/ExploreProductsSec
 import { BackToRecipesLink } from "@/components/BackToRecipesLink";
 import { RecipeImageGallery } from "./RecipeImageGallery";
 import { normalizeRecipeSlugParam } from "@/lib/recipeSlug";
+import { hasAnyVariantAvailableForSale } from "@/lib/productVariantSelection";
 
 const LIGHT_BG = "var(--brand-light-blue-bg)";
 
@@ -297,7 +298,9 @@ export default async function RecipePage({
                           Shop
                         </Link>
                       ) : null}
-                      {product && variants.length > 0 && (
+                      {product &&
+                        variants.length > 0 &&
+                        hasAnyVariantAvailableForSale(variants) && (
                         <AddToCart
                           productTitle={product.title}
                           productType={product.productType ?? undefined}

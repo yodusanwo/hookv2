@@ -13,7 +13,8 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 import { isPetProductPage } from "@/lib/isPetProductPage";
-import { PdpHeroReviewCount } from "./PdpHeroReviewCount";
+import { getKlaviyoReviewSummaryForProduct } from "@/lib/klaviyoReviews";
+import { heroReviewCountFromProductAndKlaviyo } from "@/lib/pdpReviewDisplay";
 import { PdpReviewsSection } from "./PdpReviewsSection";
 import { PdpRecipesSection } from "./PdpRecipesSection";
 import { ProductViewTracker } from "./ProductViewTracker";
@@ -516,6 +517,15 @@ export default async function ProductPage({
 
   const firstVariantPrice = variants[0]?.price?.amount ?? "0";
 
+  /** Resolve in the main RSC (not a nested Suspense chunk) so “N reviews” doesn’t pop in after Klaviyo. */
+  const productScopedReviewSummary = await getKlaviyoReviewSummaryForProduct(
+    product.id,
+  );
+  const heroReviewCount = heroReviewCountFromProductAndKlaviyo(
+    product,
+    productScopedReviewSummary,
+  );
+
   return (
     <>
       <ScrollToTop />
@@ -583,15 +593,8 @@ export default async function ProductPage({
                   ))}
                 </span>
                 <span className="text-slate-700">
-                  <Suspense
-                    fallback={
-                      <span className="inline-block min-w-[4ch] animate-pulse rounded bg-slate-200/80">
-                        &nbsp;
-                      </span>
-                    }
-                  >
-                    <PdpHeroReviewCount product={product} />
-                  </Suspense>
+                  {heroReviewCount}{" "}
+                  {heroReviewCount === 1 ? "review" : "reviews"}
                 </span>
               </div>
 

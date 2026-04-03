@@ -2,7 +2,7 @@
 export function PdpReviewsSectionSkeleton() {
   return (
     <section
-      className="flex min-h-0 flex-col justify-center pb-12 md:pb-14 pt-28 md:pt-[clamp(5rem,12vw,8rem)]"
+      className="flex min-h-0 flex-col justify-center pb-12 md:pb-14 pt-36 md:pt-[clamp(8rem,12vw,10rem)]"
       style={{ backgroundColor: "#F8F8F8" }}
       aria-hidden
     >

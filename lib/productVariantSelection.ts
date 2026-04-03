@@ -35,6 +35,13 @@ function variantMatchesId(v: ProductVariantOption, id: string): boolean {
   return false;
 }
 
+/** True if at least one variant can be purchased (Storefront `availableForSale`). */
+export function hasAnyVariantAvailableForSale(
+  variants: ProductVariantOption[],
+): boolean {
+  return variants.some((v) => v.availableForSale);
+}
+
 export function getInitialSelectedOptions(
   variants: ProductVariantOption[],
   variantId?: string | null,
