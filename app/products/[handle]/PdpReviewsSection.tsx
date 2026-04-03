@@ -15,10 +15,7 @@ export async function PdpReviewsSection({
   product: ProductForReviews;
 }) {
   const k = await getPdpReviewData(product.id);
-  const { reviewsToShow, productReviewSummary } = derivePdpReviewCarouselState(
-    product,
-    k,
-  );
+  const { reviewsToShow } = derivePdpReviewCarouselState(product, k);
 
   return (
     <section
@@ -35,11 +32,7 @@ export async function PdpReviewsSection({
           variant="section"
         />
         {reviewsToShow.length > 0 ? (
-          <ReviewsCarousel
-            reviews={reviewsToShow}
-            reviewSummary={productReviewSummary}
-            expandFirstReviewFullText
-          />
+          <ReviewsCarousel reviews={reviewsToShow} expandFirstReviewFullText />
         ) : (
           <p className="mt-10 text-center section-description-block">
             No reviews yet. Be the first to leave a review after your purchase.

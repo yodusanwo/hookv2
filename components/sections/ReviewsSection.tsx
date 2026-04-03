@@ -1,5 +1,5 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getKlaviyoReviewsForSection, getKlaviyoReviewsSummary } from "@/lib/klaviyoReviews";
+import { getKlaviyoReviewsForSection } from "@/lib/klaviyoReviews";
 import { ReviewsCarousel } from "./ReviewsCarousel";
 
 type Review = { stars?: number; text?: string; name?: string; date?: string; createdAt?: string };
@@ -17,15 +17,10 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
   const sanityReviews = block.reviews ?? [];
 
   let reviews: Review[] = [];
-  let reviewSummary: { totalCount: number; averageRating: number } | null = null;
   try {
-    const [klaviyoReviews, summary] = await Promise.all([
-      getKlaviyoReviewsForSection(),
-      getKlaviyoReviewsSummary(),
-    ]);
+    const klaviyoReviews = await getKlaviyoReviewsForSection();
     if (klaviyoReviews.length > 0) {
       reviews = klaviyoReviews;
-      reviewSummary = summary.totalCount > 0 || summary.averageRating > 0 ? summary : null;
     } else {
       reviews = sanityReviews;
     }
@@ -56,7 +51,7 @@ export async function ReviewsSection({ block }: { block: ReviewsBlock }) {
           description={description || undefined}
           variant="section"
         />
-        <ReviewsCarousel reviews={reviews} reviewSummary={reviewSummary} />
+        <ReviewsCarousel reviews={reviews} />
       </div>
     </section>
   );

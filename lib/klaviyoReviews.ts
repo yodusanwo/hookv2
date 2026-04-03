@@ -1,6 +1,6 @@
 /**
- * Fetch the last three published 5-star reviews from Klaviyo Reviews API.
- * Use only server-side (API route or server component). Never expose KLAVIYO_PRIVATE_API_KEY to the client.
+ * Klaviyo Reviews API helpers. Use only server-side; never expose KLAVIYO_PRIVATE_API_KEY to the client.
+ * Carousels use reviews with status **featured** (mark in Klaviyo Reviews as Featured).
  */
 
 import { cache } from "react";
@@ -85,7 +85,7 @@ async function fetchKlaviyoReviewsUncached(): Promise<MappedReview[]> {
   if (!apiKey) return [];
 
   const params = new URLSearchParams({
-    filter: "and(equals(status,'published'),equals(rating,5))",
+    filter: "equals(status,'featured')",
     "fields[review]": "rating,author,content,title,created,review_type,status",
     "page[size]": String(PAGE_SIZE),
     sort: "-created",
@@ -121,15 +121,14 @@ async function fetchKlaviyoReviewsUncached(): Promise<MappedReview[]> {
 }
 
 /**
- * Returns the last three 5-star published Klaviyo reviews, mapped to { stars, text, name, date }.
- * Cached for 1 minute so new 5-star reviews appear shortly after they are published.
- * Call only from server (API route or server component).
+ * Returns up to three **featured** Klaviyo reviews, mapped to { stars, text, name, date }.
+ * Cached for 1 minute. Call only from server (API route or server component).
  */
 export async function getKlaviyoReviews(): Promise<MappedReview[]> {
   const { unstable_cache } = await import("next/cache");
   const cached = unstable_cache(
     fetchKlaviyoReviewsUncached,
-    ["klaviyo-reviews"],
+    ["klaviyo-reviews", "v2-featured"],
     { revalidate: 60 },
   );
   return cached();
@@ -139,9 +138,9 @@ async function fetchKlaviyoReviewsForSectionUncached(): Promise<MappedReview[]> 
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
   if (!apiKey) return [];
 
-  /** All published reviews (any rating), same pool as summary — home + product carousel rotate through full set. */
+  /** Featured reviews only (Klaviyo Reviews → mark as Featured). */
   const params = new URLSearchParams({
-    filter: "equals(status,'published')",
+    filter: "equals(status,'featured')",
     "fields[review]": "rating,author,content,title,created,review_type,status",
     "page[size]": String(SECTION_REVIEWS_PAGE_SIZE),
     sort: "-created",
@@ -193,14 +192,14 @@ async function fetchKlaviyoReviewsForSectionUncached(): Promise<MappedReview[]> 
 }
 
 /**
- * Returns published Klaviyo reviews for the reviews carousel (home, product page, etc.).
- * Paginates through all published reviews (any rating). Cached 1 minute. Server-only.
+ * Returns **featured** Klaviyo reviews for the reviews carousel (home, product page, etc.).
+ * Paginates through all featured reviews. Cached 1 minute. Server-only.
  */
 export async function getKlaviyoReviewsForSection(): Promise<MappedReview[]> {
   const { unstable_cache } = await import("next/cache");
   const cached = unstable_cache(
     fetchKlaviyoReviewsForSectionUncached,
-    ["klaviyo-reviews-section", "v2-all-published"],
+    ["klaviyo-reviews-section", "v3-featured-only"],
     { revalidate: 60 },
   );
   return cached();
@@ -312,17 +311,24 @@ export function shopifyProductReviewItemId(numericShopifyProductId: string): str
   return `$shopify:::${catalog}:::${numericShopifyProductId}`;
 }
 
+/** Published-only filter for aggregates (hero count, PDP summary stats). */
 function publishedReviewsFilterForShopifyProduct(numericShopifyProductId: string): string {
   const itemId = shopifyProductReviewItemId(numericShopifyProductId);
   return `and(equals(status,'published'),equals(item.id,"${itemId}"))`;
 }
 
+/** Featured-only filter for review carousels (Klaviyo → mark review as Featured). */
+function featuredReviewsFilterForShopifyProduct(numericShopifyProductId: string): string {
+  const itemId = shopifyProductReviewItemId(numericShopifyProductId);
+  return `and(equals(status,'featured'),equals(item.id,"${itemId}"))`;
+}
+
 const PRODUCT_REVIEWS_PAGE_SIZE = 6;
 
 /**
- * Fetches published Klaviyo reviews for a single product.
+ * Fetches **featured** Klaviyo reviews for a single product.
  * @param shopifyProductGid - Shopify product GID from Storefront API (e.g. gid://shopify/Product/123).
- * @returns Up to PRODUCT_REVIEWS_PAGE_SIZE reviews for that product, sorted by created desc.
+ * @returns Up to PRODUCT_REVIEWS_PAGE_SIZE featured reviews for that product, sorted by created desc.
  * Call only from server (API route or server component).
  */
 export async function getKlaviyoReviewsForProduct(
@@ -334,7 +340,7 @@ export async function getKlaviyoReviewsForProduct(
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
   if (!apiKey) return [];
 
-  const filter = publishedReviewsFilterForShopifyProduct(numericId);
+  const filter = featuredReviewsFilterForShopifyProduct(numericId);
 
   const params = new URLSearchParams({
     filter,

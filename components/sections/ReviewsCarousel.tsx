@@ -9,97 +9,16 @@ export type ReviewItem = {
   date?: string;
 };
 
+/** @deprecated Summary card removed; kept for optional callers — ignored. */
 export type ReviewSummary = { totalCount: number; averageRating: number };
-
-function ReviewSummaryCard({
-  totalCount,
-  averageRating,
-}: {
-  totalCount: number;
-  averageRating: number;
-}) {
-  const displayRating =
-    averageRating > 0
-      ? Number.isInteger(averageRating)
-        ? String(averageRating)
-        : averageRating.toFixed(1)
-      : "0";
-  const displayCount = totalCount.toLocaleString();
-
-  return (
-    <div
-      className="section-card flex min-h-[200px] w-full max-w-full flex-col items-center justify-center gap-2 p-4 text-center sm:min-h-[220px] sm:max-w-[355px] sm:p-6 md:max-w-full"
-      style={{
-        backgroundColor: "#FFF",
-        border: "1px solid #E5E7EB",
-        borderRadius: 8,
-        fontFamily: "var(--font-inter), Inter, sans-serif",
-      }}
-    >
-      <div
-        className="flex justify-center items-center gap-0.5"
-        style={{ color: "#FFD700" }}
-        aria-hidden
-      >
-        {Array.from({ length: 5 }).map((_, i) => (
-          <span
-            key={i}
-            className="flex items-center justify-center"
-            style={{ width: 24, height: 24, fontSize: "1.5rem", lineHeight: 1 }}
-          >
-            ★
-          </span>
-        ))}
-      </div>
-      <p
-        className="font-medium"
-        style={{
-          color: "#1E1E1E",
-          fontSize: "0.9375rem",
-          fontWeight: 500,
-          lineHeight: "normal",
-        }}
-      >
-        Average Customer Ratings
-      </p>
-      <p
-        className="font-bold"
-        style={{
-          color: "#1E1E1E",
-          fontSize: "1.75rem",
-          fontWeight: 700,
-          lineHeight: "normal",
-          fontStyle: "italic",
-        }}
-      >
-        {displayRating}/5
-      </p>
-      <p
-        style={{
-          color: "#9CA3AF",
-          fontSize: "0.875rem",
-          fontWeight: 400,
-          lineHeight: "normal",
-        }}
-      >
-        {displayCount} customer review{totalCount === 1 ? "" : "s"}
-      </p>
-    </div>
-  );
-}
 
 const REVIEW_PREVIEW_LENGTH = 300;
 
 function ReviewCard({
   r,
-  reviewNumber,
-  totalReviews,
   showFullText = false,
 }: {
   r: ReviewItem;
-  /** 1-based index for Q/A (e.g. 4 = "Review #4"). */
-  reviewNumber?: number;
-  totalReviews?: number;
   /** When true, always show full review (no 300-char trim / See more). */
   showFullText?: boolean;
 }) {
@@ -116,21 +35,6 @@ function ReviewCard({
       className="section-card relative flex min-h-[200px] w-full max-w-full flex-col justify-center p-4 text-center sm:min-h-[220px] sm:max-w-[355px] sm:p-6 md:max-w-full"
       style={{ backgroundColor: "#FFF" }}
     >
-      {reviewNumber != null && (
-        <p
-          className="mb-2 text-right sm:absolute sm:top-3 sm:right-3 sm:mb-0"
-          style={{
-            color: "#9CA3AF",
-            fontFamily: "var(--font-inter), Inter, sans-serif",
-            fontSize: "0.75rem",
-            fontWeight: 500,
-            lineHeight: "normal",
-          }}
-        >
-          Review #{reviewNumber}
-          {totalReviews != null ? ` of ${totalReviews}` : ""}
-        </p>
-      )}
       {r.stars != null && (
         <div
           className="flex justify-center items-center gap-0.5"
@@ -211,11 +115,11 @@ const AUTO_SCROLL_INTERVAL_MS = 5500;
 
 export function ReviewsCarousel({
   reviews,
-  reviewSummary = null,
+  reviewSummary: _reviewSummary = null,
   expandFirstReviewFullText = false,
 }: {
   reviews: ReviewItem[];
-  /** When provided (e.g. from Klaviyo), summary card shows these. When null, derived from reviews. */
+  /** Ignored — average-rating summary card removed site-wide. */
   reviewSummary?: ReviewSummary | null;
   /** Product page: first visible review card shows full text (no truncation). */
   expandFirstReviewFullText?: boolean;
@@ -227,21 +131,6 @@ export function ReviewsCarousel({
   const canPrev = reviews.length > 1 && index > 0;
   const canNext = reviews.length > 1 && index < reviews.length - 1;
 
-  const summary: ReviewSummary = React.useMemo(() => {
-    if (
-      reviewSummary &&
-      (reviewSummary.totalCount > 0 || reviewSummary.averageRating > 0)
-    )
-      return reviewSummary;
-    const total = reviews.length;
-    const withStars = reviews.filter((r) => r.stars != null && r.stars > 0);
-    const avg =
-      withStars.length > 0
-        ? withStars.reduce((s, r) => s + (r.stars ?? 0), 0) / withStars.length
-        : 0;
-    return { totalCount: total, averageRating: Math.round(avg * 10) / 10 };
-  }, [reviewSummary, reviews]);
-
   React.useEffect(() => {
     if (reviews.length <= 1 || isPaused) return;
     const id = setInterval(() => {
@@ -250,24 +139,14 @@ export function ReviewsCarousel({
     return () => clearInterval(id);
   }, [reviews.length, isPaused]);
 
-  const showSummary = summary.totalCount > 0 || summary.averageRating > 0;
-
   return (
     <div
       className="reviews-carousel-root w-full min-w-0 max-w-full overflow-x-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Mobile: summary card (if we have summary) then single review with arrows and dots */}
+      {/* Mobile: single review with arrows */}
       <div className="mt-6 flex w-full min-w-0 flex-col items-stretch gap-5 sm:mt-10 sm:gap-6 md:hidden">
-        {showSummary && (
-          <div className="mx-auto w-full max-w-full">
-            <ReviewSummaryCard
-              totalCount={summary.totalCount}
-              averageRating={summary.averageRating}
-            />
-          </div>
-        )}
         <div className="flex w-full min-w-0 flex-col items-center justify-center gap-3">
           <div className="flex w-full min-w-0 items-stretch gap-1 sm:gap-2">
             <button
@@ -295,8 +174,6 @@ export function ReviewsCarousel({
               {current ? (
                 <ReviewCard
                   r={current}
-                  reviewNumber={index + 1}
-                  totalReviews={reviews.length}
                   showFullText={expandFirstReviewFullText}
                 />
               ) : null}
@@ -328,18 +205,8 @@ export function ReviewsCarousel({
         </div>
       </div>
 
-      {/* Desktop: 4 columns — column 1 = summary card (static), columns 2–4 = auto-scrolling review cards */}
-      <div
-        className={`mx-auto mt-10 hidden w-full min-w-0 max-w-6xl gap-4 md:grid md:justify-items-center md:gap-6 lg:gap-8 ${showSummary ? "md:grid-cols-4" : "md:grid-cols-3"}`}
-      >
-        {showSummary && (
-          <div className="w-full max-w-[355px]">
-            <ReviewSummaryCard
-              totalCount={summary.totalCount}
-              averageRating={summary.averageRating}
-            />
-          </div>
-        )}
+      {/* Desktop: 3 auto-scrolling review cards */}
+      <div className="mx-auto mt-10 hidden w-full min-w-0 max-w-6xl gap-4 md:grid md:grid-cols-3 md:justify-items-center md:gap-6 lg:gap-8">
         {[0, 1, 2].map((offset) => {
           const i = (index + offset) % L;
           const r = reviews[i];
@@ -348,8 +215,6 @@ export function ReviewsCarousel({
               {r ? (
                 <ReviewCard
                   r={r}
-                  reviewNumber={i + 1}
-                  totalReviews={reviews.length}
                   showFullText={expandFirstReviewFullText && offset === 0}
                 />
               ) : null}
