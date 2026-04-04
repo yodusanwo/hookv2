@@ -6,6 +6,8 @@ export const exploreProductsBlock = defineType({
   name: "exploreProductsBlock",
   type: "object",
   title: "Explore Products (Catch of the day)",
+  description:
+    "Title, description, and category cards: edit on the **Home** page — that content is reused on Story, Calendar, and other pages. Per-page: **background color**, **hide bottom wave**.",
   fields: [
     defineField({
       name: "backgroundColor",

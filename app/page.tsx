@@ -13,6 +13,8 @@
  * - Hero LCP: first slide uses `priority` on `next/image` in `HeroCarousel` (do not add a
  *   raw-CDN `<link rel="preload">` — it won’t match `/_next/image` URLs and Chrome warns).
  * - Promo banner text/link come from `SITE_SETTINGS_QUERY` when Sanity is available.
+ * - `PageBuilder` receives canonical Explore, Dockside, and Local Foods blocks from the same
+ *   Home queries used on other routes so merge behavior matches everywhere.
  *
  * Queries use `revalidate: 60` (ISR-ish caching). Sheet fetch uses its own revalidation
  * inside `lib/googleSheets.ts`.
@@ -26,6 +28,7 @@ import {
   SITE_SETTINGS_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
   HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+  HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { fetchHomeFallbackProducts } from "@/lib/fetchHomeFallbackProducts";
 
@@ -45,34 +48,47 @@ export default async function Home() {
     let canonicalDocksideMarketsBlock: Parameters<
       typeof PageBuilder
     >[0]["canonicalDocksideMarketsBlock"] = null;
+    let canonicalLocalFoodsCoopsBlock: Parameters<
+      typeof PageBuilder
+    >[0]["canonicalLocalFoodsCoopsBlock"] = null;
 
     if (hasSanity) {
       try {
-        // Homepage document, promo, shared Explore + Dockside blocks (merged on other routes via PageBuilder).
-        const [homePage, settings, canonicalExplore, canonicalDockside] =
-          await Promise.all([
-            client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
-            client.fetch<{ promoBanner?: string; promoBannerUrl?: string } | null>(
-              SITE_SETTINGS_QUERY,
-              {},
-              { next: { revalidate: 60 } },
-            ),
-            client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(
-              EXPLORE_PRODUCTS_BLOCK_QUERY,
-              {},
-              { next: { revalidate: 60 } },
-            ),
-            client.fetch<Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]>(
-              HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
-              {},
-              { next: { revalidate: 60 } },
-            ),
-          ]);
+        const [
+          homePage,
+          settings,
+          canonicalExplore,
+          canonicalDockside,
+          canonicalLocalFoods,
+        ] = await Promise.all([
+          client.fetch<{ sections?: unknown[] } | null>(HOMEPAGE_QUERY, {}, { next: { revalidate: 60 } }),
+          client.fetch<{ promoBanner?: string; promoBannerUrl?: string } | null>(
+            SITE_SETTINGS_QUERY,
+            {},
+            { next: { revalidate: 60 } },
+          ),
+          client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(
+            EXPLORE_PRODUCTS_BLOCK_QUERY,
+            {},
+            { next: { revalidate: 60 } },
+          ),
+          client.fetch<Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]>(
+            HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+            {},
+            { next: { revalidate: 60 } },
+          ),
+          client.fetch<Parameters<typeof PageBuilder>[0]["canonicalLocalFoodsCoopsBlock"]>(
+            HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
+            {},
+            { next: { revalidate: 60 } },
+          ),
+        ]);
         sanityPage = homePage;
         promoBanner = settings?.promoBanner ?? null;
         promoBannerUrl = settings?.promoBannerUrl ?? null;
         canonicalExploreProductsBlock = canonicalExplore ?? null;
         canonicalDocksideMarketsBlock = canonicalDockside ?? null;
+        canonicalLocalFoodsCoopsBlock = canonicalLocalFoods ?? null;
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
@@ -97,6 +113,7 @@ export default async function Home() {
             promoBannerUrl={promoBannerUrl}
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
             canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
+            canonicalLocalFoodsCoopsBlock={canonicalLocalFoodsCoopsBlock}
           />
         </main>
       );

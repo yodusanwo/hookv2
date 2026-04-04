@@ -40,6 +40,8 @@ export const page = defineType({
       name: "sections",
       type: "array",
       title: "Sections",
+      description:
+        "Build the page from sections. **Local Foods Co-ops**, **Dockside and Farmers Markets**, and **Explore Our Products**: add or edit those blocks on the **Home** page (slug: home) — title, copy, logos, and categories there are what visitors see everywhere those blocks appear (Story, Calendar, Recipes, etc.). On other pages, only the section **background color** (and Explore **hide bottom wave** where applicable) is page-specific; the rest comes from Home.",
       of: [
         { type: "heroBlock" },
         { type: "catchOfTheDayBlock" },

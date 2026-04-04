@@ -6,6 +6,7 @@ import {
   PAGE_BY_SLUG_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
   HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+  HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
 } from "@/lib/sanity";
 
 /** Slugs that are reserved by other app routes (e.g. /contact, /story) or reserved for future use. */
@@ -80,21 +81,31 @@ export default async function DynamicPage({
   let canonicalDocksideMarketsBlock: Parameters<
     typeof PageBuilder
   >[0]["canonicalDocksideMarketsBlock"] = null;
+  let canonicalLocalFoodsCoopsBlock: Parameters<
+    typeof PageBuilder
+  >[0]["canonicalLocalFoodsCoopsBlock"] = null;
   try {
-    [page, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock] =
-      await Promise.all([
-        client.fetch<{ title?: string; sections?: unknown[] } | null>(
-          PAGE_BY_SLUG_QUERY,
-          { slug },
-          { next: { revalidate: 60 } },
-        ),
-        client.fetch<
-          Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
-        >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-        client.fetch<
-          Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
-        >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-      ]);
+    [
+      page,
+      canonicalExploreProductsBlock,
+      canonicalDocksideMarketsBlock,
+      canonicalLocalFoodsCoopsBlock,
+    ] = await Promise.all([
+      client.fetch<{ title?: string; sections?: unknown[] } | null>(
+        PAGE_BY_SLUG_QUERY,
+        { slug },
+        { next: { revalidate: 60 } },
+      ),
+      client.fetch<
+        Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
+      >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+      client.fetch<
+        Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
+      >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+      client.fetch<
+        Parameters<typeof PageBuilder>[0]["canonicalLocalFoodsCoopsBlock"]
+      >(HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+    ]);
   } catch {
     notFound();
   }
@@ -144,6 +155,7 @@ export default async function DynamicPage({
         pageSlug={slug}
         canonicalExploreProductsBlock={canonicalExploreProductsBlock}
         canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
+        canonicalLocalFoodsCoopsBlock={canonicalLocalFoodsCoopsBlock}
       />
     </main>
   );

@@ -6,7 +6,10 @@ import {
   STORY_PAGE_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
   HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+  HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
 } from "@/lib/sanity";
+import { DocksideMarketsSection } from "@/components/sections/DocksideMarketsSection";
+import type { CanonicalDocksideMarketsBlock } from "@/components/sections/PageBuilder";
 import { FALLBACK_HOME_HERO_PRELOAD_URL } from "@/lib/homeHeroPreloadUrl";
 import { shopifyFetch } from "@/lib/shopify";
 import { Carousel } from "@/app/components/Carousel";
@@ -104,22 +107,32 @@ export default async function Story() {
     let canonicalDocksideMarketsBlock: Parameters<
       typeof PageBuilder
     >[0]["canonicalDocksideMarketsBlock"] = null;
+    let canonicalLocalFoodsCoopsBlock: Parameters<
+      typeof PageBuilder
+    >[0]["canonicalLocalFoodsCoopsBlock"] = null;
     if (hasSanity) {
       try {
-        [sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock] =
-          await Promise.all([
-            client.fetch<{ sections?: unknown[] } | null>(
-              STORY_PAGE_QUERY,
-              {},
-              { next: { revalidate: 60 } },
-            ),
-            client.fetch<
-              Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
-            >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-            client.fetch<
-              Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
-            >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-          ]);
+        [
+          sanityPage,
+          canonicalExploreProductsBlock,
+          canonicalDocksideMarketsBlock,
+          canonicalLocalFoodsCoopsBlock,
+        ] = await Promise.all([
+          client.fetch<{ sections?: unknown[] } | null>(
+            STORY_PAGE_QUERY,
+            {},
+            { next: { revalidate: 60 } },
+          ),
+          client.fetch<
+            Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
+          >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+          client.fetch<
+            Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
+          >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+          client.fetch<
+            Parameters<typeof PageBuilder>[0]["canonicalLocalFoodsCoopsBlock"]
+          >(HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+        ]);
       } catch (e) {
         console.warn("Sanity fetch failed, using fallback:", e);
       }
@@ -169,15 +182,27 @@ export default async function Story() {
             ourStoryVariant="story-page"
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
             canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
+            canonicalLocalFoodsCoopsBlock={canonicalLocalFoodsCoopsBlock}
           />
         </main>
       );
     }
 
-    const data = await shopifyFetch<ProductsResponse>({
-      query: PRODUCTS_QUERY,
-      variables: { first: 12 },
-    });
+    const [data, homeDocksideBlock] = await Promise.all([
+      shopifyFetch<ProductsResponse>({
+        query: PRODUCTS_QUERY,
+        variables: { first: 12 },
+      }),
+      hasSanity && client
+        ? client
+            .fetch<CanonicalDocksideMarketsBlock | null>(
+              HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+              {},
+              { next: { revalidate: 60 } },
+            )
+            .catch(() => null)
+        : Promise.resolve(null),
+    ]);
 
     const products = data.products.edges;
 
@@ -348,40 +373,19 @@ export default async function Story() {
           </div>
         </section>
 
-        <section
-          id="markets"
-          className="border-y border-black/5 bg-white py-14"
-        >
-          <div className="mx-auto max-w-6xl px-4">
-            <SectionHeading
-              title="Find us at these Chicagoland Farmers Markets"
-              variant="display"
-              theme="light"
-            />
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {[
-                "Lincoln Park",
-                "Uptown",
-                "Lakeview",
-                "South Loop",
-                "Logan Square",
-                "Wicker Park",
-              ].map((name) => (
-                <div
-                  key={name}
-                  className="flex items-center justify-center rounded-card border border-black/5 bg-slate-50 p-5 text-xs font-semibold text-slate-700"
-                >
-                  {name}
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 flex justify-center">
-              <a href="#contact" className="btn-primary">
-                Pick Fresh Farmers Markets and Event Calendar
-              </a>
-            </div>
-          </div>
-        </section>
+        {homeDocksideBlock ? (
+          <DocksideMarketsSection
+            block={
+              {
+                ...homeDocksideBlock,
+                backgroundColor: homeDocksideBlock.backgroundColor ?? "#ffffff",
+              } as Parameters<typeof DocksideMarketsSection>[0]["block"]
+            }
+            topPadding="clamp(4.5rem, 9vw, 6.75rem)"
+            bottomPadding="clamp(4.5rem, 9vw, 6.75rem)"
+            minHeight={331}
+          />
+        ) : null}
 
         <section id="learn" className="py-14 bg-slate-50">
           <div className="mx-auto max-w-3xl px-4 text-center">

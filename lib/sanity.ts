@@ -198,6 +198,23 @@ export const HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY = `*[_type == "page" && slug.
   }
 }`;
 
+/** First Local Foods Co-ops block on Home — title, description, and logos are merged site-wide when a page passes `canonicalLocalFoodsCoopsBlock`; each page can still override `backgroundColor`. */
+export const HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "localFoodsCoopsBlock"][0] {
+  _type,
+  _key,
+  backgroundColor,
+  title,
+  description,
+  body,
+  image { asset-> },
+  "logoButtons": logoButtons[] {
+    label,
+    url,
+    bordered,
+    logo { asset-> }
+  }
+}`;
+
 /** Recipe cards from the home page `recipesBlock` (manual title/image/url). Used to pad PDP recipe grid to 3. */
 export const HOMEPAGE_RECIPES_BLOCK_QUERY = `*[_type == "page" && slug.current == "home"][0].sections[_type == "recipesBlock"][0] {
   "recipes": recipes[] {

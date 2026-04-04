@@ -43,21 +43,43 @@ export function Footer({
     (isShopRoute ? SHOP_PAGE_WAVE_BG : pathname === "/contact" ? CONTACT_PAGE_FOOTER_BG : undefined);
   const isRecipesPage = pathname === "/recipes" || pathname?.startsWith("/recipes/");
   const waveStripPadding = isRecipesPage ? "pt-0" : "pt-6 sm:pt-8";
+  /** Default `py-12` top padding reads as a large navy gap under the wave on mobile (notably /wild-vs-farmed). Tighten top on small screens only. */
+  const isWildVsFarmedPage = pathname === "/wild-vs-farmed";
+  const mainFooterContentPadding = isWildVsFarmedPage
+    ? "pt-3 pb-16 md:py-12 md:pb-12"
+    : "py-12 pb-16 md:pb-12";
   return (
     <footer id="contact" className="relative overflow-visible" style={{ backgroundColor: "var(--footer-bg)" }}>
       {/* Wave above footer content — pt for drop-shadow clearance on mobile; minimal on /recipes to avoid gap */}
-      <div className={`w-full section-bg-light ${waveStripPadding}`} aria-hidden style={waveBg ? { backgroundColor: waveBg } : undefined}>
+      <div
+        className={`flex w-full flex-col leading-none section-bg-light ${waveStripPadding}`}
+        aria-hidden
+        style={waveBg ? { backgroundColor: waveBg } : undefined}
+      >
+        {/*
+          Hairline on narrow/3x screens (Safari): white/light can show between PNG and navy block.
+          flex-col + leading-none; bridge + overlap cover subpixel gaps (not z-index).
+        */}
         <img
           src="/wavefooter.png"
           alt=""
           loading="lazy"
           decoding="async"
           fetchPriority="low"
-          className="w-full h-auto block align-bottom navy-wave-outline-top"
+          className="block h-auto w-full max-w-full align-bottom navy-wave-outline-top [transform:translateZ(0)]"
         />
       </div>
+      {/* Solid footer-color strip pulled up over the wave bottom — fixes 1–2px seam on small viewports */}
+      <div
+        className="pointer-events-none relative z-[2] h-[3px] w-full -mt-[3px] md:h-px md:-mt-px"
+        style={{ backgroundColor: "var(--footer-bg)" }}
+        aria-hidden
+      />
       {/* Main footer content — mobile: single column centered, logo/copyright at bottom; desktop: 4 columns */}
-      <div className="mx-auto max-w-6xl px-4 py-12 pb-16 md:pb-12" style={{ backgroundColor: "var(--footer-bg)" }}>
+      <div
+        className={`relative z-[1] mx-auto max-w-6xl px-4 ${mainFooterContentPadding}`}
+        style={{ backgroundColor: "var(--footer-bg)" }}
+      >
         <div className="flex flex-col gap-0 md:grid md:gap-12 md:[grid-template-columns:1fr_1.15fr_0.5fr_3fr]">
           {/* Column 1: Logo + copyright — on mobile order-last so it appears at bottom */}
           <div className="order-last flex flex-col items-center text-center md:order-none md:items-start md:text-left">

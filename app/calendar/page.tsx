@@ -6,6 +6,7 @@ import {
   HOMEPAGE_UPCOMING_EVENTS_BLOCK_QUERY,
   EXPLORE_PRODUCTS_BLOCK_QUERY,
   HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+  HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { getEventsFromSheet } from "@/lib/googleSheets";
 
@@ -38,25 +39,33 @@ export default async function CalendarPage() {
   }
 
   try {
-    const [sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock, homeEventsBlock] =
-      await Promise.all([
-        client.fetch<{ title?: string; sections?: unknown[] } | null>(
-          PAGE_BY_SLUG_QUERY,
-          { slug: "calendar" },
-          { next: { revalidate: 60 } },
-        ),
-        client.fetch<
-          Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
-        >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-        client.fetch<
-          Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
-        >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
-        client.fetch<Record<string, unknown> | null>(
-          HOMEPAGE_UPCOMING_EVENTS_BLOCK_QUERY,
-          {},
-          { next: { revalidate: 60 } },
-        ),
-      ]);
+    const [
+      sanityPage,
+      canonicalExploreProductsBlock,
+      canonicalDocksideMarketsBlock,
+      canonicalLocalFoodsCoopsBlock,
+      homeEventsBlock,
+    ] = await Promise.all([
+      client.fetch<{ title?: string; sections?: unknown[] } | null>(
+        PAGE_BY_SLUG_QUERY,
+        { slug: "calendar" },
+        { next: { revalidate: 60 } },
+      ),
+      client.fetch<
+        Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]
+      >(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+      client.fetch<
+        Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]
+      >(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+      client.fetch<
+        Parameters<typeof PageBuilder>[0]["canonicalLocalFoodsCoopsBlock"]
+      >(HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+      client.fetch<Record<string, unknown> | null>(
+        HOMEPAGE_UPCOMING_EVENTS_BLOCK_QUERY,
+        {},
+        { next: { revalidate: 60 } },
+      ),
+    ]);
 
     if (
       sanityPage?.sections &&
@@ -96,6 +105,7 @@ export default async function CalendarPage() {
             pageSlug="calendar"
             canonicalExploreProductsBlock={canonicalExploreProductsBlock}
             canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
+            canonicalLocalFoodsCoopsBlock={canonicalLocalFoodsCoopsBlock}
           />
         </main>
       );

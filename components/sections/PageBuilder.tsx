@@ -11,6 +11,8 @@
  *   non-home pages can reuse the home Explore copy/collections; see `case "exploreProductsBlock"`.
  * - `canonicalDocksideMarketsBlock` — When set, merged into each `docksideMarketsBlock` so title,
  *   description, and market logos match Home; the page block can still override `backgroundColor`.
+ * - `canonicalLocalFoodsCoopsBlock` — When set, merged into each `localFoodsCoopsBlock` so title,
+ *   description, and co-op logos match Home; the page block can still override `backgroundColor`.
  * - `upcomingEventsBlock` — Google Sheet rows are NOT loaded here; the parent injects `events`
  *   and `eventsLimit` (e.g. `app/page.tsx` for home) before sections reach PageBuilder.
  */
@@ -99,6 +101,24 @@ export type CanonicalDocksideMarketsBlock = {
   [key: string]: unknown;
 };
 
+/** Home Local Foods Co-ops block; merged into each `localFoodsCoopsBlock` when passed. */
+export type CanonicalLocalFoodsCoopsBlock = {
+  _type?: string;
+  _key?: string;
+  title?: string | null;
+  description?: string | null;
+  backgroundColor?: string | null;
+  body?: unknown;
+  image?: { asset?: { _ref?: string } };
+  logoButtons?: Array<{
+    label?: string | null;
+    logo?: { asset?: { _ref?: string } };
+    url?: string | null;
+    bordered?: boolean | null;
+  }> | null;
+  [key: string]: unknown;
+};
+
 export function PageBuilder({
   sections,
   promoBanner,
@@ -117,6 +137,7 @@ export function PageBuilder({
   ourStoryVariant,
   canonicalExploreProductsBlock,
   canonicalDocksideMarketsBlock,
+  canonicalLocalFoodsCoopsBlock,
   promoBannerUrl,
 }: {
   sections?: PageSection[];
@@ -152,6 +173,8 @@ export function PageBuilder({
   canonicalExploreProductsBlock?: CanonicalExploreProductsBlock | null;
   /** When set, Dockside / Farmers Markets blocks use Home’s title, description, and logos; page block can still override backgroundColor (e.g. Calendar keeps its own section background). */
   canonicalDocksideMarketsBlock?: CanonicalDocksideMarketsBlock | null;
+  /** When set, Local Foods Co-ops blocks use Home’s title, description, and logo row; page block can still override backgroundColor. */
+  canonicalLocalFoodsCoopsBlock?: CanonicalLocalFoodsCoopsBlock | null;
 }) {
   const items = sections ?? [];
 
@@ -439,17 +462,32 @@ export function PageBuilder({
                 pageSlug={pageSlug ?? undefined}
               />
             );
-          case "localFoodsCoopsBlock":
+          case "localFoodsCoopsBlock": {
+            const pageLocalFoods = block as {
+              backgroundColor?: string;
+              [key: string]: unknown;
+            };
+            const mergedLocalFoodsBlock = canonicalLocalFoodsCoopsBlock
+              ? {
+                  ...canonicalLocalFoodsCoopsBlock,
+                  backgroundColor:
+                    pageLocalFoods.backgroundColor ??
+                    canonicalLocalFoodsCoopsBlock.backgroundColor,
+                }
+              : pageLocalFoods;
             return (
               <LocalFoodsCoopsSection
                 key={key}
                 block={
-                  block as Parameters<typeof LocalFoodsCoopsSection>[0]["block"]
+                  mergedLocalFoodsBlock as Parameters<
+                    typeof LocalFoodsCoopsSection
+                  >[0]["block"]
                 }
                 hideWave={hideLocalFoodsCoopsWave}
                 bottomPaddingClass={localFoodsCoopsBottomPaddingClass}
               />
             );
+          }
           case "faqBlock":
             return (
               <FaqSection

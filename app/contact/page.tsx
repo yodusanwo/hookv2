@@ -1,6 +1,12 @@
 import { ContactForm } from "./ContactForm";
 import { PageBuilder } from "@/components/sections/PageBuilder";
-import { client, CONTACT_PAGE_QUERY, EXPLORE_PRODUCTS_BLOCK_QUERY, HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY } from "@/lib/sanity";
+import {
+  client,
+  CONTACT_PAGE_QUERY,
+  EXPLORE_PRODUCTS_BLOCK_QUERY,
+  HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY,
+  HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
+} from "@/lib/sanity";
 
 export const metadata = {
   title: "Contact | Hook Point",
@@ -16,9 +22,11 @@ export default async function ContactPage() {
 
   let canonicalExploreProductsBlock: Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"] = null;
   let canonicalDocksideMarketsBlock: Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"] = null;
+  let canonicalLocalFoodsCoopsBlock: Parameters<typeof PageBuilder>[0]["canonicalLocalFoodsCoopsBlock"] = null;
   if (hasSanity) {
     try {
-      [sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock] = await Promise.all([
+      [sanityPage, canonicalExploreProductsBlock, canonicalDocksideMarketsBlock, canonicalLocalFoodsCoopsBlock] =
+        await Promise.all([
         client.fetch<{ sections?: unknown[] } | null>(
           CONTACT_PAGE_QUERY,
           {},
@@ -26,6 +34,7 @@ export default async function ContactPage() {
         ),
         client.fetch<Parameters<typeof PageBuilder>[0]["canonicalExploreProductsBlock"]>(EXPLORE_PRODUCTS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
         client.fetch<Parameters<typeof PageBuilder>[0]["canonicalDocksideMarketsBlock"]>(HOMEPAGE_DOCKSIDE_MARKETS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
+        client.fetch<Parameters<typeof PageBuilder>[0]["canonicalLocalFoodsCoopsBlock"]>(HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY, {}, { next: { revalidate: 60 } }),
       ]);
     } catch {
       // Use fallback below
@@ -44,6 +53,7 @@ export default async function ContactPage() {
           promoBanner={null}
           canonicalExploreProductsBlock={canonicalExploreProductsBlock}
           canonicalDocksideMarketsBlock={canonicalDocksideMarketsBlock}
+          canonicalLocalFoodsCoopsBlock={canonicalLocalFoodsCoopsBlock}
         />
       </main>
     );
