@@ -109,6 +109,11 @@ export function HeroCarousel({
           ? "hero-carousel-slide-out"
           : "";
 
+    const zoomWrap =
+      options.anim === "none"
+        ? "absolute inset-0 overflow-hidden hero-carousel-media-zoom"
+        : "absolute inset-0 overflow-hidden";
+
     if (item.type === "video") {
       return (
         <div
@@ -120,22 +125,24 @@ export function HeroCarousel({
             className={animClass ? `${IMAGE_LAYER} ${animClass}` : IMAGE_LAYER}
             style={IMAGE_LAYER_STYLE}
           >
-            <video
-              ref={options.attachVideoRef ? videoRef : undefined}
-              className={`${IMAGE_LAYER} object-cover`}
-              style={{
-                ...IMAGE_LAYER_STYLE,
-                objectPosition: "center 100%",
-                transform: mediaTranslateY,
-              }}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              poster={item.poster}
-              src={item.src}
-            />
+            <div className={zoomWrap}>
+              <video
+                ref={options.attachVideoRef ? videoRef : undefined}
+                className={`${IMAGE_LAYER} object-cover`}
+                style={{
+                  ...IMAGE_LAYER_STYLE,
+                  objectPosition: "center 100%",
+                  transform: mediaTranslateY,
+                }}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                poster={item.poster}
+                src={item.src}
+              />
+            </div>
           </div>
         </div>
       );
@@ -151,19 +158,21 @@ export function HeroCarousel({
           className={animClass ? `${IMAGE_LAYER} ${animClass}` : IMAGE_LAYER}
           style={IMAGE_LAYER_STYLE}
         >
-          <Image
-            src={item.src}
-            alt={item.alt}
-            fill
-            priority={options.priority}
-            sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
-            className={`${IMAGE_LAYER} object-cover`}
-            style={{
-              ...IMAGE_LAYER_STYLE,
-              objectPosition: "center 100%",
-              transform: mediaTranslateY,
-            }}
-          />
+          <div className={zoomWrap}>
+            <Image
+              src={item.src}
+              alt={item.alt}
+              fill
+              priority={options.priority}
+              sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
+              className={`${IMAGE_LAYER} object-cover`}
+              style={{
+                ...IMAGE_LAYER_STYLE,
+                objectPosition: "center 100%",
+                transform: mediaTranslateY,
+              }}
+            />
+          </div>
         </div>
       </div>
     );

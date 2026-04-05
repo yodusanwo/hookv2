@@ -201,6 +201,27 @@ h2.section-title,
   }
 }
 
+/* Hero — subtle Ken Burns–style zoom after slide/settle (stable layer only; see HeroCarousel) */
+@keyframes hero-carousel-settle-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+.hero-carousel-media-zoom {
+  transform-origin: center center;
+  animation: hero-carousel-settle-zoom 14s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel-media-zoom {
+    animation: none;
+  }
+}
+
 /* Card radius – single source of truth; change --card-radius in :root to update all cards */
 .rounded-card {
   border-radius: var(--card-radius);
