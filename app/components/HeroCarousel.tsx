@@ -15,6 +15,12 @@ const FONT_INTER = "[font-family:var(--font-inter),Inter,sans-serif]";
 const HERO_SUBLINE_TEXT =
   "max-sm:text-[calc(0.25rem+clamp(0.75rem,1.5vw+0.5rem,1.5rem))] sm:text-[clamp(0.75rem,1.5vw+0.5rem,1.5rem)]";
 
+const HERO_PUSH_MS = 550;
+
+type HeroSlideState =
+  | { kind: "stable"; index: number }
+  | { kind: "pushing"; from: number; to: number };
+
 export function HeroCarousel({
   variant = "default",
   headlineLine1,
@@ -34,19 +40,38 @@ export function HeroCarousel({
   items: CarouselItem[];
   intervalMs?: number;
 }) {
-  const [idx, setIdx] = React.useState(0);
+  const [slide, setSlide] = React.useState<HeroSlideState>({
+    kind: "stable",
+    index: 0,
+  });
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
   const safeItems = items.length ? items : [{ type: "image" as const, src: "", alt: "" }];
+
+  const currentIndex =
+    slide.kind === "stable" ? slide.index : slide.to;
 
   React.useEffect(() => {
     if (safeItems.length <= 1) return;
     const id = window.setInterval(() => {
-      setIdx((i) => (i + 1) % safeItems.length);
+      setSlide((s) => {
+        if (s.kind === "pushing") return s;
+        const next = (s.index + 1) % safeItems.length;
+        return { kind: "pushing", from: s.index, to: next };
+      });
     }, intervalMs);
     return () => window.clearInterval(id);
   }, [safeItems.length, intervalMs]);
 
-  const active = safeItems[idx]!;
+  React.useEffect(() => {
+    if (slide.kind !== "pushing") return;
+    const to = slide.to;
+    const timer = window.setTimeout(() => {
+      setSlide({ kind: "stable", index: to });
+    }, HERO_PUSH_MS);
+    return () => window.clearTimeout(timer);
+  }, [slide]);
+
+  const active = safeItems[currentIndex]!;
 
   React.useEffect(() => {
     if (active.type !== "video") return;
@@ -61,6 +86,96 @@ export function HeroCarousel({
     }
   }, [active]);
 
+  const mediaTranslateY =
+    variant === "story"
+      ? "translateY(calc(6% - 16px))"
+      : "translateY(calc(12% - 16px))";
+
+  function renderMediaLayer(
+    item: CarouselItem,
+    key: string,
+    options: {
+      zClass: string;
+      anim: "in" | "out" | "none";
+      priority: boolean;
+      attachVideoRef: boolean;
+    },
+  ) {
+    if (!item.src) return null;
+    const animClass =
+      options.anim === "in"
+        ? "hero-carousel-slide-in"
+        : options.anim === "out"
+          ? "hero-carousel-slide-out"
+          : "";
+
+    if (item.type === "video") {
+      return (
+        <div
+          key={key}
+          className={`${IMAGE_LAYER} ${options.zClass} overflow-hidden`}
+          style={IMAGE_LAYER_STYLE}
+        >
+          <div
+            className={animClass ? `${IMAGE_LAYER} ${animClass}` : IMAGE_LAYER}
+            style={IMAGE_LAYER_STYLE}
+          >
+            <video
+              ref={options.attachVideoRef ? videoRef : undefined}
+              className={`${IMAGE_LAYER} object-cover`}
+              style={{
+                ...IMAGE_LAYER_STYLE,
+                objectPosition: "center 100%",
+                transform: mediaTranslateY,
+              }}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster={item.poster}
+              src={item.src}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={key}
+        className={`${IMAGE_LAYER} ${options.zClass} overflow-hidden`}
+        style={IMAGE_LAYER_STYLE}
+      >
+        <div
+          className={animClass ? `${IMAGE_LAYER} ${animClass}` : IMAGE_LAYER}
+          style={IMAGE_LAYER_STYLE}
+        >
+          <Image
+            src={item.src}
+            alt={item.alt}
+            fill
+            priority={options.priority}
+            sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
+            className={`${IMAGE_LAYER} object-cover`}
+            style={{
+              ...IMAGE_LAYER_STYLE,
+              objectPosition: "center 100%",
+              transform: mediaTranslateY,
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  const hasAnySrc = safeItems.some((it) => it.src);
+  const showPush =
+    slide.kind === "pushing" &&
+    safeItems.length > 1 &&
+    safeItems[slide.from]?.src &&
+    safeItems[slide.to]?.src;
+
   return (
     <section className="relative -mt-[40px] w-full min-w-0 max-w-full overflow-visible">
       {/* Hero image area: responsive height, 760px on desktop; story variant taller */}
@@ -71,60 +186,29 @@ export function HeroCarousel({
             : "relative w-full overflow-hidden h-[min(75vh,560px)] sm:h-[min(70vh,580px)] md:h-[760px]"
         }
       >
-        {/* One hero media item at a time (mobile LCP: avoid loading every slide’s full-res asset up front). */}
-        {safeItems.some((it) => it.src) ? (
-          active.src ? (
-            active.type === "video" ? (
-              <video
-                key={active.src}
-                ref={videoRef}
-                className={`${IMAGE_LAYER} z-[1] object-cover`}
-                style={
-                  variant === "story"
-                    ? {
-                        ...IMAGE_LAYER_STYLE,
-                        objectPosition: "center 100%",
-                        transform: "translateY(calc(6% - 16px))",
-                      }
-                    : {
-                        ...IMAGE_LAYER_STYLE,
-                        objectPosition: "center 100%",
-                        transform: "translateY(calc(12% - 16px))",
-                      }
-                }
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                poster={active.poster}
-                src={active.src}
-              >
-              </video>
-            ) : (
-            <Image
-              key={active.src}
-              src={active.src}
-              alt={active.alt}
-              fill
-              priority={idx === 0}
-              sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
-              className={`${IMAGE_LAYER} z-[1] object-cover transition-opacity duration-500 opacity-100`}
-              style={
-                variant === "story"
-                  ? {
-                      ...IMAGE_LAYER_STYLE,
-                      objectPosition: "center 100%",
-                      transform: "translateY(calc(6% - 16px))",
-                    }
-                  : {
-                      ...IMAGE_LAYER_STYLE,
-                      objectPosition: "center 100%",
-                      transform: "translateY(calc(12% - 16px))",
-                    }
-              }
-            />
-            )
+        {hasAnySrc ? (
+          showPush ? (
+            <>
+              {renderMediaLayer(safeItems[slide.from]!, `out-${slide.from}`, {
+                zClass: "z-[1]",
+                anim: "out",
+                priority: false,
+                attachVideoRef: false,
+              })}
+              {renderMediaLayer(safeItems[slide.to]!, `in-${slide.to}`, {
+                zClass: "z-[2]",
+                anim: "in",
+                priority: false,
+                attachVideoRef: true,
+              })}
+            </>
+          ) : active.src ? (
+            renderMediaLayer(active, active.src, {
+              zClass: "z-[1]",
+              anim: "none",
+              priority: slide.kind === "stable" && slide.index === 0,
+              attachVideoRef: true,
+            })
           ) : null
         ) : (
           <div
@@ -133,7 +217,7 @@ export function HeroCarousel({
           />
         )}
         {/* Active slide has no image URL: show placeholder (e.g. mixed empty and filled slides). */}
-        {!active.src && safeItems.some((it) => it.src) ? (
+        {!active.src && hasAnySrc ? (
           <div
             className={`${IMAGE_LAYER} z-[2] bg-slate-200`}
             style={IMAGE_LAYER_STYLE}
@@ -142,22 +226,6 @@ export function HeroCarousel({
         <div
           className={`${IMAGE_LAYER} ring-1 ring-black/5`}
           style={IMAGE_LAYER_STYLE}
-        />
-        <div
-          className={`${IMAGE_LAYER} z-10 pointer-events-none`}
-          style={
-            variant === "story"
-              ? {
-                  background:
-                    "linear-gradient(-0.64deg, rgba(0,0,0,0.4) 61.281%, rgba(255,255,255,0) 87.677%)",
-                  ...IMAGE_LAYER_STYLE,
-                }
-              : {
-                  background:
-                    "linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.25), rgba(0,0,0,0.05))",
-                  ...IMAGE_LAYER_STYLE,
-                }
-          }
         />
 
         <div

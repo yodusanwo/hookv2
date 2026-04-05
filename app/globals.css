@@ -167,6 +167,40 @@ h2.section-title,
   margin-right: auto;
 }
 
+/* Hero carousel — push transition: outgoing exits left, incoming enters from right */
+@keyframes hero-carousel-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes hero-carousel-slide-out-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.hero-carousel-slide-in {
+  animation: hero-carousel-slide-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-carousel-slide-out {
+  animation: hero-carousel-slide-out-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel-slide-in,
+  .hero-carousel-slide-out {
+    animation: none;
+  }
+}
+
 /* Card radius – single source of truth; change --card-radius in :root to update all cards */
 .rounded-card {
   border-radius: var(--card-radius);
