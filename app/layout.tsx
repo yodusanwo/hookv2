@@ -38,6 +38,7 @@ export const metadata: Metadata = {
   metadataBase: siteUrl ? new URL(siteUrl) : undefined,
   title: { default: "Hook Point — Wild Alaskan Fish", template: "%s | Hook Point" },
   description: "From our family to yours. Wild Alaskan seafood, smoked & specialty, pet treats, and more.",
+  /** Favicons: use `app/icon.png` + `app/apple-icon.png` (see Next.js file convention). Do not add `app/favicon.ico` — it overrides these. */
   openGraph: {
     type: "website",
     locale: "en_US",

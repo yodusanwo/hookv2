@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 type CarouselItem =
-  | { type: "image"; src: string; alt: string }
+  | { type: "image"; src: string; alt: string; mobileSrc?: string }
   | { type: "video"; src: string; alt: string; poster?: string };
 
 const IMAGE_LAYER = "absolute left-0 right-0 bottom-0 top-0 w-full h-full";
@@ -160,19 +160,42 @@ export function HeroCarousel({
           style={IMAGE_LAYER_STYLE}
         >
           <div className={zoomWrap}>
-            <Image
-              src={item.src}
-              alt={item.alt}
-              fill
-              priority={options.priority}
-              sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
-              className={`${IMAGE_LAYER} object-cover`}
-              style={{
-                ...IMAGE_LAYER_STYLE,
-                objectPosition: "center 100%",
-                transform: heroMediaTransform,
-              }}
-            />
+            {"mobileSrc" in item && item.mobileSrc ? (
+              <picture className="absolute inset-0 block h-full w-full">
+                <source media="(max-width: 767px)" srcSet={item.mobileSrc} />
+                {/*
+                  Native <img> as <picture> fallback: next/image adds its own srcSet on the img,
+                  which breaks art-direction (mobile <source> is ignored). URLs are still sized via Sanity CDN.
+                */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  className={`${IMAGE_LAYER} object-cover`}
+                  style={{
+                    ...IMAGE_LAYER_STYLE,
+                    objectPosition: "center 100%",
+                    transform: heroMediaTransform,
+                  }}
+                  fetchPriority={options.priority ? "high" : "auto"}
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <Image
+                src={item.src}
+                alt={item.alt}
+                fill
+                priority={options.priority}
+                sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
+                className={`${IMAGE_LAYER} object-cover`}
+                style={{
+                  ...IMAGE_LAYER_STYLE,
+                  objectPosition: "center 100%",
+                  transform: heroMediaTransform,
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

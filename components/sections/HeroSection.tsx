@@ -1,7 +1,7 @@
 import { HeroCarousel } from "@/app/components/HeroCarousel";
 import { PromoBanner } from "../PromoBanner";
 import { PLACEHOLDER_HERO_CAROUSEL_ITEMS } from "@/lib/homeHeroPreloadUrl";
-import { urlForHeroImage } from "@/lib/sanityImage";
+import { urlForHeroImage, urlForHeroImageMobile } from "@/lib/sanityImage";
 import { safeHref } from "@/lib/urlValidation";
 
 type HeroBlock = {
@@ -11,12 +11,14 @@ type HeroBlock = {
   cta?: { label?: string; href?: string };
   mediaMode?: "images-only" | "video-only" | "video-and-images";
   images?: Array<{ asset?: { _ref?: string } }>;
+  /** Same order as `images`; optional per-slide mobile art direction (see Studio copy). */
+  imagesMobile?: Array<{ asset?: { _ref?: string } }>;
   video?: { asset?: { url?: string | null; originalFilename?: string | null } | null } | null;
   videoPosterImage?: { asset?: { _ref?: string } };
 };
 
 type HeroMediaItem =
-  | { type: "image"; src: string; alt: string }
+  | { type: "image"; src: string; alt: string; mobileSrc?: string }
   | { type: "video"; src: string; alt: string; poster?: string };
 
 function normalizeHeadline(raw: string | undefined): { line1: string; line2: string } {
@@ -54,14 +56,21 @@ export function HeroSection({ block, promoBanner, promoBannerUrl }: { block: Her
     ? (block.cta?.href?.trim() ? safeHref(block.cta.href!.trim()) : "#shop")
     : undefined;
 
-  const imageItems: HeroMediaItem[] =
-    block.images
-      ?.map((img) => {
-        const src = urlForHeroImage(img);
-        if (!src) return null;
-        return { type: "image", src, alt: `${headline.line1} ${headline.line2}` };
-      })
-      .filter((x): x is HeroMediaItem => Boolean(x)) ?? [];
+  const imageItems: HeroMediaItem[] = (block.images ?? [])
+    .map((img, i) => {
+      const src = urlForHeroImage(img);
+      if (!src) return null;
+      const mobileAsset = block.imagesMobile?.[i];
+      const mobileSrc = mobileAsset ? urlForHeroImageMobile(mobileAsset) : null;
+      const item: Extract<HeroMediaItem, { type: "image" }> = {
+        type: "image",
+        src,
+        alt: `${headline.line1} ${headline.line2}`,
+      };
+      if (mobileSrc) item.mobileSrc = mobileSrc;
+      return item;
+    })
+    .filter((x): x is Extract<HeroMediaItem, { type: "image" }> => x !== null);
 
   const videoSrc = block.video?.asset?.url?.trim() || "";
   const videoPoster = urlForHeroImage(block.videoPosterImage);

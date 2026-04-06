@@ -30,6 +30,11 @@ export function urlForHeroImage(source: SanityImageSource): string | null {
   return urlForSizedImage(source, 1600, 78);
 }
 
+/** Optional mobile-only hero slide: narrower max width for small screens (still sharp on 2–3× phones). */
+export function urlForHeroImageMobile(source: SanityImageSource): string | null {
+  return urlForSizedImage(source, 1200, 78);
+}
+
 /** Explore Products category cards (~331px wide @2x). */
 export function urlForExploreCategoryImage(source: SanityImageSource): string | null {
   return urlForSizedImage(source, 720, 80);

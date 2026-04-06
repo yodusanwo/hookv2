@@ -36,6 +36,23 @@ export const heroBlock = defineType({
       name: "images",
       type: "array",
       title: "Images",
+      description:
+        "Desktop / large screens. Recommended: **1600×900px** or wider (≈16:9 to 21:9); keep key subject in the center third for cropping.",
+      of: [
+        {
+          type: "image",
+          options: { accept: IMAGE_ACCEPT },
+          validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+        },
+      ],
+      options: { layout: "grid" },
+    }),
+    defineField({
+      name: "imagesMobile",
+      type: "array",
+      title: "Images — mobile (optional)",
+      description:
+        "Same **order** as **Images**: first row = first slide, second = second slide, etc. On viewports under **768px** wide, each slide uses its mobile image when set; otherwise the desktop image is used. Recommended: **1200×1600px** (portrait 3:4) or **1200×1350px**; keep the subject large—phones crop full-bleed. Optional—leave empty to use desktop images everywhere.",
       of: [
         {
           type: "image",
