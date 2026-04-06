@@ -15,6 +15,9 @@ type SiteLayoutProps = {
   headerBackgroundColor: string | null;
   accountUrl?: string | null;
   useHeadlessAccount?: boolean;
+  /** From root layout SSR — matches CMS so first paint doesn’t show the header wave before hideHeaderWave applies. */
+  initialFooterWaveColor?: string | null;
+  initialHideHeaderWave?: boolean;
 };
 
 /** Passed from SiteLayout when footer wave override state is lifted (shop strip color). */
@@ -37,17 +40,23 @@ function SiteLayoutInner({
   accountUrl,
   useHeadlessAccount,
   footerWaveOverride = null,
+  initialFooterWaveColor = null,
+  initialHideHeaderWave = false,
 }: SiteLayoutShellProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams?.toString() ?? "";
-  const [footerWaveColor, setFooterWaveColor] = useState<string | null>(null);
-  const [hideHeaderWave, setHideHeaderWave] = useState(false);
+  const [footerWaveColor, setFooterWaveColor] = useState<string | null>(
+    () => initialFooterWaveColor ?? null,
+  );
+  const [hideHeaderWave, setHideHeaderWave] = useState(
+    () => initialHideHeaderWave,
+  );
 
   useEffect(() => {
     if (!pathname) {
-      setFooterWaveColor(null);
-      setHideHeaderWave(false);
+      setFooterWaveColor(initialFooterWaveColor ?? null);
+      setHideHeaderWave(initialHideHeaderWave);
       return;
     }
     let cancelled = false;
@@ -70,14 +79,19 @@ function SiteLayoutInner({
       })
       .catch(() => {
         if (!cancelled) {
-          setFooterWaveColor(null);
-          setHideHeaderWave(false);
+          setFooterWaveColor(initialFooterWaveColor ?? null);
+          setHideHeaderWave(initialHideHeaderWave);
         }
       });
     return () => {
       cancelled = true;
     };
-  }, [pathname, search]);
+  }, [
+    pathname,
+    search,
+    initialFooterWaveColor,
+    initialHideHeaderWave,
+  ]);
 
   const effectiveWaveColor = footerWaveOverride ?? footerWaveColor;
 
@@ -118,8 +132,12 @@ function SiteLayoutFallback({
   accountUrl,
   useHeadlessAccount,
   footerWaveOverride = null,
+  initialFooterWaveColor = null,
+  initialHideHeaderWave = false,
 }: SiteLayoutShellProps) {
   const pathname = usePathname();
+  const hideHeaderWave = initialHideHeaderWave;
+  const effectiveWaveColor = footerWaveOverride ?? initialFooterWaveColor;
   return (
     <>
       <Header
@@ -130,12 +148,16 @@ function SiteLayoutFallback({
         useHeadlessAccount={useHeadlessAccount}
       />
       <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
-      <HeaderWave />
-      <div className="relative z-0 overflow-x-clip -mt-[96px] sm:-mt-[150px] lg:-mt-[206px]">{children}</div>
+      {!hideHeaderWave && <HeaderWave />}
+      <div
+        className={`relative z-0 overflow-x-clip ${hideHeaderWave ? "-mt-0" : "-mt-[96px] sm:-mt-[150px] lg:-mt-[206px]"}`}
+      >
+        {children}
+      </div>
       <Footer
         logoUrl={headerLogoUrl}
         pathname={pathname ?? undefined}
-        footerWaveBackgroundColor={footerWaveOverride ?? null}
+        footerWaveBackgroundColor={effectiveWaveColor}
       />
       <CartPopup />
     </>

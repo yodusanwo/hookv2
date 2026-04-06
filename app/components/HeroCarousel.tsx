@@ -86,10 +86,11 @@ export function HeroCarousel({
     }
   }, [active]);
 
-  const mediaTranslateY =
+  /** Values live in `app/globals.css` (`--hero-media-translate-y-*`). */
+  const heroMediaTransform =
     variant === "story"
-      ? "translateY(calc(6% - 16px))"
-      : "translateY(calc(12% - 16px))";
+      ? "var(--hero-media-translate-y-story)"
+      : "var(--hero-media-translate-y-default)";
 
   function renderMediaLayer(
     item: CarouselItem,
@@ -132,7 +133,7 @@ export function HeroCarousel({
                 style={{
                   ...IMAGE_LAYER_STYLE,
                   objectPosition: "center 100%",
-                  transform: mediaTranslateY,
+                  transform: heroMediaTransform,
                 }}
                 autoPlay
                 muted
@@ -169,7 +170,7 @@ export function HeroCarousel({
               style={{
                 ...IMAGE_LAYER_STYLE,
                 objectPosition: "center 100%",
-                transform: mediaTranslateY,
+                transform: heroMediaTransform,
               }}
             />
           </div>
@@ -186,13 +187,15 @@ export function HeroCarousel({
     safeItems[slide.to]?.src;
 
   return (
-    <section className="relative -mt-[40px] w-full min-w-0 max-w-full overflow-visible">
-      {/* Hero image area: responsive height, 760px on desktop; story variant taller */}
+    <section className="relative -mt-[40px] w-full min-w-0 max-w-full overflow-visible bg-[var(--brand-navy)]">
+      {/* Hero image area: responsive height, 760px on desktop; story variant taller.
+          Navy bg: media uses translateY + bottom anchoring so the top can briefly show parent bg;
+          main is white — without this, mobile shows a hairline gap under the fixed header. */}
       <div
         className={
           variant === "story"
-            ? "relative w-full overflow-hidden h-[min(75vh,520px)] sm:h-[min(68vh,560px)] md:h-[840px]"
-            : "relative w-full overflow-hidden h-[min(75vh,560px)] sm:h-[min(70vh,580px)] md:h-[760px]"
+            ? "relative w-full overflow-hidden bg-[var(--brand-navy)] h-[min(75vh,520px)] sm:h-[min(68vh,560px)] md:h-[840px]"
+            : "relative w-full overflow-hidden bg-[var(--brand-navy)] h-[min(75vh,560px)] sm:h-[min(70vh,580px)] md:h-[760px]"
         }
       >
         {hasAnySrc ? (

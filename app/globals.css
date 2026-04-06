@@ -56,6 +56,10 @@
   --filter-pill-active-color: #fff;
   --filter-pill-inactive-bg: rgba(73, 140, 203, 0.25);
   --filter-pill-inactive-color: #1e3a5f;
+
+  /* Hero carousel — full-bleed image/video vertical offset (see HeroCarousel) */
+  --hero-media-translate-y-default: translateY(calc(12% - 16px));
+  --hero-media-translate-y-story: translateY(calc(6% - 16px));
 }
 
 @theme inline {
@@ -167,6 +171,7 @@ h2.section-title,
   margin-right: auto;
 }
 
+/* Hero carousel — media `transform` offsets: `--hero-media-translate-y-default` / `--hero-media-translate-y-story` in `:root` */
 /* Hero carousel — push transition: outgoing exits left, incoming enters from right */
 @keyframes hero-carousel-slide-in {
   from {

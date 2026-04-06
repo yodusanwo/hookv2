@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Geist_Mono, Inter, Mulish } from "next/font/google";
 import "./globals.css";
@@ -10,6 +11,7 @@ import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlForSizedImage } from "@/lib/sanityImage";
 import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
+import { getFooterWaveLayoutSettings } from "@/lib/footerWaveLayout";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -72,6 +74,20 @@ export default async function RootLayout({
     if (domain) accountUrl = `https://${domain}/account`;
   }
   const useHeadlessAccount = isCustomerAccountConfigured();
+
+  let initialFooterWaveColor: string | null = null;
+  let initialHideHeaderWave = false;
+  try {
+    const h = await headers();
+    const pathname = h.get("x-pathname") ?? "/";
+    const shopSearch = h.get("x-shop-search") === "1";
+    const waveLayout = await getFooterWaveLayoutSettings(pathname, shopSearch);
+    initialFooterWaveColor = waveLayout.color;
+    initialHideHeaderWave = waveLayout.hideHeaderWave;
+  } catch {
+    // Middleware may omit x-pathname in edge cases; client fetch will correct.
+  }
+
   if (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
     try {
       const settings = await client.fetch<{
@@ -109,6 +125,8 @@ export default async function RootLayout({
           headerBackgroundColor={headerBackgroundColor}
           accountUrl={accountUrl}
           useHeadlessAccount={useHeadlessAccount}
+          initialFooterWaveColor={initialFooterWaveColor}
+          initialHideHeaderWave={initialHideHeaderWave}
         >
           {children}
         </SiteLayout>
