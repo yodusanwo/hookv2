@@ -309,7 +309,11 @@ export function PageBuilder({
                   bottomPadding={exploreProductsBottomPadding}
                   doubleTopPadding={pageSlug === WILD_VS_FARMED_PAGE_SLUG}
                   tripleTitleTopMargin={pageSlug === WILD_VS_FARMED_PAGE_SLUG}
-                  carouselArrowColor={pageSlug === "calendar" || pageSlug === "recipes" ? "#1E1E1E" : undefined}
+                  carouselArrowColor={
+                    pageSlug === "calendar" || pageSlug === "recipes"
+                      ? "#1E1E1E"
+                      : undefined
+                  }
                 />
               </Fragment>
             );
@@ -321,7 +325,9 @@ export function PageBuilder({
                 block={block as Parameters<typeof OurStorySection>[0]["block"]}
                 hideTitle={hideOurStoryTitle}
                 hideCta={hideOurStoryCta}
-                hideWave={hideOurStoryWave || pageSlug === WILD_VS_FARMED_PAGE_SLUG}
+                hideWave={
+                  hideOurStoryWave || pageSlug === WILD_VS_FARMED_PAGE_SLUG
+                }
                 variant={ourStoryVariant}
               />
             );

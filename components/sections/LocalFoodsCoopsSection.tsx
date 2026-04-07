@@ -69,16 +69,16 @@ export function LocalFoodsCoopsSection({
           titleColor="#111827"
           descriptionColor="#1E1E1E"
         />
-        <div className="mt-2 flex w-full min-w-0 flex-row flex-nowrap items-center justify-center gap-3 overflow-x-auto overflow-y-hidden py-2 [scrollbar-gutter:stable] sm:gap-4 md:gap-5">
+        <div className="mt-2 flex w-full min-w-0 flex-row flex-nowrap items-center justify-center gap-2 overflow-x-auto overflow-y-hidden py-2 [scrollbar-gutter:stable] sm:gap-3 md:gap-4">
           {items.map((item, idx) => {
-            const logoImg = item.logo ? urlForSizedImage(item.logo, 400) : null;
+            const logoImg = item.logo ? urlForSizedImage(item.logo, 480) : null;
             const safeUrl = safeHref(item.url);
             const showBorder = item.bordered ?? false;
             /** `inline-flex shrink-0` keeps logos in one horizontal row; `w-full` on children was forcing a vertical stack under `md:flex`. */
-            const wrapperClass = `inline-flex shrink-0 min-w-0 items-center justify-center gap-2 bg-transparent px-2 py-2 sm:px-3 sm:py-2 ${showBorder ? "rounded border border-slate-300/80" : ""}`;
+            const wrapperClass = `inline-flex shrink-0 min-w-0 items-center justify-center gap-2 bg-transparent px-1 py-1 sm:px-2 sm:py-1.5 ${showBorder ? "rounded border border-slate-300/80" : ""}`;
 
             const content = logoImg ? (
-              <div className="flex h-[3.63rem] shrink-0 max-w-[13.75rem] items-center justify-center sm:h-[3.75rem] sm:max-w-[17.5rem] md:h-[4rem] md:max-w-[21.25rem]">
+              <div className="flex h-[4.392rem] shrink-0 max-w-[16.6375rem] items-center justify-center sm:h-[4.5375rem] sm:max-w-[21.175rem] md:h-[4.84rem] md:max-w-[25.7125rem]">
                 <img
                   src={logoImg}
                   alt={item.label ?? ""}

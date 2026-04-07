@@ -1,6 +1,10 @@
 import { defineType, defineField } from "sanity";
 import { SECTION_BACKGROUND_COLOR_LIST } from "../objects/sectionBackgroundColor";
-import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
+import {
+  IMAGE_ACCEPT,
+  validateImageAsset,
+  IMAGE_ERROR_MESSAGE,
+} from "../objects/imageFieldConfig";
 
 export const localFoodsCoopsBlock = defineType({
   name: "localFoodsCoopsBlock",
@@ -42,28 +46,43 @@ export const localFoodsCoopsBlock = defineType({
       type: "image",
       title: "Image",
       options: { accept: IMAGE_ACCEPT },
-      validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+      validation: (Rule) =>
+        Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
     }),
     defineField({
       name: "logoButtons",
       type: "array",
       title: "Logo Buttons",
-      description: "Edit on **Home** — co-op logos and links appear everywhere this section is used.",
+      description:
+        "Edit on **Home** — co-op logos and links appear everywhere this section is used.",
       of: [
         {
           type: "object",
           fields: [
-            { name: "label", type: "string", title: "Label", description: "e.g. Locavana (shown with map pin when no logo)" },
+            {
+              name: "label",
+              type: "string",
+              title: "Label",
+              description: "e.g. Locavana (shown with map pin when no logo)",
+            },
             defineField({
               name: "logo",
               type: "image",
               title: "Logo",
-              description: "Optional; if set, logo is shown instead of map pin + label",
+              description:
+                "Optional; if set, logo is shown instead of map pin + label",
               options: { accept: IMAGE_ACCEPT },
-              validation: (Rule) => Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
+              validation: (Rule) =>
+                Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
             }),
             { name: "url", type: "url", title: "Link URL" },
-            { name: "bordered", type: "boolean", title: "Show border", initialValue: false, description: "Optional light border around this item" },
+            {
+              name: "bordered",
+              type: "boolean",
+              title: "Show border",
+              initialValue: false,
+              description: "Optional light border around this item",
+            },
           ],
         },
       ],
