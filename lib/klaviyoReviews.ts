@@ -297,8 +297,21 @@ export async function getKlaviyoReviewsSummary(): Promise<ReviewsSummary> {
 
 /** Extract numeric Shopify product ID from GID (e.g. gid://shopify/Product/123 -> 123). */
 function shopifyProductIdFromGid(gid: string): string | null {
-  const match = /^gid:\/\/shopify\/Product\/(\d+)$/.exec(gid?.trim() ?? "");
+  const match = /^gid:\/\/shopify\/Product\/(\d+)$/i.exec(gid?.trim() ?? "");
   return match ? match[1]! : null;
+}
+
+/**
+ * Storefront API returns `gid://shopify/Product/123`; some call sites may pass numeric `123` only.
+ * Klaviyo filters need the numeric ID extracted via {@link shopifyProductIdFromGid}.
+ * Matched GIDs are returned in canonical lowercase form so extraction always succeeds.
+ */
+function normalizeShopifyProductGidForKlaviyo(id: string): string {
+  const t = (id ?? "").trim();
+  const gidMatch = /^gid:\/\/shopify\/Product\/(\d+)$/i.exec(t);
+  if (gidMatch) return `gid://shopify/Product/${gidMatch[1]!}`;
+  if (/^\d+$/.test(t)) return `gid://shopify/Product/${t}`;
+  return t;
 }
 
 /**
@@ -328,7 +341,9 @@ const PDP_PUBLISHED_PRODUCT_REVIEWS_LIMIT = 3;
 export async function getKlaviyoPublishedProductReviewsForPdp(
   shopifyProductGid: string,
 ): Promise<MappedReview[]> {
-  const numericId = shopifyProductIdFromGid(shopifyProductGid);
+  const numericId = shopifyProductIdFromGid(
+    normalizeShopifyProductGidForKlaviyo(shopifyProductGid),
+  );
   if (!numericId) return [];
 
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
@@ -385,7 +400,9 @@ export const getKlaviyoReviewSummaryForProduct = cache(
   async function getKlaviyoReviewSummaryForProduct(
   shopifyProductGid: string,
 ): Promise<ReviewsSummary> {
-  const numericId = shopifyProductIdFromGid(shopifyProductGid);
+  const numericId = shopifyProductIdFromGid(
+    normalizeShopifyProductGidForKlaviyo(shopifyProductGid),
+  );
   if (!numericId) return { totalCount: 0, averageRating: 0 };
 
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();
@@ -468,7 +485,9 @@ const COUNT_PAGE_SIZE = 100;
 export async function getKlaviyoReviewCountForProduct(
   shopifyProductGid: string,
 ): Promise<number> {
-  const numericId = shopifyProductIdFromGid(shopifyProductGid);
+  const numericId = shopifyProductIdFromGid(
+    normalizeShopifyProductGidForKlaviyo(shopifyProductGid),
+  );
   if (!numericId) return 0;
 
   const apiKey = process.env.KLAVIYO_PRIVATE_API_KEY?.trim();

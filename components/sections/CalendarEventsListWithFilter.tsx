@@ -21,8 +21,15 @@ const CHICAGO: Intl.DateTimeFormatOptions = {
   month: "numeric",
 };
 
-/** When a month filter returns more than this many rows, the list scrolls instead of growing unbounded. */
-const FARMERS_MARKET_LIST_SCROLL_THRESHOLD = 12;
+/** When a month filter returns more than this many rows, the list uses a fixed viewport (~5 rows) with inner scroll. */
+const FARMERS_MARKET_LIST_SCROLL_THRESHOLD = 5;
+
+/**
+ * Scroll region max height: ~5 rows on small screens; restore generous cap on md+ (matches pre-change desktop UX).
+ * Threshold still gates when inner scroll applies (>5 events).
+ */
+const FARMERS_MARKET_LIST_SCROLL_REGION_CLASS =
+  "max-h-[min(31.25rem,70vh)] md:max-h-[min(70vh,960px)]";
 
 function isValidMonth(n: number): boolean {
   return Number.isFinite(n) && n >= 1 && n <= 12;
@@ -266,7 +273,7 @@ export function CalendarEventsListWithFilter({
               <div
                 ref={listScrollRef}
                 onScroll={updateListScrollAffordance}
-                className="max-h-[min(70vh,960px)] overflow-y-auto overscroll-y-contain [scrollbar-gutter:stable]"
+                className={`overflow-y-auto overscroll-y-contain [scrollbar-gutter:stable] ${FARMERS_MARKET_LIST_SCROLL_REGION_CLASS}`}
                 style={{ backgroundColor: bgColor }}
                 role="region"
                 aria-label="Farmers market events for the selected month"
