@@ -108,15 +108,15 @@ export function CalendarEventsListWithFilter({
   if (events.length === 0) {
     return (
       <>
-        <p className="mt-10 text-center text-slate-600">
-          No upcoming events at the moment. Check back soon.
-        </p>
-        <div className="mt-8 w-full flex justify-center">
+        <div className="mt-10 w-full flex justify-center">
           <UpcomingEventsMonthFilter
             selectedMonth={selectedMonth}
             onMonthChange={handleMonthChange}
           />
         </div>
+        <p className="mt-8 text-center text-slate-600">
+          No upcoming events at the moment. Check back soon.
+        </p>
         {showAllUrl && (
           <div className="mt-8 flex w-full justify-center md:justify-start md:ml-4">
           <Link
@@ -266,8 +266,15 @@ export function CalendarEventsListWithFilter({
 
   return (
     <>
+      <div className="mt-10 w-full flex justify-center">
+        <UpcomingEventsMonthFilter
+          selectedMonth={selectedMonth}
+          onMonthChange={handleMonthChange}
+        />
+      </div>
+
       {filteredEvents.length > 0 ? (
-        <div className="mt-10 w-full max-w-[1200px] mx-auto">
+        <div className="mt-8 w-full max-w-[1200px] mx-auto">
           {listScrolls ? (
             <div className="relative">
               <div
@@ -326,17 +333,10 @@ export function CalendarEventsListWithFilter({
           )}
         </div>
       ) : (
-        <p className="mt-10 text-center text-slate-600">
+        <p className="mt-8 text-center text-slate-600">
           No events in this month. Try another filter.
         </p>
       )}
-
-      <div className="mt-8 w-full flex justify-center">
-        <UpcomingEventsMonthFilter
-          selectedMonth={selectedMonth}
-          onMonthChange={handleMonthChange}
-        />
-      </div>
 
       {showAllUrl && (
         <div className="mt-8 flex w-full justify-center md:justify-start md:ml-4">

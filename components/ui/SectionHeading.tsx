@@ -1,5 +1,10 @@
 "use client";
 
+/** Preserves line breaks from Sanity text fields and optional literal `<br>` tags (no arbitrary HTML). */
+function normalizeSectionDescriptionText(raw: string): string {
+  return raw.replace(/\r\n/g, "\n").replace(/<br\s*\/?>/gi, "\n");
+}
+
 type SectionHeadingProps = {
   title: string;
   description?: string;
@@ -52,8 +57,8 @@ export function SectionHeading({
       <div className="mx-auto">
         <h2 className="section-title">{title}</h2>
         {description && (
-          <p className="section-description-block mt-4 w-full px-4">
-            {description}
+          <p className="section-description-block mt-4 w-full whitespace-pre-line px-4">
+            {normalizeSectionDescriptionText(description)}
           </p>
         )}
       </div>
@@ -84,7 +89,7 @@ export function SectionHeading({
         </h2>
         {description && (
           <p
-            className={`section-description ${descriptionAsLead ? "section-description--lead" : ""} ${descriptionClassName ?? ""}`.trim()}
+            className={`section-description whitespace-pre-line ${descriptionAsLead ? "section-description--lead" : ""} ${descriptionClassName ?? ""}`.trim()}
             style={{
               ...(isDark || descriptionColor != null
                 ? { color: descriptionColor ?? resolvedDescColor }
@@ -94,7 +99,7 @@ export function SectionHeading({
                 : {}),
             }}
           >
-            {description}
+            {normalizeSectionDescriptionText(description)}
           </p>
         )}
       </div>
@@ -111,14 +116,14 @@ export function SectionHeading({
       </h2>
       {description && (
         <p
-          className="section-description"
+          className="section-description whitespace-pre-line"
           style={
             isDark || descriptionColor != null
               ? { color: descriptionColor ?? resolvedDescColor }
               : undefined
           }
         >
-          {description}
+          {normalizeSectionDescriptionText(description)}
         </p>
       )}
     </div>

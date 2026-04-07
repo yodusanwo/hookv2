@@ -255,22 +255,6 @@ export function OurStorySection({
                           }}
                         />
                       </div>
-                      <>
-                        <p
-                          className="-ml-[1.0625rem] mt-6"
-                          style={{
-                            color: "var(--White, #FFF)",
-                            fontFamily:
-                              "var(--font-mulish), Mulish, sans-serif",
-                            fontSize: "1.5rem",
-                            fontStyle: "normal",
-                            fontWeight: 800,
-                            lineHeight: "normal",
-                          }}
-                        >
-                          – Riendeau Family,
-                        </p>
-                      </>
                     </>
                   ) : (
                     <div className="[&_p]:!text-white [&_p]:font-light">
@@ -283,19 +267,6 @@ export function OurStorySection({
                       <p className="mb-0 !text-white">&nbsp;</p>
                       <p className="mb-0 !text-white">
                         We are proud to be your fisherfolk
-                      </p>
-                      <p
-                        className="-ml-[1.0625rem] mt-6"
-                        style={{
-                          color: "var(--White, #FFF)",
-                          fontFamily: "var(--font-mulish), Mulish, sans-serif",
-                          fontSize: "1.5rem",
-                          fontStyle: "normal",
-                          fontWeight: 800,
-                          lineHeight: "normal",
-                        }}
-                      >
-                        – Riendeau Family,
                       </p>
                     </div>
                   )}

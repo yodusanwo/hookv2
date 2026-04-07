@@ -36,7 +36,7 @@ export function UpcomingEventsSection({
   pageSlug,
 }: {
   block: UpcomingEventsBlock;
-  /** When "calendar", show month filter below the event list (only on /calendar page). */
+  /** When "calendar", show month filter above the event list (only on /calendar page). */
   pageSlug?: string;
 }) {
   const title = block.title ?? "UPCOMING EVENTS";

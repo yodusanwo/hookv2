@@ -29,8 +29,9 @@ export const docksideMarketsBlock = defineType({
       name: "description",
       type: "text",
       title: "Description",
+      rows: 6,
       description:
-        "Edit on **Home** only. Subtitle under the title on every page that includes this section.",
+        "Edit on **Home** only. Subtitle under the title on every page that includes this section. Press **Enter** for a new line, or type `<br>` / `<br/>` where you want a line break.",
     }),
     defineField({
       name: "items",
