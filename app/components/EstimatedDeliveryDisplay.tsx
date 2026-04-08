@@ -257,27 +257,23 @@ export function EstimatedDeliveryDisplay({
       <div
         className="mt-4 rounded-lg px-6 py-5"
         style={{
-          backgroundColor: "#E8E8E8",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+          backgroundColor: "#1C5080",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
         }}
       >
         <div className="flex items-start">
           {/* Purchased */}
           <div className="flex flex-1 flex-col items-center text-center">
             <div
-              className="mb-2 flex h-10 w-10 shrink-0 items-center justify-center"
-              style={{ color: "#1E1E1E" }}
+              className="mb-2 flex h-10 w-10 shrink-0 items-center justify-center text-white"
               aria-hidden
             >
               <ShoppingBagIcon className="h-10 w-10" />
             </div>
-            <span className="font-semibold" style={{ color: "#1E1E1E", fontSize: "0.875rem" }}>
+            <span className="font-semibold text-white" style={{ fontSize: "0.875rem" }}>
               Purchased
             </span>
-            <span
-              className="mt-0.5 text-sm"
-              style={{ color: "#374151", fontWeight: 400 }}
-            >
+            <span className="mt-0.5 text-sm font-normal text-white/90">
               {dates ? formatDateShort(dates.purchasedDate) : "—"}
             </span>
           </div>
@@ -286,52 +282,44 @@ export function EstimatedDeliveryDisplay({
           <div className="relative flex min-w-[24px] flex-1 items-center self-start pt-5">
             <div
               className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
-              style={{ backgroundColor: "#9CA3AF" }}
+              style={{ backgroundColor: "#069400" }}
               aria-hidden
             />
             <div
               className="relative z-10 mx-auto h-2 w-2 shrink-0 rounded-full"
-              style={{ backgroundColor: "#1E1E1E" }}
+              style={{ backgroundColor: "#069400" }}
               aria-hidden
             />
           </div>
 
           {/* Processing */}
           <div className="flex flex-1 flex-col items-center text-center">
-            <div
-              className="mb-2 flex h-10 w-10 shrink-0 items-center justify-center"
-              style={{ color: "#1E1E1E" }}
-              aria-hidden
-            >
+            <div className="mb-2 flex h-10 w-10 shrink-0 items-center justify-center" aria-hidden>
               <img
                 src="/delivery_truck_speed_24dp_000000_FILL0_wght400_GRAD0_opsz24%201.svg"
                 alt=""
                 className="h-10 w-10"
                 width={40}
                 height={40}
+                style={{ filter: "brightness(0) invert(1)" }}
               />
             </div>
-            <span className="font-semibold" style={{ color: "#1E1E1E", fontSize: "0.875rem" }}>
+            <span className="font-semibold text-white" style={{ fontSize: "0.875rem" }}>
               Processing
             </span>
-            <span
-              className="mt-0.5 text-sm"
-              style={{ color: "#374151", fontWeight: 400 }}
-            >
-              {processingRange}
-            </span>
+            <span className="mt-0.5 text-sm font-normal text-white/90">{processingRange}</span>
           </div>
 
           {/* Connector */}
           <div className="relative flex min-w-[24px] flex-1 items-center self-start pt-5">
             <div
               className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
-              style={{ backgroundColor: "#9CA3AF" }}
+              style={{ backgroundColor: "#069400" }}
               aria-hidden
             />
             <div
               className="relative z-10 mx-auto h-2 w-2 shrink-0 rounded-full"
-              style={{ backgroundColor: "#1E1E1E" }}
+              style={{ backgroundColor: "#069400" }}
               aria-hidden
             />
           </div>
@@ -339,21 +327,15 @@ export function EstimatedDeliveryDisplay({
           {/* Delivered */}
           <div className="flex flex-1 flex-col items-center text-center">
             <div
-              className="mb-2 flex h-10 w-10 shrink-0 items-center justify-center"
-              style={{ color: "#1E1E1E" }}
+              className="mb-2 flex h-10 w-10 shrink-0 items-center justify-center text-white"
               aria-hidden
             >
               <LocationPinIcon className="h-10 w-10" />
             </div>
-            <span className="font-semibold" style={{ color: "#1E1E1E", fontSize: "0.875rem" }}>
+            <span className="font-semibold text-white" style={{ fontSize: "0.875rem" }}>
               Delivered
             </span>
-            <span
-              className="mt-0.5 text-sm"
-              style={{ color: "#374151", fontWeight: 400 }}
-            >
-              {deliveryRange}
-            </span>
+            <span className="mt-0.5 text-sm font-normal text-white/90">{deliveryRange}</span>
           </div>
         </div>
       </div>
