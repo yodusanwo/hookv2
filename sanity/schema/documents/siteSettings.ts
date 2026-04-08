@@ -230,7 +230,8 @@ export const siteSettings = defineType({
       name: "estimatedDeliveryFrozenProcessingDays",
       type: "number",
       title: "Estimated Delivery (Frozen) – Processing Days",
-      description: "Days from order to ship for frozen products. Used when product has custom.is_frozen metafield or product type contains 'frozen'.",
+      description:
+        "Days from order to ship for frozen products. Frozen detection: tag ambient (opt-out), then metafield is_frozen, tags frozen/frozenseafood, or product type contains frozen.",
       group: "shipping",
       initialValue: 1,
     }),
@@ -241,6 +242,115 @@ export const siteSettings = defineType({
       description: "Min-max transit days for frozen products (e.g. \"1-2\" or \"2-3\").",
       group: "shipping",
       initialValue: "1-2",
+    }),
+    defineField({
+      name: "estimatedDeliveryBlockedDates",
+      type: "array",
+      title: "Estimated Delivery – Blocked dates",
+      description:
+        "No processing on these calendar days (holidays, closures). Skipped when counting both processing and transit days.",
+      group: "shipping",
+      of: [{ type: "date", options: { dateFormat: "YYYY-MM-DD" } }],
+    }),
+    defineField({
+      name: "estimatedDeliveryProcessingWeekdaysAmbient",
+      type: "array",
+      title: "Ambient – Processing weekdays",
+      description:
+        "Which weekdays count toward processing time. Leave empty for Mon–Fri.",
+      group: "shipping",
+      of: [
+        {
+          type: "string",
+          options: {
+            list: [
+              { title: "Sunday", value: "0" },
+              { title: "Monday", value: "1" },
+              { title: "Tuesday", value: "2" },
+              { title: "Wednesday", value: "3" },
+              { title: "Thursday", value: "4" },
+              { title: "Friday", value: "5" },
+              { title: "Saturday", value: "6" },
+            ],
+            layout: "dropdown",
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "estimatedDeliveryProcessingWeekdaysFrozen",
+      type: "array",
+      title: "Frozen – Processing weekdays",
+      description:
+        "Which weekdays count toward processing time for frozen products. Leave empty for Mon–Fri.",
+      group: "shipping",
+      of: [
+        {
+          type: "string",
+          options: {
+            list: [
+              { title: "Sunday", value: "0" },
+              { title: "Monday", value: "1" },
+              { title: "Tuesday", value: "2" },
+              { title: "Wednesday", value: "3" },
+              { title: "Thursday", value: "4" },
+              { title: "Friday", value: "5" },
+              { title: "Saturday", value: "6" },
+            ],
+            layout: "dropdown",
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "estimatedDeliveryTransitWeekdaysAmbient",
+      type: "array",
+      title: "Ambient – Transit weekdays",
+      description:
+        "Which weekdays count toward in-transit time. Leave empty for Mon–Fri.",
+      group: "shipping",
+      of: [
+        {
+          type: "string",
+          options: {
+            list: [
+              { title: "Sunday", value: "0" },
+              { title: "Monday", value: "1" },
+              { title: "Tuesday", value: "2" },
+              { title: "Wednesday", value: "3" },
+              { title: "Thursday", value: "4" },
+              { title: "Friday", value: "5" },
+              { title: "Saturday", value: "6" },
+            ],
+            layout: "dropdown",
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "estimatedDeliveryTransitWeekdaysFrozen",
+      type: "array",
+      title: "Frozen – Transit weekdays",
+      description:
+        "Which weekdays count toward in-transit time for frozen products. Leave empty for Mon–Fri.",
+      group: "shipping",
+      of: [
+        {
+          type: "string",
+          options: {
+            list: [
+              { title: "Sunday", value: "0" },
+              { title: "Monday", value: "1" },
+              { title: "Tuesday", value: "2" },
+              { title: "Wednesday", value: "3" },
+              { title: "Thursday", value: "4" },
+              { title: "Friday", value: "5" },
+              { title: "Saturday", value: "6" },
+            ],
+            layout: "dropdown",
+          },
+        },
+      ],
     }),
   ],
   preview: {

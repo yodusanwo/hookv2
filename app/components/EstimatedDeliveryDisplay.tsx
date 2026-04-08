@@ -1,18 +1,10 @@
 "use client";
 
 import * as React from "react";
-
-/** Add business days (skips weekends). */
-function addBusinessDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  let added = 0;
-  while (added < days) {
-    result.setDate(result.getDate() + 1);
-    const day = result.getDay();
-    if (day !== 0 && day !== 6) added++;
-  }
-  return result;
-}
+import {
+  addCountedDays,
+  type DeliveryCalendarConfig,
+} from "@/lib/estimatedDeliveryCalendar";
 
 function formatDateShort(date: Date): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -46,6 +38,8 @@ type EstimatedDeliveryDisplayProps = {
   processingDays: number;
   transitDaysMin: number;
   transitDaysMax: number;
+  /** Weekday sets + blocked dates from Sanity (ambient vs frozen chosen on the server). */
+  calendar: DeliveryCalendarConfig;
   /** Optional cutoff time "HH:mm" (24h) for countdown. Leave empty for end-of-day. */
   cutOffTime?: string | null;
 };
@@ -102,6 +96,7 @@ export function EstimatedDeliveryDisplay({
   processingDays,
   transitDaysMin,
   transitDaysMax,
+  calendar,
   cutOffTime,
 }: EstimatedDeliveryDisplayProps) {
   const cutoff = React.useMemo(() => parseCutoff(cutOffTime), [cutOffTime]);
@@ -120,10 +115,29 @@ export function EstimatedDeliveryDisplay({
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const blocked = new Set(calendar.blockedDateKeys);
+    const processingWeekdays = new Set(calendar.processingWeekdays);
+    const transitWeekdays = new Set(calendar.transitWeekdays);
+
     const purchasedDate = new Date(today);
-    const processingEnd = addBusinessDays(today, processingDays);
-    const deliveryStart = addBusinessDays(processingEnd, transitDaysMin);
-    const deliveryEnd = addBusinessDays(processingEnd, transitDaysMax);
+    const processingEnd = addCountedDays(
+      today,
+      processingDays,
+      processingWeekdays,
+      blocked,
+    );
+    const deliveryStart = addCountedDays(
+      processingEnd,
+      transitDaysMin,
+      transitWeekdays,
+      blocked,
+    );
+    const deliveryEnd = addCountedDays(
+      processingEnd,
+      transitDaysMax,
+      transitWeekdays,
+      blocked,
+    );
 
     return {
       purchasedDate,
@@ -131,7 +145,7 @@ export function EstimatedDeliveryDisplay({
       deliveryStart,
       deliveryEnd,
     };
-  }, [dateKey, processingDays, transitDaysMin, transitDaysMax]);
+  }, [dateKey, processingDays, transitDaysMin, transitDaysMax, calendar]);
 
   React.useEffect(() => {
     const update = () => {

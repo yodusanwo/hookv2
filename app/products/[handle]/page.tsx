@@ -13,6 +13,8 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 import { isPetProductPage } from "@/lib/isPetProductPage";
+import { productIsFrozenForEstimatedDelivery } from "@/lib/productFrozenForEstimatedDelivery";
+import { buildDeliveryCalendarConfig } from "@/lib/estimatedDeliveryCalendar";
 import { getKlaviyoReviewSummaryForProduct } from "@/lib/klaviyoReviews";
 import { heroReviewCountFromProductAndKlaviyo } from "@/lib/pdpReviewDisplay";
 import { PdpReviewsSection } from "./PdpReviewsSection";
@@ -36,7 +38,7 @@ type ProductByHandleResponse = {
     summary: { value: string } | null;
     /** Optional static estimated delivery from metafield custom.estimated_delivery. */
     estimatedDelivery: { value: string } | null;
-    /** Metafield custom.is_frozen (boolean). When "true", uses frozen delivery logic. */
+    /** Metafield custom.is_frozen (boolean). Frozen/ambient also uses tags + product type; see productIsFrozenForEstimatedDelivery. */
     isFrozen: { value: string } | null;
     /** Metafield custom.what_you_get (rich text). Per-product "What You Get" content. */
     whatYouGet: { value: string } | null;
@@ -315,6 +317,11 @@ export default async function ProductPage({
     estimatedDeliveryCutoffTime?: string | null;
     estimatedDeliveryFrozenProcessingDays?: number | null;
     estimatedDeliveryFrozenTransitDays?: string | null;
+    estimatedDeliveryBlockedDates?: string[] | null;
+    estimatedDeliveryProcessingWeekdaysAmbient?: string[] | null;
+    estimatedDeliveryProcessingWeekdaysFrozen?: string[] | null;
+    estimatedDeliveryTransitWeekdaysAmbient?: string[] | null;
+    estimatedDeliveryTransitWeekdaysFrozen?: string[] | null;
   };
 
   let siteSettings: SiteSettingsForPdp | null = null;
@@ -481,9 +488,11 @@ export default async function ProductPage({
   const whatYouGetHeading = whatYouGetSplit.sectionTitle ?? "What You Get";
   const showWhatYouGetColumn = Boolean(whatYouGetRaw);
 
-  const isFrozen =
-    product.isFrozen?.value?.toLowerCase() === "true" ||
-    (product.productType?.toLowerCase() ?? "").includes("frozen");
+  const isFrozen = productIsFrozenForEstimatedDelivery({
+    tags: product.tags ?? [],
+    isFrozenMetafield: product.isFrozen?.value,
+    productType: product.productType,
+  });
 
   const processingDays = isFrozen
     ? (siteSettings?.estimatedDeliveryFrozenProcessingDays ?? 1)
@@ -504,6 +513,15 @@ export default async function ProductPage({
     : isFrozen
       ? 2
       : 4;
+
+  const deliveryCalendar = buildDeliveryCalendarConfig({
+    isFrozen,
+    blockedDates: siteSettings?.estimatedDeliveryBlockedDates,
+    processingWeekdaysAmbient: siteSettings?.estimatedDeliveryProcessingWeekdaysAmbient,
+    processingWeekdaysFrozen: siteSettings?.estimatedDeliveryProcessingWeekdaysFrozen,
+    transitWeekdaysAmbient: siteSettings?.estimatedDeliveryTransitWeekdaysAmbient,
+    transitWeekdaysFrozen: siteSettings?.estimatedDeliveryTransitWeekdaysFrozen,
+  });
 
   const hideRecipesSection = isPetProductPage({
     title: product.title,
@@ -659,6 +677,7 @@ export default async function ProductPage({
                   processingDays={processingDays}
                   transitDaysMin={transitDaysMin}
                   transitDaysMax={transitDaysMax}
+                  calendar={deliveryCalendar}
                   cutOffTime={siteSettings?.estimatedDeliveryCutoffTime ?? null}
                 />
               </div>

@@ -38,7 +38,12 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   estimatedDeliveryTransitDays,
   estimatedDeliveryCutoffTime,
   estimatedDeliveryFrozenProcessingDays,
-  estimatedDeliveryFrozenTransitDays
+  estimatedDeliveryFrozenTransitDays,
+  estimatedDeliveryBlockedDates,
+  estimatedDeliveryProcessingWeekdaysAmbient,
+  estimatedDeliveryProcessingWeekdaysFrozen,
+  estimatedDeliveryTransitWeekdaysAmbient,
+  estimatedDeliveryTransitWeekdaysFrozen
 }`;
 
 /** GROQ query for page layout settings by path (slug). Use with $slug (e.g. "calendar", "contact", "story", "home"). */
