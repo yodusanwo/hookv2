@@ -2,6 +2,13 @@
 
 import * as React from "react";
 
+// Appends Shopify CDN sizing params. Keeps the preload in page.tsx and the
+// actual <img> src in sync — same URL = browser cache hit, no double fetch.
+function shopifyImageUrl(url: string, width: number, quality = 80): string {
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}width=${width}&quality=${quality}&format=webp`;
+}
+
 export function ProductImageGallery({
   images,
   productTitle,
@@ -11,27 +18,39 @@ export function ProductImageGallery({
 }) {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const safeIndex = Math.max(0, Math.min(selectedIndex, images.length - 1));
+
   React.useEffect(() => {
     if (selectedIndex !== safeIndex) setSelectedIndex(safeIndex);
   }, [images.length, safeIndex, selectedIndex]);
-  const main = images[safeIndex] ?? images[0];
 
+  const main = images[safeIndex] ?? images[0];
   if (!main) return null;
 
-  const sectionBgHex = "#d4f2ff";
   return (
     <div className="space-y-3">
+      {/* ── Main image ─────────────────────────────────────────────────────── */}
       <div
         className="max-w-full overflow-hidden rounded-card relative bg-[#d4f2ff]"
-        style={{
-          width: "min(661px, 100%)",
-          aspectRatio: "1/1",
-          background: `url(${main.url}) #d4f2ff 50% / cover no-repeat`,
-          backgroundBlendMode: "multiply",
-        }}
-        role="img"
-        aria-label={main.altText ?? productTitle}
-      />
+        style={{ width: "min(661px, 100%)", aspectRatio: "1/1" }}
+      >
+        <img
+          key={main.url} // remount on image switch — avoids stale src flash
+          src={shopifyImageUrl(main.url, 900)}
+          alt={main.altText ?? productTitle}
+          width={900}
+          height={900}
+          // FIX: fetchpriority="high" so the browser prioritises this for LCP.
+          // This matches the <link rel="preload"> in page.tsx (same sized URL)
+          // so the browser serves it from cache — no double fetch.
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ mixBlendMode: "multiply" }}
+        />
+      </div>
+
+      {/* ── Thumbnails ──────────────────────────────────────────────────────── */}
       {images.length > 1 && (
         <>
           <div
@@ -43,37 +62,42 @@ export function ProductImageGallery({
                 key={i}
                 type="button"
                 onClick={() => setSelectedIndex(i)}
-                className={`aspect-square w-full overflow-hidden rounded-card border-2 transition-colors p-0 ${
+                className={`aspect-square w-full overflow-hidden rounded-card border-2 transition-colors p-0 relative bg-[#d4f2ff] ${
                   safeIndex === i
                     ? "border-[var(--brand-navy)] ring-2 ring-[var(--brand-navy)] ring-offset-2"
                     : "border-transparent hover:border-slate-300"
                 }`}
+                aria-label={img.altText ?? `${productTitle} image ${i + 1}`}
+                aria-pressed={safeIndex === i}
               >
-                <span
-                  className="block h-full w-full overflow-hidden rounded-card"
-                  style={{
-                    background: `url(${img.url}) ${sectionBgHex} 50% / cover no-repeat`,
-                    backgroundBlendMode: "multiply",
-                  }}
-                  role="img"
+                <img
+                  src={shopifyImageUrl(img.url, 300)}
+                  alt=""
                   aria-hidden
+                  width={300}
+                  height={300}
+                  // FIX: thumbnails are below the fold on mobile — lazy load them.
+                  // The first thumbnail (i === 0) is visible immediately so keep eager.
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover rounded-card"
+                  style={{ mixBlendMode: "multiply" }}
                 />
               </button>
             ))}
           </div>
-          {images.length > 1 && (
-            <div className="flex justify-center gap-1.5">
-              {images.slice(0, 6).map((_, i) => (
-                <span
-                  key={i}
-                  role="presentation"
-                  className={`h-1.5 w-1.5 rounded-full ${
-                    safeIndex === i ? "bg-[var(--brand-navy)]" : "bg-slate-300"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
+
+          <div className="flex justify-center gap-1.5">
+            {images.slice(0, 6).map((_, i) => (
+              <span
+                key={i}
+                role="presentation"
+                className={`h-1.5 w-1.5 rounded-full ${
+                  safeIndex === i ? "bg-[var(--brand-navy)]" : "bg-slate-300"
+                }`}
+              />
+            ))}
+          </div>
         </>
       )}
     </div>
