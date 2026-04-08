@@ -15,6 +15,10 @@ import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 import { isPetProductPage } from "@/lib/isPetProductPage";
 import { productIsFrozenForEstimatedDelivery } from "@/lib/productFrozenForEstimatedDelivery";
 import { buildDeliveryCalendarConfig } from "@/lib/estimatedDeliveryCalendar";
+import {
+  parseProcessingDaysFromSanity,
+  parseTransitDaysFromSanity,
+} from "@/lib/parseSanityDayRange";
 import { getKlaviyoReviewSummaryForProduct } from "@/lib/klaviyoReviews";
 import { heroReviewCountFromProductAndKlaviyo } from "@/lib/pdpReviewDisplay";
 import { PdpReviewsSection } from "./PdpReviewsSection";
@@ -313,9 +317,11 @@ export default async function ProductPage({
   type SiteSettingsForPdp = {
     freeShippingMessage?: string | null;
     estimatedDeliveryProcessingDays?: number | null;
+    estimatedDeliveryProcessingDaysRange?: string | null;
     estimatedDeliveryTransitDays?: string | null;
     estimatedDeliveryCutoffTime?: string | null;
     estimatedDeliveryFrozenProcessingDays?: number | null;
+    estimatedDeliveryFrozenProcessingDaysRange?: string | null;
     estimatedDeliveryFrozenTransitDays?: string | null;
     estimatedDeliveryBlockedDates?: string[] | null;
     estimatedDeliveryProcessingWeekdaysAmbient?: string[] | null;
@@ -343,7 +349,8 @@ export default async function ProductPage({
       }).catch(() => ({ productRecommendations: [] as RecNode[] })),
       client
         ? client.fetch<SiteSettingsForPdp>(SITE_SETTINGS_QUERY, {}, {
-            next: { revalidate: 60 },
+            // Dev: avoid stale settings vs Studio; prod: short ISR
+            next: { revalidate: process.env.NODE_ENV === "development" ? 0 : 60 },
           })
         : Promise.resolve(null),
     ]);
@@ -494,25 +501,25 @@ export default async function ProductPage({
     productType: product.productType,
   });
 
-  const processingDays = isFrozen
-    ? (siteSettings?.estimatedDeliveryFrozenProcessingDays ?? 1)
-    : (siteSettings?.estimatedDeliveryProcessingDays ?? 2);
+  const { min: processingDaysMin, max: processingDaysMax } =
+    parseProcessingDaysFromSanity(
+      isFrozen
+        ? siteSettings?.estimatedDeliveryFrozenProcessingDaysRange
+        : siteSettings?.estimatedDeliveryProcessingDaysRange,
+      isFrozen
+        ? siteSettings?.estimatedDeliveryFrozenProcessingDays
+        : siteSettings?.estimatedDeliveryProcessingDays,
+      isFrozen,
+    );
 
   const transitStr = isFrozen
-    ? (siteSettings?.estimatedDeliveryFrozenTransitDays?.trim() ?? "1-2")
-    : (siteSettings?.estimatedDeliveryTransitDays?.trim() ?? "2-4");
+    ? siteSettings?.estimatedDeliveryFrozenTransitDays
+    : siteSettings?.estimatedDeliveryTransitDays;
 
-  const transitMatch = transitStr.match(/^(\d+)\s*-\s*(\d+)$/);
-  const transitDaysMin = transitMatch
-    ? parseInt(transitMatch[1]!, 10)
-    : isFrozen
-      ? 1
-      : 2;
-  const transitDaysMax = transitMatch
-    ? parseInt(transitMatch[2]!, 10)
-    : isFrozen
-      ? 2
-      : 4;
+  const { min: transitDaysMin, max: transitDaysMax } = parseTransitDaysFromSanity(
+    transitStr,
+    isFrozen,
+  );
 
   const deliveryCalendar = buildDeliveryCalendarConfig({
     isFrozen,
@@ -674,7 +681,8 @@ export default async function ProductPage({
 
                 <EstimatedDeliveryDisplay
                   staticText={product.estimatedDelivery?.value?.trim() ?? null}
-                  processingDays={processingDays}
+                  processingDaysMin={processingDaysMin}
+                  processingDaysMax={processingDaysMax}
                   transitDaysMin={transitDaysMin}
                   transitDaysMax={transitDaysMax}
                   calendar={deliveryCalendar}

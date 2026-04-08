@@ -47,8 +47,8 @@ Detection uses this **order** (see `productIsFrozenForEstimatedDelivery` in `lib
 4. **`productType` contains `"frozen"`** (case-insensitive substring) → **frozen**.
 5. Otherwise → **ambient**.
 
-- **Frozen products** – Use `estimatedDeliveryFrozenProcessingDays` and `estimatedDeliveryFrozenTransitDays`.
-- **Ambient products** – Use `estimatedDeliveryProcessingDays` and `estimatedDeliveryTransitDays`.
+- **Frozen products** – Use frozen processing/transit **ranges** (and weekdays); legacy single `estimatedDeliveryFrozenProcessingDays` only if the range field is empty.
+- **Ambient products** – Use ambient processing/transit **ranges**; legacy `estimatedDeliveryProcessingDays` only if the range field is empty.
 
 ---
 
@@ -58,13 +58,13 @@ In Sanity site settings, under the shipping group:
 
 ### Ambient (non-frozen)
 
-- **`estimatedDeliveryProcessingDays`** (number, default 2) – days from order to ship
-- **`estimatedDeliveryTransitDays`** (string, default `"2-4"`) – min–max transit days
+- **`estimatedDeliveryProcessingDaysRange`** (string, e.g. `"0-1"` or `"2-2"`) – shortest–longest **processing** day counts. If empty, **`estimatedDeliveryProcessingDays`** (legacy number) is used.
+- **`estimatedDeliveryTransitDays`** (string, e.g. `"0-4"` or `"2-4"`) – shortest–longest **transit** day counts after processing.
 
 ### Frozen
 
-- **`estimatedDeliveryFrozenProcessingDays`** (number, default 1) – days from order to ship for frozen products
-- **`estimatedDeliveryFrozenTransitDays`** (string, default `"1-2"`) – min–max transit days for frozen products
+- **`estimatedDeliveryFrozenProcessingDaysRange`** – shortest–longest processing for frozen; if empty, legacy **`estimatedDeliveryFrozenProcessingDays`**.
+- **`estimatedDeliveryFrozenTransitDays`** – transit range for frozen.
 
 ### Shared
 
@@ -75,14 +75,16 @@ In Sanity site settings, under the shipping group:
 These mirror common Shopify “estimated delivery” apps: you choose **which weekdays count** for processing vs transit, and **blocked dates** (holidays) where neither phase advances.
 
 - **`estimatedDeliveryBlockedDates`** – list of calendar dates (YYYY-MM-DD). On these days, neither processing nor transit days are counted.
-- **`estimatedDeliveryProcessingWeekdaysAmbient`** / **`estimatedDeliveryProcessingWeekdaysFrozen`** – weekdays (0 = Sunday … 6 = Saturday) that count toward **processing** time. The app picks **branch-specific first** (frozen vs ambient from §2), then **falls back to the other branch** if that array is empty. So filling only Ambient or only Frozen still works. If both are empty: **Mon–Fri** when the product is treated as ambient, **Mon–Tue** when treated as frozen (see `normalizeProcessingWeekdays`). The tracker shows the **first through last** counted processing day (not from order date to end).
+- **`estimatedDeliveryProcessingWeekdaysAmbient`** / **`estimatedDeliveryProcessingWeekdaysFrozen`** – weekdays (0 = Sunday … 6 = Saturday) that count toward **processing** time. The app picks **branch-specific first** (frozen vs ambient from §2), then **falls back to the other branch** if that array is empty. If both are empty: **Mon–Fri** when the product is treated as ambient, **Mon–Tue** when treated as frozen (see `normalizeProcessingWeekdays`). The tracker **Processing** row shows **order date through the end of the longest processing** (aligned with Essential Estimated).
 - **`estimatedDeliveryTransitWeekdaysAmbient`** / **`estimatedDeliveryTransitWeekdaysFrozen`** – transit weekdays; same **prefer branch, then other branch**; if both empty, Mon–Fri.
 
 **Important:** Frozen vs ambient on the PDP follows §2 (tags/metafield/type). A product with the **`ambient` tag always uses ambient delivery settings** even if it is “frozen” colloquially—so the **Ambient** weekday rows are the ones that apply unless you remove that tag or align both Sanity rows.
 
-Implementation: `lib/estimatedDeliveryCalendar.ts` (`addCountedDays`, `buildDeliveryCalendarConfig`). UI: `app/components/EstimatedDeliveryDisplay.tsx`.
+Implementation: `lib/estimatedDeliveryCalendar.ts`, `lib/estimatedDeliveryTimeline.ts` (`computeEstimatedDeliveryTimeline`), `lib/parseSanityDayRange.ts`. UI: `app/components/EstimatedDeliveryDisplay.tsx`.
 
-The transit format is `"min-max"` (space around `-` is optional).
+**Sanity Studio:** field **Estimated delivery preview (ambient & frozen)** runs the same math for both branches using today’s date.
+
+Processing and transit strings: **`"min-max"`** or a **single number** (min = max). Space around `-` is optional.
 
 ---
 
@@ -91,10 +93,14 @@ The transit format is `"min-max"` (space around `-` is optional).
 1. If `custom.estimated_delivery` has non-empty text → show that text (no frozen/ambient distinction).
 2. Else:
    - Detect frozen/ambient using tags, metafield, and product type (§2).
-   - Use frozen or ambient processing/transit **day counts** and transit min–max from Sanity.
+   - Parse **processing** shortest–longest and **transit** shortest–longest from Sanity (`parseProcessingDaysFromSanity`, `parseTransitDaysFromSanity`).
    - Build a calendar config: processing weekdays, transit weekdays, blocked dates (ambient vs frozen as above).
-   - **Processing end:** start from **today** (local midnight), advance day by day; each day that is a **processing weekday** and **not blocked** counts once, until `processingDays` counts are used.
-   - **Delivery window:** from **processing end**, advance similarly using **transit weekdays** and the same blocked dates until `transitDaysMin` / `transitDaysMax` counts are used for the start and end of the delivery range.
+   - **Processing (ambient and frozen)** uses **calendar-consecutive** blocks: a run of N days must be N adjacent calendar days, each an allowed processing weekday (e.g. Mon–Fri for five straight business days, or Mon→Tue for frozen). If no run fits starting on the order day, the **next** valid block is used (`findEndOfFirstConsecutiveProcessingBlock`).
+   - **Transit** still starts after the ship date when transit days ≥ 1 (unless transit min is 0).
+   - **Earliest / latest ship** = end of the first valid consecutive block for the **minimum** / **maximum** processing day count.
+   - **Transit** is counted from **the end of the longest processing** (`processingEndMax`), so **0 transit days** = arrival on the **same day** processing completes on that timeline (aligned with Essential Estimated).
+   - **Delivery window:** `processingEndMax` + min transit … `processingEndMax` + max transit (transit weekdays + blocked dates).
+   - Headline and **Delivered** row use that window; **Processing** row shows **purchase date → processingEndMax**.
 3. Display countdown + tracker or message as configured.
 
 If all weekday lists are empty, behavior matches the previous **Mon–Fri only** weekend skip. Blocked dates are skipped in both phases.

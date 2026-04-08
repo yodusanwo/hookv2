@@ -1,11 +1,17 @@
 "use client";
 
 import * as React from "react";
-import {
-  addCountedDays,
-  countProcessingSpan,
-  type DeliveryCalendarConfig,
-} from "@/lib/estimatedDeliveryCalendar";
+import type { DeliveryCalendarConfig } from "@/lib/estimatedDeliveryCalendar";
+import { computeEstimatedDeliveryTimeline } from "@/lib/estimatedDeliveryTimeline";
+
+/** Timeline must not use SSR `Date` (server TZ/UTC); Studio preview is browser-only with local “today”. */
+function useClientTimelineReady(): boolean {
+  return React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
 
 function formatDateShort(date: Date): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -23,6 +29,11 @@ function formatDateMMDD(date: Date): string {
 
 /** Format a date range for the tracker (e.g. "Mar 03 - 10" or "Mar 03 - Mar 10"). */
 function formatDateRange(start: Date, end: Date): string {
+  const sameDay =
+    start.getFullYear() === end.getFullYear() &&
+    start.getMonth() === end.getMonth() &&
+    start.getDate() === end.getDate();
+  if (sameDay) return formatDateShort(start);
   if (start.getMonth() === end.getMonth()) {
     return `${formatDateShort(start)} - ${end.getDate()}`;
   }
@@ -36,7 +47,8 @@ function pad2(n: number): string {
 
 type EstimatedDeliveryDisplayProps = {
   staticText: string | null;
-  processingDays: number;
+  processingDaysMin: number;
+  processingDaysMax: number;
   transitDaysMin: number;
   transitDaysMax: number;
   /** Weekday sets + blocked dates from Sanity (ambient vs frozen chosen on the server). */
@@ -94,12 +106,14 @@ function parseCutoff(str: string | null | undefined): { hour: number; minute: nu
 
 export function EstimatedDeliveryDisplay({
   staticText,
-  processingDays,
+  processingDaysMin,
+  processingDaysMax,
   transitDaysMin,
   transitDaysMax,
   calendar,
   cutOffTime,
 }: EstimatedDeliveryDisplayProps) {
+  const timelineReady = useClientTimelineReady();
   const cutoff = React.useMemo(() => parseCutoff(cutOffTime), [cutOffTime]);
   const [countdown, setCountdown] = React.useState<string | null>(null);
 
@@ -113,41 +127,31 @@ export function EstimatedDeliveryDisplay({
   const [dateKey, setDateKey] = React.useState(dateKeyRef.current);
 
   const dates = React.useMemo(() => {
+    if (!timelineReady) return null;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    const blocked = new Set(calendar.blockedDateKeys);
-    const processingWeekdays = new Set(calendar.processingWeekdays);
-    const transitWeekdays = new Set(calendar.transitWeekdays);
-
-    const purchasedDate = new Date(today);
-    const { first: processingStart, last: processingEnd } = countProcessingSpan(
+    const t = computeEstimatedDeliveryTimeline(
       today,
-      processingDays,
-      processingWeekdays,
-      blocked,
+      { min: processingDaysMin, max: processingDaysMax },
+      { min: transitDaysMin, max: transitDaysMax },
+      calendar,
     );
-    const deliveryStart = addCountedDays(
-      processingEnd,
-      transitDaysMin,
-      transitWeekdays,
-      blocked,
-    );
-    const deliveryEnd = addCountedDays(
-      processingEnd,
-      transitDaysMax,
-      transitWeekdays,
-      blocked,
-    );
-
     return {
-      purchasedDate,
-      processingStart,
-      processingEnd,
-      deliveryStart,
-      deliveryEnd,
+      purchasedDate: t.purchasedDate,
+      processingRangeStart: t.processingDisplayStart,
+      processingRangeEnd: t.processingDisplayEnd,
+      deliveryStart: t.deliveryEarliest,
+      deliveryEnd: t.deliveryLatest,
     };
-  }, [dateKey, processingDays, transitDaysMin, transitDaysMax, calendar]);
+  }, [
+    timelineReady,
+    dateKey,
+    processingDaysMin,
+    processingDaysMax,
+    transitDaysMin,
+    transitDaysMax,
+    calendar,
+  ]);
 
   React.useEffect(() => {
     const update = () => {
@@ -203,16 +207,17 @@ export function EstimatedDeliveryDisplay({
     );
   }
 
-  const startStr = formatDateMMDD(dates.deliveryStart);
-  const endStr = formatDateMMDD(dates.deliveryEnd);
-  const processingRange = formatDateRange(
-    dates.processingStart,
-    dates.processingEnd,
-  );
-  const deliveryRange = formatDateRange(dates.deliveryStart, dates.deliveryEnd);
+  const startStr = dates ? formatDateMMDD(dates.deliveryStart) : "—";
+  const endStr = dates ? formatDateMMDD(dates.deliveryEnd) : "—";
+  const processingRange = dates
+    ? formatDateRange(dates.processingRangeStart, dates.processingRangeEnd)
+    : "—";
+  const deliveryRange = dates
+    ? formatDateRange(dates.deliveryStart, dates.deliveryEnd)
+    : "—";
 
   return (
-    <div className="mt-4 w-full max-w-full">
+    <div className="mt-4 w-full max-w-full" aria-busy={!dates}>
       {/* Top message with countdown and delivery dates */}
       <div
         className="space-y-1 w-full max-w-full text-sm sm:text-base"
@@ -273,7 +278,7 @@ export function EstimatedDeliveryDisplay({
               className="mt-0.5 text-sm"
               style={{ color: "#374151", fontWeight: 400 }}
             >
-              {formatDateShort(dates.purchasedDate)}
+              {dates ? formatDateShort(dates.purchasedDate) : "—"}
             </span>
           </div>
 

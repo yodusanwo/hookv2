@@ -1,5 +1,12 @@
 import { defineType, defineField } from "sanity";
 import { IMAGE_ACCEPT, validateImageAsset, IMAGE_ERROR_MESSAGE } from "../objects/imageFieldConfig";
+import {
+  validateCutoffTime24h,
+  validateDayRangeString,
+  validateProcessingDaysCount,
+  validateWeekdayListUnique,
+} from "../../validation/estimatedDelivery";
+import { EstimatedDeliveryStudioPreviewInput } from "../../components/EstimatedDeliveryStudioPreview";
 
 export const siteSettings = defineType({
   name: "siteSettings",
@@ -206,18 +213,32 @@ export const siteSettings = defineType({
     defineField({
       name: "estimatedDeliveryProcessingDays",
       type: "number",
-      title: "Estimated Delivery – Processing Days",
-      description: "Days from order to ship (e.g. 2). Used when product has no estimated_delivery metafield.",
+      title: "Estimated Delivery – Processing Days (legacy)",
+      description:
+        "Used only if **Ambient – Processing days range** below is empty. Otherwise ignored.",
       group: "shipping",
       initialValue: 2,
+      validation: (Rule) => Rule.custom(validateProcessingDaysCount),
+    }),
+    defineField({
+      name: "estimatedDeliveryProcessingDaysRange",
+      type: "string",
+      title: "Ambient – Processing days (shortest–longest)",
+      description:
+        "Shortest and longest **processing** day counts (e.g. \"0-1\" or \"2-2\"). Single number = same min and max. Leave empty to use the legacy single field above.",
+      group: "shipping",
+      initialValue: "2-2",
+      validation: (Rule) => Rule.custom(validateDayRangeString),
     }),
     defineField({
       name: "estimatedDeliveryTransitDays",
       type: "string",
       title: "Estimated Delivery – Transit Days Range",
-      description: "Min-max transit days (e.g. \"2-4\" or \"3-5\"). Used for dynamic date calculation.",
+      description:
+        "Min–max transit days (e.g. \"2-4\"). A single number (e.g. \"4\") means exactly 4 transit days after processing, using transit weekdays and blocked dates.",
       group: "shipping",
       initialValue: "2-4",
+      validation: (Rule) => Rule.custom(validateDayRangeString),
     }),
     defineField({
       name: "estimatedDeliveryCutoffTime",
@@ -225,23 +246,37 @@ export const siteSettings = defineType({
       title: "Estimated Delivery – Cutoff Time",
       description: "24h time (e.g. \"17:00\") for countdown. Order before this for same-day processing. Leave empty to hide countdown.",
       group: "shipping",
+      validation: (Rule) => Rule.custom(validateCutoffTime24h),
     }),
     defineField({
       name: "estimatedDeliveryFrozenProcessingDays",
       type: "number",
-      title: "Estimated Delivery (Frozen) – Processing Days",
+      title: "Estimated Delivery (Frozen) – Processing Days (legacy)",
       description:
-        "Days from order to ship for frozen products. Frozen detection: tag ambient (opt-out), then metafield is_frozen, tags frozen/frozenseafood, or product type contains frozen.",
+        "Used only if **Frozen – Processing days range** below is empty. Frozen detection: tag ambient (opt-out), metafield is_frozen, tags frozen/frozenseafood, or product type contains frozen.",
       group: "shipping",
       initialValue: 1,
+      validation: (Rule) => Rule.custom(validateProcessingDaysCount),
+    }),
+    defineField({
+      name: "estimatedDeliveryFrozenProcessingDaysRange",
+      type: "string",
+      title: "Frozen – Processing days (shortest–longest)",
+      description:
+        "Shortest–longest **processing** counts for frozen products. Single number = same min/max. Leave empty to use the legacy frozen processing days number above.",
+      group: "shipping",
+      initialValue: "1-1",
+      validation: (Rule) => Rule.custom(validateDayRangeString),
     }),
     defineField({
       name: "estimatedDeliveryFrozenTransitDays",
       type: "string",
       title: "Estimated Delivery (Frozen) – Transit Days Range",
-      description: "Min-max transit days for frozen products (e.g. \"1-2\" or \"2-3\").",
+      description:
+        "Min–max transit days for frozen (e.g. \"1-2\"). A single number means that many transit days after processing.",
       group: "shipping",
       initialValue: "1-2",
+      validation: (Rule) => Rule.custom(validateDayRangeString),
     }),
     defineField({
       name: "estimatedDeliveryBlockedDates",
@@ -259,6 +294,7 @@ export const siteSettings = defineType({
       description:
         "Used for non-frozen products, and for frozen products if the Frozen list is empty. If this list is empty, **Frozen – Processing weekdays** is used when set.",
       group: "shipping",
+      validation: (Rule) => Rule.custom(validateWeekdayListUnique),
       of: [
         {
           type: "string",
@@ -284,6 +320,7 @@ export const siteSettings = defineType({
       description:
         "Frozen products only. If empty, **Ambient – Processing weekdays** is used. If both empty, defaults to Mon–Tue.",
       group: "shipping",
+      validation: (Rule) => Rule.custom(validateWeekdayListUnique),
       of: [
         {
           type: "string",
@@ -309,6 +346,7 @@ export const siteSettings = defineType({
       description:
         "Ambient transit; frozen falls back here if Frozen transit is empty. If Ambient is empty, Frozen is used.",
       group: "shipping",
+      validation: (Rule) => Rule.custom(validateWeekdayListUnique),
       of: [
         {
           type: "string",
@@ -334,6 +372,7 @@ export const siteSettings = defineType({
       description:
         "Frozen products. If empty, **Ambient – Transit weekdays** is used. If both empty, Mon–Fri.",
       group: "shipping",
+      validation: (Rule) => Rule.custom(validateWeekdayListUnique),
       of: [
         {
           type: "string",
@@ -351,6 +390,18 @@ export const siteSettings = defineType({
           },
         },
       ],
+    }),
+    defineField({
+      name: "estimatedDeliveryStudioPreview",
+      type: "string",
+      title: "Estimated delivery preview (ambient & frozen)",
+      description:
+        "Read-only preview using today’s date and the fields above (weekdays, blocked dates, ranges). The stored value is unused.",
+      group: "shipping",
+      initialValue: "",
+      components: {
+        input: EstimatedDeliveryStudioPreviewInput,
+      },
     }),
   ],
   preview: {
