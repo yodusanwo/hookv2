@@ -257,7 +257,7 @@ export const siteSettings = defineType({
       type: "array",
       title: "Ambient – Processing weekdays",
       description:
-        "Which weekdays count toward processing time. Leave empty for Mon–Fri.",
+        "Used for non-frozen products, and for frozen products if the Frozen list is empty. If this list is empty, **Frozen – Processing weekdays** is used when set.",
       group: "shipping",
       of: [
         {
@@ -282,7 +282,7 @@ export const siteSettings = defineType({
       type: "array",
       title: "Frozen – Processing weekdays",
       description:
-        "Which weekdays count toward processing time for frozen products. Leave empty for Mon–Fri.",
+        "Frozen products only. If empty, **Ambient – Processing weekdays** is used. If both empty, defaults to Mon–Tue.",
       group: "shipping",
       of: [
         {
@@ -307,7 +307,7 @@ export const siteSettings = defineType({
       type: "array",
       title: "Ambient – Transit weekdays",
       description:
-        "Which weekdays count toward in-transit time. Leave empty for Mon–Fri.",
+        "Ambient transit; frozen falls back here if Frozen transit is empty. If Ambient is empty, Frozen is used.",
       group: "shipping",
       of: [
         {
@@ -332,7 +332,7 @@ export const siteSettings = defineType({
       type: "array",
       title: "Frozen – Transit weekdays",
       description:
-        "Which weekdays count toward in-transit time for frozen products. Leave empty for Mon–Fri.",
+        "Frozen products. If empty, **Ambient – Transit weekdays** is used. If both empty, Mon–Fri.",
       group: "shipping",
       of: [
         {

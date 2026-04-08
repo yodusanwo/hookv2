@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   addCountedDays,
+  countProcessingSpan,
   type DeliveryCalendarConfig,
 } from "@/lib/estimatedDeliveryCalendar";
 
@@ -120,7 +121,7 @@ export function EstimatedDeliveryDisplay({
     const transitWeekdays = new Set(calendar.transitWeekdays);
 
     const purchasedDate = new Date(today);
-    const processingEnd = addCountedDays(
+    const { first: processingStart, last: processingEnd } = countProcessingSpan(
       today,
       processingDays,
       processingWeekdays,
@@ -141,6 +142,7 @@ export function EstimatedDeliveryDisplay({
 
     return {
       purchasedDate,
+      processingStart,
       processingEnd,
       deliveryStart,
       deliveryEnd,
@@ -203,7 +205,10 @@ export function EstimatedDeliveryDisplay({
 
   const startStr = formatDateMMDD(dates.deliveryStart);
   const endStr = formatDateMMDD(dates.deliveryEnd);
-  const processingRange = formatDateRange(dates.purchasedDate, dates.processingEnd);
+  const processingRange = formatDateRange(
+    dates.processingStart,
+    dates.processingEnd,
+  );
   const deliveryRange = formatDateRange(dates.deliveryStart, dates.deliveryEnd);
 
   return (

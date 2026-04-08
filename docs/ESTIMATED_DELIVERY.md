@@ -75,8 +75,10 @@ In Sanity site settings, under the shipping group:
 These mirror common Shopify “estimated delivery” apps: you choose **which weekdays count** for processing vs transit, and **blocked dates** (holidays) where neither phase advances.
 
 - **`estimatedDeliveryBlockedDates`** – list of calendar dates (YYYY-MM-DD). On these days, neither processing nor transit days are counted.
-- **`estimatedDeliveryProcessingWeekdaysAmbient`** / **`estimatedDeliveryProcessingWeekdaysFrozen`** – weekdays (0 = Sunday … 6 = Saturday) that count toward **processing** time. **Empty** means Mon–Fri (`1`–`5`).
-- **`estimatedDeliveryTransitWeekdaysAmbient`** / **`estimatedDeliveryTransitWeekdaysFrozen`** – weekdays that count toward **in-transit** time (after processing). **Empty** means Mon–Fri.
+- **`estimatedDeliveryProcessingWeekdaysAmbient`** / **`estimatedDeliveryProcessingWeekdaysFrozen`** – weekdays (0 = Sunday … 6 = Saturday) that count toward **processing** time. The app picks **branch-specific first** (frozen vs ambient from §2), then **falls back to the other branch** if that array is empty. So filling only Ambient or only Frozen still works. If both are empty: **Mon–Fri** when the product is treated as ambient, **Mon–Tue** when treated as frozen (see `normalizeProcessingWeekdays`). The tracker shows the **first through last** counted processing day (not from order date to end).
+- **`estimatedDeliveryTransitWeekdaysAmbient`** / **`estimatedDeliveryTransitWeekdaysFrozen`** – transit weekdays; same **prefer branch, then other branch**; if both empty, Mon–Fri.
+
+**Important:** Frozen vs ambient on the PDP follows §2 (tags/metafield/type). A product with the **`ambient` tag always uses ambient delivery settings** even if it is “frozen” colloquially—so the **Ambient** weekday rows are the ones that apply unless you remove that tag or align both Sanity rows.
 
 Implementation: `lib/estimatedDeliveryCalendar.ts` (`addCountedDays`, `buildDeliveryCalendarConfig`). UI: `app/components/EstimatedDeliveryDisplay.tsx`.
 
