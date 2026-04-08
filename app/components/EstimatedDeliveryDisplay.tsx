@@ -241,7 +241,10 @@ export function EstimatedDeliveryDisplay({
           ) : null}{" "}
           you&apos;ll receive{" "}
           <br className="lg:hidden" aria-hidden />
-          your package between{" "}
+          your package
+          <br className="hidden lg:block" aria-hidden />
+          {" "}
+          between{" "}
           <span className="font-semibold" style={{ color: "#1E1E1E" }}>
             {startStr}
           </span>{" "}
