@@ -2,12 +2,14 @@ import { NextResponse } from "next/server";
 import { enforceApiRateLimit } from "@/lib/apiRateLimit";
 import { shopifyFetch } from "@/lib/shopify";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
+import { mergeCarouselImagesWithVariant } from "@/lib/mergeCarouselImagesWithVariant";
 import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import type { ApiProductForCarousel } from "@/lib/types";
 
 type VariantNode = {
   id: string;
   availableForSale: boolean;
+  image: { url: string; altText: string | null } | null;
   price: { amount: string; currencyCode: string };
   compareAtPrice: { amount: string; currencyCode: string } | null;
   selectedOptions: Array<{ name: string; value: string }>;
@@ -64,6 +66,7 @@ function buildCollectionProductsQuery(): string {
                 node {
                   id
                   availableForSale
+                  image { url altText }
                   price { amount currencyCode }
                   compareAtPrice { amount currencyCode }
                   selectedOptions { name value }
@@ -172,7 +175,7 @@ export async function GET(
             handle: node.handle,
             productType,
             filterValue: filterValue ?? null,
-            images: node.images,
+            images: mergeCarouselImagesWithVariant(node.images, variant.image),
             priceRange: { minVariantPrice: price },
             variantId: variant.id,
             price: price?.amount ?? "0",

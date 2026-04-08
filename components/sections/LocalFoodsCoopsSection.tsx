@@ -69,13 +69,19 @@ export function LocalFoodsCoopsSection({
           titleColor="#111827"
           descriptionColor="#1E1E1E"
         />
-        <div className="mt-2 flex w-full min-w-0 flex-row flex-nowrap items-center justify-center gap-2 overflow-x-auto overflow-y-hidden py-2 [scrollbar-gutter:stable] sm:gap-3 md:gap-4">
+        <div className="mt-2 grid w-full min-w-0 grid-cols-2 justify-items-center gap-x-4 gap-y-5 py-2 sm:gap-x-5 sm:gap-y-6 md:flex md:flex-row md:flex-nowrap md:items-center md:justify-center md:gap-4 md:overflow-x-auto md:overflow-y-hidden md:py-2 md:[scrollbar-gutter:stable]">
           {items.map((item, idx) => {
             const logoImg = item.logo ? urlForSizedImage(item.logo, 480) : null;
             const safeUrl = safeHref(item.url);
             const showBorder = item.bordered ?? false;
+            /** Odd count: center the last logo on the 2-col mobile grid (span full row). */
+            const lastAloneInRow =
+              items.length % 2 === 1 && idx === items.length - 1;
+            const lastOddGridClass = lastAloneInRow
+              ? "max-md:col-span-2 max-md:justify-self-center"
+              : "";
             /** `inline-flex shrink-0` keeps logos in one horizontal row; `w-full` on children was forcing a vertical stack under `md:flex`. */
-            const wrapperClass = `inline-flex shrink-0 min-w-0 items-center justify-center gap-2 bg-transparent px-1 py-1 sm:px-2 sm:py-1.5 ${showBorder ? "rounded border border-slate-300/80" : ""}`;
+            const wrapperClass = `inline-flex shrink-0 min-w-0 items-center justify-center gap-2 bg-transparent px-1 py-1 sm:px-2 sm:py-1.5 ${showBorder ? "rounded border border-slate-300/80" : ""} ${lastOddGridClass}`;
 
             const content = logoImg ? (
               <div className="flex h-[4.392rem] shrink-0 max-w-[16.6375rem] items-center justify-center sm:h-[4.5375rem] sm:max-w-[21.175rem] md:h-[4.84rem] md:max-w-[25.7125rem]">

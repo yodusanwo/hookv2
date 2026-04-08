@@ -220,7 +220,7 @@ export function EstimatedDeliveryDisplay({
     <div className="mt-4 w-full max-w-full" aria-busy={!dates}>
       {/* Top message with countdown and delivery dates */}
       <div
-        className="space-y-1 w-full max-w-full text-sm sm:text-base"
+        className="w-full max-w-full text-sm sm:text-base"
         style={{
           color: "#333333",
           fontFamily: "Inter, var(--font-inter), sans-serif",
@@ -239,9 +239,8 @@ export function EstimatedDeliveryDisplay({
               ,
             </>
           ) : null}{" "}
-          you&apos;ll receive
-        </p>
-        <p className="break-words">
+          you&apos;ll receive{" "}
+          <br className="lg:hidden" aria-hidden />
           your package between{" "}
           <span className="font-semibold" style={{ color: "#1E1E1E" }}>
             {startStr}

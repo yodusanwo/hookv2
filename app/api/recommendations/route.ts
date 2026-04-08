@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { enforceApiRateLimit } from "@/lib/apiRateLimit";
+import { mergeCarouselImagesWithVariant } from "@/lib/mergeCarouselImagesWithVariant";
 import { shopifyFetch } from "@/lib/shopify";
 import type { ApiProductForCarousel } from "@/lib/types";
 
@@ -15,6 +16,7 @@ type ProductRecommendationsResponse = {
       edges: Array<{
         node: {
           id: string;
+          image: { url: string; altText: string | null } | null;
           price: { amount: string; currencyCode: string };
           selectedOptions: Array<{ name: string; value: string }>;
         };
@@ -36,6 +38,7 @@ const PRODUCT_RECOMMENDATIONS_QUERY = `
         edges {
           node {
             id
+            image { url altText }
             price { amount currencyCode }
             selectedOptions { name value }
           }
@@ -93,7 +96,7 @@ export async function GET(req: Request) {
         title: node.title,
         handle: node.handle,
         productType: node.productType ?? null,
-        images: node.images,
+        images: mergeCarouselImagesWithVariant(node.images, variant?.image),
         priceRange: { minVariantPrice: price },
         variantId: variant?.id ?? null,
         price: price?.amount ?? "0",

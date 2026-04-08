@@ -8,6 +8,8 @@ export type ProductVariantOption = {
   title: string;
   availableForSale: boolean;
   selectedOptions: Array<{ name: string; value: string }>;
+  /** Variant image from Shopify (Storefront `ProductVariant.image`). */
+  image?: { url: string; altText: string | null } | null;
   price: { amount: string; currencyCode: string };
   /** When set, customer can choose Subscribe & save (Storefront `sellingPlanId` on cart line). */
   sellingPlans?: SellingPlanOption[];

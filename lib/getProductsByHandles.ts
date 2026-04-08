@@ -1,11 +1,13 @@
 import "server-only";
 import { shopifyFetch, STOREFRONT_FETCH_REVALIDATE } from "@/lib/shopify";
+import { mergeCarouselImagesWithVariant } from "@/lib/mergeCarouselImagesWithVariant";
 import { sellingPlansFromVariantNode } from "@/lib/mapSellingPlans";
 import type { ApiProductForCarousel } from "@/lib/types";
 
 type VariantNode = {
   id: string;
   availableForSale: boolean;
+  image: { url: string; altText: string | null } | null;
   price: { amount: string; currencyCode: string };
   compareAtPrice: { amount: string; currencyCode: string } | null;
   selectedOptions: Array<{ name: string; value: string }>;
@@ -49,6 +51,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
           node {
             id
             availableForSale
+            image { url altText }
             price { amount currencyCode }
             compareAtPrice { amount currencyCode }
             selectedOptions { name value }
@@ -168,7 +171,7 @@ export async function getProductsByHandles(
             handle: node.handle,
             productType: null,
             filterValue: null,
-            images: node.images,
+            images: mergeCarouselImagesWithVariant(node.images, variant.image),
             priceRange: price ? { minVariantPrice: price } : undefined,
             variantId: variant.id,
             price: price?.amount ?? "0",

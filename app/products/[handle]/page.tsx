@@ -13,6 +13,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { getFilterMetafieldConfigEscaped } from "@/lib/shopifyFilterMetafield";
 import { isPetProductPage } from "@/lib/isPetProductPage";
+import { galleryUrlsMatch } from "@/lib/galleryUrlsMatch";
+import {
+  getInitialSelectedOptions,
+  getVariantByOptions,
+} from "@/lib/productVariantSelection";
 import { productIsFrozenForEstimatedDelivery } from "@/lib/productFrozenForEstimatedDelivery";
 import { buildDeliveryCalendarConfig } from "@/lib/estimatedDeliveryCalendar";
 import {
@@ -67,6 +72,7 @@ type ProductByHandleResponse = {
           availableForSale: boolean;
           selectedOptions: Array<{ name: string; value: string }>;
           price: { amount: string; currencyCode: string };
+          image: { url: string; altText: string | null } | null;
           sellingPlanAllocations: {
             edges: Array<{
               node: {
@@ -169,6 +175,7 @@ function buildProductByHandleQuery(): string {
             title
             availableForSale
             selectedOptions { name value }
+            image { url altText }
             price { amount currencyCode }
             sellingPlanAllocations(first: 10) {
               edges {
@@ -500,6 +507,12 @@ export default async function ProductPage({
     seenUrls.add(img.url);
     return true;
   });
+  for (const edge of product.variants.edges) {
+    const vi = edge.node.image;
+    if (!vi?.url) continue;
+    if (images.some((img) => galleryUrlsMatch(img.url, vi.url))) continue;
+    images.push({ url: vi.url, altText: vi.altText ?? null });
+  }
 
   const variants = product.variants.edges.map((e) => {
     const node = e.node;
@@ -509,11 +522,22 @@ export default async function ProductPage({
       title: node.title,
       availableForSale: node.availableForSale,
       selectedOptions: node.selectedOptions,
+      image: node.image ?? null,
       price: node.price,
       requiresSellingPlan: product.requiresSellingPlan,
       ...(sellingPlans?.length ? { sellingPlans } : {}),
     };
   });
+
+  const initialSelected = getInitialSelectedOptions(variants, variantFromUrl);
+  const initialVariantForGallery =
+    getVariantByOptions(variants, initialSelected) ?? variants[0];
+  const initialGalleryIndex = (() => {
+    const u = initialVariantForGallery?.image?.url;
+    if (!u) return 0;
+    const idx = images.findIndex((img) => galleryUrlsMatch(img.url, u));
+    return idx >= 0 ? idx : 0;
+  })();
 
   const productSummary = product.summary?.value?.trim()
     ? truncateForMeta(product.summary.value, 220)
@@ -572,12 +596,13 @@ export default async function ProductPage({
     collections: product.collections,
   });
 
-  const firstImageUrl = images[0]?.url;
+  const heroImageUrl =
+    initialVariantForGallery?.image?.url ?? images[0]?.url ?? null;
   const firstVariantPrice = variants[0]?.price?.amount ?? "0";
 
-  // FIX 3 — Sized Shopify CDN URL for the hero preload (was full-res before).
-  const heroPreloadUrl = firstImageUrl
-    ? shopifyImageUrl(firstImageUrl, SHOPIFY_IMAGE_WIDTH)
+  // FIX 3 — Sized Shopify CDN URL for the hero preload (variant image when set).
+  const heroPreloadUrl = heroImageUrl
+    ? shopifyImageUrl(heroImageUrl, SHOPIFY_IMAGE_WIDTH)
     : null;
 
   return (
@@ -586,7 +611,7 @@ export default async function ProductPage({
       <RecentlyViewedTracker
         handle={handle}
         title={product.title}
-        image={product.featuredImage?.url ?? firstImageUrl ?? null}
+        image={product.featuredImage?.url ?? heroImageUrl ?? null}
         price={firstVariantPrice}
         compareAtPrice={null}
       />
@@ -680,6 +705,7 @@ export default async function ProductPage({
                   <ProductImageGallery
                     images={images}
                     productTitle={product.title}
+                    initialSelectedIndex={initialGalleryIndex}
                   />
                 </div>
 

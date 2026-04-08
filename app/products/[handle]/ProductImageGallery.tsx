@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { useProductVariant } from "@/app/components/ProductVariantContext";
+import { galleryUrlsMatch } from "@/lib/galleryUrlsMatch";
 
 // Appends Shopify CDN sizing params. Keeps the preload in page.tsx and the
 // actual <img> src in sync — same URL = browser cache hit, no double fetch.
@@ -12,16 +14,34 @@ function shopifyImageUrl(url: string, width: number, quality = 80): string {
 export function ProductImageGallery({
   images,
   productTitle,
+  initialSelectedIndex = 0,
 }: {
   images: Array<{ url: string; altText: string | null }>;
   productTitle: string;
+  /** From server: gallery index for `?variant=` / default variant (matches Shopify variant image). */
+  initialSelectedIndex?: number;
 }) {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const { selectedVariant } = useProductVariant();
+  const [selectedIndex, setSelectedIndex] = React.useState(() =>
+    Math.max(0, Math.min(initialSelectedIndex, Math.max(0, images.length - 1))),
+  );
   const safeIndex = Math.max(0, Math.min(selectedIndex, images.length - 1));
 
   React.useEffect(() => {
     if (selectedIndex !== safeIndex) setSelectedIndex(safeIndex);
   }, [images.length, safeIndex, selectedIndex]);
+
+  /** Main image follows selected variant when Shopify assigns an image per variant. */
+  React.useEffect(() => {
+    if (images.length === 0) return;
+    const url = selectedVariant?.image?.url;
+    if (!url) {
+      setSelectedIndex(0);
+      return;
+    }
+    const idx = images.findIndex((img) => galleryUrlsMatch(img.url, url));
+    if (idx >= 0) setSelectedIndex(idx);
+  }, [selectedVariant?.id, images]);
 
   const main = images[safeIndex] ?? images[0];
   if (!main) return null;
