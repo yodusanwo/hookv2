@@ -96,7 +96,7 @@ export function Header({
           }}
         />
 
-        <nav className="hidden md:flex items-center gap-16 text-xl font-medium text-white [font-family:var(--font-inter)]">
+        <nav className="hidden min-w-0 flex-1 justify-center xl:flex xl:items-center xl:gap-8 xl:text-lg 2xl:gap-16 2xl:text-xl font-medium text-white [font-family:var(--font-inter)]">
           {nav.map((item) => {
             const href = safeHref(item.href) || "#";
             const label = item.label ?? "Link";
@@ -115,12 +115,12 @@ export function Header({
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
-            className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-white/10 md:hidden"
+            className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-white/10 xl:hidden"
             onClick={() => setMobileMenuOpen((o) => !o)}
           >
             <span className={`h-0.5 w-6 bg-white transition-transform ${mobileMenuOpen ? "translate-y-2 rotate-45" : ""}`} />
@@ -161,7 +161,7 @@ export function Header({
       {/* Mobile nav dropdown */}
       {mobileMenuOpen && (
         <div
-          className="border-t border-white/20 bg-[var(--brand-navy)] px-4 py-4 md:hidden"
+          className="border-t border-white/20 bg-[var(--brand-navy)] px-4 py-4 xl:hidden"
           style={{ backgroundColor: bgColor }}
         >
           <nav className="flex flex-col gap-2">
