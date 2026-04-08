@@ -132,7 +132,7 @@ export const HOMEPAGE_UPCOMING_EVENTS_BLOCK_QUERY = `*[_type == "page" && slug.c
   showAllUrl
 }`;
 
-/** GROQ query for story page (page with slug "story") */
+/** GROQ query for Our Story layout (Sanity Page slug remains `story`; public URL is `/about`). */
 export const STORY_PAGE_QUERY = `*[_type == "page" && slug.current == "story"][0] {
   _id,
   title,

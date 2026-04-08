@@ -33,7 +33,13 @@ function isActivePath(pathname: string, href: string | undefined, label?: string
   if (!href) return false;
   if (href.startsWith("#")) {
     const lower = (label ?? "").toLowerCase();
-    if (href === "#about" || lower.includes("story")) return pathname === "/story" || pathname.startsWith("/story/");
+    if (href === "#about" || lower.includes("story"))
+      return (
+        pathname === "/about" ||
+        pathname.startsWith("/about/") ||
+        pathname === "/story" ||
+        pathname.startsWith("/story/")
+      );
     if (href === "#calendar" || lower.includes("calendar")) return pathname === "/calendar" || pathname.startsWith("/calendar/");
     return false;
   }

@@ -93,7 +93,7 @@ export const metadata = {
   description: "From our family to yours.",
 };
 
-export default async function Story() {
+export default async function About() {
   try {
     const hasSanity =
       !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&

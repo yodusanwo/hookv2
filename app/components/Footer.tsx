@@ -160,7 +160,7 @@ export function Footer({
                 </li>
                 <li>
                   <Link
-                    href="/story"
+                    href="/about"
                     scroll
                     className="min-h-[44px] flex items-center justify-center md:justify-start hover:text-white transition-colors"
                     style={footerNavLinkStyle}

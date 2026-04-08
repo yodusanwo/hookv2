@@ -76,6 +76,16 @@ const nextConfig = {
         destination: "/wild-vs-farmed",
         permanent: true,
       },
+      {
+        source: "/story",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/story/:path*",
+        destination: "/about/:path*",
+        permanent: true,
+      },
     ];
   },
   async headers() {

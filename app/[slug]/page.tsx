@@ -9,9 +9,10 @@ import {
   HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
 } from "@/lib/sanity";
 
-/** Slugs that are reserved by other app routes (e.g. /contact, /story) or reserved for future use. */
+/** Slugs that are reserved by other app routes (e.g. /contact, /about) or reserved for future use. */
 const RESERVED_SLUGS = new Set([
   "contact",
+  "about",
   "story",
   "home",
   "shop",
