@@ -54,7 +54,7 @@ export function SectionHeading({
 
   if (variant === "section") {
     return (
-      <div className="mx-auto">
+      <div className="mx-auto w-full text-center">
         <h2 className="section-title">{title}</h2>
         {description && (
           <p className="section-description-block mt-4 w-full whitespace-pre-line px-4">
@@ -73,7 +73,7 @@ export function SectionHeading({
           ? "max-w-4xl lg:max-w-6xl xl:max-w-7xl"
           : "max-w-4xl";
     return (
-      <div className={`mx-auto ${containerMaxW}`}>
+      <div className={`mx-auto w-full text-center ${containerMaxW}`}>
         <h2
           className={`section-heading text-center uppercase ${titleLetterSpacingClass ?? ""}`.trim()}
           style={{

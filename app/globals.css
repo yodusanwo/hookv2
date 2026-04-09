@@ -28,13 +28,13 @@
   /* Section heading – all section titles (Inter, Semi Bold, 3rem, auto, 0%) */
   --section-heading-font: var(--font-inter), Inter, sans-serif;
   --section-heading-size: 3rem;
-  --section-heading-weight: 600;
+  --section-heading-weight: 800;
   --section-heading-line-height: auto;
   --section-heading-letter-spacing: 0%;
   --section-title-size: 3rem;
   /* Page hero H1 (Contact, Recipes index, Basics index, CMS contact): 2rem mobile, 3rem md+ */
   --page-h1-size: 3rem;
-  --section-title-weight: 600;
+  --section-title-weight: 800;
   --section-title-color: #111827;
   --section-description-size: 1rem;
   --section-description-color: #1e1e1e;
@@ -87,11 +87,6 @@ h1.page-h1 {
   font-size: var(--page-h1-size);
 }
 
-/* Team bios section title (Our Crew) — same scale as page-h1 */
-h2.team-bios-heading {
-  font-size: var(--page-h1-size);
-}
-
 html,
 body {
   overflow-x: clip;
@@ -140,6 +135,11 @@ h2.section-heading,
   line-height: var(--section-heading-line-height);
   letter-spacing: var(--section-heading-letter-spacing);
   color: var(--section-title-color);
+}
+/* Center display-style section headings (SectionHeading variant="display" uses .section-heading). */
+h2.section-heading,
+.section-heading {
+  text-align: center;
 }
 h2.section-title,
 .section-title {

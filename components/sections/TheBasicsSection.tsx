@@ -42,21 +42,15 @@ export function TheBasicsSection({
         <SectionHeading
           title={title}
           description={description || undefined}
-          variant="display"
+          variant="section"
           theme="light"
-          titleColor="#111827"
-          titleFontSize={48}
-          titleFontWeight={600}
-          titleLineHeight="normal"
           descriptionColor="#1E1E1E"
         />
-        <div
-          className="mt-16 grid gap-x-[13px] gap-y-[13px]"
-          style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 387px))",
-            justifyContent: "center",
-          }}
-        >
+        {/*
+          Flex + justify-center so the last row centers when it has fewer cards than the row above
+          (CSS Grid auto-fill leaves orphans in the first columns).
+        */}
+        <div className="mt-16 flex flex-wrap justify-center gap-x-[13px] gap-y-[13px]">
           {items.map((item, idx) => {
             let imageUrl: string | null = null;
             try {
@@ -77,7 +71,7 @@ export function TheBasicsSection({
               <Link
                 key={idx}
                 href={href}
-                className="section-card group flex min-w-0 max-w-[387px] flex-col overflow-hidden transition-all duration-200 hover:scale-[1.02]"
+                className="section-card group flex w-full max-w-[387px] shrink-0 flex-col overflow-hidden transition-all duration-200 hover:scale-[1.02] sm:w-[387px]"
                 style={{ backgroundColor: bgColor }}
               >
                 <div

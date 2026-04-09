@@ -67,15 +67,7 @@ export default async function ContactPage() {
         style={{ backgroundColor: "var(--brand-light-blue-bg)" }}
       >
         <div className="mx-auto max-w-[782px] px-4 text-center">
-          <h1
-            className="page-h1 font-semibold uppercase leading-normal text-[#111827]"
-            style={{
-              fontFamily: "var(--font-inter), Inter, sans-serif",
-              lineHeight: 1,
-            }}
-          >
-            Contact Us
-          </h1>
+          <h1 className="section-title mb-2">Contact Us</h1>
           <p
             className="mx-auto mt-6 max-w-[426px] text-center text-[16px] font-normal leading-[1.5] text-[#1e1e1e]"
             style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}

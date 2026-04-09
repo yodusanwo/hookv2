@@ -49,17 +49,7 @@ export function TeamBiosSection({
       <div className="mx-auto w-full max-w-6xl px-6 md:px-4">
         {/* Heading */}
         <div className="mx-auto max-w-[926px] text-center">
-          {title && (
-            <h2
-              className="team-bios-heading font-semibold uppercase leading-normal tracking-normal text-[#1e1e1e]"
-              style={{
-                fontFamily: "var(--font-inter), Inter, sans-serif",
-                lineHeight: 1,
-              }}
-            >
-              {title}
-            </h2>
-          )}
+          {title && <h2 className="section-title">{title}</h2>}
           {description && (
             <p
               className="mt-6 w-full max-w-[770px] mx-auto text-center"
