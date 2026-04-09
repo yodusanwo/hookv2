@@ -6,6 +6,21 @@ import * as React from "react";
 const INTERVAL_MS = 4500;
 
 /**
+ * Advance the carousel horizontally only — does not call `scrollIntoView`, so the
+ * document/window does not jump when the user has scrolled past this section.
+ */
+function scrollSlideWithinContainer(
+  container: HTMLElement,
+  slide: HTMLElement,
+  behavior: ScrollBehavior,
+) {
+  const cRect = container.getBoundingClientRect();
+  const sRect = slide.getBoundingClientRect();
+  const nextLeft = container.scrollLeft + (sRect.left - cRect.left);
+  container.scrollTo({ left: Math.max(0, nextLeft), behavior });
+}
+
+/**
  * Horizontal snap carousel with optional auto-advance on touch / narrow viewports.
  * Pauses when `prefers-reduced-motion` is set or viewport is `md` and up.
  */
@@ -38,11 +53,8 @@ export function PhotoGalleryMobileScroller({
         if (window.matchMedia("(min-width: 768px)").matches) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         idx = (idx + 1) % slideEls.length;
-        slideEls[idx]?.scrollIntoView({
-          behavior: "smooth",
-          inline: "start",
-          block: "nearest",
-        });
+        const slide = slideEls[idx];
+        if (slide) scrollSlideWithinContainer(el, slide, "smooth");
       }, INTERVAL_MS);
     };
 
