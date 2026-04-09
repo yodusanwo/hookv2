@@ -283,13 +283,11 @@ export function EstimatedDeliveryDisplay({
           {/* Connector */}
           <div className="relative flex min-w-[24px] flex-1 items-center self-start pt-5">
             <div
-              className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
-              style={{ backgroundColor: "#069400" }}
+              className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white"
               aria-hidden
             />
             <div
-              className="relative z-10 mx-auto h-2 w-2 shrink-0 rounded-full"
-              style={{ backgroundColor: "#069400" }}
+              className="relative z-10 mx-auto h-2 w-2 shrink-0 rounded-full bg-white"
               aria-hidden
             />
           </div>
@@ -315,13 +313,11 @@ export function EstimatedDeliveryDisplay({
           {/* Connector */}
           <div className="relative flex min-w-[24px] flex-1 items-center self-start pt-5">
             <div
-              className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"
-              style={{ backgroundColor: "#069400" }}
+              className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white"
               aria-hidden
             />
             <div
-              className="relative z-10 mx-auto h-2 w-2 shrink-0 rounded-full"
-              style={{ backgroundColor: "#069400" }}
+              className="relative z-10 mx-auto h-2 w-2 shrink-0 rounded-full bg-white"
               aria-hidden
             />
           </div>
