@@ -35,7 +35,8 @@ export function PhotoGalleryMobileScroller({
     const el = ref.current;
     if (!el) return;
 
-    let timer: ReturnType<typeof setInterval> | undefined;
+    /** Browser `setInterval` id (`number`); avoid `NodeJS.Timeout` from global `setInterval` typings. */
+    let timer: number | undefined;
 
     const start = () => {
       if (timer) {
