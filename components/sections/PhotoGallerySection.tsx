@@ -1,4 +1,5 @@
 import { urlForSizedImage } from "@/lib/sanityImage";
+import { PhotoGalleryMobileScroller } from "./PhotoGalleryMobileScroller";
 
 type GalleryImage = {
   image?: { asset?: { _ref?: string } };
@@ -82,12 +83,9 @@ export function PhotoGallerySection({
         </h2>
         {gridImages.length > 0 && (
           <>
-            {/* Mobile: carousel with stacked pairs */}
+            {/* Mobile: carousel with stacked pairs + auto-advance (PhotoGalleryMobileScroller) */}
             <div className="mt-8 md:hidden">
-              <div
-                className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 [&::-webkit-scrollbar]:hidden"
-                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-              >
+              <PhotoGalleryMobileScroller>
                 {CAROUSEL_SLIDES.map(([startIdx, count], slideIdx) => (
                   <div
                     key={slideIdx}
@@ -140,7 +138,7 @@ export function PhotoGallerySection({
                     })}
                   </div>
                 ))}
-              </div>
+              </PhotoGalleryMobileScroller>
             </div>
             {/* Desktop: grid */}
             <div
