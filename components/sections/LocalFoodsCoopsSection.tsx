@@ -23,6 +23,8 @@ function MapPinIcon({ className }: { className?: string }) {
 
 type CoopItem = {
   label?: string;
+  /** Optional line centered below the logo (or below map + label). */
+  caption?: string;
   logo?: { asset?: { _ref?: string } };
   url?: string;
   bordered?: boolean;
@@ -81,9 +83,10 @@ export function LocalFoodsCoopsSection({
               ? "max-md:col-span-2 max-md:justify-self-center"
               : "";
             /** `inline-flex shrink-0` keeps logos in one horizontal row; `w-full` on children was forcing a vertical stack under `md:flex`. */
-            const wrapperClass = `inline-flex shrink-0 min-w-0 items-center justify-center gap-2 bg-transparent px-1 py-1 sm:px-2 sm:py-1.5 ${showBorder ? "rounded border border-slate-300/80" : ""} ${lastOddGridClass}`;
+            const wrapperClass = `inline-flex shrink-0 min-w-0 flex-col items-center justify-center gap-1 bg-transparent px-1 py-1 sm:gap-1.5 sm:px-2 sm:py-1.5 ${showBorder ? "rounded border border-slate-300/80" : ""} ${lastOddGridClass}`;
+            const captionText = item.caption?.trim();
 
-            const content = logoImg ? (
+            const visual = logoImg ? (
               <div className="flex h-[4.392rem] shrink-0 max-w-[16.6375rem] items-center justify-center sm:h-[4.5375rem] sm:max-w-[21.175rem] md:h-[4.84rem] md:max-w-[25.7125rem]">
                 <img
                   src={logoImg}
@@ -93,7 +96,7 @@ export function LocalFoodsCoopsSection({
                 />
               </div>
             ) : (
-              <>
+              <div className="flex items-center justify-center gap-2">
                 <MapPinIcon className="h-6 w-6 shrink-0 text-emerald-600" />
                 <span
                   className="text-sm font-semibold"
@@ -101,6 +104,23 @@ export function LocalFoodsCoopsSection({
                 >
                   {item.label ?? "Co-op"}
                 </span>
+              </div>
+            );
+
+            const content = (
+              <>
+                {visual}
+                {captionText ? (
+                  <p
+                    className="max-w-[18rem] text-balance text-center text-xs font-normal leading-snug"
+                    style={{
+                      color: "#4B5563",
+                      fontFamily: "var(--font-inter), Inter, sans-serif",
+                    }}
+                  >
+                    {captionText}
+                  </p>
+                ) : null}
               </>
             );
 

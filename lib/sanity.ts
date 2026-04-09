@@ -218,6 +218,7 @@ export const HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY = `*[_type == "page" && slug
   image { asset-> },
   "logoButtons": logoButtons[] {
     label,
+    caption,
     url,
     bordered,
     logo { asset-> }

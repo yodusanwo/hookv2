@@ -75,6 +75,13 @@ export const localFoodsCoopsBlock = defineType({
               validation: (Rule) =>
                 Rule.custom(validateImageAsset).error(IMAGE_ERROR_MESSAGE),
             }),
+            defineField({
+              name: "caption",
+              type: "string",
+              title: "Title below logo",
+              description:
+                "Optional — shown centered beneath the logo (or beneath the map pin + label when no logo).",
+            }),
             { name: "url", type: "url", title: "Link URL" },
             {
               name: "bordered",

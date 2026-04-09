@@ -112,6 +112,7 @@ export type CanonicalLocalFoodsCoopsBlock = {
   image?: { asset?: { _ref?: string } };
   logoButtons?: Array<{
     label?: string | null;
+    caption?: string | null;
     logo?: { asset?: { _ref?: string } };
     url?: string | null;
     bordered?: boolean | null;
