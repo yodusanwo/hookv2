@@ -293,7 +293,7 @@ export default async function RecipePage({
                       {shopSegment ? (
                         <Link
                           href={`/shop/${encodeURIComponent(shopSegment)}`}
-                          className="inline-flex h-9 shrink-0 items-center justify-center rounded-md border border-[#1C5080] bg-[#1C5080] px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                          className="inline-flex h-9 shrink-0 items-center justify-center rounded-md border border-[var(--filter-pill-active-bg)] bg-[var(--filter-pill-active-bg)] px-4 text-sm font-semibold text-[var(--filter-pill-active-color)] transition-opacity hover:opacity-90"
                         >
                           Shop
                         </Link>
