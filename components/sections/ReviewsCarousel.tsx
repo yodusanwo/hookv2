@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { CarouselArrow } from "@/components/ui/CarouselArrow";
 
 export type ReviewItem = {
   stars?: number;
@@ -151,29 +152,18 @@ export function ReviewsCarousel({
       {/* Mobile: single review with arrows */}
       <div className="mt-6 flex w-full min-w-0 flex-col items-stretch gap-5 sm:mt-10 sm:gap-6 md:hidden">
         <div className="flex w-full min-w-0 flex-col items-center justify-center gap-3">
-          <div className="flex w-full min-w-0 items-stretch gap-1 sm:gap-2">
-            <button
-              type="button"
+          <div className="flex min-h-0 w-full min-w-0 items-center gap-1 py-2 px-0 sm:gap-2">
+            <CarouselArrow
+              direction="prev"
               onClick={() => setIndex((i) => Math.max(0, i - 1))}
               disabled={!canPrev}
-              className="flex min-h-[44px] min-w-[44px] shrink-0 touch-manipulation items-center justify-center self-center rounded-full bg-transparent text-[#333333] disabled:pointer-events-none disabled:opacity-30 hover:opacity-80"
-              aria-label="Previous review"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
-              >
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </button>
-            <div className="min-w-0 flex-1">
+              ariaLabel="Previous review"
+              theme="light"
+              inset
+              insetNoBackground
+              inline
+            />
+            <div className="flex min-h-0 min-w-0 flex-1 items-center justify-center px-1">
               {current ? (
                 <ReviewCard
                   r={current}
@@ -181,29 +171,18 @@ export function ReviewsCarousel({
                 />
               ) : null}
             </div>
-            <button
-              type="button"
+            <CarouselArrow
+              direction="next"
               onClick={() =>
                 setIndex((i) => Math.min(reviews.length - 1, i + 1))
               }
               disabled={!canNext}
-              className="flex min-h-[44px] min-w-[44px] shrink-0 touch-manipulation items-center justify-center self-center rounded-full bg-transparent text-[#333333] disabled:pointer-events-none disabled:opacity-30 hover:opacity-80"
-              aria-label="Next review"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
-              >
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </button>
+              ariaLabel="Next review"
+              theme="light"
+              inset
+              insetNoBackground
+              inline
+            />
           </div>
         </div>
       </div>
