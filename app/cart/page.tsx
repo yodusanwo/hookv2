@@ -650,7 +650,7 @@ export default function CartPage() {
             </div>
 
             <a
-              href={cart.checkoutUrl}
+              href={getCheckoutUrl(cart.checkoutUrl)}
               onClick={(e) => {
                 e.preventDefault();
                 trackBeginCheckoutFromCart({
@@ -659,7 +659,7 @@ export default function CartPage() {
                   lines,
                 });
                 window.setTimeout(() => {
-                  window.location.assign(cart.checkoutUrl);
+                  window.location.assign(getCheckoutUrl(cart.checkoutUrl));
                 }, 150);
               }}
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"

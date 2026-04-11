@@ -537,7 +537,7 @@ export function CartPopup() {
                   ${displaySubtotal.toFixed(2)} {displayCurrency}
                 </p>
                 <a
-                  href={cart.checkoutUrl}
+                  href={getCheckoutUrl(cart.checkoutUrl)}
                   onClick={(e) => {
                     e.preventDefault();
                     trackBeginCheckoutFromCart({
@@ -546,7 +546,7 @@ export function CartPopup() {
                       lines,
                     });
                     window.setTimeout(() => {
-                      window.location.assign(cart.checkoutUrl);
+                      window.location.assign(getCheckoutUrl(cart.checkoutUrl));
                     }, 150);
                   }}
                   className="mt-4 inline-flex shrink-0 items-center justify-center px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"

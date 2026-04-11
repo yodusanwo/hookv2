@@ -60,7 +60,7 @@ export function CheckoutModal() {
         {/* Iframe */}
         <div className="relative flex-1 min-h-0">
           <iframe
-            src={checkoutUrl}
+            src={getCheckoutUrl(checkoutUrl)}
             title="Checkout"
             className="absolute inset-0 h-full w-full border-0"
             sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"
@@ -70,7 +70,7 @@ export function CheckoutModal() {
         {/* Fallback: Open in new tab */}
         <div className="shrink-0 border-t border-slate-200 px-6 py-3 text-center">
           <a
-            href={checkoutUrl}
+            href={getCheckoutUrl(checkoutUrl)}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-medium text-slate-600 underline hover:text-slate-900"
