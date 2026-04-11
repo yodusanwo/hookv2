@@ -35,6 +35,22 @@ function redirect308PreserveMarketing(
   return NextResponse.redirect(url, 308);
 }
 
+/** PDP redirect with a fixed `variant` id plus marketing params. Use when `?variant=` must not rely on `new URL(path?query, base)` parsing. */
+function redirect308ProductVariant(
+  request: NextRequest,
+  productPathname: string,
+  variantId: string,
+): NextResponse {
+  const url = new URL(productPathname, request.url);
+  url.searchParams.set("variant", variantId);
+  for (const [key, value] of request.nextUrl.searchParams.entries()) {
+    if (shouldPreserveMarketingParam(key)) {
+      url.searchParams.append(key, value);
+    }
+  }
+  return NextResponse.redirect(url, 308);
+}
+
 /**
  * Exposes pathname (and shop search flag) on the request so the root layout can
  * SSR footer-wave / header-wave settings and match the first client paint.
@@ -189,6 +205,13 @@ export function middleware(request: NextRequest) {
     return redirect308PreserveMarketing(
       request,
       "/products/wild-alaska-sockeye",
+    );
+  }
+  if (pathNoTrailingSlash === "/products/wild-cuts-pet-treats-5-pack-copy") {
+    return redirect308ProductVariant(
+      request,
+      "/products/wild-cuts-pet-treat-box",
+      "52203933958437",
     );
   }
 

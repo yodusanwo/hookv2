@@ -43,7 +43,8 @@ type RecipeCategoryOption = { value: string; label: string };
 
 export const metadata = {
   title: "Recipes",
-  description: "Wild Alaskan seafood recipes.",
+  description:
+    "Wild Alaska seafood recipes from Hook Point—salmon, halibut, sablefish & more. Grilled, baked, tacos, bowls & cooking basics for home cooks.",
 };
 
 export default async function RecipesIndexPage() {

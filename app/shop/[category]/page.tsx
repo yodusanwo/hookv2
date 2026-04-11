@@ -2,6 +2,20 @@ import { redirect } from "next/navigation";
 import { getShopPageData } from "@/lib/getShopPageData";
 import { ShopPageClient } from "../ShopPageClient";
 
+function titleCaseCategory(slugDecoded: string): string {
+  return slugDecoded
+    .split(/[\s-]+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function categoryMetaDescription(label: string): string {
+  const base = `Shop ${label} at Hook Point—wild Alaska seafood shipped nationwide. Premium products from our Kodiak family fishery.`;
+  if (base.length <= 160) return base;
+  return `${base.slice(0, 157).trimEnd()}…`;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -9,13 +23,15 @@ export async function generateMetadata({
 }) {
   const { category } = await params;
   const decoded = decodeURIComponent(category).replace(/-/g, " ");
-  const title = decoded
-    ? `${decoded.charAt(0).toUpperCase()}${decoded.slice(1)} — Shop | Hook Point`
+  const label = decoded ? titleCaseCategory(decoded) : "";
+  const title = label
+    ? `${label} — Shop | Hook Point`
     : "Shop | Hook Point";
   return {
     title,
-    description:
-      "Shop all wild Alaskan seafood, smoked & specialty, pet treats, merch, and gift cards.",
+    description: label
+      ? categoryMetaDescription(label)
+      : "Browse wild Alaska seafood online: frozen portions, seafood boxes, smoked & specialty, salmon, sablefish, pet treats & gift cards—shipped nationwide.",
   };
 }
 

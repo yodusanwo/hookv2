@@ -15,6 +15,14 @@ import {
   isHeadlessCustomerAccountEnabled,
   type CustomerOrdersResult,
 } from "@/lib/shopifyCustomerAccount";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Account",
+  description:
+    "Continue to Hook Point’s Shopify customer account to sign in, view orders, and manage your profile and addresses.",
+  robots: { index: false, follow: true },
+};
 
 function formatDate(iso: string): string {
   try {

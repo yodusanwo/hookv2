@@ -5,7 +5,7 @@ import { ShopPageClient } from "./ShopPageClient";
 export const metadata = {
   title: "Shop | Hook Point",
   description:
-    "Shop all wild Alaskan seafood, smoked & specialty, pet treats, merch, and gift cards.",
+    "Browse wild Alaska seafood online: frozen portions, seafood boxes, smoked & specialty, salmon, sablefish, pet treats & gift cards—shipped nationwide.",
 };
 
 export default async function ShopPage({

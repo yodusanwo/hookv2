@@ -27,7 +27,8 @@ type BasicsPageContent = {
 
 export const metadata = {
   title: "The Basics",
-  description: "Thawing, skinning, cooking temperature and more.",
+  description:
+    "Seafood basics from Hook Point: how to thaw frozen fish, skin fillets, wet brine, and hit the right cooking temperature for great results at home.",
 };
 
 export default async function BasicsIndexPage() {

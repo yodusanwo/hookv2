@@ -13,7 +13,7 @@ import { getEventsFromSheet } from "@/lib/googleSheets";
 export const metadata = {
   title: "Calendar | Hook Point",
   description:
-    "Farmers markets and events where you can find Hook Point seafood.",
+    "Chicagoland farmers markets & events where Hook Point sells fresh wild Alaska seafood—dates, times & locations.",
 };
 
 export default async function CalendarPage() {

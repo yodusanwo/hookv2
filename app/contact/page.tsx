@@ -11,7 +11,7 @@ import {
 export const metadata = {
   title: "Contact | Hook Point",
   description:
-    "Get in touch with Hook Point Fisheries. We love talking fish and are happy to answer your questions.",
+    "Contact Hook Point Fisheries—questions about orders, wholesale, farmers markets, or wild Alaska seafood. Email, phone, or send us a message.",
 };
 
 export default async function ContactPage() {

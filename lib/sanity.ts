@@ -58,6 +58,7 @@ export const PAGE_LAYOUT_SETTINGS_QUERY = `*[_type == "page" && slug.current == 
 export const PAGE_BY_SLUG_QUERY = `*[_type == "page" && slug.current == $slug][0] {
   _id,
   title,
+  description,
   slug,
   sections[] {
     _type,

@@ -90,7 +90,8 @@ type ProductsResponse = {
 
 export const metadata = {
   title: "Our Story | Hook Point",
-  description: "From our family to yours.",
+  description:
+    "Meet Hook Point: a Kodiak, Alaska family fishery harvesting wild salmon and partnering with small-boat fishermen. Our story, crew & how we bring Alaska home.",
 };
 
 export default async function About() {

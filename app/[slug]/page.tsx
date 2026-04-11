@@ -28,6 +28,22 @@ const RESERVED_SLUGS = new Set([
 
 type PageParams = { slug: string };
 
+function metaDescriptionFromPage(
+  title: string | undefined,
+  sanityDescription: string | null | undefined,
+): string {
+  const d = sanityDescription?.trim();
+  if (d) {
+    return d.length > 160 ? `${d.slice(0, 157)}…` : d;
+  }
+  if (title?.trim()) {
+    const t = title.trim();
+    const fallback = `${t} — Hook Point Fisheries. Wild-caught Alaska seafood from our family to yours.`;
+    return fallback.length > 160 ? `${fallback.slice(0, 157)}…` : fallback;
+  }
+  return "Hook Point Fisheries — wild Alaska seafood from Kodiak, shipped nationwide.";
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -42,14 +58,21 @@ export async function generateMetadata({
   if (!hasSanity || !client) return { title: "Hook Point" };
 
   try {
-    const page = await client.fetch<{ title?: string } | null>(
-      PAGE_BY_SLUG_QUERY,
-      { slug },
-      { next: { revalidate: 60 } },
-    );
+    const page = await client.fetch<{
+      title?: string;
+      description?: string | null;
+    } | null>(PAGE_BY_SLUG_QUERY, { slug }, { next: { revalidate: 60 } });
     if (!page?.title) return { title: "Hook Point" };
+    const description = metaDescriptionFromPage(page.title, page.description);
+    const fullTitle = `${page.title} | Hook Point`;
     return {
-      title: `${page.title} | Hook Point`,
+      title: fullTitle,
+      description,
+      openGraph: {
+        title: fullTitle,
+        description,
+      },
+      twitter: { description },
     };
   } catch {
     return { title: "Hook Point" };

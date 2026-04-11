@@ -19,6 +19,7 @@
  * Queries use `revalidate: 60` (ISR-ish caching). Sheet fetch uses its own revalidation
  * inside `lib/googleSheets.ts`.
  */
+import type { Metadata } from "next";
 import { PageBuilder } from "@/components/sections/PageBuilder";
 import { HomePageFallback } from "@/components/home/HomePageFallback";
 import { getEventsFromSheet } from "@/lib/googleSheets";
@@ -31,6 +32,15 @@ import {
   HOMEPAGE_LOCAL_FOODS_COOPS_BLOCK_QUERY,
 } from "@/lib/sanity";
 import { fetchHomeFallbackProducts } from "@/lib/fetchHomeFallbackProducts";
+
+const HOME_META_DESC =
+  "Wild-caught Alaskan seafood from a Kodiak family fishery. Shop sockeye, sablefish, seafood boxes, smoked specialties & pet treats—shipped nationwide.";
+
+export const metadata: Metadata = {
+  description: HOME_META_DESC,
+  openGraph: { description: HOME_META_DESC },
+  twitter: { description: HOME_META_DESC },
+};
 
 export default async function Home() {
   try {

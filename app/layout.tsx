@@ -39,19 +39,22 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: siteUrl ? new URL(siteUrl) : undefined,
   title: { default: "Hook Point — Wild Alaskan Fish", template: "%s | Hook Point" },
-  description: "From our family to yours. Wild Alaskan seafood, smoked & specialty, pet treats, and more.",
+  description:
+    "Hook Point Fisheries: wild-caught Alaska seafood from our Kodiak family operation. Salmon, sablefish, boxes, smoked goods & pet treats shipped to your door.",
   /** Favicons: use `app/icon.png` + `app/apple-icon.png` (see Next.js file convention). Do not add `app/favicon.ico` — it overrides these. */
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "Hook Point",
     title: "Hook Point — Wild Alaskan Fish",
-    description: "From our family to yours. Wild Alaskan seafood, smoked & specialty, pet treats, and more.",
+    description:
+      "Hook Point Fisheries: wild-caught Alaska seafood from our Kodiak family operation. Salmon, sablefish, boxes, smoked goods & pet treats shipped to your door.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Hook Point — Wild Alaskan Fish",
-    description: "From our family to yours. Wild Alaskan seafood, smoked & specialty, pet treats, and more.",
+    description:
+      "Hook Point Fisheries: wild-caught Alaska seafood from our Kodiak family operation. Salmon, sablefish, boxes, smoked goods & pet treats shipped to your door.",
   },
   robots: { index: true, follow: true },
 };

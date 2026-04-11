@@ -81,10 +81,15 @@ export async function generateMetadata({
   try {
     const recipe = await client.fetch<RecipeData | null>(RECIPE_BY_SLUG_QUERY, { slug });
     const title = recipe?.title ?? "Recipe";
-    const desc = recipe?.summary?.trim();
+    const raw = recipe?.summary?.trim();
+    const fallback = `Cook ${title} with wild Alaska seafood—recipe & tips from Hook Point Fisheries.`;
+    const description = (() => {
+      if (raw) return raw.length > 160 ? `${raw.slice(0, 157)}…` : raw;
+      return fallback.length > 160 ? `${fallback.slice(0, 157)}…` : fallback;
+    })();
     return {
       title: `${title} — Recipe`,
-      ...(desc && { description: desc.length > 160 ? `${desc.slice(0, 157)}…` : desc }),
+      description,
     };
   } catch {
     return { title: "Recipe" };

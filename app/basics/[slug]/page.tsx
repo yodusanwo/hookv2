@@ -74,7 +74,14 @@ export async function generateMetadata({
       slug,
     });
     const title = basic?.title ?? "Basic";
-    return { title: `${title} — The Basics` };
+    const description = `${title}: practical tips for wild Alaska seafood at home—from Hook Point Fisheries.`;
+    return {
+      title: `${title} — The Basics`,
+      description:
+        description.length > 160
+          ? `${description.slice(0, 157).trimEnd()}…`
+          : description,
+    };
   } catch {
     return { title: "The Basics" };
   }

@@ -13,7 +13,7 @@ import { getEventsFromSheet } from "@/lib/googleSheets";
 export const metadata = {
   title: "FAQ | Hook Point",
   description:
-    "Answers to common questions about Hook Point seafood, ordering, and more.",
+    "Answers about Hook Point’s wild Alaska seafood: sourcing, portion & box sizes, shipping nationwide, thawing & storage, subscriptions & ordering.",
 };
 
 const FALLBACK_FAQ_BLOCK = {
