@@ -71,12 +71,9 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      /**
-       * Subpaths only (e.g. `/cart/c/...`) → Shopify checkout. Does not match `/cart`
-       * alone, so `app/cart` stays on the headless site.
-       */
+      /** Shopify checkout handoff only (`/cart/c/...`). `/cart` and other `/cart/*` stay on headless. */
       {
-        source: "/cart/:path*",
+        source: "/cart/c/:path*",
         destination: "https://hook-point-fisheries.myshopify.com/checkout",
         permanent: false,
       },
