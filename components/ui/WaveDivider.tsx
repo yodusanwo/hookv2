@@ -1,4 +1,6 @@
-const WAVE_IMG_BASE = "block w-full h-auto min-h-0 align-bottom max-w-full";
+/** translate3d/backface: WebKit compositing — reduces 1px hairlines at wave seams (Safari). */
+const WAVE_IMG_BASE =
+  "block h-auto min-h-0 w-full max-w-full align-bottom [transform:translate3d(0,0,0)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]";
 
 type WaveDividerProps = {
   navySrc: string;
@@ -23,7 +25,7 @@ export function WaveDivider({
           : "";
   return (
     <div
-      className={`relative z-10 w-full leading-[0] ${wrapperClassName}`.trim()}
+      className={`relative z-10 -mb-px w-full leading-[0] ${wrapperClassName}`.trim()}
       aria-hidden
     >
       <img

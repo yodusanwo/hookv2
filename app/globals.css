@@ -430,7 +430,8 @@ h2.section-title,
 
 /* Full-bleed waves: scale slightly to fill edge gaps without causing overflow/scroll */
 .wave-full-bleed {
-  transform: scaleX(1.05);
+  transform: scaleX(1.05) translateZ(0);
+  -webkit-transform: scaleX(1.05) translateZ(0);
   transform-origin: center;
 }
 
@@ -463,6 +464,19 @@ h2.section-title,
 .navy-wave-outline-both {
   filter: drop-shadow(0 -1px 0 #5a8ac6) drop-shadow(0 -20px 0 #5a8ac6)
     drop-shadow(0 1px 0 #5a8ac6) drop-shadow(0 20px 0 #5a8ac6);
+}
+
+/*
+ * WebKit/Safari: drop-shadow + full-width images often show a 1px “flash” between
+ * the filtered bitmap and adjacent backgrounds. Force a stable compositing layer.
+ */
+img.navy-wave-outline-bottom,
+img.navy-wave-outline-top,
+img.navy-wave-outline-both {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Reduce outline spread on small screens so drop-shadow tracks scaled wave */
