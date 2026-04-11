@@ -71,6 +71,27 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      /** Exact cart page on the headless domain → Shopify cart. */
+      {
+        source: "/cart",
+        destination: "https://hook-point-fisheries.myshopify.com/cart",
+        permanent: false,
+      },
+      /**
+       * Cart subpaths, including checkout handoff (`/cart/c/...`). Preserve `:path*`
+       * so tokens and segments are not dropped.
+       */
+      {
+        source: "/cart/:path*",
+        destination: "https://hook-point-fisheries.myshopify.com/cart/:path*",
+        permanent: false,
+      },
+      /** Hosted checkout URLs if hit on this domain (e.g. shared links). */
+      {
+        source: "/checkouts/:path*",
+        destination: "https://hook-point-fisheries.myshopify.com/checkouts/:path*",
+        permanent: false,
+      },
       {
         source: "/wild",
         destination: "/wild-vs-farmed",
