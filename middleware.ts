@@ -8,11 +8,14 @@ import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
  */
 export function middleware(request: NextRequest) {
   /**
-   * Customer Accounts login can redirect to `/customer_authentication/sso_hint?...` on the
-   * storefront origin. If Shopify sends that path to the headless domain, Next has no route
-   * (404). Forward to the hosted Customer Accounts host (same path + query).
+   * Customer Accounts uses `/customer_authentication/*`, `/customer_identity/*` (e.g. logout)
+   * on the portal host. If Shopify sends those paths to the headless domain, Next has no route.
+   * Forward to account.hookpointfish.com (same path + query).
    */
-  if (request.nextUrl.pathname.startsWith("/customer_authentication")) {
+  if (
+    request.nextUrl.pathname.startsWith("/customer_authentication") ||
+    request.nextUrl.pathname.startsWith("/customer_identity")
+  ) {
     const dest = new URL(
       `${request.nextUrl.pathname}${request.nextUrl.search}`,
       CUSTOMER_ACCOUNT_PORTAL_URL,
