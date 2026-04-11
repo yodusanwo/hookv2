@@ -96,15 +96,68 @@ export function middleware(request: NextRequest) {
       "/recipes/coconut-poached-halibut-and-mango-avocado-salsa",
     );
   }
+  if (pathNoTrailingSlash === "/blogs/recipes/nashville-hot-fish") {
+    return redirect308PreserveMarketing(
+      request,
+      "/recipes/nashville-hot-fish-sandwich",
+    );
+  }
+  if (pathNoTrailingSlash === "/blogs/recipes/simply-grilled") {
+    return redirect308PreserveMarketing(
+      request,
+      "/recipes/simply-baked-salmon",
+    );
+  }
   /** Recipe not published yet → index. When `/recipes/corned-salmon` exists, point this to that path instead. */
   if (pathNoTrailingSlash === "/blogs/recipes/corned-salmon") {
     return redirect308PreserveMarketing(request, "/recipes");
+  }
+  /** No matching live recipe slug — legacy blog URL → index. */
+  if (pathNoTrailingSlash === "/blogs/recipes/salmon-osso-buco") {
+    return redirect308PreserveMarketing(request, "/recipes");
+  }
+  /** “The Basics” lived under the old blog — map to `/basics`. */
+  if (pathNoTrailingSlash === "/blogs/recipes/skinning") {
+    return redirect308PreserveMarketing(request, "/basics/skinning");
+  }
+  if (pathNoTrailingSlash === "/blogs/recipes/thawing") {
+    return redirect308PreserveMarketing(request, "/basics/thawing");
   }
   if (pathNoTrailingSlash.startsWith("/blogs/recipes/")) {
     const slug = pathNoTrailingSlash.slice("/blogs/recipes/".length);
     if (slug && !slug.includes("/")) {
       return redirect308PreserveMarketing(request, `/recipes/${slug}`);
     }
+  }
+
+  /** Legacy short URL → The Basics (cooking temperature). */
+  if (pathNoTrailingSlash === "/recipes/temperature") {
+    return redirect308PreserveMarketing(request, "/basics/cooking-temperature");
+  }
+
+  if (pathNoTrailingSlash === "/collections/pet-treats") {
+    return redirect308PreserveMarketing(request, "/shop/pet-treats");
+  }
+
+  /** Shopify legacy collection URLs → headless shop. */
+  if (
+    pathNoTrailingSlash === "/collections" ||
+    pathNoTrailingSlash === "/collections/all" ||
+    pathNoTrailingSlash === "/collections/hook-point-seafood"
+  ) {
+    return redirect308PreserveMarketing(request, "/shop");
+  }
+
+  /** Legacy collection / PDP URLs → home (no headless equivalent). */
+  if (
+    pathNoTrailingSlash === "/collections/sale-items" ||
+    pathNoTrailingSlash === "/collections/hook-point-merch" ||
+    pathNoTrailingSlash ===
+      "/collections/hook-point-merch/products/hook-point-fish-hat" ||
+    pathNoTrailingSlash ===
+      "/collections/hook-point-merch/products/never-tamed-t-shirt"
+  ) {
+    return redirect308PreserveMarketing(request, "/");
   }
 
   if (
