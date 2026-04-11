@@ -472,13 +472,15 @@ export default async function ProductPage({
   } catch (err) {
     console.error("Failed to fetch product:", err);
     return (
-      <main className="mx-auto max-w-6xl px-4 py-14">
-        <h1 className="text-2xl font-semibold text-slate-900">
-          Something went wrong
-        </h1>
-        <p className="mt-2 text-sm text-slate-600">
-          We couldn&apos;t load this product. Please try again later.
-        </p>
+      <main className="product-pdp-surface-bg min-h-[min(50vh,560px)]">
+        <div className="main-below-site-header mx-auto max-w-6xl px-4 pb-14">
+          <h1 className="text-2xl font-semibold text-slate-900">
+            Something went wrong
+          </h1>
+          <p className="mt-2 text-sm text-slate-600">
+            We couldn&apos;t load this product. Please try again later.
+          </p>
+        </div>
       </main>
     );
   }
@@ -486,13 +488,15 @@ export default async function ProductPage({
   const product = data.productByHandle;
   if (!product) {
     return (
-      <main className="mx-auto max-w-6xl px-4 py-14">
-        <h1 className="text-2xl font-semibold text-slate-900">
-          Product not found
-        </h1>
-        <p className="mt-2 text-sm text-slate-600">
-          We couldn&apos;t find a product with handle <code>{handle}</code>.
-        </p>
+      <main className="product-pdp-surface-bg min-h-[min(50vh,560px)]">
+        <div className="main-below-site-header mx-auto max-w-6xl px-4 pb-14">
+          <h1 className="text-2xl font-semibold text-slate-900">
+            Product not found
+          </h1>
+          <p className="mt-2 text-sm text-slate-600">
+            We couldn&apos;t find a product with handle <code>{handle}</code>.
+          </p>
+        </div>
       </main>
     );
   }
@@ -624,7 +628,7 @@ export default async function ProductPage({
       <main style={{ backgroundColor: LIGHT_BG_HEX }}>
         {/* Main product section */}
         <section
-          className="px-4 pt-[140px] pb-10 sm:pt-[170px] md:pt-[230px] md:pb-10"
+          className="main-below-site-header px-4 pb-10 md:pb-10"
           style={{ backgroundColor: LIGHT_BG_HEX }}
         >
           <div className="mx-auto max-w-6xl">

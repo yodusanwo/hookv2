@@ -12,7 +12,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <main
-      className="flex min-h-[min(60vh,800px)] flex-col items-center justify-center px-4 pb-16 pt-[140px] sm:pt-[170px] md:pb-24 lg:pt-[200px]"
+      className="main-below-site-header flex min-h-[min(60vh,800px)] flex-col items-center justify-center px-4 pb-16 md:pb-24"
       style={{ backgroundColor: "var(--section-bg-light, #f2f2f5)" }}
     >
       <div className="mx-auto flex w-full max-w-[486px] flex-col items-center gap-9 text-center">
