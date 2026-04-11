@@ -138,12 +138,23 @@ export function middleware(request: NextRequest) {
   if (pathNoTrailingSlash === "/collections/pet-treats") {
     return redirect308PreserveMarketing(request, "/shop/pet-treats");
   }
+  if (pathNoTrailingSlash === "/collections/seafood-boxes") {
+    return redirect308PreserveMarketing(request, "/shop/seafood-boxes");
+  }
+  if (pathNoTrailingSlash === "/collections/smoked-specialty") {
+    return redirect308PreserveMarketing(request, "/shop/smoked-specialty");
+  }
+  if (pathNoTrailingSlash === "/collections/wild-alaska-salmon") {
+    return redirect308PreserveMarketing(request, "/shop/salmon");
+  }
 
   /** Shopify legacy collection URLs → headless shop. */
   if (
     pathNoTrailingSlash === "/collections" ||
     pathNoTrailingSlash === "/collections/all" ||
-    pathNoTrailingSlash === "/collections/hook-point-seafood"
+    pathNoTrailingSlash === "/collections/shop-all" ||
+    pathNoTrailingSlash === "/collections/hook-point-seafood" ||
+    pathNoTrailingSlash === "/collections/spices-and-butters"
   ) {
     return redirect308PreserveMarketing(request, "/shop");
   }
@@ -158,6 +169,27 @@ export function middleware(request: NextRequest) {
       "/collections/hook-point-merch/products/never-tamed-t-shirt"
   ) {
     return redirect308PreserveMarketing(request, "/");
+  }
+
+  /** Legacy Shopify `/pages/*` → headless routes. */
+  if (
+    pathNoTrailingSlash === "/pages/about" ||
+    pathNoTrailingSlash === "/pages/about-us" ||
+    pathNoTrailingSlash === "/pages/fall-2023-about-us"
+  ) {
+    return redirect308PreserveMarketing(request, "/about");
+  }
+  if (pathNoTrailingSlash === "/pages/calendar") {
+    return redirect308PreserveMarketing(request, "/calendar");
+  }
+  if (pathNoTrailingSlash === "/pages/contact-1") {
+    return redirect308PreserveMarketing(request, "/contact");
+  }
+  if (pathNoTrailingSlash === "/pages/faqs-1") {
+    return redirect308PreserveMarketing(request, "/faq");
+  }
+  if (pathNoTrailingSlash === "/pages/recipes") {
+    return redirect308PreserveMarketing(request, "/recipes");
   }
 
   if (
