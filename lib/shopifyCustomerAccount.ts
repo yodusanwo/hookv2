@@ -124,6 +124,7 @@ export function buildLogoutUrl(params: {
   return url.toString();
 }
 
+/** Customer Account API Order uses `totalPrice` (MoneyV2), not Storefront-style `totalPriceSet` / `status`. */
 const CUSTOMER_ORDERS_QUERY = `query CustomerOrders {
   customer {
     firstName
@@ -137,16 +138,18 @@ const CUSTOMER_ORDERS_QUERY = `query CustomerOrders {
           id
           name
           createdAt
-          status
-          totalPriceSet {
-            shopMoney {
-              amount
-              currencyCode
-            }
+          cancelledAt
+          financialStatus
+          fulfillmentStatus
+          totalPrice {
+            amount
+            currencyCode
           }
           lineItems(first: 10) {
             edges {
               node {
+                name
+                variantTitle
                 title
                 quantity
               }
@@ -169,9 +172,15 @@ export type CustomerOrdersResult = {
           id: string;
           name: string;
           createdAt: string;
-          status: string;
-          totalPriceSet: { shopMoney: { amount: string; currencyCode: string } };
-          lineItems: { edges: Array<{ node: { title: string; quantity: number } }> };
+          cancelledAt: string | null;
+          financialStatus: string | null;
+          fulfillmentStatus: string | null;
+          totalPrice: { amount: string; currencyCode: string } | null;
+          lineItems: {
+            edges: Array<{
+              node: { name: string; variantTitle: string | null; title: string; quantity: number };
+            }>;
+          };
         };
       }>;
     };
@@ -191,11 +200,13 @@ export async function fetchCustomerOrdersWithOutcome(
 ): Promise<CustomerOrdersFetchOutcome> {
   const apiConfig = await getCustomerAccountApiConfig();
   if (!apiConfig?.graphql_api) {
+    const hint =
+      "No graphql_api from /.well-known/customer-account-api — check SHOPIFY_STORE_DOMAIN and discovery.";
+    console.error("[Customer Account API]", hint);
     return {
       data: null,
       loadFailed: true,
-      devHint:
-        "No graphql_api from /.well-known/customer-account-api — check SHOPIFY_STORE_DOMAIN and discovery.",
+      devHint: hint,
     };
   }
   const res = await fetch(apiConfig.graphql_api, {
@@ -208,18 +219,22 @@ export async function fetchCustomerOrdersWithOutcome(
     body: JSON.stringify({ query: CUSTOMER_ORDERS_QUERY }),
   });
   if (!res.ok) {
+    const hint = `GraphQL request failed with HTTP ${res.status}. Token may be expired or rejected.`;
+    console.error("[Customer Account API]", hint);
     return {
       data: null,
       loadFailed: true,
-      devHint: `GraphQL request failed with HTTP ${res.status}. Token may be expired or rejected.`,
+      devHint: hint,
     };
   }
   const json = (await res.json()) as { data?: CustomerOrdersResult; errors?: unknown[] };
   if (json.errors?.length) {
+    const hint = `GraphQL errors: ${JSON.stringify(json.errors).slice(0, 800)}`;
+    console.error("[Customer Account API] orders query failed:", hint);
     return {
       data: null,
       loadFailed: true,
-      devHint: `GraphQL errors: ${JSON.stringify(json.errors).slice(0, 800)}`,
+      devHint: hint,
     };
   }
   return { data: json.data ?? null, loadFailed: false };

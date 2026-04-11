@@ -19,6 +19,17 @@ function formatDate(iso: string): string {
   }
 }
 
+/** Customer Account API has no single `status` string; derive a label for the UI. */
+function orderStatusLabel(order: {
+  cancelledAt: string | null;
+  financialStatus: string | null;
+  fulfillmentStatus: string | null;
+}): string {
+  if (order.cancelledAt) return "Canceled";
+  const parts = [order.financialStatus, order.fulfillmentStatus].filter(Boolean);
+  return parts.join(" · ");
+}
+
 export default async function AccountPage({
   searchParams,
 }: {
@@ -159,29 +170,39 @@ export default async function AccountPage({
           </div>
         ) : (
           <ul className="space-y-4">
-            {orders.map(({ node: order }) => (
+            {orders.map(({ node: order }) => {
+              const statusText = orderStatusLabel(order);
+              return (
               <li key={order.id} className="rounded-card bg-white p-6 shadow-sm">
                 <div className="flex flex-wrap justify-between gap-2">
                   <span className="font-medium text-[#1E1E1E]">{order.name}</span>
                   <span className="text-sm text-[#1E1E1E]">{formatDate(order.createdAt)}</span>
                 </div>
                 <p className="mt-1 text-sm text-[#1E1E1E]">
-                  {order.totalPriceSet?.shopMoney
-                    ? `${order.totalPriceSet.shopMoney.currencyCode} ${order.totalPriceSet.shopMoney.amount}`
+                  {order.totalPrice
+                    ? `${order.totalPrice.currencyCode} ${order.totalPrice.amount}`
                     : ""}
-                  {order.status ? ` · ${order.status}` : ""}
+                  {statusText ? ` · ${statusText}` : ""}
                 </p>
                 {order.lineItems?.edges?.length ? (
                   <ul className="mt-2 list-inside list-disc text-sm text-[#1E1E1E]">
-                    {order.lineItems.edges.slice(0, 5).map(({ node: item }) => (
-                      <li key={item.title}>
-                        {item.title} × {item.quantity}
-                      </li>
-                    ))}
+                    {order.lineItems.edges.slice(0, 10).map(({ node: item }, idx) => {
+                      const label =
+                        item.name?.trim() ||
+                        item.title?.trim() ||
+                        "Item";
+                      const variant = item.variantTitle?.trim();
+                      return (
+                        <li key={`${order.id}-${idx}`}>
+                          {variant ? `${label} (${variant})` : label} × {item.quantity}
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : null}
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </div>
