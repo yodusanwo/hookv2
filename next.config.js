@@ -71,12 +71,10 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      /** Headless /cart → Shopify checkout (not /cart — avoids redirect loops). */
-      {
-        source: "/cart",
-        destination: "https://hook-point-fisheries.myshopify.com/checkout",
-        permanent: false,
-      },
+      /**
+       * Subpaths only (e.g. `/cart/c/...`) → Shopify checkout. Does not match `/cart`
+       * alone, so `app/cart` stays on the headless site.
+       */
       {
         source: "/cart/:path*",
         destination: "https://hook-point-fisheries.myshopify.com/checkout",
