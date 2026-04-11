@@ -1,9 +1,7 @@
 import { redirect } from "next/navigation";
+import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 
-/**
- * Login page: redirect to /account (which shows "Log in" and uses /auth/login for headless OAuth).
- * Keeps a single place for sign-in UI and ensures login flow uses our callback URL.
- */
+/** Login page: send users to Shopify Customer Account portal. */
 export default function LoginPage() {
-  redirect("/account");
+  redirect(CUSTOMER_ACCOUNT_PORTAL_URL);
 }

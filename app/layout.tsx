@@ -10,6 +10,7 @@ import { KlaviyoOnsiteScript } from "./components/KlaviyoOnsiteScript";
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlForSizedImage } from "@/lib/sanityImage";
+import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
 import { getFooterWaveLayoutSettings } from "@/lib/footerWaveLayout";
 
@@ -72,7 +73,7 @@ export default async function RootLayout({
       .trim()
       .replace(/^https?:\/\//, "")
       .replace(/\/+$/, "");
-    if (domain) accountUrl = `https://${domain}/account`;
+    if (domain) accountUrl = CUSTOMER_ACCOUNT_PORTAL_URL;
   }
   const useHeadlessAccount = isCustomerAccountConfigured();
 

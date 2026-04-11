@@ -7,6 +7,7 @@ import {
   clearPkceCookie,
   getPreferredRedirectOrigin,
 } from "@/lib/authCookie";
+import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
   const state = url.searchParams.get("state");
   const origin = getPreferredRedirectOrigin(request);
   const redirectUri = getRedirectUri(origin);
-  const accountUrl = new URL("/account", origin);
+  const accountUrl = new URL(CUSTOMER_ACCOUNT_PORTAL_URL);
 
   if (!code || !state) {
     accountUrl.searchParams.set("error", "missing_params");

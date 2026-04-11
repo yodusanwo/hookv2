@@ -9,6 +9,7 @@ import {
   getIdTokenFromRequest,
   getPreferredRedirectOrigin,
 } from "@/lib/authCookie";
+import { CUSTOMER_ACCOUNT_LOGOUT_URL } from "@/lib/customerAccountPortal";
 
 /**
  * Per https://shopify.dev/docs/api/customer/latest#logging-out :
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
     return res;
   }
 
-  const res = NextResponse.redirect(new URL("/account", origin));
+  const res = NextResponse.redirect(CUSTOMER_ACCOUNT_LOGOUT_URL);
   for (const c of clearLocal) res.headers.append("Set-Cookie", c);
   return res;
 }

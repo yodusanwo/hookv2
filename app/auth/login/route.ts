@@ -10,16 +10,19 @@ import {
   getRedirectUri,
 } from "@/lib/shopifyCustomerAccount";
 import { setPkceCookie, getPreferredRedirectOrigin } from "@/lib/authCookie";
+import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 
 export async function GET(request: Request) {
   if (!isCustomerAccountConfigured()) {
-    return NextResponse.redirect(new URL("/account", request.url));
+    return NextResponse.redirect(CUSTOMER_ACCOUNT_PORTAL_URL);
   }
   const origin = getPreferredRedirectOrigin(request);
   const redirectUri = getRedirectUri(origin);
   const config = await getOpenIdConfig();
   if (!config?.authorization_endpoint) {
-    return NextResponse.redirect(new URL("/account?error=auth_config", request.url));
+    const u = new URL(CUSTOMER_ACCOUNT_PORTAL_URL);
+    u.searchParams.set("error", "auth_config");
+    return NextResponse.redirect(u);
   }
   const state = generateState();
   const nonce = generateNonce();
