@@ -56,12 +56,14 @@ export function Header({
   backgroundColor,
   accountUrl,
   useHeadlessAccount,
+  headlessAccountLoggedIn = false,
 }: {
   logoUrl?: string | null;
   navLinks?: Array<{ label?: string; href?: string }>;
   backgroundColor?: string | null;
   accountUrl?: string | null;
   useHeadlessAccount?: boolean;
+  headlessAccountLoggedIn?: boolean;
 }) {
   const pathname = usePathname();
   const logoSrc = logoUrl ?? FALLBACK_LOGO;
@@ -136,13 +138,31 @@ export function Header({
           </button>
           <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
           {useHeadlessAccount ? (
-            <a
-              href="/auth/login"
-              aria-label="Account"
-              className={accountButtonClass}
-            >
-              <IconUser className="h-5 w-5" />
-            </a>
+            headlessAccountLoggedIn ? (
+              <div className="flex items-center gap-1 sm:gap-2">
+                <a
+                  href="/account"
+                  aria-label="Account"
+                  className={accountButtonClass}
+                >
+                  <IconUser className="h-5 w-5" />
+                </a>
+                <a
+                  href="/auth/logout"
+                  className="hidden min-[380px]:inline text-sm font-medium text-white/90 underline-offset-4 hover:text-white hover:underline [font-family:var(--font-inter)]"
+                >
+                  Sign out
+                </a>
+              </div>
+            ) : (
+              <a
+                href="/auth/login"
+                aria-label="Account"
+                className={accountButtonClass}
+              >
+                <IconUser className="h-5 w-5" />
+              </a>
+            )
           ) : accountUrl ? (
             <a
               href={accountUrl}
@@ -186,13 +206,32 @@ export function Header({
               );
             })}
             {useHeadlessAccount ? (
-              <a
-                href="/auth/login"
-                className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Account
-              </a>
+              headlessAccountLoggedIn ? (
+                <>
+                  <a
+                    href="/account"
+                    className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Account
+                  </a>
+                  <a
+                    href="/auth/logout"
+                    className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign out
+                  </a>
+                </>
+              ) : (
+                <a
+                  href="/auth/login"
+                  className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Account
+                </a>
+              )
             ) : accountUrl ? (
               <a
                 href={accountUrl}

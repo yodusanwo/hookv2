@@ -15,6 +15,8 @@ type SiteLayoutProps = {
   headerBackgroundColor: string | null;
   accountUrl?: string | null;
   useHeadlessAccount?: boolean;
+  /** Set in root layout from HttpOnly session cookie (headless Customer Account API). */
+  headlessAccountLoggedIn?: boolean;
   /** From root layout SSR — matches CMS so first paint doesn’t show the header wave before hideHeaderWave applies. */
   initialFooterWaveColor?: string | null;
   initialHideHeaderWave?: boolean;
@@ -39,6 +41,7 @@ function SiteLayoutInner({
   headerBackgroundColor,
   accountUrl,
   useHeadlessAccount,
+  headlessAccountLoggedIn = false,
   footerWaveOverride = null,
   initialFooterWaveColor = null,
   initialHideHeaderWave = false,
@@ -103,6 +106,7 @@ function SiteLayoutInner({
         backgroundColor={headerBackgroundColor}
         accountUrl={accountUrl}
         useHeadlessAccount={useHeadlessAccount}
+        headlessAccountLoggedIn={headlessAccountLoggedIn}
       />
       <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       {!hideHeaderWave && <HeaderWave />}
@@ -131,6 +135,7 @@ function SiteLayoutFallback({
   headerBackgroundColor,
   accountUrl,
   useHeadlessAccount,
+  headlessAccountLoggedIn = false,
   footerWaveOverride = null,
   initialFooterWaveColor = null,
   initialHideHeaderWave = false,
@@ -146,6 +151,7 @@ function SiteLayoutFallback({
         backgroundColor={headerBackgroundColor}
         accountUrl={accountUrl}
         useHeadlessAccount={useHeadlessAccount}
+        headlessAccountLoggedIn={headlessAccountLoggedIn}
       />
       <div className="h-[110px] sm:h-[140px] shrink-0" aria-hidden />
       {!hideHeaderWave && <HeaderWave />}

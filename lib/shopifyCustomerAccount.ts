@@ -178,9 +178,26 @@ export type CustomerOrdersResult = {
   } | null;
 };
 
-export async function fetchCustomerOrders(accessToken: string): Promise<CustomerOrdersResult | null> {
+export type CustomerOrdersFetchOutcome = {
+  data: CustomerOrdersResult | null;
+  /** Config missing, HTTP error, or GraphQL errors — distinct from an empty order list. */
+  loadFailed: boolean;
+  /** Safe to log in dev only (no tokens). */
+  devHint?: string;
+};
+
+export async function fetchCustomerOrdersWithOutcome(
+  accessToken: string,
+): Promise<CustomerOrdersFetchOutcome> {
   const apiConfig = await getCustomerAccountApiConfig();
-  if (!apiConfig?.graphql_api) return null;
+  if (!apiConfig?.graphql_api) {
+    return {
+      data: null,
+      loadFailed: true,
+      devHint:
+        "No graphql_api from /.well-known/customer-account-api — check SHOPIFY_STORE_DOMAIN and discovery.",
+    };
+  }
   const res = await fetch(apiConfig.graphql_api, {
     method: "POST",
     headers: {
@@ -190,10 +207,27 @@ export async function fetchCustomerOrders(accessToken: string): Promise<Customer
     },
     body: JSON.stringify({ query: CUSTOMER_ORDERS_QUERY }),
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    return {
+      data: null,
+      loadFailed: true,
+      devHint: `GraphQL request failed with HTTP ${res.status}. Token may be expired or rejected.`,
+    };
+  }
   const json = (await res.json()) as { data?: CustomerOrdersResult; errors?: unknown[] };
-  if (json.errors?.length) return null;
-  return json.data ?? null;
+  if (json.errors?.length) {
+    return {
+      data: null,
+      loadFailed: true,
+      devHint: `GraphQL errors: ${JSON.stringify(json.errors).slice(0, 800)}`,
+    };
+  }
+  return { data: json.data ?? null, loadFailed: false };
+}
+
+export async function fetchCustomerOrders(accessToken: string): Promise<CustomerOrdersResult | null> {
+  const { data, loadFailed } = await fetchCustomerOrdersWithOutcome(accessToken);
+  return loadFailed ? null : data;
 }
 
 export function isCustomerAccountConfigured(): boolean {

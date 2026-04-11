@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Geist_Mono, Inter, Mulish } from "next/font/google";
 import "./globals.css";
@@ -12,6 +12,7 @@ import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlForSizedImage } from "@/lib/sanityImage";
 import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
+import { getAccessTokenFromCookies } from "@/lib/authCookie";
 import { getFooterWaveLayoutSettings } from "@/lib/footerWaveLayout";
 
 const geistMono = Geist_Mono({
@@ -76,6 +77,9 @@ export default async function RootLayout({
     if (domain) accountUrl = CUSTOMER_ACCOUNT_PORTAL_URL;
   }
   const useHeadlessAccount = isCustomerAccountConfigured();
+  const cookieStore = await cookies();
+  const headlessAccountLoggedIn =
+    useHeadlessAccount && Boolean(getAccessTokenFromCookies(cookieStore));
 
   let initialFooterWaveColor: string | null = null;
   let initialHideHeaderWave = false;
@@ -127,6 +131,7 @@ export default async function RootLayout({
           headerBackgroundColor={headerBackgroundColor}
           accountUrl={accountUrl}
           useHeadlessAccount={useHeadlessAccount}
+          headlessAccountLoggedIn={headlessAccountLoggedIn}
           initialFooterWaveColor={initialFooterWaveColor}
           initialHideHeaderWave={initialHideHeaderWave}
         >
