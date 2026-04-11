@@ -7,8 +7,8 @@ import {
   getRefreshTokenFromCookies,
 } from "@/lib/authCookie";
 import {
-  CUSTOMER_ACCOUNT_PORTAL_URL,
-  getCustomerAccountNavUrl,
+  CUSTOMER_ACCOUNT_ORDERS_URL,
+  getCustomerAccountPortalEntryUrl,
 } from "@/lib/customerAccountPortal";
 import {
   fetchCustomerOrdersWithOutcome,
@@ -44,7 +44,7 @@ export default async function AccountPage({
 
   /** `NEXT_PUBLIC_USE_HEADLESS_CUSTOMER_ACCOUNT=false` — use hosted portal only (no embedded `/account`). */
   if (!isHeadlessCustomerAccountEnabled()) {
-    redirect(getCustomerAccountNavUrl() ?? CUSTOMER_ACCOUNT_PORTAL_URL);
+    redirect(getCustomerAccountPortalEntryUrl() ?? CUSTOMER_ACCOUNT_ORDERS_URL);
   }
 
   if (token) {

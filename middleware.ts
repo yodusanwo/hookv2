@@ -3,6 +3,39 @@ import type { NextRequest } from "next/server";
 import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 
 /**
+ * Params to keep on legacy `/blogs/recipes` → `/recipes` redirects.
+ * - `utm_*`: GA4, email (e.g. Klaviyo: `utm_medium=email`, `utm_source=klaviyo`, `utm_campaign=…`).
+ * - Klaviyo click tracking: `_kx` (e.g. `/collections/shop-all?_kx=…` — unchanged unless a redirect strips it).
+ * - Ad click IDs: `gclid`, `fbclid`, `msclkid`.
+ * - Affiliate-style: `ref`, `referrer`.
+ */
+function shouldPreserveMarketingParam(key: string): boolean {
+  const k = key.toLowerCase();
+  return (
+    k.startsWith("utm_") ||
+    k === "_kx" ||
+    k === "gclid" ||
+    k === "fbclid" ||
+    k === "msclkid" ||
+    k === "ref" ||
+    k === "referrer"
+  );
+}
+
+function redirect308PreserveMarketing(
+  request: NextRequest,
+  destinationPath: string,
+): NextResponse {
+  const url = new URL(destinationPath, request.url);
+  for (const [key, value] of request.nextUrl.searchParams.entries()) {
+    if (shouldPreserveMarketingParam(key)) {
+      url.searchParams.append(key, value);
+    }
+  }
+  return NextResponse.redirect(url, 308);
+}
+
+/**
  * Exposes pathname (and shop search flag) on the request so the root layout can
  * SSR footer-wave / header-wave settings and match the first client paint.
  */
@@ -27,6 +60,51 @@ export function middleware(request: NextRequest) {
       CUSTOMER_ACCOUNT_PORTAL_URL,
     );
     return NextResponse.redirect(dest, 302);
+  }
+
+  /** Legacy Shopify blog URLs → `/recipes` (308). Preserves marketing params above; drops e.g. `?page=`. */
+  const pathNoTrailingSlash =
+    request.nextUrl.pathname.replace(/\/+$/, "") || "/";
+  if (pathNoTrailingSlash === "/blogs/recipes") {
+    return redirect308PreserveMarketing(request, "/recipes");
+  }
+  /** Old blog slug → current Sanity recipe slug (differs from 1:1 path). */
+  if (
+    pathNoTrailingSlash === "/blogs/recipes/alaska-seafood-breakfast-hash"
+  ) {
+    return redirect308PreserveMarketing(request, "/recipes/breakfast-hash");
+  }
+  if (
+    pathNoTrailingSlash === "/blogs/recipes/bacon-wrapped-jalapeno-poppers"
+  ) {
+    return redirect308PreserveMarketing(
+      request,
+      "/recipes/bacon-wrapped-smoked-salmon-poppers",
+    );
+  }
+  if (pathNoTrailingSlash === "/blogs/recipes/chopped-salad") {
+    return redirect308PreserveMarketing(
+      request,
+      "/recipes/the-original-chopped-salad",
+    );
+  }
+  if (
+    pathNoTrailingSlash === "/blogs/recipes/coconut-poached-halibut"
+  ) {
+    return redirect308PreserveMarketing(
+      request,
+      "/recipes/coconut-poached-halibut-and-mango-avocado-salsa",
+    );
+  }
+  /** Recipe not published yet → index. When `/recipes/corned-salmon` exists, point this to that path instead. */
+  if (pathNoTrailingSlash === "/blogs/recipes/corned-salmon") {
+    return redirect308PreserveMarketing(request, "/recipes");
+  }
+  if (pathNoTrailingSlash.startsWith("/blogs/recipes/")) {
+    const slug = pathNoTrailingSlash.slice("/blogs/recipes/".length);
+    if (slug && !slug.includes("/")) {
+      return redirect308PreserveMarketing(request, `/recipes/${slug}`);
+    }
   }
 
   if (
