@@ -388,6 +388,10 @@ export default function CartPage() {
     () => cart?.lines?.edges?.map((e) => e.node) ?? [],
     [cart?.lines?.edges]
   );
+
+  /** Not a hook — safe to derive every render (getCheckoutUrl is cheap). */
+  const secureCheckoutUrl = getCheckoutUrl(cart?.checkoutUrl);
+
   React.useEffect(() => {
     if (!cart || lines.length === 0) return;
     if (lastTrackedViewCartKey.current === cart.id) return;
@@ -442,12 +446,6 @@ export default function CartPage() {
     threshold != null && threshold > 0
       ? Math.min(100, (subtotal / threshold) * 100)
       : 100;
-
-  /** Storefront `checkoutUrl` → full Shopify URL (never headless `/checkout`). */
-  const secureCheckoutUrl = React.useMemo(
-    () => getCheckoutUrl(cart.checkoutUrl),
-    [cart.checkoutUrl],
-  );
 
   return (
     <main className="min-h-screen bg-white px-4 pt-[140px] pb-14 sm:pt-[170px] lg:pt-[230px]">
