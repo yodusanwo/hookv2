@@ -166,9 +166,18 @@ export function middleware(request: NextRequest) {
     pathNoTrailingSlash ===
       "/collections/hook-point-merch/products/hook-point-fish-hat" ||
     pathNoTrailingSlash ===
-      "/collections/hook-point-merch/products/never-tamed-t-shirt"
+      "/collections/hook-point-merch/products/never-tamed-t-shirt" ||
+    pathNoTrailingSlash === "/products/good-fish-t-shirt-1" ||
+    pathNoTrailingSlash === "/products/hook-point-classic-logo-hoodie" ||
+    pathNoTrailingSlash === "/products/hook-point-compass-t-shirt" ||
+    pathNoTrailingSlash === "/products/hook-point-fish-hat"
   ) {
     return redirect308PreserveMarketing(request, "/");
+  }
+
+  /** Legacy Shopify product (PDP) URLs → headless shop. */
+  if (pathNoTrailingSlash === "/products/2023-salmon-shares-20-lb") {
+    return redirect308PreserveMarketing(request, "/shop/salmon");
   }
 
   /** Legacy Shopify `/pages/*` → headless routes. */
@@ -190,6 +199,12 @@ export function middleware(request: NextRequest) {
   }
   if (pathNoTrailingSlash === "/pages/recipes") {
     return redirect308PreserveMarketing(request, "/recipes");
+  }
+  if (pathNoTrailingSlash === "/pages/sustainability") {
+    return redirect308PreserveMarketing(request, "/wild-vs-farmed");
+  }
+  if (pathNoTrailingSlash === "/pages/wild-vs-farmed") {
+    return redirect308PreserveMarketing(request, "/wild-vs-farmed");
   }
 
   if (
