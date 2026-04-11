@@ -16,6 +16,7 @@ import {
   trackAddToCart,
   trackBeginCheckoutFromVariant,
 } from "@/app/lib/ga4Ecommerce";
+import { getCheckoutUrl } from "@/lib/utils/checkout";
 
 type Variant = ProductVariantOption;
 
@@ -222,7 +223,7 @@ export function AddToCart({
           variant: selectedVariant,
           quantity: qty,
         });
-        window.location.assign(json.checkoutUrl);
+        window.location.assign(getCheckoutUrl(json.checkoutUrl));
         return;
       }
       throw new Error("No checkout URL returned.");
@@ -515,7 +516,7 @@ export function AddToCart({
             </Link>
             {checkoutUrl ? (
               <a
-                href={checkoutUrl}
+                href={getCheckoutUrl(checkoutUrl)}
                 className="inline-flex h-10 min-w-[100px] items-center justify-center rounded-md px-4 text-sm font-semibold text-white hover:opacity-90"
                 style={{ backgroundColor: "var(--brand-green)" }}
               >
