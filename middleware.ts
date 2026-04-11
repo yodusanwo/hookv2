@@ -170,7 +170,12 @@ export function middleware(request: NextRequest) {
     pathNoTrailingSlash === "/products/good-fish-t-shirt-1" ||
     pathNoTrailingSlash === "/products/hook-point-classic-logo-hoodie" ||
     pathNoTrailingSlash === "/products/hook-point-compass-t-shirt" ||
-    pathNoTrailingSlash === "/products/hook-point-fish-hat"
+    pathNoTrailingSlash === "/products/hook-point-fish-hat" ||
+    pathNoTrailingSlash === "/products/hook-point-hat" ||
+    pathNoTrailingSlash === "/products/hook-point-logo-t-shirt-1" ||
+    pathNoTrailingSlash === "/products/never-tamed-t-shirt" ||
+    pathNoTrailingSlash === "/products/relax-baseball-shirt-1" ||
+    pathNoTrailingSlash === "/products/veidistafur-hoodie-1"
   ) {
     return redirect308PreserveMarketing(request, "/");
   }
@@ -178,6 +183,13 @@ export function middleware(request: NextRequest) {
   /** Legacy Shopify product (PDP) URLs → headless shop. */
   if (pathNoTrailingSlash === "/products/2023-salmon-shares-20-lb") {
     return redirect308PreserveMarketing(request, "/shop/salmon");
+  }
+  /** Duplicate / draft handle → canonical PDP. */
+  if (pathNoTrailingSlash === "/products/wild-alaska-sockeye-box-copy") {
+    return redirect308PreserveMarketing(
+      request,
+      "/products/wild-alaska-sockeye",
+    );
   }
 
   /** Legacy Shopify `/pages/*` → headless routes. */
