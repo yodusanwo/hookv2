@@ -1,11 +1,25 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 
 /**
  * Exposes pathname (and shop search flag) on the request so the root layout can
  * SSR footer-wave / header-wave settings and match the first client paint.
  */
 export function middleware(request: NextRequest) {
+  /**
+   * Customer Accounts login can redirect to `/customer_authentication/sso_hint?...` on the
+   * storefront origin. If Shopify sends that path to the headless domain, Next has no route
+   * (404). Forward to the hosted Customer Accounts host (same path + query).
+   */
+  if (request.nextUrl.pathname.startsWith("/customer_authentication")) {
+    const dest = new URL(
+      `${request.nextUrl.pathname}${request.nextUrl.search}`,
+      CUSTOMER_ACCOUNT_PORTAL_URL,
+    );
+    return NextResponse.redirect(dest, 302);
+  }
+
   if (
     request.nextUrl.pathname === "/pages/marketform" ||
     request.nextUrl.pathname === "/pages/marketsignup"
