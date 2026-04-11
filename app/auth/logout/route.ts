@@ -5,6 +5,8 @@ import {
 } from "@/lib/shopifyCustomerAccount";
 import {
   clearAccessTokenCookie,
+  clearAccessTokenExpiryCookie,
+  clearRefreshTokenCookie,
   clearIdTokenCookie,
   getIdTokenFromRequest,
   getPreferredRedirectOrigin,
@@ -23,7 +25,12 @@ export async function GET(request: Request) {
   const idToken = getIdTokenFromRequest(request);
   const config = await getOpenIdConfig();
 
-  const clearLocal = [clearAccessTokenCookie(), clearIdTokenCookie()];
+  const clearLocal = [
+    clearAccessTokenCookie(),
+    clearAccessTokenExpiryCookie(),
+    clearRefreshTokenCookie(),
+    clearIdTokenCookie(),
+  ];
 
   if (idToken && config?.end_session_endpoint) {
     const logoutUrl = buildLogoutUrl({

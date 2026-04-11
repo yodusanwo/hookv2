@@ -1,6 +1,11 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { getAccessTokenFromCookies } from "@/lib/authCookie";
+import { redirect } from "next/navigation";
+import {
+  getAccessTokenFromCookies,
+  getAccessTokenExpiresFromCookies,
+  getRefreshTokenFromCookies,
+} from "@/lib/authCookie";
 import {
   fetchCustomerOrdersWithOutcome,
   isCustomerAccountConfigured,
@@ -33,6 +38,15 @@ export default async function AccountPage({
   const token = getAccessTokenFromCookies(cookieStore);
   const params = await searchParams;
   const useHeadlessLogin = isCustomerAccountConfigured();
+
+  if (token) {
+    const exp = getAccessTokenExpiresFromCookies(cookieStore);
+    const refresh = getRefreshTokenFromCookies(cookieStore);
+    const now = Math.floor(Date.now() / 1000);
+    if (refresh && exp !== null && now >= exp) {
+      redirect(`/auth/refresh?next=${encodeURIComponent("/account")}`);
+    }
+  }
 
   if (!token) {
     return (

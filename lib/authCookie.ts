@@ -95,6 +95,64 @@ export function clearAccessTokenCookie(): string {
   return `${ACCESS_TOKEN_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`;
 }
 
+const REFRESH_TOKEN_COOKIE = "shopify_customer_refresh";
+const ACCESS_EXPIRES_COOKIE = "shopify_customer_at_exp";
+
+/** Unix **seconds** when the access token expires (from OAuth `expires_in`). */
+export function setAccessTokenExpiryCookie(expiresInSeconds: number, origin: string): string {
+  const exp = Math.floor(Date.now() / 1000) + Math.max(60, expiresInSeconds);
+  const isSecure = origin.startsWith("https");
+  return `${ACCESS_EXPIRES_COOKIE}=${exp}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ACCESS_TOKEN_MAX_AGE}${isSecure ? "; Secure" : ""}`;
+}
+
+export function setRefreshTokenCookie(refreshToken: string, origin: string): string {
+  const isSecure = origin.startsWith("https");
+  return `${REFRESH_TOKEN_COOKIE}=${encodeURIComponent(refreshToken)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ACCESS_TOKEN_MAX_AGE}${isSecure ? "; Secure" : ""}`;
+}
+
+export function getRefreshTokenFromCookies(cookieStore: {
+  get: (name: string) => { value: string } | undefined;
+}): string | null {
+  const c = cookieStore.get(REFRESH_TOKEN_COOKIE);
+  if (!c?.value) return null;
+  try {
+    return decodeURIComponent(c.value);
+  } catch {
+    return null;
+  }
+}
+
+export function getRefreshTokenFromRequest(request: Request): string | null {
+  const cookieHeader = request.headers.get("cookie");
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(new RegExp(`${REFRESH_TOKEN_COOKIE}=([^;]+)`));
+  const raw = match?.[1];
+  if (!raw) return null;
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return null;
+  }
+}
+
+/** Access token expiry as Unix seconds, or null if unknown (legacy sessions). */
+export function getAccessTokenExpiresFromCookies(cookieStore: {
+  get: (name: string) => { value: string } | undefined;
+}): number | null {
+  const c = cookieStore.get(ACCESS_EXPIRES_COOKIE);
+  if (!c?.value) return null;
+  const n = parseInt(c.value, 10);
+  return Number.isFinite(n) ? n : null;
+}
+
+export function clearRefreshTokenCookie(): string {
+  return `${REFRESH_TOKEN_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`;
+}
+
+export function clearAccessTokenExpiryCookie(): string {
+  return `${ACCESS_EXPIRES_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`;
+}
+
 /** id_token from token response — required for Shopify end_session logout. */
 const ID_TOKEN_COOKIE = "shopify_customer_id_token";
 

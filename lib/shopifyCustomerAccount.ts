@@ -74,7 +74,12 @@ export async function exchangeCodeForToken(params: {
   codeVerifier: string;
   redirectUri: string;
   origin?: string;
-}): Promise<{ access_token: string; id_token?: string; expires_in?: number } | null> {
+}): Promise<{
+  access_token: string;
+  id_token?: string;
+  expires_in?: number;
+  refresh_token?: string;
+} | null> {
   const config = await getOpenIdConfig();
   if (!config?.token_endpoint) return null;
   const { code, codeVerifier, redirectUri, origin } = params;
@@ -100,12 +105,57 @@ export async function exchangeCodeForToken(params: {
     access_token?: string;
     id_token?: string;
     expires_in?: number;
+    refresh_token?: string;
   };
   if (!data?.access_token) return null;
   return {
     access_token: data.access_token,
     id_token: typeof data.id_token === "string" ? data.id_token : undefined,
-    expires_in: data.expires_in,
+    expires_in: typeof data.expires_in === "number" ? data.expires_in : undefined,
+    refresh_token: typeof data.refresh_token === "string" ? data.refresh_token : undefined,
+  };
+}
+
+/** Public (PKCE) client refresh — no client_secret. See https://shopify.dev/docs/api/customer/latest#use-refresh-token */
+export async function refreshCustomerAccessToken(refreshToken: string): Promise<{
+  access_token: string;
+  id_token?: string;
+  expires_in?: number;
+  refresh_token?: string;
+} | null> {
+  const config = await getOpenIdConfig();
+  if (!config?.token_endpoint) return null;
+  const body = new URLSearchParams({
+    grant_type: "refresh_token",
+    client_id: CLIENT_ID,
+    refresh_token: refreshToken,
+  });
+  const headers: Record<string, string> = {
+    "Content-Type": "application/x-www-form-urlencoded",
+    "User-Agent": "HookPoint-Headless/1.0",
+  };
+  const site = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (site) {
+    headers.Origin = site.startsWith("http") ? site.replace(/\/+$/, "") : `https://${site.replace(/\/+$/, "")}`;
+  }
+  const res = await fetch(config.token_endpoint, {
+    method: "POST",
+    headers,
+    body: body.toString(),
+  });
+  if (!res.ok) return null;
+  const data = (await res.json()) as {
+    access_token?: string;
+    id_token?: string;
+    expires_in?: number;
+    refresh_token?: string;
+  };
+  if (!data?.access_token) return null;
+  return {
+    access_token: data.access_token,
+    id_token: typeof data.id_token === "string" ? data.id_token : undefined,
+    expires_in: typeof data.expires_in === "number" ? data.expires_in : undefined,
+    refresh_token: typeof data.refresh_token === "string" ? data.refresh_token : undefined,
   };
 }
 
@@ -124,18 +174,22 @@ export function buildLogoutUrl(params: {
   return url.toString();
 }
 
-/**
- * Customer Account API only — no Storefront `totalPriceSet` / `status`.
- * Omit `financialStatus` / `fulfillmentStatus` here: some apps hit protected-data
- * gates until Partner approval; those fields can make the whole query fail.
- */
-const CUSTOMER_ORDERS_QUERY = `query CustomerOrders {
+/** Profile only — separate from orders so email/name permission issues don’t block order list. */
+const CUSTOMER_PROFILE_QUERY = `query CustomerProfile {
   customer {
     firstName
     lastName
     emailAddress {
       emailAddress
     }
+  }
+}`;
+
+/**
+ * Orders only on Customer Account API — no Storefront `totalPriceSet` / `status`.
+ */
+const CUSTOMER_ORDERS_QUERY = `query CustomerOrders {
+  customer {
     orders(first: 50, sortKey: CREATED_AT, reverse: true) {
       edges {
         node {
@@ -192,9 +246,9 @@ const CUSTOMER_ORDERS_QUERY_MINIMAL = `query CustomerOrdersMinimal {
 
 export type CustomerOrdersResult = {
   customer: {
-    firstName: string | null;
-    lastName: string | null;
-    emailAddress: { emailAddress: string } | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    emailAddress?: { emailAddress: string } | null;
     orders: {
       edges: Array<{
         node: {
@@ -231,41 +285,123 @@ type PostGraphqlResult =
   | { ok: true; data: CustomerOrdersResult | null }
   | { ok: false; hint: string };
 
+/** Shopify’s Customer Account GraphQL examples use the raw access token (no `Bearer ` prefix). Retry with Bearer on 401. */
 async function postCustomerOrdersGraphql(
   graphqlUrl: string,
   accessToken: string,
   query: string,
 ): Promise<PostGraphqlResult> {
-  const res = await fetch(graphqlUrl, {
-    method: "POST",
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "User-Agent": "HookPoint-Headless/1.0",
-    },
-    body: JSON.stringify({ query }),
-  });
-  const text = await res.text();
-  let json: { data?: CustomerOrdersResult; errors?: unknown[] };
+  const attempt = async (authorization: string): Promise<PostGraphqlResult> => {
+    const res = await fetch(graphqlUrl, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authorization,
+        "User-Agent": "HookPoint-Headless/1.0",
+      },
+      body: JSON.stringify({ query }),
+    });
+    const text = await res.text();
+    let json: { data?: CustomerOrdersResult; errors?: unknown[] };
+    try {
+      json = JSON.parse(text) as { data?: CustomerOrdersResult; errors?: unknown[] };
+    } catch {
+      return {
+        ok: false,
+        hint: `Non-JSON response (HTTP ${res.status}): ${text.slice(0, 500)}`,
+      };
+    }
+    if (!res.ok) {
+      return { ok: false, hint: `HTTP ${res.status}: ${text.slice(0, 800)}` };
+    }
+    const hasOrdersData = json.data?.customer?.orders != null;
+    if (json.errors?.length) {
+      if (hasOrdersData) {
+        console.warn(
+          "[Customer Account API] GraphQL partial errors (orders still returned):",
+          JSON.stringify(json.errors).slice(0, 600),
+        );
+        return { ok: true, data: json.data ?? null };
+      }
+      return {
+        ok: false,
+        hint: `GraphQL errors: ${JSON.stringify(json.errors).slice(0, 1000)}`,
+      };
+    }
+    return { ok: true, data: json.data ?? null };
+  };
+
+  let out = await attempt(accessToken);
+  if (!out.ok && out.hint.startsWith("HTTP 401")) {
+    console.warn("[Customer Account API] Retrying GraphQL with Bearer prefix after 401");
+    out = await attempt(`Bearer ${accessToken}`);
+  }
+  if (!out.ok) {
+    console.error("[Customer Account API]", out.hint);
+  }
+  return out;
+}
+
+async function postCustomerProfileGraphql(
+  graphqlUrl: string,
+  accessToken: string,
+): Promise<{
+  firstName: string | null;
+  lastName: string | null;
+  emailAddress: { emailAddress: string } | null;
+} | null> {
+  const run = (auth: string) =>
+    fetch(graphqlUrl, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: auth,
+        "User-Agent": "HookPoint-Headless/1.0",
+      },
+      body: JSON.stringify({ query: CUSTOMER_PROFILE_QUERY }),
+    });
+  let res = await run(accessToken);
+  let text = await res.text();
+  if (res.status === 401) {
+    res = await run(`Bearer ${accessToken}`);
+    text = await res.text();
+  }
   try {
-    json = JSON.parse(text) as { data?: CustomerOrdersResult; errors?: unknown[] };
+    const json = JSON.parse(text) as {
+      data?: {
+        customer: {
+          firstName: string | null;
+          lastName: string | null;
+          emailAddress: { emailAddress: string } | null;
+        } | null;
+      };
+      errors?: unknown[];
+    };
+    if (!res.ok || json.errors?.length) return null;
+    return json.data?.customer ?? null;
   } catch {
-    const hint = `Non-JSON response (HTTP ${res.status}): ${text.slice(0, 500)}`;
-    console.error("[Customer Account API]", hint);
-    return { ok: false, hint };
+    return null;
   }
-  if (!res.ok) {
-    const hint = `HTTP ${res.status}: ${text.slice(0, 800)}`;
-    console.error("[Customer Account API]", hint);
-    return { ok: false, hint };
-  }
-  if (json.errors?.length) {
-    const hint = `GraphQL errors: ${JSON.stringify(json.errors).slice(0, 1000)}`;
-    console.error("[Customer Account API] orders query failed:", hint);
-    return { ok: false, hint };
-  }
-  return { ok: true, data: json.data ?? null };
+}
+
+async function mergeOrdersWithProfile(
+  graphqlUrl: string,
+  accessToken: string,
+  ordersPayload: CustomerOrdersResult | null,
+): Promise<CustomerOrdersResult | null> {
+  const orders = ordersPayload?.customer?.orders;
+  if (!orders) return ordersPayload;
+  const profile = await postCustomerProfileGraphql(graphqlUrl, accessToken);
+  return {
+    customer: {
+      firstName: profile?.firstName ?? null,
+      lastName: profile?.lastName ?? null,
+      emailAddress: profile?.emailAddress ?? null,
+      orders,
+    },
+  };
 }
 
 export async function fetchCustomerOrdersWithOutcome(
@@ -283,33 +419,18 @@ export async function fetchCustomerOrdersWithOutcome(
     };
   }
 
-  const primary = await postCustomerOrdersGraphql(
-    apiConfig.graphql_api,
-    accessToken,
-    CUSTOMER_ORDERS_QUERY,
-  );
+  const url = apiConfig.graphql_api;
+
+  const primary = await postCustomerOrdersGraphql(url, accessToken, CUSTOMER_ORDERS_QUERY);
   if (primary.ok) {
-    return { data: primary.data, loadFailed: false };
+    const merged = await mergeOrdersWithProfile(url, accessToken, primary.data);
+    return { data: merged, loadFailed: false };
   }
 
-  const minimal = await postCustomerOrdersGraphql(
-    apiConfig.graphql_api,
-    accessToken,
-    CUSTOMER_ORDERS_QUERY_MINIMAL,
-  );
+  const minimal = await postCustomerOrdersGraphql(url, accessToken, CUSTOMER_ORDERS_QUERY_MINIMAL);
   if (minimal.ok && minimal.data?.customer?.orders) {
-    const o = minimal.data.customer.orders;
-    return {
-      data: {
-        customer: {
-          firstName: null,
-          lastName: null,
-          emailAddress: null,
-          orders: o,
-        },
-      },
-      loadFailed: false,
-    };
+    const merged = await mergeOrdersWithProfile(url, accessToken, minimal.data);
+    return { data: merged, loadFailed: false };
   }
 
   return {

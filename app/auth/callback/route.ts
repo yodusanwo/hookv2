@@ -3,6 +3,8 @@ import { exchangeCodeForToken, getRedirectUri } from "@/lib/shopifyCustomerAccou
 import {
   getPkceCookie,
   setAccessTokenCookie,
+  setAccessTokenExpiryCookie,
+  setRefreshTokenCookie,
   setIdTokenCookie,
   clearPkceCookie,
   getPreferredRedirectOrigin,
@@ -44,6 +46,12 @@ export async function GET(request: Request) {
   res.headers.append("Set-Cookie", clearPkceCookie());
   if (tokenResult?.access_token) {
     res.headers.append("Set-Cookie", setAccessTokenCookie(tokenResult.access_token, origin));
+    if (typeof tokenResult.expires_in === "number") {
+      res.headers.append("Set-Cookie", setAccessTokenExpiryCookie(tokenResult.expires_in, origin));
+    }
+    if (tokenResult.refresh_token) {
+      res.headers.append("Set-Cookie", setRefreshTokenCookie(tokenResult.refresh_token, origin));
+    }
     if (tokenResult.id_token) {
       res.headers.append("Set-Cookie", setIdTokenCookie(tokenResult.id_token, origin));
     }
