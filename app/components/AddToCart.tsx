@@ -138,7 +138,9 @@ export function AddToCart({
         checkoutUrl?: string;
       };
       if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
-      setCheckoutUrl(json.checkoutUrl ?? null);
+      setCheckoutUrl(
+        json.checkoutUrl ? getCheckoutUrl(json.checkoutUrl) : null,
+      );
       trackAddToCart({
         productTitle,
         productType,
@@ -516,7 +518,7 @@ export function AddToCart({
             </Link>
             {checkoutUrl ? (
               <a
-                href={getCheckoutUrl(checkoutUrl)}
+                href={checkoutUrl}
                 className="inline-flex h-10 min-w-[100px] items-center justify-center rounded-md px-4 text-sm font-semibold text-white hover:opacity-90"
                 style={{ backgroundColor: "var(--brand-green)" }}
               >

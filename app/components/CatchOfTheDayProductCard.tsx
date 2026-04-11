@@ -9,6 +9,7 @@ import { shopifyImageUrlForWidth } from "@/lib/shopifyImage";
 import type { SellingPlanBrief } from "@/lib/types";
 import { AddToCartModal } from "./AddToCartModal";
 import { QuickShopSubscriptionModal } from "./QuickShopSubscriptionModal";
+import { getCheckoutUrl } from "@/lib/utils/checkout";
 
 /** Request width for Shopify CDN (card max ~387px at 2x DPR). */
 const CARD_IMAGE_REQUEST_WIDTH = 800;
@@ -106,9 +107,8 @@ export function CatchOfTheDayProductCard({
         const json = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
         if (!controller.signal.aborted) {
-          setCheckoutUrl(
-            (json as { checkoutUrl?: string }).checkoutUrl ?? null,
-          );
+          const raw = (json as { checkoutUrl?: string }).checkoutUrl;
+          setCheckoutUrl(raw ? getCheckoutUrl(raw) : null);
           setModalOpen(true);
           window.dispatchEvent(new CustomEvent("cart-updated"));
         }
@@ -394,7 +394,7 @@ export function CatchOfTheDayProductCard({
           requiresSellingPlan={Boolean(product.requiresSellingPlan)}
           sellingPlans={product.sellingPlans}
           onSuccess={(url) => {
-            setCheckoutUrl(url);
+            setCheckoutUrl(url ? getCheckoutUrl(url) : null);
             setModalOpen(true);
           }}
         />

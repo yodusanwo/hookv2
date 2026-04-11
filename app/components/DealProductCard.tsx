@@ -4,6 +4,7 @@ import Link from "next/link";
 import * as React from "react";
 import { AddToCartModal } from "./AddToCartModal";
 import { trackSelectItem } from "@/app/lib/ga4Ecommerce";
+import { getCheckoutUrl } from "@/lib/utils/checkout";
 
 async function ensureCartId(): Promise<string> {
   const existing =
@@ -74,7 +75,8 @@ export function DealProductCard({
         const json = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(json?.error ?? "Failed to add to cart.");
         if (!controller.signal.aborted) {
-          setCheckoutUrl((json as { checkoutUrl?: string }).checkoutUrl ?? null);
+          const raw = (json as { checkoutUrl?: string }).checkoutUrl;
+          setCheckoutUrl(raw ? getCheckoutUrl(raw) : null);
           setModalOpen(true);
           window.dispatchEvent(new CustomEvent("cart-updated"));
         }

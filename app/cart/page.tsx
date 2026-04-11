@@ -155,7 +155,10 @@ export default function CartPage() {
       return;
     }
     const data = await res.json();
-    setCart(data);
+    setCart({
+      ...data,
+      checkoutUrl: getCheckoutUrl(data.checkoutUrl),
+    });
     setError(null);
   }, []);
 
@@ -647,7 +650,7 @@ export default function CartPage() {
             </div>
 
             <a
-              href={getCheckoutUrl(cart.checkoutUrl)}
+              href={cart.checkoutUrl}
               onClick={(e) => {
                 e.preventDefault();
                 trackBeginCheckoutFromCart({
@@ -656,7 +659,7 @@ export default function CartPage() {
                   lines,
                 });
                 window.setTimeout(() => {
-                  window.location.assign(getCheckoutUrl(cart.checkoutUrl));
+                  window.location.assign(cart.checkoutUrl);
                 }, 150);
               }}
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"

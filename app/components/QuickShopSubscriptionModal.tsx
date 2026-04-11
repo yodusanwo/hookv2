@@ -9,6 +9,7 @@ import {
   effectiveSubscriptionUnitPrice,
   unitPriceIsLowerThan,
 } from "@/lib/effectiveSubscriptionUnitPrice";
+import { getCheckoutUrl } from "@/lib/utils/checkout";
 
 async function ensureCartId(): Promise<string> {
   const existing =
@@ -158,7 +159,9 @@ export function QuickShopSubscriptionModal({
         },
         quantity: 1,
       });
-      onSuccess(json.checkoutUrl ?? null);
+      onSuccess(
+        json.checkoutUrl ? getCheckoutUrl(json.checkoutUrl) : null,
+      );
       onClose();
       window.dispatchEvent(new CustomEvent("cart-updated"));
     } catch (e) {

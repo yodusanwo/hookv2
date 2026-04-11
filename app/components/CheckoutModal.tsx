@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { getCheckoutUrl } from "@/lib/utils/checkout";
 
 const CHECKOUT_MODAL_OPEN_EVENT = "open-checkout-modal";
 
@@ -12,7 +13,7 @@ export function CheckoutModal() {
     const handler = (e: Event) => {
       const url = (e as CustomEvent<{ checkoutUrl: string }>).detail?.checkoutUrl;
       if (url && typeof url === "string") {
-        setCheckoutUrl(url);
+        setCheckoutUrl(getCheckoutUrl(url));
       }
     };
     window.addEventListener(CHECKOUT_MODAL_OPEN_EVENT, handler);
