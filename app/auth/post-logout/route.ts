@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { clearAccessTokenCookie, clearIdTokenCookie } from "@/lib/authCookie";
-import { CUSTOMER_ACCOUNT_LOGOUT_URL } from "@/lib/customerAccountPortal";
+import { HEADLESS_STOREFRONT_URL } from "@/lib/customerAccountPortal";
 
-/** Landing page after Shopify end_session — ensures cookies cleared, then native account logout. */
+/**
+ * Landing page after Shopify end_session. Clears headless cookies, then sends the
+ * browser to the storefront — not account.hookpointfish.com/authentication/logout,
+ * which can redirect to the default Online Store (*.myshopify.com/?country=…).
+ */
 export async function GET() {
-  const res = NextResponse.redirect(CUSTOMER_ACCOUNT_LOGOUT_URL);
+  const home = new URL("/", HEADLESS_STOREFRONT_URL).toString();
+  const res = NextResponse.redirect(home);
   res.headers.append("Set-Cookie", clearAccessTokenCookie());
   res.headers.append("Set-Cookie", clearIdTokenCookie());
   return res;
