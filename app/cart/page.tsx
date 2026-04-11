@@ -443,6 +443,12 @@ export default function CartPage() {
       ? Math.min(100, (subtotal / threshold) * 100)
       : 100;
 
+  /** Storefront `checkoutUrl` → full Shopify URL (never headless `/checkout`). */
+  const secureCheckoutUrl = React.useMemo(
+    () => getCheckoutUrl(cart.checkoutUrl),
+    [cart.checkoutUrl],
+  );
+
   return (
     <main className="min-h-screen bg-white px-4 pt-[140px] pb-14 sm:pt-[170px] lg:pt-[230px]">
       <div className="mx-auto max-w-6xl">
@@ -650,7 +656,7 @@ export default function CartPage() {
             </div>
 
             <a
-              href={getCheckoutUrl(cart.checkoutUrl)}
+              href={secureCheckoutUrl}
               onClick={(e) => {
                 e.preventDefault();
                 trackBeginCheckoutFromCart({
@@ -659,7 +665,7 @@ export default function CartPage() {
                   lines,
                 });
                 window.setTimeout(() => {
-                  window.location.assign(getCheckoutUrl(cart.checkoutUrl));
+                  window.location.assign(secureCheckoutUrl);
                 }, 150);
               }}
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"

@@ -13,12 +13,7 @@ import {
 } from "@/lib/authCookie";
 import { HEADLESS_STOREFRONT_URL } from "@/lib/customerAccountPortal";
 
-/**
- * Per https://shopify.dev/docs/api/customer/latest#logging-out :
- * redirect to end_session_endpoint with id_token_hint + post_logout_redirect_uri.
- * Add post_logout URL to Headless → Customer Account API → Logout URI(s).
- * Uses NEXT_PUBLIC_SITE_URL when set so redirect always goes to your app (e.g. hookv2.vercel.app), not the Shopify theme.
- */
+/** OIDC logout per https://shopify.dev/docs/api/customer/latest#logging-out ; allowlist `{origin}/auth/post-logout` in Shopify Admin. */
 export async function GET(request: Request) {
   const origin = getPreferredRedirectOrigin(request);
   const postLogout = `${origin}/auth/post-logout`;

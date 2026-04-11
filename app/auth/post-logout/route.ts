@@ -7,11 +7,7 @@ import {
 } from "@/lib/authCookie";
 import { HEADLESS_STOREFRONT_URL } from "@/lib/customerAccountPortal";
 
-/**
- * Landing page after Shopify end_session. Clears headless cookies, then sends the
- * browser to the storefront — not account.hookpointfish.com/authentication/logout,
- * which can redirect to the default Online Store (*.myshopify.com/?country=…).
- */
+/** After end_session: clear cookies, redirect to `HEADLESS_STOREFRONT_URL` (`NEXT_PUBLIC_SITE_URL`). */
 export async function GET() {
   const home = new URL("/", HEADLESS_STOREFRONT_URL).toString();
   const res = NextResponse.redirect(home);

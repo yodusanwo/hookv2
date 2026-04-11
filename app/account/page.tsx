@@ -6,6 +6,7 @@ import {
   getAccessTokenExpiresFromCookies,
   getRefreshTokenFromCookies,
 } from "@/lib/authCookie";
+import { getCustomerAccountNavUrl } from "@/lib/customerAccountPortal";
 import {
   fetchCustomerOrdersWithOutcome,
   isCustomerAccountConfigured,
@@ -38,6 +39,7 @@ export default async function AccountPage({
   const token = getAccessTokenFromCookies(cookieStore);
   const params = await searchParams;
   const useHeadlessLogin = isCustomerAccountConfigured();
+  const accountNavUrl = getCustomerAccountNavUrl();
 
   if (token) {
     const exp = getAccessTokenExpiresFromCookies(cookieStore);
@@ -97,6 +99,13 @@ export default async function AccountPage({
                   Create account
                 </a>
               </div>
+            ) : accountNavUrl ? (
+              <a
+                href={accountNavUrl}
+                className="block w-full rounded-lg bg-[var(--brand-green)] px-6 py-3 text-center font-medium text-white hover:opacity-90 [font-family:var(--font-inter)]"
+              >
+                Sign in
+              </a>
             ) : null}
           </div>
         </div>

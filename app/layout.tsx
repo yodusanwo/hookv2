@@ -10,7 +10,7 @@ import { KlaviyoOnsiteScript } from "./components/KlaviyoOnsiteScript";
 import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlForSizedImage } from "@/lib/sanityImage";
-import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
+import { getCustomerAccountNavUrl } from "@/lib/customerAccountPortal";
 import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
 import { getAccessTokenFromCookies } from "@/lib/authCookie";
 import { getFooterWaveLayoutSettings } from "@/lib/footerWaveLayout";
@@ -65,17 +65,7 @@ export default async function RootLayout({
   let headerLogoUrl: string | null = null;
   let navLinks: { label?: string; href?: string }[] = [];
   let headerBackgroundColor: string | null = null;
-  let accountUrl: string | null = null;
-  const explicitAccountUrl = process.env.NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL?.trim();
-  if (explicitAccountUrl) {
-    accountUrl = explicitAccountUrl;
-  } else {
-    const domain = (process.env.SHOPIFY_STORE_DOMAIN ?? "")
-      .trim()
-      .replace(/^https?:\/\//, "")
-      .replace(/\/+$/, "");
-    if (domain) accountUrl = CUSTOMER_ACCOUNT_PORTAL_URL;
-  }
+  const accountUrl = getCustomerAccountNavUrl();
   const useHeadlessAccount = isCustomerAccountConfigured();
   const cookieStore = await cookies();
   const headlessAccountLoggedIn =
