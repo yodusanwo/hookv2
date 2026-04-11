@@ -124,7 +124,11 @@ export function buildLogoutUrl(params: {
   return url.toString();
 }
 
-/** Customer Account API Order uses `totalPrice` (MoneyV2), not Storefront-style `totalPriceSet` / `status`. */
+/**
+ * Customer Account API only — no Storefront `totalPriceSet` / `status`.
+ * Omit `financialStatus` / `fulfillmentStatus` here: some apps hit protected-data
+ * gates until Partner approval; those fields can make the whole query fail.
+ */
 const CUSTOMER_ORDERS_QUERY = `query CustomerOrders {
   customer {
     firstName
@@ -139,8 +143,6 @@ const CUSTOMER_ORDERS_QUERY = `query CustomerOrders {
           name
           createdAt
           cancelledAt
-          financialStatus
-          fulfillmentStatus
           totalPrice {
             amount
             currencyCode
@@ -151,6 +153,33 @@ const CUSTOMER_ORDERS_QUERY = `query CustomerOrders {
                 name
                 variantTitle
                 title
+                quantity
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+
+/** Ultra-minimal retry if the primary query returns GraphQL errors (field-level debugging). */
+const CUSTOMER_ORDERS_QUERY_MINIMAL = `query CustomerOrdersMinimal {
+  customer {
+    orders(first: 50, sortKey: CREATED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          totalPrice {
+            amount
+            currencyCode
+          }
+          lineItems(first: 10) {
+            edges {
+              node {
+                name
                 quantity
               }
             }
@@ -172,13 +201,16 @@ export type CustomerOrdersResult = {
           id: string;
           name: string;
           createdAt: string;
-          cancelledAt: string | null;
-          financialStatus: string | null;
-          fulfillmentStatus: string | null;
+          cancelledAt?: string | null;
           totalPrice: { amount: string; currencyCode: string } | null;
           lineItems: {
             edges: Array<{
-              node: { name: string; variantTitle: string | null; title: string; quantity: number };
+              node: {
+                name: string;
+                variantTitle?: string | null;
+                title?: string;
+                quantity: number;
+              };
             }>;
           };
         };
@@ -195,6 +227,47 @@ export type CustomerOrdersFetchOutcome = {
   devHint?: string;
 };
 
+type PostGraphqlResult =
+  | { ok: true; data: CustomerOrdersResult | null }
+  | { ok: false; hint: string };
+
+async function postCustomerOrdersGraphql(
+  graphqlUrl: string,
+  accessToken: string,
+  query: string,
+): Promise<PostGraphqlResult> {
+  const res = await fetch(graphqlUrl, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "User-Agent": "HookPoint-Headless/1.0",
+    },
+    body: JSON.stringify({ query }),
+  });
+  const text = await res.text();
+  let json: { data?: CustomerOrdersResult; errors?: unknown[] };
+  try {
+    json = JSON.parse(text) as { data?: CustomerOrdersResult; errors?: unknown[] };
+  } catch {
+    const hint = `Non-JSON response (HTTP ${res.status}): ${text.slice(0, 500)}`;
+    console.error("[Customer Account API]", hint);
+    return { ok: false, hint };
+  }
+  if (!res.ok) {
+    const hint = `HTTP ${res.status}: ${text.slice(0, 800)}`;
+    console.error("[Customer Account API]", hint);
+    return { ok: false, hint };
+  }
+  if (json.errors?.length) {
+    const hint = `GraphQL errors: ${JSON.stringify(json.errors).slice(0, 1000)}`;
+    console.error("[Customer Account API] orders query failed:", hint);
+    return { ok: false, hint };
+  }
+  return { ok: true, data: json.data ?? null };
+}
+
 export async function fetchCustomerOrdersWithOutcome(
   accessToken: string,
 ): Promise<CustomerOrdersFetchOutcome> {
@@ -209,35 +282,41 @@ export async function fetchCustomerOrdersWithOutcome(
       devHint: hint,
     };
   }
-  const res = await fetch(apiConfig.graphql_api, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "User-Agent": "HookPoint-Headless/1.0",
-    },
-    body: JSON.stringify({ query: CUSTOMER_ORDERS_QUERY }),
-  });
-  if (!res.ok) {
-    const hint = `GraphQL request failed with HTTP ${res.status}. Token may be expired or rejected.`;
-    console.error("[Customer Account API]", hint);
+
+  const primary = await postCustomerOrdersGraphql(
+    apiConfig.graphql_api,
+    accessToken,
+    CUSTOMER_ORDERS_QUERY,
+  );
+  if (primary.ok) {
+    return { data: primary.data, loadFailed: false };
+  }
+
+  const minimal = await postCustomerOrdersGraphql(
+    apiConfig.graphql_api,
+    accessToken,
+    CUSTOMER_ORDERS_QUERY_MINIMAL,
+  );
+  if (minimal.ok && minimal.data?.customer?.orders) {
+    const o = minimal.data.customer.orders;
     return {
-      data: null,
-      loadFailed: true,
-      devHint: hint,
+      data: {
+        customer: {
+          firstName: null,
+          lastName: null,
+          emailAddress: null,
+          orders: o,
+        },
+      },
+      loadFailed: false,
     };
   }
-  const json = (await res.json()) as { data?: CustomerOrdersResult; errors?: unknown[] };
-  if (json.errors?.length) {
-    const hint = `GraphQL errors: ${JSON.stringify(json.errors).slice(0, 800)}`;
-    console.error("[Customer Account API] orders query failed:", hint);
-    return {
-      data: null,
-      loadFailed: true,
-      devHint: hint,
-    };
-  }
-  return { data: json.data ?? null, loadFailed: false };
+
+  return {
+    data: null,
+    loadFailed: true,
+    devHint: primary.hint,
+  };
 }
 
 export async function fetchCustomerOrders(accessToken: string): Promise<CustomerOrdersResult | null> {

@@ -19,15 +19,9 @@ function formatDate(iso: string): string {
   }
 }
 
-/** Customer Account API has no single `status` string; derive a label for the UI. */
-function orderStatusLabel(order: {
-  cancelledAt: string | null;
-  financialStatus: string | null;
-  fulfillmentStatus: string | null;
-}): string {
+function orderStatusLabel(order: { cancelledAt?: string | null }): string {
   if (order.cancelledAt) return "Canceled";
-  const parts = [order.financialStatus, order.fulfillmentStatus].filter(Boolean);
-  return parts.join(" · ");
+  return "";
 }
 
 export default async function AccountPage({
@@ -113,8 +107,11 @@ export default async function AccountPage({
 
   const customer = data?.customer;
   const orders = customer?.orders?.edges ?? [];
-  const showDevOrdersHint =
-    process.env.NODE_ENV === "development" && ordersLoadFailed && Boolean(ordersDevHint);
+  /** Set `ACCOUNT_ORDERS_DEBUG=true` in Vercel to surface API errors on production while debugging. */
+  const showOrdersDebugPanel =
+    ordersLoadFailed &&
+    Boolean(ordersDevHint) &&
+    (process.env.NODE_ENV === "development" || process.env.ACCOUNT_ORDERS_DEBUG === "true");
 
   return (
     <main className="min-h-screen bg-[#F8F8F8] px-4 pt-24 pb-12 md:pt-32 md:pb-16">
@@ -137,18 +134,18 @@ export default async function AccountPage({
           </p>
         )}
         <h2 className="mb-4 font-medium text-lg text-[#1E1E1E] [font-family:var(--font-inter)]">Orders</h2>
-        {showDevOrdersHint ? (
+        {showOrdersDebugPanel ? (
           <div className="rounded-card border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 [font-family:var(--font-inter)]">
-            <p className="font-semibold">Development: orders request did not succeed</p>
+            <p className="font-semibold">Orders API (debug)</p>
             <p className="mt-2 whitespace-pre-wrap break-words opacity-90">{ordersDevHint}</p>
             <p className="mt-2 text-amber-900/80">
-              Production users still see the generic empty state below when this happens.
+              Remove ACCOUNT_ORDERS_DEBUG from env when finished. Check Vercel logs for [Customer Account API].
             </p>
           </div>
         ) : null}
         {orders.length === 0 ? (
           <div
-            className={`rounded-card bg-white p-8 shadow-sm${showDevOrdersHint ? " mt-4" : ""}`}
+            className={`rounded-card bg-white p-8 shadow-sm${showOrdersDebugPanel ? " mt-4" : ""}`}
           >
             <p className="font-medium text-[#1E1E1E]">
               {ordersLoadFailed ? "Couldn’t load orders" : "No orders yet"}
