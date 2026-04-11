@@ -14,6 +14,7 @@ import {
   trackViewCart,
 } from "@/app/lib/ga4Ecommerce";
 import { subscriptionCartLineNote } from "@/lib/cartSubscriptionLineNote";
+import { getCheckoutUrl } from "@/lib/utils/checkout";
 
 const CART_ID_KEY = "shopify_cart_id";
 const CART_POPUP_OPEN_EVENT = "open-cart-popup";
@@ -533,7 +534,7 @@ export function CartPopup() {
                   ${displaySubtotal.toFixed(2)} {displayCurrency}
                 </p>
                 <a
-                  href={cart.checkoutUrl}
+                  href={getCheckoutUrl(cart.checkoutUrl)}
                   onClick={(e) => {
                     e.preventDefault();
                     trackBeginCheckoutFromCart({
@@ -542,7 +543,7 @@ export function CartPopup() {
                       lines,
                     });
                     window.setTimeout(() => {
-                      window.location.assign(cart.checkoutUrl);
+                      window.location.assign(getCheckoutUrl(cart.checkoutUrl));
                     }, 150);
                   }}
                   className="mt-4 inline-flex shrink-0 items-center justify-center px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
