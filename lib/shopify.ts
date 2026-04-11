@@ -22,9 +22,26 @@ function normalizeShopifyDomain(domain: string): string {
     .replace(/\/+$/, "");
 }
 
+/** Storefront GraphQL is only served at https://{shop}.myshopify.com/api/... */
+function assertStorefrontApiHostname(domain: string): void {
+  const lower = domain.toLowerCase();
+  if (!lower.endsWith(".myshopify.com")) {
+    throw new Error(
+      [
+        `Invalid SHOPIFY_STORE_DOMAIN: "${domain}".`,
+        "Use your store's myshopify.com hostname (e.g. your-store.myshopify.com), not a custom domain.",
+        "Custom domains are for the storefront URL; the Storefront API always uses *.myshopify.com.",
+      ].join(" ")
+    );
+  }
+}
+
 const SHOPIFY_STORE_DOMAIN = normalizeShopifyDomain(
   process.env.SHOPIFY_STORE_DOMAIN || ""
 );
+if (SHOPIFY_STORE_DOMAIN) {
+  assertStorefrontApiHostname(SHOPIFY_STORE_DOMAIN);
+}
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = (
   process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || ""
 ).trim();
