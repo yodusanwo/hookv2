@@ -7,8 +7,6 @@ import { IconSearch, IconUser } from "./Icons";
 import { CartCount } from "./CartCount";
 import { SearchModal } from "./SearchModal";
 import { safeHref } from "@/lib/urlValidation";
-import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
-
 const FALLBACK_NAV = [
   { href: "/shop", label: "Shop" },
   { href: "#about", label: "Our Story" },
@@ -139,10 +137,9 @@ export function Header({
           <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
           {useHeadlessAccount ? (
             <a
-              href={CUSTOMER_ACCOUNT_PORTAL_URL}
+              href="/auth/login"
               aria-label="Account"
               className={accountButtonClass}
-              rel="noopener noreferrer"
             >
               <IconUser className="h-5 w-5" />
             </a>
@@ -190,10 +187,9 @@ export function Header({
             })}
             {useHeadlessAccount ? (
               <a
-                href={CUSTOMER_ACCOUNT_PORTAL_URL}
+                href="/auth/login"
                 className="py-4 text-lg font-medium text-white hover:text-slate-200 [font-family:var(--font-inter)]"
                 onClick={() => setMobileMenuOpen(false)}
-                rel="noopener noreferrer"
               >
                 Account
               </a>

@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 
-/** Login page: send users to Shopify Customer Account portal. */
+/** Starts headless OAuth (`/auth/login`) so `redirect_uri` matches `NEXT_PUBLIC_SITE_URL`. */
 export default function LoginPage() {
-  redirect(CUSTOMER_ACCOUNT_PORTAL_URL);
+  redirect("/auth/login");
 }
