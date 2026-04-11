@@ -6,14 +6,14 @@ import {
   generateCodeChallenge,
   generateState,
   generateNonce,
-  isCustomerAccountConfigured,
+  isHeadlessCustomerAccountEnabled,
   getRedirectUri,
 } from "@/lib/shopifyCustomerAccount";
 import { setPkceCookie, getPreferredRedirectOrigin } from "@/lib/authCookie";
 import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
 
 export async function GET(request: Request) {
-  if (!isCustomerAccountConfigured()) {
+  if (!isHeadlessCustomerAccountEnabled()) {
     return NextResponse.redirect(CUSTOMER_ACCOUNT_PORTAL_URL);
   }
   const origin = getPreferredRedirectOrigin(request);

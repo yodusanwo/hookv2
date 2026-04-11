@@ -6,10 +6,13 @@ import {
   getAccessTokenExpiresFromCookies,
   getRefreshTokenFromCookies,
 } from "@/lib/authCookie";
-import { getCustomerAccountNavUrl } from "@/lib/customerAccountPortal";
+import {
+  CUSTOMER_ACCOUNT_PORTAL_URL,
+  getCustomerAccountNavUrl,
+} from "@/lib/customerAccountPortal";
 import {
   fetchCustomerOrdersWithOutcome,
-  isCustomerAccountConfigured,
+  isHeadlessCustomerAccountEnabled,
   type CustomerOrdersResult,
 } from "@/lib/shopifyCustomerAccount";
 
@@ -38,8 +41,11 @@ export default async function AccountPage({
   const cookieStore = await cookies();
   const token = getAccessTokenFromCookies(cookieStore);
   const params = await searchParams;
-  const useHeadlessLogin = isCustomerAccountConfigured();
-  const accountNavUrl = getCustomerAccountNavUrl();
+
+  /** `NEXT_PUBLIC_USE_HEADLESS_CUSTOMER_ACCOUNT=false` — use hosted portal only (no embedded `/account`). */
+  if (!isHeadlessCustomerAccountEnabled()) {
+    redirect(getCustomerAccountNavUrl() ?? CUSTOMER_ACCOUNT_PORTAL_URL);
+  }
 
   if (token) {
     const exp = getAccessTokenExpiresFromCookies(cookieStore);
@@ -84,29 +90,20 @@ export default async function AccountPage({
             {params.error === "missing_params" && (
               <p className="mb-4 text-sm text-amber-700">Login failed (missing parameters). Please try again.</p>
             )}
-            {useHeadlessLogin ? (
-              <div className="flex flex-col gap-3">
-                <a
-                  href="/auth/login"
-                  className="block w-full rounded-lg bg-[var(--brand-green)] px-6 py-3 text-center font-medium text-white hover:opacity-90 [font-family:var(--font-inter)]"
-                >
-                  Log in
-                </a>
-                <a
-                  href="/auth/login"
-                  className="block w-full rounded-lg border-2 border-[var(--brand-green)] bg-white px-6 py-3 text-center font-medium text-[var(--brand-green)] hover:bg-[var(--brand-green)]/5 [font-family:var(--font-inter)]"
-                >
-                  Create account
-                </a>
-              </div>
-            ) : accountNavUrl ? (
+            <div className="flex flex-col gap-3">
               <a
-                href={accountNavUrl}
+                href="/auth/login"
                 className="block w-full rounded-lg bg-[var(--brand-green)] px-6 py-3 text-center font-medium text-white hover:opacity-90 [font-family:var(--font-inter)]"
               >
-                Sign in
+                Log in
               </a>
-            ) : null}
+              <a
+                href="/auth/login"
+                className="block w-full rounded-lg border-2 border-[var(--brand-green)] bg-white px-6 py-3 text-center font-medium text-[var(--brand-green)] hover:bg-[var(--brand-green)]/5 [font-family:var(--font-inter)]"
+              >
+                Create account
+              </a>
+            </div>
           </div>
         </div>
       </main>

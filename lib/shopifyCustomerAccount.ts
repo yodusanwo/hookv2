@@ -449,6 +449,16 @@ export function isCustomerAccountConfigured(): boolean {
   return Boolean(SHOPIFY_STORE_DOMAIN && CLIENT_ID);
 }
 
+/**
+ * Headless OAuth (`/auth/login`, embedded `/account`) vs links to Customer Accounts portal only.
+ * Set `NEXT_PUBLIC_USE_HEADLESS_CUSTOMER_ACCOUNT=false` to test `account.hookpointfish.com` without removing `SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID`. Redeploy after changing.
+ */
+export function isHeadlessCustomerAccountEnabled(): boolean {
+  const raw = process.env.NEXT_PUBLIC_USE_HEADLESS_CUSTOMER_ACCOUNT?.trim().toLowerCase();
+  if (raw === "false" || raw === "0" || raw === "no") return false;
+  return isCustomerAccountConfigured();
+}
+
 export function getRedirectUri(origin: string): string {
   return `${origin}/auth/callback`;
 }

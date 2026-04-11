@@ -11,7 +11,7 @@ import { SiteLayout } from "./components/SiteLayout";
 import { client, SITE_SETTINGS_QUERY } from "@/lib/sanity";
 import { urlForSizedImage } from "@/lib/sanityImage";
 import { getCustomerAccountNavUrl } from "@/lib/customerAccountPortal";
-import { isCustomerAccountConfigured } from "@/lib/shopifyCustomerAccount";
+import { isHeadlessCustomerAccountEnabled } from "@/lib/shopifyCustomerAccount";
 import { getAccessTokenFromCookies } from "@/lib/authCookie";
 import { getFooterWaveLayoutSettings } from "@/lib/footerWaveLayout";
 
@@ -66,7 +66,7 @@ export default async function RootLayout({
   let navLinks: { label?: string; href?: string }[] = [];
   let headerBackgroundColor: string | null = null;
   const accountUrl = getCustomerAccountNavUrl();
-  const useHeadlessAccount = isCustomerAccountConfigured();
+  const useHeadlessAccount = isHeadlessCustomerAccountEnabled();
   const cookieStore = await cookies();
   const headlessAccountLoggedIn =
     useHeadlessAccount && Boolean(getAccessTokenFromCookies(cookieStore));
