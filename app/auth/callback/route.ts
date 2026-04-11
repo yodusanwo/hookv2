@@ -7,27 +7,28 @@ import {
   clearPkceCookie,
   getPreferredRedirectOrigin,
 } from "@/lib/authCookie";
-import { CUSTOMER_ACCOUNT_PORTAL_URL } from "@/lib/customerAccountPortal";
-
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const origin = getPreferredRedirectOrigin(request);
   const redirectUri = getRedirectUri(origin);
-  const accountUrl = new URL(CUSTOMER_ACCOUNT_PORTAL_URL);
+
+  function accountPageUrl(error?: string): URL {
+    const u = new URL("/account", origin);
+    if (error) u.searchParams.set("error", error);
+    return u;
+  }
 
   if (!code || !state) {
-    accountUrl.searchParams.set("error", "missing_params");
-    const res = NextResponse.redirect(accountUrl);
+    const res = NextResponse.redirect(accountPageUrl("missing_params"));
     res.headers.append("Set-Cookie", clearPkceCookie());
     return res;
   }
 
   const payload = getPkceCookie(request.headers.get("cookie"));
   if (!payload || payload.state !== state) {
-    accountUrl.searchParams.set("error", "invalid_state");
-    const res = NextResponse.redirect(accountUrl);
+    const res = NextResponse.redirect(accountPageUrl("invalid_state"));
     res.headers.append("Set-Cookie", clearPkceCookie());
     return res;
   }
@@ -39,7 +40,7 @@ export async function GET(request: Request) {
     origin,
   });
 
-  const res = NextResponse.redirect(accountUrl);
+  const res = NextResponse.redirect(accountPageUrl());
   res.headers.append("Set-Cookie", clearPkceCookie());
   if (tokenResult?.access_token) {
     res.headers.append("Set-Cookie", setAccessTokenCookie(tokenResult.access_token, origin));
@@ -47,8 +48,7 @@ export async function GET(request: Request) {
       res.headers.append("Set-Cookie", setIdTokenCookie(tokenResult.id_token, origin));
     }
   } else {
-    accountUrl.searchParams.set("error", "token_exchange");
-    const errRes = NextResponse.redirect(accountUrl);
+    const errRes = NextResponse.redirect(accountPageUrl("token_exchange"));
     errRes.headers.append("Set-Cookie", clearPkceCookie());
     return errRes;
   }
