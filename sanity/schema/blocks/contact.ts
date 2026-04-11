@@ -36,7 +36,7 @@ export const contactBlock = defineType({
       type: "string",
       title: "Email",
       description: "Shown as 'or email us: …'. Leave empty to hide.",
-      initialValue: "hello@hookpointfish.com",
+      initialValue: "mat@hookpointfish.com",
     }),
     defineField({
       name: "phone",

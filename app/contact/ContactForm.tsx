@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const DEFAULT_EMAIL = "hello@hookpointfish.com";
+const DEFAULT_EMAIL = "mat@hookpointfish.com";
 const DEFAULT_PHONE = "773.888.1040";
 
 export function ContactForm({

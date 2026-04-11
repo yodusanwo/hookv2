@@ -6,6 +6,13 @@ import type { NextRequest } from "next/server";
  * SSR footer-wave / header-wave settings and match the first client paint.
  */
 export function middleware(request: NextRequest) {
+  if (
+    request.nextUrl.pathname === "/pages/marketform" ||
+    request.nextUrl.pathname === "/pages/marketsignup"
+  ) {
+    return NextResponse.redirect(new URL("/", request.url), 301);
+  }
+
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", request.nextUrl.pathname);
   const sp = request.nextUrl.searchParams;

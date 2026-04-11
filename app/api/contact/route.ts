@@ -14,9 +14,11 @@ function isValidEmail(s: string): boolean {
  *
  * Env:
  * - `RESEND_API_KEY` — required (https://resend.com/api-keys)
- * - `CONTACT_TO_EMAIL` — recipient inbox (defaults to hello@hookpointfish.com)
- * - `CONTACT_FROM_EMAIL` — must use a domain verified in Resend in production.
- *   For Resend trial, `onboarding@resend.dev` only delivers to your Resend-account email.
+ * - `CONTACT_TO_EMAIL` — recipient inbox (defaults to mat@hookpointfish.com)
+ * - `CONTACT_FROM_EMAIL` — sender. With Resend’s default `onboarding@resend.dev`, Resend only
+ *   allows delivery **to your Resend login email** (403 “testing emails” if `CONTACT_TO_EMAIL`
+ *   is anyone else). Fix: either set `CONTACT_TO_EMAIL` to that account email, or verify
+ *   hookpointfish.com at https://resend.com/domains and use e.g. `Hook Point <noreply@hookpointfish.com>`.
  */
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -54,7 +56,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please enter a message." }, { status: 400 });
   }
 
-  const to = process.env.CONTACT_TO_EMAIL?.trim() || "hello@hookpointfish.com";
+  const to = process.env.CONTACT_TO_EMAIL?.trim() || "mat@hookpointfish.com";
   const from =
     process.env.CONTACT_FROM_EMAIL?.trim() || "Hook Point <onboarding@resend.dev>";
 
@@ -85,6 +87,12 @@ export async function POST(request: Request) {
 
   if (error) {
     console.error("Resend contact error:", error);
+    const msg = String((error as { message?: string }).message ?? "");
+    if (msg.includes("only send testing emails") || msg.includes("verify a domain")) {
+      console.error(
+        "[contact] Resend sandbox: use CONTACT_TO_EMAIL = your Resend account email, or verify your domain and set CONTACT_FROM_EMAIL to an address on that domain."
+      );
+    }
     return NextResponse.json({ error: "Could not send your message. Please try again later." }, { status: 502 });
   }
 
